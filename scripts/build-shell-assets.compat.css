@@ -1,0 +1,56 @@
+/* Chromium 51 has flexbox and custom properties, but no grid, flex gap or dvh.
+   The ES5 bootstrap enables these rules only when grid is unavailable. */
+:focus{outline:2px solid #95d6b2;outline-offset:2px}
+.toast{max-width:90vw}
+dialog{max-height:calc(100vh - 32px)}
+html[data-shell-legacy-grid] .layout{display:flex}
+html[data-shell-legacy-grid] nav{width:190px;flex-shrink:0}
+html[data-shell-legacy-grid] main{flex:1;min-width:0}
+html[data-shell-legacy-grid] .grid,html[data-shell-legacy-grid] .province-grid{display:flex;flex-wrap:wrap}
+html[data-shell-legacy-grid] .grid>.card{flex:1 1 245px;margin:0 12px 12px 0}
+html[data-shell-legacy-grid] .grid>.span2{flex:2 1 500px}
+html[data-shell-legacy-grid] .metrics>.card{flex:1 1 145px}
+html[data-shell-legacy-grid] .province-grid>.card{flex:1 1 295px;margin:0 12px 12px 0}
+html[data-shell-legacy-grid] .map{display:flex;flex-wrap:wrap;margin:-3px}
+html[data-shell-legacy-grid] .map>button{flex:0 0 calc(20% - 6px);width:calc(20% - 6px);margin:3px}
+html[data-shell-legacy-grid] .stack>*{margin-right:8px;margin-bottom:8px}
+html[data-shell-legacy-grid] .subnav>*{margin-right:8px;margin-bottom:8px}
+html[data-shell-legacy-grid] .brand>.seal{margin-right:12px}
+html[data-shell-legacy-grid] .topright{margin-left:12px}
+html[data-shell-legacy-grid] .toolbar>*{margin-right:6px;margin-bottom:6px}
+html[data-shell-legacy-grid] .hero{flex-wrap:wrap}
+html[data-shell-legacy-grid] .barrow{display:flex}
+html[data-shell-legacy-grid] .barrow>span:first-child{width:108px;flex-shrink:0;margin-right:8px}
+html[data-shell-legacy-grid] .barrow>.bar{flex:1;min-width:20px}
+html[data-shell-legacy-grid] .barrow>span:last-child{width:94px;flex-shrink:0;margin-left:8px}
+html[data-shell-legacy-grid] .lawrow{display:flex;flex-wrap:wrap}
+html[data-shell-legacy-grid] .lawrow>div:first-child{flex:1 1 200px;margin-right:12px}
+html[data-shell-legacy-grid] .lawrow>label{flex:0 0 125px;width:125px;margin-right:12px}
+html[data-shell-legacy-grid] .lawrow>.stack{flex:0 0 105px;width:105px}
+html[data-shell-legacy-grid] .facts>div{display:flex}
+html[data-shell-legacy-grid] .facts dt{width:115px;flex-shrink:0;margin-right:10px}
+html[data-shell-legacy-grid] .facts dd{flex:1;min-width:0}
+html[data-shell-legacy-grid] .family{display:flex;flex-wrap:wrap}
+html[data-shell-legacy-grid] .family>div{flex:1 1 130px;margin:8px 12px 8px 0}
+.shell-legacy-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);z-index:6}
+dialog[data-shell-legacy-dialog]{display:none;position:fixed;left:5vw;top:8vh;bottom:auto;margin:0;width:90vw;max-width:620px;max-height:84vh;overflow:auto;z-index:7}
+dialog[data-shell-legacy-dialog][open]{display:block}
+@media(max-width:1000px){html[data-shell-legacy-grid] nav{width:150px}}
+@media(max-width:620px){
+html[data-shell-legacy-grid] .layout{display:block}
+html[data-shell-legacy-grid] nav{width:100%;display:flex;max-width:100%;overflow-x:auto}
+html[data-shell-legacy-grid] nav button{flex-shrink:0}
+html[data-shell-legacy-grid] .grid{display:block}
+html[data-shell-legacy-grid] .metrics{display:flex;flex-wrap:wrap}
+html[data-shell-legacy-grid] .metrics>.card{flex:1 1 calc(50% - 12px);min-width:0}
+html[data-shell-legacy-grid] .grid>.span2,html[data-shell-legacy-grid] .grid>.wide{width:auto;margin-right:0}
+html[data-shell-legacy-grid] .province-grid{display:block}
+html[data-shell-legacy-grid] .province-grid>.card{margin-right:0}
+html[data-shell-legacy-grid] .barrow>span:first-child{width:95px;margin-right:6px}
+html[data-shell-legacy-grid] .barrow>span:last-child{width:85px;margin-left:6px}
+html[data-shell-legacy-grid] .lawrow>div:first-child{flex-basis:100%;width:100%;margin-right:0}
+html[data-shell-legacy-grid] .lawrow>label{flex-basis:110px;width:110px}
+html[data-shell-legacy-grid] .lawrow>.stack{flex-basis:auto;width:auto;flex:1}
+html[data-shell-legacy-grid] .family{display:block}
+html[data-shell-legacy-grid] .brand>.seal{margin-right:9px}
+}

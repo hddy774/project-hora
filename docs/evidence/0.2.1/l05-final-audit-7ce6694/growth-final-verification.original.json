@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "kind": "independent-verification-of-frozen-nine-growth-cohorts",
+  "verified_at_utc": "2026-10-30T20:54:56.027201+00:00",
+  "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "source_tree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "run_id": 41111524034,
+  "run_url": "https://github.com/hddy774/project-hora/actions/runs/41111524034",
+  "pr": 197,
+  "independently_verified_cohorts": 9,
+  "horizon_months": 6000,
+  "observation_interval_months": 120,
+  "observations_per_cohort": 51,
+  "observations_total": 459,
+  "all_nine_individual_checks_passed": true,
+  "all_nine_raws_match_official_input_hashes": true,
+  "all_nine_official_rows_equal_unmodified_raw_rows": true,
+  "official_aggregate_complete": true,
+  "official_aggregate_completed_cases": 9,
+  "official_aggregate_path": "/workspace/scratch/growth-41111524034-7ce6694/official-aggregate/out/growth-aggregate.json",
+  "official_aggregate_sha256": "bd592d544766dfff2ba39ece2a531513610ccca3b0c24b86061e9d9b0626e0ab",
+  "official_provenance_path": "/workspace/scratch/growth-41111524034-7ce6694/official-aggregate/provenance/aggregate.json",
+  "official_provenance_sha256": "3750b5196220d793de701d11f8615bed8c7bb1d09893f475ece783c3f205a766",
+  "official_zip_sha256": "0624c0ba9501b90c577f43a21e26d41dadfdacd60430efe7f78259156f637493",
+  "official_artifact_id": 13010597728,
+  "local_individual_verification_sha256": "c47ecc1316207e9b387bd600300d80ed8dc90f368f2b6fcd2d2ab1d1b8182844",
+  "metadata_sha256": "05592aa741e5b0898fca2cf3b3360ef0e51a9db44fe3b2577fa7783f8f6af457",
+  "this_verifier_sha256": "ff6e2471e6930bf9bfb7f46f7db23708ed20860d3e689899ff5d0eb904daccf0",
+  "sdk": "10.0.403",
+  "runtime": ".NET 10.0.14",
+  "distinct_github_runner_names": 9,
+  "actual_cpu_count_per_runner": 4,
+  "physical_thermal_or_power_measured": false,
+  "case_elapsed_sum_is_paired_performance_or_wall_time": false,
+  "raw_files_modified": false,
+  "new_simulation_or_parameter_change_during_aggregation": false,
+  "growth_balance_or_indefinite_viability_claim": false,
+  "new_source94_or_4fe_or_native_release_claim": false,
+  "raw_cohorts": [
+    {
+      "scenario": "a",
+      "seed": 42,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/a-42/out/growth.json",
+      "sha256": "082ca6277ca53b54017cdd9c93bcfc55378231c0780fe2d7a1c0300f867cea95",
+      "final_hash": "559a3bcc0cbf7b8fc99b822956cbb7e91570e985f2350825ae14b8a7fb61b72e"
+    },
+    {
+      "scenario": "a",
+      "seed": 98,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/a-98/out/growth.json",
+      "sha256": "310525a4d7f51a1e6639f7843153f1ad3bcb2bc0dab12ac117a9fecb089252e4",
+      "final_hash": "0edcf59a25387f937d5d1a61d826f1200e7d2de77ad523573f93bba0ca3f904d"
+    },
+    {
+      "scenario": "a",
+      "seed": 2026,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/a-2026/out/growth.json",
+      "sha256": "d8638d24c90884c4509a9486ffea72de1bd68356b0794cc6d1c8467cee986d8a",
+      "final_hash": "6eec2261861249253f4961586013ec3ae7f5b3f462d4b39870da4d6bef5ee3a6"
+    },
+    {
+      "scenario": "b",
+      "seed": 42,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/b-42/out/growth.json",
+      "sha256": "f05a73400e8e0065365b4875f6be849dad072e104d83f2903da88ee5f6aa4e17",
+      "final_hash": "cd48fdd2759777f68e5c1b018ff3aab224d97c408a73a8ee16353e76521f5236"
+    },
+    {
+      "scenario": "b",
+      "seed": 98,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/b-98/out/growth.json",
+      "sha256": "296796360fe85c4b472c10c97dd6bf720048fb050c963b091dca444b5fe9556d",
+      "final_hash": "4a3c49251a36821c95c4042a62b29f90659ee2dabf1682a05a362aead38b0709"
+    },
+    {
+      "scenario": "b",
+      "seed": 2026,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/b-2026/out/growth.json",
+      "sha256": "ba6d219dd465210b7f407b8027d846e540f5d20ee79e2684360c4a7e7c7d539c",
+      "final_hash": "109874308923ac21e8ee38a367f729aac5fff8ef41944b909468f8a7b90c01e4"
+    },
+    {
+      "scenario": "c",
+      "seed": 42,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/c-42/out/growth.json",
+      "sha256": "486b98d6e8829457390d73097e5102cb211410ae8be7629da7c36bd1d98e6035",
+      "final_hash": "f21881aeb40553a1b97df90cdef3f4cf843139b3770c7ce127479e07d3a02441"
+    },
+    {
+      "scenario": "c",
+      "seed": 98,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/c-98/out/growth.json",
+      "sha256": "68d5ba5b781f505f47716f827b73adfbc4ea925fc7cf2071a699620ac4e44493",
+      "final_hash": "a70264fa0ff0256eb5bb8d136f23172cbe45ece104e3191a022ac2a20e0c7b71"
+    },
+    {
+      "scenario": "c",
+      "seed": 2026,
+      "path": "/workspace/scratch/growth-41111524034-7ce6694/c-2026/out/growth.json",
+      "sha256": "88d32f189f8ff5551666524bd07f06c4808cd9ea9b076c9e9386c21ef18c2c62",
+      "final_hash": "d2d7bb4a3fc6b1ca5ac44b46316e472d710826c29dae071f5a1315a52ba26a95"
+    }
+  ],
+  "scope": "9/9 finite observations ended and raw/source/environment/provenance/official aggregation checks passed. Original absence, deaths, unmet goals and provisional-law observations are retained; no outcome is promoted to a balance success."
+}

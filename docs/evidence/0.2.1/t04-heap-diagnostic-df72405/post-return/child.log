@@ -1,0 +1,7 @@
+MARKER {"pid":153508,"mode":"fresh","phase":"pre-snapshot-opening","population":1000,"month":0,"retainedManagedBytes":61869592,"Index":19,"HeapSizeBytes":63031688,"FragmentedBytes":1162096,"TotalCommittedBytes":91951104,"gen2":6,"serverGc":false,"cpu":1,"lifetimes":null}
+MARKER {"pid":153508,"mode":"fresh","phase":"after-frame-return","population":1000,"month":0,"retainedManagedBytes":545406488,"Index":70,"HeapSizeBytes":546560576,"FragmentedBytes":1162312,"TotalCommittedBytes":767332352,"gen2":11,"serverGc":false,"cpu":1,"lifetimes":{"worlds":[false],"snapshots":[false]}}
+[createdump] Gathering state for process 153508 dotnet
+[createdump] Writing minidump with heap to file /workspace/scratch/t04-retained-heap-plan-5398700/actual-post-return-fresh/after-return.dmp
+[createdump] Written 892129280 bytes (217805 pages) to core file
+[createdump] Target process is alive
+[createdump] Dump successfully written in 772ms

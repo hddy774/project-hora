@@ -1,0 +1,7 @@
+MARKER {"pid":153185,"mode":"sequential","phase":"pre-snapshot-opening","population":1000,"month":0,"retainedManagedBytes":118719360,"Index":33,"HeapSizeBytes":128154552,"FragmentedBytes":9443416,"TotalCommittedBytes":180965376,"gen2":10,"serverGc":false,"cpu":1,"lifetimes":null}
+[createdump] Gathering state for process 153185 dotnet
+[createdump] Writing minidump with heap to file /workspace/scratch/t04-retained-heap-plan-5398700/actual-sequential/opening.dmp
+[createdump] Written 297951232 bytes (72742 pages) to core file
+[createdump] Target process is alive
+[createdump] Dump successfully written in 219ms
+MARKER {"pid":153185,"mode":"sequential","phase":"after-frame-return","population":1000,"month":0,"retainedManagedBytes":595768200,"Index":84,"HeapSizeBytes":605203440,"FragmentedBytes":9443464,"TotalCommittedBytes":832155648,"gen2":15,"serverGc":false,"cpu":1,"lifetimes":{"worlds":[false,false,false],"snapshots":[false,false,false]}}

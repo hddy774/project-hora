@@ -1,0 +1,100 @@
+{
+  "base_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "tested_clean_source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "tested_source_tree": "b9cd876f8f78098230444ef5c72af3d5b1fc948c",
+  "tested_product_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "source_and_actual_4DLL": "diagnostic/source-freeze.json",
+  "release_build": {
+    "warnings": 0,
+    "errors": 0,
+    "log": "checks/release-build.log",
+    "initial_CA1861_failure_preserved": "checks/release-build.initial-failed.log",
+    "change_after_initial_build": "Test property-order array moved to a static readonly field; no diagnostic had been executed."
+  },
+  "selected_functional": {
+    "total": 9,
+    "failed": 0,
+    "reports": [
+      {
+        "selection": "schema2 UTF8 segments:",
+        "total": 2,
+        "failed": 0
+      },
+      {
+        "selection": "대용량 저장:",
+        "total": 4,
+        "failed": 0
+      },
+      {
+        "selection": "저장 봉투 기본 경계:",
+        "total": 1,
+        "failed": 0
+      },
+      {
+        "selection": "host recovery:",
+        "total": 1,
+        "failed": 0
+      },
+      {
+        "selection": "저장 왕복·호스트 문화권 독립",
+        "total": 1,
+        "failed": 0
+      }
+    ]
+  },
+  "independent_original_DLL_byte_comparison": {
+    "actual_original_source": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "candidate_source": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+    "cases": 12,
+    "all_before_candidate_original_Legacy_oracle_bytes_identical": true,
+    "proof": "original-comparison/result.json",
+    "initial_driver_failure_preserved": "original-comparison/run.initial-failed.log",
+    "driver_fix": "GameEvent record has eight positional parameters, not nine; scratch-only correction before any diagnostic."
+  },
+  "single_N2_diagnostic": {
+    "attempts": 1,
+    "cap_seconds": 200,
+    "original_plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+    "horizon_months": 120,
+    "checkpoint_months": [
+      0,
+      30,
+      60,
+      90,
+      120
+    ],
+    "original_case_seconds_limit": 167,
+    "original_retained_bytes_limit": 47725032,
+    "original_save_bytes_limit": 8748435,
+    "after_case_seconds": 39.4222047,
+    "after_retained_bytes": [
+      14510120,
+      20956440,
+      29608864,
+      46653072,
+      46893224
+    ],
+    "all_measured_N2_points_within_original_retained_limit": true,
+    "all_month_hash_saveBytes_flags_workload_and_laws_equal": true,
+    "actual_primary_and_backup_files_byte_identical": true,
+    "comparison": "diagnostic/before-after-comparison.json",
+    "raw": "diagnostic/n2-diagnostic.json",
+    "raw_preserved_unmodified_partial": true,
+    "whole_T04_pass_claim": false
+  },
+  "static": "Product boundary/plan/release guard self-tests and diff whitespace passed. No shared scripts/maps/ledger edited.",
+  "mapping_followup": {
+    "new_registered_names": [
+      "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+      "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트"
+    ],
+    "invariants": [
+      "INV-004",
+      "INV-006"
+    ],
+    "shared_map_edited": false,
+    "when": "After integration, bind these exact compiled Names to the final source/whole report through the existing map workflow."
+  },
+  "remaining_acceptance": "New net10 API requires actual application-target/API24 native CI and final integrated full functional/performance validation. No extra native/remote/manual/growth/full run was executed here.",
+  "attribution": "Actual local clean source/tree and DLL identity are explicit. GitData publication may change commit metadata; verify source and final tree equivalence without claiming remote commit was the local executed SHA."
+}

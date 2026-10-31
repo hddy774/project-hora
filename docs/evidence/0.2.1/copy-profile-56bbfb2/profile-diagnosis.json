@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "sourceCommit": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+  "rawRun": "copy-56bbfb2-json1000.json",
+  "instrumentedDuringRun": true,
+  "traceDurationSeconds": 45,
+  "eligibleAsUnprofiledBaseline": false,
+  "eligibleForJsonTypedCostComparison": false,
+  "rawReportCompleteUnchanged": false,
+  "rawDiagnosticValues": {
+    "measuredMonths": 12,
+    "advance12MonthsMs": 88708.8601,
+    "monthlyP50Ms": 6804.10555,
+    "monthlyP95Ms": 11294.5423,
+    "queryMs": 178.6143,
+    "saveMs": 3178.1806,
+    "loadMs": 3112.5233,
+    "allocatedBytes": 43940609640,
+    "saveBytes": 80532814,
+    "retainedManagedBytes": 129103064,
+    "serializedCognitionBytes": 23483031,
+    "initialHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+    "finalHash": "491a3903836aaa5608015c6179b2e9ea0b9b694e01b9fd0213e27adca325c2f5",
+    "inventoryProjectionSnapshots": {
+      "warmup": 2,
+      "measured": 20
+    },
+    "inventoryTypedCopySnapshots": {
+      "warmup": 0,
+      "measured": 0
+    },
+    "workload": {
+      "peopleWithDecisions": 1000,
+      "retainedDecisionRecords": 11997,
+      "retainedInferenceExpansions": 16084,
+      "maximumRetainedInferenceExpansionsPerPerson": 36,
+      "currentActions": {
+        "Cultivate": 400,
+        "Travel": 3,
+        "Explore": 1,
+        "Wait": 596
+      },
+      "completedKnowledgeActivities": 4401,
+      "completedPhysicalJobs": 0,
+      "actualExtraction": 3,
+      "actualProduction": 0
+    }
+  },
+  "rawTotalElapsedSeconds": 112.9094774,
+  "profileInputs": {
+    "speedscope": "profile-56bbfb2-json1000.speedscope.json.gz",
+    "weightedStacks": "profile-56bbfb2-json1000-weighted-stacks.json.gz",
+    "originalAnalysisScript": "profile-56bbfb2-analyze.py",
+    "collectorLog": "profile-56bbfb2-json1000.log"
+  },
+  "profileMetadata": [
+    {
+      "name": "Thread (107446)",
+      "type": "evented",
+      "unit": "milliseconds",
+      "startValue": 3.866908,
+      "endValue": 45019.91768925,
+      "eventCount": 290188
+    },
+    {
+      "name": "Thread (107456)",
+      "type": "evented",
+      "unit": "milliseconds",
+      "startValue": 3.872697,
+      "endValue": 45019.89222825,
+      "eventCount": 16
+    },
+    {
+      "name": "Thread (107451)",
+      "type": "evented",
+      "unit": "milliseconds",
+      "startValue": 21255.416254,
+      "endValue": 21616.432977632812,
+      "eventCount": 20
+    }
+  ],
+  "weightedThreadMilliseconds": {
+    "all": 90393.08703613281,
+    "warmup_advance": 0.0,
+    "measured_advance": 44983.392849693875,
+    "other": 45409.69418643894
+  },
+  "measuredAdvanceGroupsInclusive": {
+    "knowledge_clone_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 8930.616332846941,
+      "percent": 19.853140830633713
+    },
+    "knowledge_mirror_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 5229.127489942841,
+      "percent": 11.624573334019704
+    },
+    "json_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 16703.141096793137,
+      "percent": 37.1317947327906
+    },
+    "cultivation_context_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 4236.052359661032,
+      "percent": 9.416924983438326
+    },
+    "politics_context_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 2379.4049387616624,
+      "percent": 5.289518615708096
+    },
+    "knowledge_save_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 2096.1889960809804,
+      "percent": 4.659917501299027
+    },
+    "validation_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 70.66540573884095,
+      "percent": 0.15709220950709557
+    },
+    "sync_any": {
+      "frame": "matching descendant frame, deduplicated",
+      "weighted_thread_ms": 1.1175745240088872,
+      "percent": 0.002484415810392774
+    }
+  },
+  "measuredAdvanceInclusiveSourceTop20": [
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.AdvanceTo(int64)",
+      "weighted_thread_ms": 44983.392849693875,
+      "percent": 100.0
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Step()",
+      "weighted_thread_ms": 44983.392849693875,
+      "percent": 100.0
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 18177.003445233895,
+      "percent": 40.40825356586591
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.RunIntelligentGoal(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 17595.340646054472,
+      "percent": 39.11519236631839
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Complete(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 14121.637418111168,
+      "percent": 31.393002002531848
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.CompleteCultivation(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 12522.876490014705,
+      "percent": 27.838888302308053
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.TryIntelligentGoal(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 9788.245894183667,
+      "percent": 21.759687907245702
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.DiversePlan(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 9788.245894183667,
+      "percent": 21.759687907245702
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.ContinueIntelligentPlan(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 9546.502643150894,
+      "percent": 21.222282354399734
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.FinishKnowledgePractice(class Chronicles.Game.Person,int64,bool,class System.String,class System.String)",
+      "weighted_thread_ms": 9454.485753627432,
+      "percent": 21.01772488620047
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.SettlePolitics()",
+      "weighted_thread_ms": 9116.350085444643,
+      "percent": 20.266034880707497
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.ExecutePlanningStep(class Chronicles.Game.Person,class Chronicles.Game.PlanStep,class System.String&)",
+      "weighted_thread_ms": 9005.859740212454,
+      "percent": 20.020410132922514
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.TryIntelligentOption(class Chronicles.Game.Person,class System.String,class System.Collections.Generic.IReadOnlyList`1<class Chronicles.Game.Inventory.AdvertisedInventoryOffer>)",
+      "weighted_thread_ms": 8985.098741342506,
+      "percent": 19.974257547368737
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Knowledge.KnowledgeAuthority.Clone(class Chronicles.Game.Knowledge.KnowledgeState)",
+      "weighted_thread_ms": 8921.009651976885,
+      "percent": 19.831784769515433
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Politics.PoliticalDraft.Finish(class System.String)",
+      "weighted_thread_ms": 8595.137230431796,
+      "percent": 19.107356484094748
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.TryPoliticsCommand(class Chronicles.Game.GameCommand,class Chronicles.Game.Person,class System.String&)",
+      "weighted_thread_ms": 8281.178847425086,
+      "percent": 18.409413614254404
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.StartStewardshipPlan(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 8281.178847425086,
+      "percent": 18.409413614254404
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.Start(class Chronicles.Game.Person,class System.String,int64,class System.String)",
+      "weighted_thread_ms": 7920.750786094725,
+      "percent": 17.608166668443346
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Politics.PoliticsEngine.PlanPolicyChange(class Chronicles.Game.Politics.PoliticalContext,class Chronicles.Game.Politics.PoliticalState,int64,int64,class System.String,int32,int32)",
+      "weighted_thread_ms": 7684.140567576094,
+      "percent": 17.08217206570355
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.StartCultivationPlan(class Chronicles.Game.Person)",
+      "weighted_thread_ms": 7483.00529093063,
+      "percent": 16.63503977108644
+    }
+  ],
+  "measuredAdvanceExclusiveTop20": [
+    {
+      "frame": "System.Private.CoreLib!System.Threading.Thread.<PollGC>g__PollGCWorker|67_0()",
+      "weighted_thread_ms": 10122.399178045906,
+      "percent": 22.502524902620348
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.KnowledgeFor(class Chronicles.Game.Person,class System.String)",
+      "weighted_thread_ms": 3769.3974773510663,
+      "percent": 8.379531286014853
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Knowledge.KnowledgeAuthority+<>c.<Clone>b__83_7(class Chronicles.Game.Knowledge.KnowledgeEvidence)",
+      "weighted_thread_ms": 3260.4567434251894,
+      "percent": 7.248134337753445
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.Knowledge.KnowledgeAuthority.Clone(class Chronicles.Game.Knowledge.KnowledgeActivity)",
+      "weighted_thread_ms": 2928.465020758439,
+      "percent": 6.510102585066276
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Collections.Generic.List`1[System.__Canon].FindLast(class System.Predicate`1<!0>)",
+      "weighted_thread_ms": 1649.5096056911225,
+      "percent": 3.666930173992751
+    },
+    {
+      "frame": "System.Linq!System.Linq.Enumerable+ListSelectIterator`2[System.__Canon,System.__Canon].ToList()",
+      "weighted_thread_ms": 1243.187068125545,
+      "percent": 2.763657850975119
+    },
+    {
+      "frame": "System.Text.Json!System.Text.Json.Utf8JsonWriter.WriteStringEscapeValue(value class System.ReadOnlySpan`1<wchar>,int32)",
+      "weighted_thread_ms": 1102.7749825144342,
+      "percent": 2.4515157987286833
+    },
+    {
+      "frame": "System.Text.Json!System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1[System.__Canon].OnTryWrite(class System.Text.Json.Utf8JsonWriter,!0,class System.Text.Json.JsonSerializerOptions,value class System.Text.Json.WriteStack&)",
+      "weighted_thread_ms": 927.2037056175054,
+      "percent": 2.061213365376052
+    },
+    {
+      "frame": "System.Security.Cryptography!System.Security.Cryptography.SHA256.HashData(unsigned int8[])",
+      "weighted_thread_ms": 898.8314346587977,
+      "percent": 1.9981405974914461
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Collections.Generic.ArraySortHelper`1[System.Int32].IntroSort(value class System.Span`1<!0>,int32,class System.Comparison`1<!0>)",
+      "weighted_thread_ms": 790.8799204143738,
+      "percent": 1.7581597792256258
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld+<>c__DisplayClass286_0.<KnowledgeFor>b__0(class Chronicles.Game.Knowledge.PersonalKnowledge)",
+      "weighted_thread_ms": 765.0156568481152,
+      "percent": 1.7006624186937498
+    },
+    {
+      "frame": "System.Collections!System.Collections.Generic.SortedSet`1[System.Collections.Generic.KeyValuePair`2[System.Int64,System.Int64]].AddIfNotPresent(!0)",
+      "weighted_thread_ms": 734.4599226792465,
+      "percent": 1.6327357190093426
+    },
+    {
+      "frame": "System.Linq!System.Linq.Enumerable.Any(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Func`2<!!0,bool>)",
+      "weighted_thread_ms": 659.0075316698311,
+      "percent": 1.465001837170928
+    },
+    {
+      "frame": "System.Text.Encodings.Web!System.Text.Encodings.Web.DefaultJavaScriptEncoder.EncodeCore(value class System.ReadOnlySpan`1<wchar>,value class System.Span`1<wchar>,int32&,int32&,bool)",
+      "weighted_thread_ms": 647.1600048373584,
+      "percent": 1.4386642799482887
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Buffer.MemmoveInternal(unsigned int8&,unsigned int8&,unsigned int)",
+      "weighted_thread_ms": 625.0758736792866,
+      "percent": 1.3895703149113183
+    },
+    {
+      "frame": "Chronicles.Game!Chronicles.Game.GameWorld.PoliticsContext()",
+      "weighted_thread_ms": 453.74415553641757,
+      "percent": 1.0086926014063553
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Runtime.CompilerServices.CastHelpers.IsInstanceOfClass(void*,class System.Object)",
+      "weighted_thread_ms": 311.14891089893905,
+      "percent": 0.6916972935736583
+    },
+    {
+      "frame": "System.Text.Encodings.Web!System.Text.Encodings.Web.OptimizedInboxTextEncoder.GetIndexOfFirstCharToEncode(value class System.ReadOnlySpan`1<wchar>)",
+      "weighted_thread_ms": 303.8296766705289,
+      "percent": 0.6754263238563085
+    },
+    {
+      "frame": "System.Text.Json!System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1[System.__Canon].GetMemberAndWriteJson(class System.Object,value class System.Text.Json.WriteStack&,class System.Text.Json.Utf8JsonWriter)",
+      "weighted_thread_ms": 281.18413388946374,
+      "percent": 0.6250843168477836
+    },
+    {
+      "frame": "System.Private.CoreLib!System.Runtime.CompilerServices.CastHelpers.IsInstance_Helper(void*,class System.Object)",
+      "weighted_thread_ms": 251.7341180447053,
+      "percent": 0.5596156761359508
+    }
+  ],
+  "interpretation": {
+    "denominator": "추적 중 AdvanceTo·MeasurePopulation 스택으로 분류한 44,983.393ms 가중 스레드 시간이다. 전체 스레드 합 90,393.087ms 및 벽시간45초와 구분한다.",
+    "measurementType": "관리 코드 샘플 스레드 시간이며 GC 폴링·대기 스택을 포함한다. 커널의 실제 CPU 실행 시간(on-CPU)이나 이용률이 아니다.",
+    "overlap": "Clone·Mirror·JSON·Context는 중첩되는 포함 비율이다. 항목을 합산하거나 서로 빼서 별개 독점 비용으로 만들지 않는다.",
+    "warmup": "이 45초 추적에서 예열 Advance 분류 표본은0이다. 실제 측정 월1 부근부터 수집한 부분 구간이다.",
+    "sourceLimits": "심볼 해석·인라이닝·알 수 없는(unknown) 프레임의 한계가 있으며 프로파일러 개입 비용은 추정하지 않았다. 12개월 전체의 고정 CPU 비율로 일반화하지 않는다.",
+    "candidateWork": "현재56bb 표본에서는 지식 Clone/Mirror·읽기 및 Context가 우선 후보다. 별도 지식 키 인덱스·수행 문맥의 성년 기준(maturity) 맵 분기의 구현과 효과는 이 자료에 포함하지 않는다."
+  }
+}

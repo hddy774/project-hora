@@ -1,0 +1,121 @@
+{
+  "source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "source_worktree_clean_before": true,
+  "started_utc": "2026-10-31T02:24:38.313052+00:00",
+  "product_source_fingerprint": "a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12",
+  "sdk": "10.0.403",
+  "tiered_environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "runs": [
+    {
+      "name": "release-build",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "build",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--disable-build-servers",
+        "-m:1",
+        "-p:BuildInParallel=false",
+        "-p:UseSharedCompilation=false"
+      ],
+      "started_utc": "2026-10-31T02:24:38.881277+00:00",
+      "pid": 160829,
+      "exit_code": 0,
+      "seconds": 31.053584861991112,
+      "ended_utc": "2026-10-31T02:25:09.934866+00:00"
+    },
+    {
+      "name": "functional",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--report",
+        "/workspace/scratch/v021-integration-5f789c8/functional.json"
+      ],
+      "started_utc": "2026-10-31T02:25:09.935382+00:00",
+      "pid": 160937,
+      "actual_runtime_mapped_files": [
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Console.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Linq.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Memory.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.CoreLib.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.InteropServices.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Json.dll",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Native.so",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libclrjit.so",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libcoreclr.so",
+        "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libhostpolicy.so"
+      ],
+      "exit_code": 0,
+      "seconds": 518.9163952479867,
+      "ended_utc": "2026-10-31T02:33:48.851809+00:00"
+    }
+  ],
+  "scope": "실제 전체 기능 정확성 실행이며 소요 시간은 성능 수용 표본이 아니다.",
+  "source_worktree_clean_after": true,
+  "finished_utc": "2026-10-31T02:33:48.861656+00:00",
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "sha256": "2a42c4a3ef020a4444226d81c7dc53b2d0ed879970ea1f0b9b6caf9456d9312f",
+      "informational_version_literals": [
+        "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2"
+      ],
+      "scope": "PE raw literal source corroboration; full attribute-constructor binding checked separately"
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "sha256": "5e4ee185e1d3415ea0fa4a51d4d09302b20650f4bdd58342eab77c55bf364986",
+      "informational_version_literals": [
+        "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2"
+      ],
+      "scope": "PE raw literal source corroboration; full attribute-constructor binding checked separately"
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "sha256": "04e77c90fd738f30718a892e6e2ac4442b1b633dc9433f46cc8cb3d49ae93f20",
+      "informational_version_literals": [
+        "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2"
+      ],
+      "scope": "PE raw literal source corroboration; full attribute-constructor binding checked separately"
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "sha256": "100dab96d742b5800c4f59e6802e8f588f3cb3fa0714a56ba6d46472f59f8860",
+      "informational_version_literals": [
+        "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2"
+      ],
+      "scope": "PE raw literal source corroboration; full attribute-constructor binding checked separately"
+    }
+  ],
+  "report_sha256": "f2c354e118a8a403a47d4989967abf001e6d177ddf947238eba665797841be92",
+  "functional_total": 321
+}

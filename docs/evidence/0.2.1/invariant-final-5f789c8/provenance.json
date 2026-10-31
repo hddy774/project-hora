@@ -1,0 +1,157 @@
+{
+  "schema": "seonro.invariant-final-provenance.v1",
+  "source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "product_source_fingerprint": "a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12",
+  "fingerprint_attribution": "원래 root 실행 기록과 동결 통지. 문서 작업의 추가 전체 지문 계산 없음.",
+  "test_sources_sha256": "75e7cb849f6d113bff4c2cc4acd8cc408a0ec7907ab1b7cd8c0f0d02b3d1b21a",
+  "worktree": "/workspace/seonro-integration-5f789c8",
+  "run_original": "root-run.original.json",
+  "functional_command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--report",
+    "/workspace/scratch/v021-integration-5f789c8/functional.json"
+  ],
+  "cpu_affinity": "0",
+  "build_exit_code": 0,
+  "functional_exit_code": 0,
+  "functional_started_utc": "2026-10-31T02:25:09.935382+00:00",
+  "functional_ended_utc": "2026-10-31T02:33:48.851809+00:00",
+  "selection": "all",
+  "total": 321,
+  "failed": 0,
+  "functional_report_sha256": "f2c354e118a8a403a47d4989967abf001e6d177ddf947238eba665797841be92",
+  "source_worktree_clean_before_original": true,
+  "source_worktree_clean_after_original": true,
+  "source_clean_at_document_readout": true,
+  "sdk": "10.0.403",
+  "actual_runtime_mapped_files_original": [
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Console.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Linq.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Memory.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.CoreLib.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.InteropServices.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Json.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Native.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libclrjit.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libcoreclr.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libhostpolicy.so"
+  ],
+  "runtime_observed_by_root": ".NET 10.0.14",
+  "runtime_attribution": "원래 run.json의 실제 실행 PID runtime map 경로를 인계받아 보존했다. 문서 리뷰가 과거 프로세스를 독립 계측한 것은 아니다.",
+  "runtimeconfig_target": "10.0.0",
+  "runtimeconfig_sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+  "runtime_tiered_pgo": false,
+  "runtime_environment_overrides_original": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "2a42c4a3ef020a4444226d81c7dc53b2d0ed879970ea1f0b9b6caf9456d9312f",
+      "bytes": 5120,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-5f789c8/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "generated_info_sha256": "1a146e5574d997ef2efd45242886b831f9ffce798ea0215fbff04d532a80062a",
+      "informational_version": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+        "scope": "PE/CLI 메타데이터와 직렬화된 정보 버전의 정적 확인이다. 독립적인 과거 process-load/attribute 실행 인증은 아니다."
+      }
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "5e4ee185e1d3415ea0fa4a51d4d09302b20650f4bdd58342eab77c55bf364986",
+      "bytes": 2258944,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-5f789c8/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "generated_info_sha256": "4216190e675d131385d591242e5cd2b33a53e7301c441b78e589e5e292731e8b",
+      "informational_version": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+        "scope": "PE/CLI 메타데이터와 직렬화된 정보 버전의 정적 확인이다. 독립적인 과거 process-load/attribute 실행 인증은 아니다."
+      }
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "04e77c90fd738f30718a892e6e2ac4442b1b633dc9433f46cc8cb3d49ae93f20",
+      "bytes": 23552,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-5f789c8/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "generated_info_sha256": "79802a1b117644f910e136c5f0f98ad6cdd7bb07e2251ac777783ba702c0d333",
+      "informational_version": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+        "scope": "PE/CLI 메타데이터와 직렬화된 정보 버전의 정적 확인이다. 독립적인 과거 process-load/attribute 실행 인증은 아니다."
+      }
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "100dab96d742b5800c4f59e6802e8f588f3cb3fa0714a56ba6d46472f59f8860",
+      "bytes": 1516032,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-5f789c8/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "generated_info_sha256": "cbdc613f4df3cd12ff21088fb2641917862381cf0601d35f5b41dfc79c81fc63",
+      "informational_version": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+5f789c817eb9519b696acd72410643169ff11ef2",
+        "scope": "PE/CLI 메타데이터와 직렬화된 정보 버전의 정적 확인이다. 독립적인 과거 process-load/attribute 실행 인증은 아니다."
+      }
+    }
+  ],
+  "functional_timings_are_performance_samples": false,
+  "new_documentation_game_build_performance_growth_runs": 0,
+  "separate_native_performance_growth_release_acceptance": true
+}

@@ -1,0 +1,283 @@
+{
+  "kind": "actual heap diagnostic; not T04 acceptance",
+  "source": "df7240556a260202a248e57b1f9868e372b9d995",
+  "productSourceFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "sourceFunctionalReference": {
+    "total": 314,
+    "failed": 0,
+    "reportSha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66",
+    "scope": "parent separate completed functional run; not rerun by this probe"
+  },
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "cpuAffinity": [
+    2
+  ],
+  "reportedProcessorCount": 1,
+  "concurrentWork": "root CPU0 performance and knowledge CPU1 diagnostics; host contention/thermal/power not isolated",
+  "precedingFunctionalSelectionInProbe": "none",
+  "worldRuns": 3,
+  "advancedMonths": 0,
+  "caseModes": [
+    "fresh1000",
+    "opening2/opening100/opening1000",
+    "fresh1000-after-return-heap"
+  ],
+  "targetChildrenExitCodes": [
+    0,
+    0,
+    0
+  ],
+  "dumpCollections": 3,
+  "productAndOfficialHarnessEdits": 0,
+  "planOrBudgetEdits": 0,
+  "retainedScopeChanged": false,
+  "fullT04PassClaim": false,
+  "assemblies": [
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.deps.json",
+      "sha256": "c488abfdc41c5abafc69fd6da72c3b2f4eeb7900ea94517ecf2d6a0054da7839"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7"
+    }
+  ],
+  "probeDllSha256": "c22652f97fb78f7317d636f47cadd987cba1e52f8946ce1e4effebf76d275748",
+  "probeRuntimeConfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "targetEnv": "PATH/LANG/LC_ALL/TMPDIR/TZ when present, DOTNET_ROOT, DOTNET_CLI_TELEMETRY_OPTOUT, DOTNET_NOLOGO only; no signing/publishing credentials",
+  "largeRawLocal": [
+    {
+      "localPath": "/workspace/scratch/t04-retained-heap-plan-5398700/actual-fresh/opening.dmp",
+      "bytes": 199540736,
+      "sha256": "b28a611426440435867592ba9194b0018a41b4f4e0a5f061c92fb527de17d608",
+      "publicUpload": false
+    },
+    {
+      "localPath": "/workspace/scratch/t04-retained-heap-plan-5398700/actual-sequential/opening.dmp",
+      "bytes": 298004480,
+      "sha256": "7bc7f6354c6578370a7d90a81e64598d4faa0e3ad60c5ba5c4153e60cc9df987",
+      "publicUpload": false
+    },
+    {
+      "localPath": "/workspace/scratch/t04-retained-heap-plan-5398700/actual-post-return-fresh/after-return.dmp",
+      "bytes": 892182528,
+      "sha256": "7cc608601de48c0080197423b250c97c08a967faf82898c29702bc183934adc6",
+      "publicUpload": false
+    }
+  ],
+  "analysisFailures": [
+    {
+      "log": "post-return/roots-failed-all-option.txt",
+      "exitCode": 1,
+      "cause": "SOS gcroot -all argument rejected"
+    },
+    {
+      "log": "sequential/roots-world-before-analyzer-crash.txt",
+      "exitCode": 139,
+      "cause": "dumpobj segfault after two completed gcroot results"
+    }
+  ],
+  "arrayPoolRootAttribution": "not established; inspected byte/char roots returned zero",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4997,
+      "sha256": "3bb47cf82a8bd87658253289335fc656dfffe5d5eab5b711119be3bffc25cd81"
+    },
+    {
+      "path": "followup.py",
+      "bytes": 3308,
+      "sha256": "226606a0743793a778b5bf7c9cc0891ed73d2a943e1bd76d8a1f81abf4fbd639"
+    },
+    {
+      "path": "fresh/child.log",
+      "bytes": 907,
+      "sha256": "ff8ca5133ccfeb307ce12918d90326f99b7afc1a45bce40ae58a745548d96dbf"
+    },
+    {
+      "path": "fresh/heap-stat.txt.gz",
+      "bytes": 63878,
+      "sha256": "00ae457ce3dfede8a08b308895d2ef0116f547ddafc41051095401e91efcece9"
+    },
+    {
+      "path": "fresh/result.json",
+      "bytes": 5783,
+      "sha256": "3856db03cafc8cd3ca4d25a315797b8eb71226294828423f9109dac4607d4fc7"
+    },
+    {
+      "path": "heap-types.json",
+      "bytes": 2143,
+      "sha256": "052a5c0a14c0aca373c55607d34ced480018d848f79ff4262dff76baef45e49c"
+    },
+    {
+      "path": "markers.json",
+      "bytes": 1870,
+      "sha256": "23a465075bbe3f8de7687b6703c7f767ad3620af0aa8f3367bca44dcfa3259db"
+    },
+    {
+      "path": "post-markers.json",
+      "bytes": 897,
+      "sha256": "d9baf3de99b7beaca24b40643d08307b09cd266f5786e33eee4cb1e71baaa702"
+    },
+    {
+      "path": "post-return/child.log",
+      "bytes": 925,
+      "sha256": "afe98ed7dbdfcb873709922eed3d936847faa845660044542eeeca5e79c851da"
+    },
+    {
+      "path": "post-return/heap-stat.txt.gz",
+      "bytes": 62905,
+      "sha256": "94ab027f1c07c97aeea7fcb50ae4296c823941bc49c569cbfbdaa19cce24839d"
+    },
+    {
+      "path": "post-return/result.json",
+      "bytes": 5783,
+      "sha256": "8c4a8eb1d851cf5aa3a9b5395c47d54833338352c9833095016b2911e0e8ce9e"
+    },
+    {
+      "path": "post-return/roots-byte.txt",
+      "bytes": 1613,
+      "sha256": "edf9fddd1274b4c54b6f8e232f4ea4e46970956486f6b84b7a55746fcb06331d"
+    },
+    {
+      "path": "post-return/roots-char-smallbyte.txt",
+      "bytes": 249,
+      "sha256": "8aa0b55d967301f8e6b9273cd0b8eca282c41ccbbf022ed8b29dc37ef68733bb"
+    },
+    {
+      "path": "post-return/roots-failed-all-option.txt",
+      "bytes": 165,
+      "sha256": "96aeb80ba08f11dc115b3619dfe8e8214647fd0d8b58eed8886bb742ba2efa0a"
+    },
+    {
+      "path": "post-supervisor.log",
+      "bytes": 712,
+      "sha256": "46a605a20ea8ab5a8f727e23a04643a4332f2d190c8c73b7ad11d91da8da7415"
+    },
+    {
+      "path": "probe-Program.cs",
+      "bytes": 5548,
+      "sha256": "c51506546ee0dddb8583bc074d36a89c78f01b0c1b0a379d87680f4e3d2a5ee9"
+    },
+    {
+      "path": "probe-build.log",
+      "bytes": 315,
+      "sha256": "cc58e40c7e36eadf68e997b63d3abfbea4c1c598be2b70f04d62e66c9da925d3"
+    },
+    {
+      "path": "probe-project.csproj.txt",
+      "bytes": 868,
+      "sha256": "971a7c2d67a053c15b104af37fe8a3957a581085004f678abefb52aff454d39a"
+    },
+    {
+      "path": "sequential/child.log",
+      "bytes": 950,
+      "sha256": "9e8833c825b8a427477e15c7ccd4bc4a5c64fbd5c177b78261faf58715e1930d"
+    },
+    {
+      "path": "sequential/heap-stat.txt.gz",
+      "bytes": 66005,
+      "sha256": "a8996815523863cea840ce1d7e52bd280c111db241c906ba0973bd1a5162b19d"
+    },
+    {
+      "path": "sequential/result.json",
+      "bytes": 16603,
+      "sha256": "9e639e4c843d76ed271a8469aad3138a34ebca41aaf3d8cf6a59aac95bbdf1d7"
+    },
+    {
+      "path": "sequential/root-targets.txt",
+      "bytes": 668,
+      "sha256": "06f77c9eabc598c688b6d299c969e7b368a5c35e2ea83d59ca7502cce7f4c460"
+    },
+    {
+      "path": "sequential/roots-world-before-analyzer-crash.txt",
+      "bytes": 1133,
+      "sha256": "6a78b93aef7e27a64c7fd49e8b2b9dd4f0763d43355b60a116066a0b23ecec52"
+    },
+    {
+      "path": "source-audit.json",
+      "bytes": 2955,
+      "sha256": "c73a56fa74091b05bb2bc3c62bab3281643ca52f23ed487aa58f09e4ff45c21f"
+    },
+    {
+      "path": "supervise.py",
+      "bytes": 3292,
+      "sha256": "b666cc8d99855f4dcbf0e4ee99514dc143aee1723f58880a30b5c36159828cc9"
+    },
+    {
+      "path": "supervisor.log",
+      "bytes": 1424,
+      "sha256": "1d3d55d89b67252428fc53abd9ed222e87ee66b26de6b86e6d80481010a87b0f"
+    },
+    {
+      "path": "tool-preparation.json",
+      "bytes": 501,
+      "sha256": "fd503d1f86d735cebec505be302a01cfc12795214aa2b3806b875a420c5b106a"
+    }
+  ],
+  "compressedRaw": [
+    {
+      "path": "fresh/heap-stat.txt.gz",
+      "format": "gzip",
+      "mtime": 0,
+      "bytes": 63878,
+      "sha256": "00ae457ce3dfede8a08b308895d2ef0116f547ddafc41051095401e91efcece9",
+      "originalPath": "fresh/heap-stat.txt",
+      "originalBytes": 989006,
+      "originalSha256": "bb86493504d6931e922c36f9390fcdacd96e9707c1152147330da6ca0f22cd17",
+      "decompressedBytesEqual": true
+    },
+    {
+      "path": "sequential/heap-stat.txt.gz",
+      "format": "gzip",
+      "mtime": 0,
+      "bytes": 66005,
+      "sha256": "a8996815523863cea840ce1d7e52bd280c111db241c906ba0973bd1a5162b19d",
+      "originalPath": "sequential/heap-stat.txt",
+      "originalBytes": 1002199,
+      "originalSha256": "a7740ac39ec3f5b8bd1c899a03121d8e779ffacb86b727760b060e5b3d896484",
+      "decompressedBytesEqual": true
+    },
+    {
+      "path": "post-return/heap-stat.txt.gz",
+      "format": "gzip",
+      "mtime": 0,
+      "bytes": 62905,
+      "sha256": "94ab027f1c07c97aeea7fcb50ae4296c823941bc49c569cbfbdaa19cce24839d",
+      "originalPath": "post-return/heap-stat.txt",
+      "originalBytes": 984080,
+      "originalSha256": "72db4941797e0409db3f1cfb2846ff56d14efb09bbda8a9ae7007826a207cc2c",
+      "decompressedBytesEqual": true
+    }
+  ]
+}

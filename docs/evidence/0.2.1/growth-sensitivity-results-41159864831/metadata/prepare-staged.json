@@ -1,0 +1,10 @@
+{
+  "metadata_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+  "plan_sha": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+  "baseline_sha": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "horizon": 6000,
+  "interval": 120,
+  "wall_minutes": 240,
+  "wall_file_sha": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+  "input_artifact": "v021-sensitivity-inputs-41159864831-1"
+}

@@ -1,0 +1,142 @@
+{
+  "source_commit": "5723b19032c210fe69e457dbf7ffb19000195c6d",
+  "base_commit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "cpu_affinity": "3",
+  "sdk": "10.0.403",
+  "started_utc": "2026-10-31T01:51:35.133100+00:00",
+  "environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "runs": [
+    {
+      "name": "canonical",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-canonical-hash-b15992b/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "canonical streaming hash:",
+        "--report",
+        "/workspace/scratch/canonical-stream-hash-b15992b/canonical.json"
+      ],
+      "exit_code": 0,
+      "seconds": 1.3705162949918304,
+      "ended_utc": "2026-10-31T01:51:36.503735+00:00"
+    },
+    {
+      "name": "envelopes",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-canonical-hash-b15992b/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "대용량 저장:",
+        "--report",
+        "/workspace/scratch/canonical-stream-hash-b15992b/envelopes.json"
+      ],
+      "exit_code": 0,
+      "seconds": 4.683468849994824,
+      "ended_utc": "2026-10-31T01:51:41.187526+00:00"
+    },
+    {
+      "name": "host-recovery",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-canonical-hash-b15992b/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "host recovery:",
+        "--report",
+        "/workspace/scratch/canonical-stream-hash-b15992b/host-recovery.json"
+      ],
+      "exit_code": 0,
+      "seconds": 3.1242288049979834,
+      "ended_utc": "2026-10-31T01:51:44.312095+00:00"
+    },
+    {
+      "name": "culture",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-canonical-hash-b15992b/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "저장 왕복·호스트 문화권 독립",
+        "--report",
+        "/workspace/scratch/canonical-stream-hash-b15992b/culture.json"
+      ],
+      "exit_code": 0,
+      "seconds": 1.2193875719967764,
+      "ended_utc": "2026-10-31T01:51:45.531790+00:00"
+    },
+    {
+      "name": "determinism",
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-canonical-hash-b15992b/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-006/007/004 시간 분할·조회/저장 무영향",
+        "--report",
+        "/workspace/scratch/canonical-stream-hash-b15992b/determinism.json"
+      ],
+      "exit_code": 0,
+      "seconds": 140.10656310200284,
+      "ended_utc": "2026-10-31T01:54:05.638685+00:00"
+    }
+  ],
+  "scope": "selected functional tests only; no whole suite/performance/growth/soak",
+  "finished_utc": "2026-10-31T01:54:05.639091+00:00",
+  "assemblies": [
+    {
+      "file": "Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "07b893e67b6ba6b7767e1ae546acfddf0e9c4a803ed95a70b1a4dc1eb95d7be0",
+      "source_revision_literal_verified": "0.2.1+5723b19032c210fe69e457dbf7ffb19000195c6d"
+    },
+    {
+      "file": "Chronicles.Game.dll",
+      "bytes": 2259456,
+      "sha256": "d85ddd2293f6cdb3d04e6972639316f9622f11b206ef7d23b049b74f95c3589c",
+      "source_revision_literal_verified": "0.2.1+5723b19032c210fe69e457dbf7ffb19000195c6d"
+    },
+    {
+      "file": "Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "0eca66f8f8307281f052f4168ab7602f7cdd798d6063b8edcddc4e607898a03f",
+      "source_revision_literal_verified": "0.2.1+5723b19032c210fe69e457dbf7ffb19000195c6d"
+    },
+    {
+      "file": "Chronicles.Game.Tests.dll",
+      "bytes": 1505792,
+      "sha256": "f39db121c9fa7878b1a1385525305c985ce86caed744201a22ce1f68d245b97b",
+      "source_revision_literal_verified": "0.2.1+5723b19032c210fe69e457dbf7ffb19000195c6d"
+    }
+  ],
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  }
+}

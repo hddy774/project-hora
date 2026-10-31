@@ -1,0 +1,201 @@
+namespace Chronicles.Game.Inventory;
+
+public static partial class InventoryEngine
+{
+    /// <summary>Checks physical identity, ownership/location, commitments, storage, labor and material conservation without mutation.</summary>
+    public static void Validate(InventoryState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        try { ValidateCore(state); }
+        catch (RuleViolation error) { throw new InvalidDataException(error.Message, error); }
+    }
+    private static void Ensure(bool condition, string message)
+    { if (!condition) throw new InvalidDataException(message); }
+    private static void ValidateCore(InventoryState state)
+    {
+        Ensure(state.Month >= 0 && state.Revision >= 0 && state.Ledger.BaseCarryCapacity >= 0 && state.Ledger.ProductionWork > 0 && state.Ledger.ProfessionalWork > 0 &&
+            state.Ledger.ExtractionWorkPerUnit > 0, "Invalid inventory clock, carrying profile, or work profile.");
+        var ids = state.Items.Select(i => i.Id).Concat(state.People.Select(p => p.Id))
+            .Concat(state.Ledger.Reservations.Select(r => r.Id)).Concat(state.Ledger.Labor.Select(l => l.Id))
+            .Concat(state.Ledger.Jobs.Select(j => j.Id)).Concat(state.Ledger.Contracts.Select(c => c.Id))
+            .Concat(state.Ledger.Sources.Select(s => s.Id)).Concat(state.Ledger.Arrays.Select(a => a.Id)).Concat(state.Ledger.Bindings.Select(b => b.Id)).ToArray();
+        var seenIds = new HashSet<long>(ids.Length);
+        var maximumId = 0L;
+        foreach (var id in ids)
+        {
+            Ensure(id > 0 && seenIds.Add(id), "Inventory IDs are duplicated or the allocator is stale.");
+            maximumId = Math.Max(maximumId, id);
+        }
+        Ensure(state.NextId > maximumId, "Inventory IDs are duplicated or the allocator is stale.");
+        Ensure(state.Ledger.Metadata.Select(m => m.Item).Distinct().Count() == state.Ledger.Metadata.Count, "Duplicate item metadata.");
+        var read = new ValidationReadIndex(state);
+        foreach (var metadata in state.Ledger.Metadata)
+        {
+            read.ItemAt(metadata.Item);
+            if (metadata.Custodian != 0) read.PersonAt(metadata.Custodian);
+            if (metadata.Carrier != 0) read.PersonAt(metadata.Carrier);
+            Ensure(metadata.Capacity is null or >= 0 && metadata.UseRights.Distinct().Count() == metadata.UseRights.Count, "Invalid storage profile or use rights.");
+            foreach (var user in metadata.UseRights) read.PersonAt(user);
+        }
+        foreach (var item in state.Items)
+        {
+            read.PersonAt(item.Owner); var definition = InventoryDefinitions.Definition(item.Definition);
+            Ensure(item.Quantity > 0 && item.Quality is >= 0 and <= 10000 && item.Damage is >= 0 and <= 100 && item.Place is >= -1 and < 100,
+                "Invalid physical item quantity, quality, damage, or location.");
+            Ensure(item.BoundSoul >= 0 && ((int)item.Defects & ~15) == 0, "Invalid soul binding or defect flags.");
+            Ensure(definition.Item.Kind != ItemKind.Book || item.Quantity == 1, "A bound or blank book is a unique physical medium.");
+            var root = read.Root(item); _ = read.Location(item.Id);
+            Ensure(item.Place == root.Place, "Contained items cannot have another physical location.");
+            if (definition.Item.Capacity > 0 || (read.Metadata(item.Id)?.Capacity ?? 0) > 0)
+                Ensure(item.Quantity == 1, "Containers cannot be stacked.");
+            if (item.Container != 0)
+            {
+                var parent = read.ItemAt(item.Container); var metadata = read.Metadata(parent.Id);
+                Ensure(read.Capacity(parent) > 0, "Contents are inside an unusable container.");
+                Ensure(metadata is null || metadata.AllowedContents.Count == 0 || metadata.AllowedContents.Contains(definition.Item.Kind), "Container rejects this item category.");
+                Ensure(metadata is null || metadata.AllowNestedContainers || (definition.Item.Capacity == 0 && (read.Metadata(item.Id)?.Capacity ?? 0) == 0), "Container profile disallows nested storage.");
+            }
+            var children = read.Children(item.Id);
+            if (children.Count > 0)
+                Ensure(children.Sum(child => read.Weight(child)) <= read.Capacity(item), "Recursive container capacity exceeded.");
+            if (item.Reserved != 0)
+                Ensure(read.BacksPhysicalItem(item.Reserved, item.Id), "Physical reservation is not backed by the common ledger.");
+        }
+        foreach (var person in state.People)
+        {
+            Ensure(person.Money >= 0 && person.Place is >= 0 and < 100, "Negative money or invalid person location.");
+            Ensure(read.CarriedWeight(person) <= read.CarryCapacity(person), "Carrying capacity exceeded; use explicit ground storage.");
+            foreach (var itemId in person.Equipment.Values.Distinct())
+            {
+                var item = read.ItemAt(itemId); var definition = InventoryDefinitions.Definition(item.Definition);
+                var occupied = person.Equipment.Where(e => e.Value == itemId).Select(e => e.Key).Order().ToArray();
+                Ensure(occupied.SequenceEqual(definition.OccupiedSlots.Order()) && item.Quantity == 1 && item.Container == 0 && item.Place == -1 &&
+                    read.Location(item.Id) == person.Place && item.Damage < 100 &&
+                    (item.Defects & (ItemDefect.BrokenCircuit | ItemDefect.LostCore)) == 0 && (item.BoundSoul == 0 || item.BoundSoul == person.SoulId), "Invalid equipment occupancy, location, or soul binding.");
+                Ensure(item.Owner == person.Id || (read.Metadata(item.Id)?.UseRights.Contains(person.Id) ?? false), "Equipment lacks ownership or use rights.");
+                Ensure(read.EquippedByCount(itemId) == 1, "An item is equipped by multiple people.");
+                Ensure(item.Reserved == 0 || read.BacksEquippedRepair(item.Id, item.Reserved), "Equipped item is committed to another activity.");
+            }
+        }
+        foreach (var reservation in state.Ledger.Reservations.Where(r => r.Active))
+        {
+            read.PersonAt(reservation.Actor);
+            Ensure(reservation.Items.Distinct().Count() == reservation.Items.Count, "Duplicate reserved physical item.");
+            foreach (var id in reservation.Items)
+                Ensure((read.FindItem(id) is { } physical && physical.Reserved == reservation.Id) ||
+                    read.BacksConsumedInput(reservation.Id, id), "Active reservation lost its physical item.");
+        }
+        foreach (var labor in state.Ledger.Labor)
+        {
+            read.PersonAt(labor.Person);
+            Ensure(labor.Start >= 0 && labor.End > labor.Start && labor.Units is > 0 and <= 100 && labor.FacilityCapacity > 0, "Invalid labor interval.");
+        }
+        foreach (var group in state.Ledger.Labor.Where(l => l.Active).GroupBy(l => l.Person)) CheckSchedule(group, 100);
+        foreach (var group in state.Ledger.Labor.Where(l => l.Active && l.Facility != 0).GroupBy(l => l.Facility))
+        {
+            Ensure(group.Select(l => l.FacilityCapacity).Distinct().Count() == 1, "Facility commitments disagree about capacity.");
+            CheckSchedule(group, group.First().FacilityCapacity);
+        }
+        foreach (var source in state.Ledger.Sources)
+        {
+            InventoryDefinitions.Definition(source.Definition);
+            Ensure(source.Place is >= 0 and < 100 && source.Remaining >= 0 && source.Capacity >= source.Remaining && source.Regeneration >= 0 && source.EcologyWeight >= 0 &&
+                source.LastMonth <= state.Month && !string.IsNullOrWhiteSpace(source.Origin), "Invalid finite natural stock.");
+            var reserved = read.ReservedNaturalStock(source.Id);
+            Ensure(reserved <= source.Remaining, "Natural stock is overcommitted.");
+        }
+        var committedReservations = state.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").Select(j => j.Reservation)
+            .Concat(state.Ledger.Contracts.Where(c => c.Status == "open").Select(c => c.Reservation)).ToArray();
+        var committedLabor = state.Ledger.Jobs.Where(j => j.Status is "reserved" or "processing").Select(j => j.Labor)
+            .Concat(state.Ledger.Contracts.Where(c => c.Status == "open" && c.Labor != 0).Select(c => c.Labor)).ToArray();
+        Ensure(committedReservations.Distinct().Count() == committedReservations.Length && committedLabor.Distinct().Count() == committedLabor.Length,
+            "An asset or labor reservation backs multiple independent commitments.");
+        foreach (var job in state.Ledger.Jobs)
+        {
+            read.PersonAt(job.Actor);
+            if (job.OutputDefinition.Length > 0) InventoryDefinitions.Definition(job.OutputDefinition);
+            Ensure(InventoryDefinitions.Recipes.ContainsKey(job.Recipe) || job.Recipe is "repair" or "extraction" or "medical-treatment" or "appraisal" or "exploration" or "array-maintenance",
+                "Unknown production process in saved state.");
+            Ensure((job.Source != 0) == (job.Recipe == "extraction") && (job.Source == 0 || (job.OutputQuantity > 0 && read.HasSource(job.Source))),
+                "Extraction lacks an actual finite source or positive quantity.");
+            Ensure(job.Inputs.Distinct().Count() == job.Inputs.Count, "Production input was reserved twice.");
+            Ensure(job.Status is "reserved" or "processing" or "completed" or "cancelled" or "failed", "Unknown production status.");
+            Ensure(read.HasReservation(job.Reservation) && read.HasLabor(job.Labor), "Production lacks reservations.");
+            if (job.Status is "reserved" or "processing")
+            {
+                Ensure(read.HasActiveReservation(job.Reservation) && read.HasActiveLabor(job.Labor), "Active production lost its commitments.");
+                if (job.Status == "reserved") foreach (var id in job.Inputs) read.ItemAt(id);
+            }
+        }
+        foreach (var contract in state.Ledger.Contracts)
+        {
+            read.PersonAt(contract.Seller); if (contract.Buyer != 0) read.PersonAt(contract.Buyer);
+            if (contract.Carrier != 0) read.PersonAt(contract.Carrier);
+            Ensure(contract.Kind is "sale" or "auction" or "transport" && contract.Escrow >= 0 && contract.Price >= 0 && contract.Fee >= 0, "Invalid funded contract.");
+            Ensure(contract.PaidAmount is null or >= 0 && contract.PaidQuantity is null or > 0 && contract.PaidQuality is null or (>= 0 and <= 10000) &&
+                (contract.EndedMonth is null || contract.EndedMonth >= 0 && contract.EndedMonth <= state.Month), "Invalid actual settlement history.");
+            if (contract.Status == "open")
+            {
+                Ensure(contract.PaidAmount is null && contract.EndedMonth is null, "Open contract cannot have a completed payment.");
+                var item = read.ItemAt(contract.Item);
+                Ensure(item.Reserved == contract.Reservation && item.Owner == contract.Seller &&
+                    read.HasActiveReservation(contract.Reservation), "Open contract lost cargo ownership or reservation.");
+                if (contract.Kind == "transport") Ensure(contract.Escrow == contract.Fee &&
+                    read.Metadata(item.Id)?.Carrier == contract.Carrier && read.HasActiveLabor(contract.Labor), "Transport lacks physical custody, fee, or labor.");
+                else Ensure(read.Location(item.Id) == contract.Destination, "Listed property left the market.");
+                if (contract.Kind == "auction") Ensure(contract.Buyer == 0 ? contract.Escrow == 0 : contract.Escrow >= contract.Price, "Auction bid is unfunded.");
+            }
+            else Ensure(contract.Escrow == 0, "Terminal contract retained escrow.");
+        }
+        foreach (var array in state.Ledger.Arrays)
+        {
+            var item = read.ItemAt(array.Item);
+            Ensure(item.Owner == array.Owner && item.Container == 0 && item.Place == array.Place &&
+                InventoryDefinitions.Definition(item.Definition).Item.Kind == ItemKind.Array, "Installed array lost its actual physical item.");
+        }
+        var sequencedEvents = state.Ledger.Events.Where(e => e.Sequence > 0).ToArray();
+        Ensure(state.Ledger.NextEventSequence > sequencedEvents.Select(e => e.Sequence).DefaultIfEmpty().Max() &&
+            sequencedEvents.Select(e => e.Sequence).Distinct().Count() == sequencedEvents.Length, "Physical audit stream sequence was reused.");
+        foreach (var audit in state.Ledger.Events.Where(e => e.Definition.Length > 0))
+        {
+            InventoryDefinitions.Definition(audit.Definition); read.PersonAt(audit.Owner);
+            Ensure(audit.Sequence > 0 && audit.Quantity > 0 && audit.Place is >= 0 and < 100 && audit.Month <= state.Month &&
+                audit.Kind == (audit.IsLoss ? "physical-loss" : "physical-consumption"), "Invalid typed physical decrement evidence.");
+        }
+        foreach (var binding in state.Ledger.Bindings)
+        {
+            var item = read.FindItem(binding.Item);
+            Ensure(binding.Soul > 0 && binding.Established <= state.Month && !string.IsNullOrWhiteSpace(binding.Evidence) &&
+                (item is null || item.BoundSoul == binding.Soul), "Formation contract lost its evidence or soul binding.");
+        }
+        Ensure(state.Ledger.Bindings.Select(b => b.Item).Distinct().Count() == state.Ledger.Bindings.Count, "One physical item has competing formation bindings.");
+        foreach (var effect in state.Ledger.Effects.Where(e => e.ConsumptionSequence != 0))
+            Ensure(state.Ledger.Events.Any(e => e.Sequence == effect.ConsumptionSequence && e.Kind == "physical-consumption" && e.Actor == effect.Target && e.Month == effect.Start),
+                "Consumable effect lost its actual paid physical dose.");
+        Ensure(state.Ledger.Effects.Select(e => e.Cause).Distinct(StringComparer.Ordinal).Count() == state.Ledger.Effects.Count, "An effect cause was applied twice.");
+        foreach (var material in state.Materials)
+        {
+            var flow = material.Value;
+            Ensure(flow.Opening >= 0 && flow.Extraction >= 0 && flow.Production >= 0 && flow.Consumption >= 0 && flow.Loss >= 0, "Negative material flow.");
+            Ensure(checked(flow.Opening + flow.Extraction + flow.Production - flow.Consumption - flow.Loss) ==
+                state.Items.Where(i => i.Definition == material.Key).Sum(i => (long)i.Quantity), "Physical stock does not match its material flow.");
+        }
+        Ensure(state.Items.All(i => state.Materials.ContainsKey(i.Definition)), "Physical item lacks material provenance.");
+    }
+    private static void CheckSchedule(IEnumerable<LaborReservation> schedule, int capacity)
+    {
+        // ValidateCore has already checked every interval. One positive reservation therefore has
+        // only a start load and a later zero load; retain the same capacity rejection without events.
+        if (schedule.TryGetNonEnumeratedCount(out var count) && count == 1)
+        {
+            Ensure(schedule.First().Units <= capacity, "Shared person or facility labor capacity exceeded.");
+            return;
+        }
+        var used = 0;
+        foreach (var change in schedule.SelectMany(l => new[] { (Month: l.Start, Units: l.Units), (Month: l.End, Units: -l.Units) })
+            .GroupBy(e => e.Month).OrderBy(e => e.Key))
+        {
+            used = checked(used + change.Sum(e => e.Units)); Ensure(used <= capacity, "Shared person or facility labor capacity exceeded.");
+        }
+    }
+}

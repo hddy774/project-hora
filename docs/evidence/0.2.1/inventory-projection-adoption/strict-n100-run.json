@@ -1,0 +1,41 @@
+{
+  "kind": "same-source-strict-measurement",
+  "source": "b0f3aec986d9b09015021499e47627b869411b83",
+  "sourceWorktreeCleanBefore": true,
+  "sourceWorktreeCleanAfter": true,
+  "population": 100,
+  "wallLimitSeconds": 1200,
+  "startedUtc": "2026-10-30T13:40:51.717714+00:00",
+  "finishedUtc": "2026-10-30T13:41:06.830569+00:00",
+  "elapsedSeconds": 15.112859716995445,
+  "exitCode": 0,
+  "timedOut": false,
+  "experimental_configuration": false,
+  "command": [
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-projection-b0f3aec/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/strict-b0f3aec-n100-genesis.json",
+    "--performance",
+    "/workspace/scratch/strict-b0f3aec-n100.json",
+    "--performance-size",
+    "100"
+  ],
+  "note": "One strict N100 A/B run after the projected N1000 completed; CPU workloads executed sequentially; shared-host builds outside this worktree are not controlled. Only explicit genesis selection 1/1 precedes sampling, not a full functional suite. N10000 not run. Only N100 is requested, so the report cannot satisfy the all-size final gate.",
+  "artifacts": {
+    "/workspace/scratch/strict-b0f3aec-n100.json": {
+      "bytes": 11055,
+      "sha256": "7390fa624bcbd54f1d81025e3b9dc82575cd9d1943b077dc3b3db00351eb3bda"
+    },
+    "/workspace/scratch/strict-b0f3aec-n100.log": {
+      "bytes": 1480,
+      "sha256": "2e9324e39b211c672af3b9f9b30c05ea3ae1d81eef77299d45b2726b24bb6f7c"
+    },
+    "/workspace/scratch/strict-b0f3aec-n100-genesis.json": {
+      "bytes": 252,
+      "sha256": "901eb762ad1e0aa92d1d29d3dc65e78880b53a87c106bf1d31c4d143cc1fb017"
+    }
+  }
+}

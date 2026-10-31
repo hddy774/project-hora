@@ -1,0 +1,165 @@
+{
+  "kind": "seonro-unprofiled-mixed-source-comparison",
+  "originalSource": "97ba6030367754b4338ab6a04ec57ef76ae2122d",
+  "newSource": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+  "configuration": "Release net10.0; no profiler; shared host",
+  "scope": "Combined H04 + operation-local read index + harness commit range; cannot attribute differences to an individual change",
+  "n100": {
+    "run": {
+      "kind": "unprofiled-diagnostic-comparison",
+      "source": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+      "population": 100,
+      "wallLimitSeconds": 300,
+      "startedUtc": "2026-10-30T11:45:47.883680+00:00",
+      "elapsedSeconds": 25.93175011600033,
+      "exitCode": 0,
+      "timedOut": false,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-profile-751e349/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/ui-unprofiled-751e349-n100-genesis.json",
+        "--performance",
+        "/workspace/scratch/ui-unprofiled-751e349-n100.json",
+        "--performance-size",
+        "100"
+      ],
+      "note": "Shared host; same source has H04 + read-index + harness changes. One run, not attributable to individual changes. Preserve original baseline and trace artifacts."
+    },
+    "equality": {
+      "initialHash": true,
+      "finalHash": true,
+      "fixture": true,
+      "usedLaws": true,
+      "workload": true,
+      "saveBytes": true
+    },
+    "initialHash": "3b8a5e15d44a9f1ff366f4caab05ac868cdace20017aa32e837747f47dfa9887",
+    "finalHash": "f18e943272d2ceda8bdf8bc87a54ead8e62ca3876ab0381704e70c614937cc33",
+    "metrics": {
+      "advance12MonthsMs": {
+        "original97": 21705.6769,
+        "mixed751": 18730.4006,
+        "changePercent": -13.707364730928973
+      },
+      "monthlyP50Ms": {
+        "original97": 334.86705,
+        "mixed751": 380.42185,
+        "changePercent": 13.603846660936036
+      },
+      "monthlyP95Ms": {
+        "original97": 11541.4045,
+        "mixed751": 9529.5699,
+        "changePercent": -17.43145385815046
+      },
+      "allocatedBytes": {
+        "original97": 8791001696,
+        "mixed751": 8012909576,
+        "changePercent": -8.85100636886511
+      },
+      "queryMs": {
+        "original97": 26.6367,
+        "mixed751": 53.3575,
+        "changePercent": 100.3157298013643
+      },
+      "saveMs": {
+        "original97": 205.7247,
+        "mixed751": 290.778,
+        "changePercent": 41.343261164070235
+      },
+      "loadMs": {
+        "original97": 251.5504,
+        "mixed751": 320.3629,
+        "changePercent": 27.355353042571195
+      },
+      "saveBytes": {
+        "original97": 13311756,
+        "mixed751": 13311756,
+        "changePercent": 0.0
+      }
+    },
+    "originalMonthlyMs": [
+      2778.7652,
+      75.7537,
+      82.7395,
+      4952.6505,
+      255.7285,
+      285.7023,
+      310.9056,
+      355.2696,
+      397.0234,
+      344.2567,
+      325.4774,
+      11541.4045
+    ],
+    "newMonthlyMs": [
+      2694.2031,
+      114.6241,
+      170.2505,
+      3627.132,
+      372.0939,
+      303.154,
+      338.5047,
+      399.3855,
+      421.6073,
+      388.7498,
+      371.1258,
+      9529.5699
+    ],
+    "workload": {
+      "peopleWithDecisions": 100,
+      "retainedDecisionRecords": 1004,
+      "retainedInferenceExpansions": 820,
+      "maximumRetainedInferenceExpansionsPerPerson": 24,
+      "currentActions": {
+        "Cultivate": 2,
+        "Guard": 98
+      },
+      "completedKnowledgeActivities": 797,
+      "completedPhysicalJobs": 98,
+      "actualExtraction": 1176,
+      "actualProduction": 0
+    }
+  },
+  "n1000": {
+    "status": "timed_out",
+    "run": {
+      "kind": "unprofiled-diagnostic-comparison",
+      "source": "751e3491789152d7279c461adcbf747d6e1b3bbf",
+      "population": 1000,
+      "wallLimitSeconds": 300,
+      "startedUtc": "2026-10-30T11:46:57.521945+00:00",
+      "elapsedSeconds": 300.01318230799734,
+      "exitCode": -9,
+      "timedOut": true,
+      "command": [
+        "/workspace/.dotnet/dotnet",
+        "/workspace/seonro-profile-751e349/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--report",
+        "/workspace/scratch/ui-unprofiled-751e349-n1000-genesis.json",
+        "--performance",
+        "/workspace/scratch/ui-unprofiled-751e349-n1000.json",
+        "--performance-size",
+        "1000"
+      ],
+      "note": "Shared host; same source has H04 + read-index + harness changes. One run, not attributable to individual changes. Preserve original baseline and trace artifacts."
+    },
+    "completedSizes": [],
+    "reports": []
+  },
+  "limits": [
+    "One run per source; original N100 followed a completed N2 in the same process; new N100 is a fresh selected-genesis process. Both use independent2month warmup + fresh measured12month fixture. Shared JIT/caches and order differ.",
+    "Concurrent host/build/load was not controlled; absolute timing and small metric differences do not isolate source causal effects. Median/query/save/load were slower in this run, while total12month advance and allocation were lower.",
+    "Retained managed heap is process-wide, not attributable per-world memory; original86,431,984 vs new27,518,656bytes must not be read as68% world memory improvement.",
+    "N1000 has a total process wall limit300seconds including genesis/setup/warmup/end checks. Any timeout preserves its original partial file; an empty completedSizes means no full12month result and does not identify the internal month or phase.",
+    "Only N100/N1000 authorized here; no N10000; neither these single-size files nor interrupted original97 baseline satisfy the four-size final gate."
+  ],
+  "productSourceChanged": false,
+  "ledgerChanged": false,
+  "githubChanged": false,
+  "nextComparison": "For the later inventory optimization source, repeat same selected-genesis + N100 command in a fresh clean Release worktree; compare hashes/fixture/laws/workload first, then allocations and timings. Attribute only the complete source range; keep old raw reports immutable."
+}

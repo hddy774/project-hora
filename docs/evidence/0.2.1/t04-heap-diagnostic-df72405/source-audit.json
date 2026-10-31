@@ -1,0 +1,95 @@
+{
+  "source": "5398700022b18ff5ff063afb62546b8d5c91e227",
+  "pendingFunctionalSource": "df7240556a260202a248e57b1f9868e372b9d995",
+  "status": "source-read-only; no heap/GC/profiling/World execution",
+  "auditedFiles": [
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+      "sha256": "dbcfefd6bc2a53f7e153399f375aa511f3ede0ba84d001c2fd38bc0199dcb1ee",
+      "sameAtPendingFunctionalSource": true
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceCognitionMeasurements.cs",
+      "sha256": "3af57d1284f82c649f179da3c98d364bbc5bb77fcaa7ac87836e6920ed5d1924",
+      "sameAtPendingFunctionalSource": true
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceScenarios.cs",
+      "sha256": "81f96d1aaf96413ac4823ab07510ce7ae850c0a2e4c6e3331c3bdaa2e9c50488",
+      "sameAtPendingFunctionalSource": true
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/SyntheticPopulationFixture.cs",
+      "sha256": "85eef70639a3277bde2ae31b818aaf5cc51c9c15be4b00cf3ee569b2b7fdf3b6",
+      "sameAtPendingFunctionalSource": true
+    },
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "sha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1",
+      "sameAtPendingFunctionalSource": true
+    },
+    {
+      "path": "src/Chronicles.Hosting/GameSaveStore.cs",
+      "sha256": "06f48cfd001d702645f194cd5a8a662f532624ea2ceeac624b825a07fd2fb8d3",
+      "sameAtPendingFunctionalSource": true
+    }
+  ],
+  "plan": {
+    "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+    "cases": [
+      {
+        "population": 2,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 167
+      },
+      {
+        "population": 100,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 309
+      },
+      {
+        "population": 1000,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 1575
+      },
+      {
+        "population": 10000,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 15098
+      }
+    ]
+  },
+  "budget": {
+    "sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+    "maximumRegressionPercent": 25,
+    "stabilityLimits": {
+      "2": {
+        "retainedManagedBytes": 47725032,
+        "saveBytes": 8748435
+      },
+      "100": {
+        "retainedManagedBytes": 262419240,
+        "saveBytes": 45658311
+      },
+      "1000": {
+        "retainedManagedBytes": 995045448,
+        "saveBytes": 241598442
+      },
+      "10000": {
+        "retainedManagedBytes": 2192400000,
+        "saveBytes": 1194685341
+      }
+    }
+  },
+  "diagnosticRuns": 0,
+  "productSourceEdits": 0,
+  "gateEdits": 0
+}

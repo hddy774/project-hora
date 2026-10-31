@@ -1,0 +1,310 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+PASS INV-003 사용자 세 정책과 0 비활성
+PASS INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송
+PASS INV-003 기존 임신 법칙 revision 보존
+PASS INV-011 양친 금단 바로 아래·같음
+PASS INV-012 혈연 허용·제한 프리셋
+PASS INV-006/007/004 시간 분할·조회/저장 무영향
+PASS INV-004 손상 저장·중단 파일·백업 복원
+PASS INV-004/012 불법 부모·신원 중복 저장 거부
+PASS INV-016/017/018 실물 출품·거래·영석 보존
+PASS INV-017 경매 예치·낙찰 단일 정산
+PASS INV-017 제작 예약·취소·소비·저장
+PASS INV-020 조직 금고·정책 예약·해산 역사
+PASS INV-013/014 화신 대원만 경계·실제 사망·대기·출생
+PASS INV-023 원영 파단 후 취소 사망·앱 복원은 포기 아님
+PASS INV-010/021 빙의·AI 인계에서 기존 행동 보존
+PASS 30경로·24재능·40특성·12장비·정의 조회 순수성
+PASS INV-008/009/010 관찰→플레이·숨은 상태 비간섭·ID 우회
+PASS RC-01 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-02 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-03 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-04 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-05 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-06 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-07 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-08 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-09 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-10 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-11 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-12 실제 원인 생산자·자동 Gate·여정 왕복
+PASS RC-13 실제 원인 생산자·자동 Gate·여정 왕복
+PASS INV-008 인지 예산 변경·명제/인물/지점 합계
+PASS INV-013 혼멸·역사 최고 경지로 자격 우회 없음
+PASS INV-018 물품 원장 없는 수량 복제 거부
+PASS INV-006 저장 왕복·호스트 문화권 독립
+PASS INV-001 슬롯 재사용·낡은 세대/사망 신원 거부
+PASS INV-015/024 폐품 점수와 기능 결손 분리
+PASS INV-008 장소 ID와 인물 ID 충돌에서 사건 누출 없음
+PASS INV-007/008/009/010/016/024 EX06 준비 기능: 권한 선필터 scan/index/cache·숨은 변화 비간섭·실제 장비 무효화
+PASS combat mechanics: each canonical axis changes practical hit damage escape coordination or finite exertion
+PASS combat public: actual attacked witness and reaction obey a one-fact shared cognition budget
+PASS combat public: actual canonical routes pay health gear and shared time and preserve busy defender work
+PASS combat public: settled receipt history is bounded without losing current paid occupancy or chronology
+PASS combat public: hidden opponent formation is absent from actor queries and receipt inputs never enter public logs
+PASS combat public: defender independently counters once or spends a real known route on retreat
+PASS combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity
+PASS combat public: explicit local guard intent contributes once with real supporter health time and no fabricated allies
+PASS V021-W02/O04 public ecology: an actual juvenile pine remains dependent after human maturity and changes funded household procurement
+PASS V021-E02 ecology kernel: actual offers and funded trades produce local price evidence without extra money or goods
+PASS V021-O01/O05 ecology kernel: bounded source history and pure culture-independent isolated queries preserve world authority
+PASS V021-E02/O04 ecology kernel: a real known production plan buys advertised inputs using own money and physical carrying units
+PASS V021-E02/O04 public ecology: a hungry actual NPC buys a real local offer with its own funded wealth
+PASS V021-O02 public ecology: automatic life and deleted-stack consumption record once and resume through GameCodec
+PASS V021-O02 public ecology: actual remote spoilage stays unknown even after the owner later arrives
+PASS V021-O01/O05 public ecology: actual seasonal renewal, disaster depletion, route loss and recovery retain physical causes
+PASS V021-O01 ecology kernel: actual extraction, finite depletion and renewable recovery reconcile to physical source receipts
+PASS V021-M02/O04 ecology kernel: time and population alone do not unlock markets, workshops, settlements or capacity
+PASS V021-E02/O03 ecology kernel: actor history and plans exclude private NPC wealth, stock, quality and source truth
+PASS V021-M02 ecology kernel: actual households, market, workshop and privately explored source coexist on one real map node
+PASS V021-O02 ecology kernel: unseen remote own stock loss remains unknown until an actual owner witness exists
+PASS 비경 공개 명령: AI 정보 목표는 자기 입구 관측·지식이 있을 때만 같은 유료 입장과 저장된 진척을 선택한다
+PASS 비경 공개 명령: 실제 입장 자리를 경쟁하고 중도 귀환도 한 달·도구·이미 쓴 식량을 보존한다
+PASS 비경 공개 명령: 실제 사망은 입장·도구를 한 번 해제하며 새 출생의 몸에는 진척·관측을 복제하지 않는다
+PASS 비경 공개 명령: 실제 현지 탐색만 입구를 발견하고 일반 자연 cache·100지점과 권위가 분리된다
+PASS 비경 공개 명령: 동시 실제 입장과 같은 시점 완료는 유한 원천을 한 번만 선점하고 다시 입장해도 복제하지 않는다
+PASS 비경 공개 명령: 내부 생활은 실제 휴대한 식량만 쓰고 바깥 바닥 재고나 보호자 식량을 관통하지 않는다
+PASS 비경 공개 명령: 실제 도구·식량과 채택 법칙·한 번의 위험을 저장하고 월별 진척으로 유한 보상을 선점한다
+PASS 비경 공개 명령: 관측한 개방 시각과 실제 준비·계약·육신 자격을 재검사하고 거절은 원자적이다
+PASS 비경 공개 명령: 과거 개인 입구 기록은 숨은 참여·잔량을 읽지 않고 입구 밖 물리 행동을 차단한다
+PASS 비경 공개 명령: 채택한 실제 위험 실패·부상은 저장과 이후 법칙 변경으로 재추첨되지 않는다
+PASS INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends
+PASS INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion
+PASS INV-004/017/021/024 H10 action owner: actual study and cultivation practice keep their own adopted activities
+PASS INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs
+PASS INV-008/017/024 H10 action owner: a Qi actor without a current method requests real teaching before a bounded plan
+PASS INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다
+PASS INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다
+PASS INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다
+PASS INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다
+PASS INV-008/017/018 agent planning: 실제 정책 비축을 넘는 식량을 일반 거래 목표에서 출품하고 보유 실물만 인도한다
+PASS INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다
+PASS INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save
+PASS INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person's intent
+PASS INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice
+PASS INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation
+PASS INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth
+PASS INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal
+PASS INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources
+PASS INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash
+PASS INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict
+PASS INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching
+PASS INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need
+PASS INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다
+PASS INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow
+PASS INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory
+PASS INV-004/006/015/023 fortune public: actual disaster modifies adopted breakthrough risk once without quality or resource grants
+PASS INV-010/021 ordinary AI cultivation completion returns to the actual goal decision boundary
+PASS INV-001/006/023 neutral 50.00 Qi whole-course functional formula
+PASS INV-006/008/015/023 canonical eight axes·single-source effects·conditional potential
+PASS INV-004/006/015/023 fortune public: real trial source changes one dated risk and preserves the existing RNG draw
+PASS INV-004/006/013/023 prepare/start/fracture·mandatory Nascent failure death
+PASS INV-004/023/024 adopted knowledge revision·actual support reservation·no book mastery
+PASS INV-004/011/015 independent root-free ten-stage martial growth·600-year cap
+PASS INV-004/006/011/015 W01 public martial: ten real stages, root-free labor, saved continuation, combat and 600-year boundary
+PASS INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지
+PASS INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다
+PASS INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수
+PASS INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다
+PASS INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다
+PASS INV-004/006/022 four-process energy·actual supply·crowding·rights
+PASS INV-004/011/023 10 realm structures·30 paths·genesis provenance
+PASS INV-004/015/023 regression·real recovery·costed route conversion·retreat boundaries
+R06_FUNCTIONAL_EVIDENCE {"schema_version":1,"kind":"seonro-r06-short-functional-strategy-comparison","passed":true,"version":"0.2.1","execution_claim":"\uC9E7\uC740 \uACF5\uAC1C \uBA85\uB839 \uAE30\uB2A5 \uBE44\uAD50\u00B7\uC2E4\uD589 \uC2DC\uAC04/\uC131\uB2A5/\uC778\uAD6C \uC131\uC7A5 \uCE21\uC815 \uC5C6\uC74C","initial_month":3,"actor":1,"body":2,"declarations":{"realm":"Qi","layer":9,"great_perfection":true,"health":50,"current_damage":500,"past_events_fabricated":false},"laws":{"birth.enabled":0,"ecology.foodUse":0,"ecology.regrowth":0,"ecology.spoilage":0,"ecology.disasterChance":0,"cultivation.entry":1,"cultivation.qi":1,"cultivation.foundation":1,"cultivation.upper":100,"cultivation.recovery":0,"cultivation.sourceCost":2,"cultivation.breakthroughRisk":300,"economy.craftDuration":1,"inventory.extractionWork":1},"actual_common_pill":{"item":2089,"producer_job":2088,"Quality":5000,"Source":"production:job:2088","consumed_inputs":[{"definition":"herb","quantity":3},{"definition":"wood","quantity":1}]},"strategies":[{"Strategy":"\uBC14\uB85C \uD615\uC131","InitialStateHash":"ab0d16c1d696b0453a40bdd2a573faf491748126d6acde0199b5b6170ea07de8","LogicalMonths":5,"QiEnergyConsumed":20000,"UnopenedQiConsumed":8,"PillConsumed":0,"PillRemaining":1,"PreparedRiskBps":900,"PreparedQuality":5243,"FinalFormationQuality":5243,"FinalDamage":0,"FinalHealth":53,"PrepareEvent":2092,"FormationEvent":2095,"RecoveryEvents":[],"StabilizationEvents":[2096,2097,2098],"ReservedPhysicalItems":[],"Phases":[{"Month":0,"Phase":"Prepared","Due":0},{"Month":1,"Phase":"Started","Due":2},{"Month":2,"Phase":"Stabilizing","Due":3},{"Month":3,"Phase":"Stabilizing","Due":4},{"Month":4,"Phase":"Stabilizing","Due":5},{"Month":5,"Phase":"Completed","Due":6}],"SavedMonth":1,"SavedStateHash":"8a6e5917c320d346bb95367314b8b2b4afa6a0bf9bf852696c4a3031506ae71f","SavedBytesSha256":"f812637f65fa681295b65f522bb7fbecac378b56ff946aec45e3c5cc14e12370","FinalStateHash":"0ec95491da70b68068ebb6c2622eca0131d92124dcb19255342816b752fd488f","RestoredContinuationMatches":true},{"Strategy":"\uD604\uC7AC \uC190\uC0C1 \uD68C\uBCF5 \uD6C4 \uD615\uC131","InitialStateHash":"ab0d16c1d696b0453a40bdd2a573faf491748126d6acde0199b5b6170ea07de8","LogicalMonths":6,"QiEnergyConsumed":25000,"UnopenedQiConsumed":10,"PillConsumed":0,"PillRemaining":1,"PreparedRiskBps":780,"PreparedQuality":5493,"FinalFormationQuality":5493,"FinalDamage":0,"FinalHealth":55,"PrepareEvent":2093,"FormationEvent":2096,"RecoveryEvents":[2091],"StabilizationEvents":[2097,2098,2099],"ReservedPhysicalItems":[],"Phases":[{"Month":1,"Phase":"Prepared","Due":1},{"Month":2,"Phase":"Started","Due":3},{"Month":3,"Phase":"Stabilizing","Due":4},{"Month":4,"Phase":"Stabilizing","Due":5},{"Month":5,"Phase":"Stabilizing","Due":6},{"Month":6,"Phase":"Completed","Due":7}],"SavedMonth":2,"SavedStateHash":"6411e61c1aaf6820f6b6e1915dd253bac0e39f84ec3dd56d60796afaea722cf6","SavedBytesSha256":"0a354f9b39072ba1dfac49500190418be8b526d90139dbe3f52533022922b451","FinalStateHash":"eb94f58471fa3e68df4204362f6000f96b230c51585683fcbf02c94c9d4197fd","RestoredContinuationMatches":true},{"Strategy":"\uD68C\uBCF5 \uD6C4 \uC2E4\uC81C \uB2E8\uC57D\uC744 \uC608\uC57D\uD574 \uD615\uC131","InitialStateHash":"ab0d16c1d696b0453a40bdd2a573faf491748126d6acde0199b5b6170ea07de8","LogicalMonths":6,"QiEnergyConsumed":25000,"UnopenedQiConsumed":10,"PillConsumed":1,"PillRemaining":0,"PreparedRiskBps":530,"PreparedQuality":5493,"FinalFormationQuality":5493,"FinalDamage":0,"FinalHealth":55,"PrepareEvent":2093,"FormationEvent":2096,"RecoveryEvents":[2091],"StabilizationEvents":[2097,2098,2099],"ReservedPhysicalItems":[2089],"Phases":[{"Month":1,"Phase":"Prepared","Due":1},{"Month":2,"Phase":"Started","Due":3},{"Month":3,"Phase":"Stabilizing","Due":4},{"Month":4,"Phase":"Stabilizing","Due":5},{"Month":5,"Phase":"Stabilizing","Due":6},{"Month":6,"Phase":"Completed","Due":7}],"SavedMonth":2,"SavedStateHash":"bc7f8296686c885ea1969da730e37deb56f440decc0f8eb52a89861f9e6e9eac","SavedBytesSha256":"f23fbb610ecff0b7296e62b7fa91535911ca1719298ae0a9b71f3f66e02c90cb","FinalStateHash":"6fcad504cbbd293f126c504afa74795cd0218ef70d2c967ccede1b00ecb62bf8","RestoredContinuationMatches":true}]}
+PASS INV-004/006/018/023 R06 short functional strategy comparison: actual months resources quality risk and saved continuation
+PASS INV-004/014/023 all 30 paths form their unique realm structure once
+PASS INV-004/013/023 every minor-stage tribulation including entry/ninth/completion
+PASS INV-004/016/017/018 public pill reservation·cancel·consume exactly once
+PASS INV-004/008/018/021 public cultivation rights·book ownership·common activity capacity
+PASS INV-004/006/013/023 public scheduled fracture·restore·same life death authority
+PASS INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts
+PASS INV-003/004/023 public Nascent Soul formation follows actual upper-life law and aftercare
+PASS INV-004/006/018 public cultivation·actual time/source debit/mastery/save/query purity
+PASS currency planning: 공개 채광을 인계한 AI의 환전과 저장·재전송은 실물 원천을 한 번만 소비
+PASS currency planning: 자기 현지 관측으로 실제 채광을 예약하고 완료한 실물만 환전
+PASS currency planning: 다른 인물의 돈·관측과 원격·예약·결손 영석은 목표를 만들지 않고 비활성·충분 잔액도 보존
+PASS currency public: exact physical burn credits once, accepts functional zero quality, and freezes rate evidence
+PASS currency public: other crystals defects remote custody cargo and disabled conversion never burn or mint
+PASS currency public: auction escrow seller death and estate transfers never count as new currency origins
+PASS currency public: exact two founder opening origins never grant money again on save or repeat initialization
+PASS currency public: actual discovered mining source becomes spendable money only after physical token consumption
+PASS currency public: source-free balances repeated burns and disabled origin validation are rejected on restore
+PASS ecology failure law: 실제 예약 거부 기억의 법칙별 재확인 기간·관측 수명 상한·저장 revision
+PASS ecology recovery: 식량 관측 전 숨은 잔량은 선택에 영향 없고 비용 없는 조사·총자원 추정 금지
+PASS ecology recovery: 실제 배운 농사·관측한 물과 종자·유료 노동으로 식량 생산하고 저장된 비축법칙 적용
+PASS ecology recovery: 실제 전량 예약 실패 뒤 유료 식량 재관측·알려진 이동·저장·제어 경계
+PASS ecology recovery: 믿음 예산1의 실제 채집 예약 거부와 즉시 퇴출은 무예외·권위·저장 결정론 유지
+PASS INV-009 입문 준비 조회: 미관측 현재 공급·사용권 변화는 개인 감응 선택을 바꾸지 않는다
+PASS INV-009/010 입문 준비 조회: 실제 entry 전수만 감응 선택을 열고 Qi 공법은 만들지 않는다
+PASS INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다
+PASS INV-004/006/022 EX04 functional input: actual scalar vector partial backend selection preserves full aptitude and world hash
+PASS INV-001/004/006/022 H04 actual due queue contracts: same-month changes, cancellation, generation and stable rebuild
+PASS INV-001/004/006/011/022 EX02 functional input: actual frozen conception, father death, reused slot and birth without measurement
+PASS INV-001/004/006/021/022 H04 dynamic hot columns: original person order, slot generations and lease relocation lifetime
+PASS INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil's due token in the actual month
+PASS INV-001/004/006/021/022 H04 saved life boundary: real lifespan death and explicit new arrival reuse no old token
+PASS INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply
+PASS INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month
+PASS INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt
+PASS inventory commitment reference: 앞 원천 오류·뒤 입력 오류·long overflow의 기존 거부 순서를 보존
+PASS inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등
+PASS inventory source observation: 공개 food 선택은 정확한 현지 원천을 실제 비용·한 달·저장 재개로 관측
+PASS inventory source observation: 빈 Data는 기존 첫 미관측 선택을 유지하고 명시 정의는 fallback하지 않음
+PASS inventory source observation: 현지 정의 부재·실물 비용 부족은 원천·돈·시간·ID·관측 무변화 거부
+PASS inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존
+PASS inventory owned parity: 공개 복사 경로와 예약·처리·전용 연결·재전송 결과 및 직렬화 일치
+PASS inventory owned failure: 두 번째 처리·판매 실패와 예외가 전체 후보·ID·재료를 폐기
+PASS inventory owned lifetime: 단일 인계·불변 결과·기존 참조 격리와 소비 후 재사용 거부
+PASS inventory sync: 공개 custom comparer와 내부 Ordinal 영수증의 대소문자 구분·재전송·충돌 보존
+PASS inventory owned rejection: ID 충돌·빈 ID·오버플로와 기존 오류 우선순위 보존
+PASS inventory owned stale: 월·할당자·개정·실물·사람·재료 지문과 원래 세계 인계 경계
+PASS inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존
+PASS inventory commitment reference: 소비되어 없는 입력의 예약 연결·동시 작업·위조·취소를 보존
+PASS inventory projection: Create·Restore·Decode 기본 투영과 strict reference의 실제 작업·저장 재개 동등성
+PASS inventory projection: 70개 schema·실제 IL reader와 컴파일러 람다의 금지 읽기 자기검출
+PASS inventory projection: 모든 미사용 필드의 실제 명령 비간섭과 개인 원천 관측·물리 ledger 보존
+PASS inventory projection: mutable 참조·재사용·예외·두 번째 처리 및 소비 후 실패의 원자성
+PASS inventory projection: 실제 공개 명령·생계 AI가 기본 factory를 거쳐 기존 두 전체 transcript와 저장 속행 일치
+PASS inventory projection: 15개 입력별 stale와 전체 Person strict 경계·미사용 변화 보존
+PASS inventory public: actual array installation and upkeep never create natural energy or survive destruction
+PASS inventory public: real armor craft equipment soul binding combat damage and repair preserve one artifact through save
+PASS inventory public: real auction escrow and advertised snapshots settle once through the world scheduler
+PASS inventory public: INV-017 continuation keeps every physical reservation backed by one ledger
+PASS inventory public: canonical recipe practice consumes real inputs and cancellation never refunds the process
+PASS inventory public: successful real seed water farming and agreed treatment heal an actual other patient
+PASS inventory public: finite gathering uses scheduled time and survives exact GameCodec continuation
+PASS inventory public: paid growth dose improves a bottlenecked canonical pulse with real Qi debit and exact save continuation
+PASS inventory public: medicine appraisal and source exploration produce real effects and personal evidence
+PASS inventory public: actual source loss cancels extraction and capacity growth grants no stock
+PASS inventory public: crafted sold talisman pays actual parties and protects one real hit with no use replay
+PASS inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin
+PASS inventory validation boundary: 빈 ID·양수·교차 중복·원래 수집 순서·최대 allocator 경계를 보존
+PASS inventory validation boundary: 단일 노동·인접·겹침·시설 용량과 선행 invalid 오류를 보존
+PASS inventory commitment reference: 같은 원천의 동시 예약·진행·취소 소비와 호출 사이 변경을 보존
+PASS inventory sync: 중복 ID·교차 namespace·잘못된 프로필·메타데이터의 기존 초기 거부 우선순위 보존
+PASS inventory sync: 실제 제작·감정·운송과 마지막 노동 행·사람 순서·반복 및 취소 후 새 범위 보존
+PASS inventory typed copy fields: 전 원장 sentinel·현재 JSON Person defaults·모든 중첩 참조 격리
+PASS inventory typed copy transcript: 현재 JSON 후보와 실제 예약·생산·소비·장비·거부·재전송 연결
+PASS inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약
+PASS inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치
+PASS inventory typed copy schema: 도달한 모든 필드와 명시 Person15 footprint 누락 거부
+PASS inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치
+PASS inventory typed integration: instance 선택·Execute 전파·실제 counter와 Restore 기본 JSON 보존
+PASS inventory validation scope: 이전 실제 명령·해시·거부 결과와 호출 사이 변경을 보존
+PASS INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding
+PASS INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다
+PASS INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs
+PASS INV-024 knowledge: experiments refute adopted claims and corrections never rewrite history
+PASS INV-015/024 knowledge: physical missing pages and book loss preserve learned memory
+PASS INV-024 knowledge bridge contract: explicit genesis transmission licence and existing comprehension baseline
+PASS INV-024 knowledge: personal misinterpretation and oral transmission do not mutate editions
+PASS INV-004/024 knowledge: loss of an action's physical source prevents completion without refunding spent inputs
+PASS INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights
+PASS INV-024 knowledge: physical ownership grants neither comprehension nor mastery
+PASS INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay
+PASS INV-006/008/024 knowledge: scoped paged queries are pure isolated and culture independent
+PASS INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs
+PASS INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected
+PASS INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke
+PASS INV-006/012/024 knowledge: parents mentors and apprentices spend both participants' time
+PASS INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs
+PASS INV-017/018/024 knowledge public world: an actual blank book carries no text until paid transcription
+PASS INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history
+PASS INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery
+PASS INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain
+PASS INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together
+PASS INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book
+PASS INV-006/015 people: six foundations, 24 talents, canonical ten cognition mappings and single cause effects
+PASS INV-015/023 people: canonical eight combat axes, standard comparison, one-time realm conversion and conditional known potential
+PASS INV-011/015 people: independent species/body/title, both-parent Golden Core reproduction and root-free martial aptitude
+PASS INV-006/022 people: invariant absolute aptitude and scoped genius/candidate vacancies, ties and dated reevaluation
+PASS INV-004/011/012/014 people: frozen allele inheritance, prenatal body evidence and birth-time soul assignment
+PASS INV-008/015/022 people social public: bilateral timed assessment, unseen fame and consented claim relay
+PASS INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority
+PASS INV-001/004/006/012/017/022 people family public: paid care, real teaching, consented adoption, adult separation and estate versus office succession
+PASS INV-008/015 people social public: completed martial routine, dated acquisition and inactivity release
+PASS INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes
+PASS INV-004/011/014/015 people public species: actual body maturity, native gestation, frozen offspring and independent birth soul
+PASS INV-008/015 people social public: source-active oath preference, formal breach and actual AI score change
+PASS INV-008/009/015 people receipts public: unseen remote oath end cannot update personal agreement knowledge
+PASS INV-008/009/015 people receipts public: remote rejection and hidden authority cannot change an undelivered request belief
+PASS INV-006/011/015 people public species: explicit body capabilities, maturity/lifespan, habitat evidence and strict projections
+PASS INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests
+PASS INV-004/014/015 people social public: actual historical founders, lost authority and no title restoration through soul
+PASS INV-008/022 people: observed reputation provenance, hidden genius noninterference and bounded deterministic claims
+PASS INV-004/014/024 people: six trace domains, awakening, integration, crossing loss and conserved split branches
+PASS INV-004/006/015 people: serializable aggregate, truthful founder adapters and source-backed learning without genome rewrite
+PASS INV-008/015 people: forty traits, lifecycle, conflicts, expiry, history and observed potential boundaries
+PASS INV-004/006/011/014 people public: frozen conception, actual birth soul and production-save continuation
+PASS INV-008/015 people public: one real study credit and hidden-person source noninterference
+PASS INV-006/015 people public: actual environmental damage, timed recovery and derived-marker release
+PASS INV-004/014/024 people public: eligible natural death, waiting-soul birth, real awakening and taught integration
+PASS INV-011/012 people public: both-parent Golden Core boundary and explicit martial-law override
+PASS INV-014/024 people public: coherent ready ascension, source capture and costed independent split
+PASS INV-009/024 rich query: knowledge provenance is personal and hidden revision independent
+PASS INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations
+PASS INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts
+PASS INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context
+PASS INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots
+PASS INV-007/010 rich query: action equipment policy history mapping and detached snapshots
+PASS INV-009/010 rich query: cached people and places precede hidden truth projection
+PASS INV-009/M05 비경 조회: 내부는 실제 휴대품과 개인 기록만 보고 바깥 신규 출품·바닥 실물을 현재 정보로 받지 않는다
+PASS T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims
+PASS T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth
+PASS T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected
+PASS T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement
+PASS T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes
+PASS INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals
+PASS inventory: V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection
+PASS inventory: INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once
+PASS inventory: INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo
+PASS inventory: consumed final stack retains typed actual quantity location quality and origin evidence
+PASS inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock
+PASS inventory: INV-017 real production inputs, stage cancellation, failure, use and save settlement
+PASS inventory: INV-016 ownership, custody, use, equipment and remote access remain independent
+PASS inventory: V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once
+PASS inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity
+PASS inventory: paid growth dose retains its consumed physical source and never grants legacy structure work
+PASS inventory: known source and local offer projections never infer mutable private truth
+PASS inventory: INV-017 care, teaching, production and defense share person and facility labor
+PASS inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity
+PASS inventory: INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth
+PASS inventory: V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence
+PASS inventory: V021-I01/K03-K08 all 64 resources have executable producers and consumers
+PASS inventory: shared recipe registry plans the exact authoritative physical input and output
+PASS inventory: INV-016/017 shared physical reservations preserve split provenance and exclude parallel use
+PASS inventory: INV-016 inventory split/merge preserves hidden state, binding and provenance
+PASS inventory: INV-017 production cannot bank idle time and broken arrays immediately stop contributing
+PASS inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location
+PASS INV-003/005 법칙 일괄 적용·검증 실패 원자성·중복 재전송·플레이 권한
+PASS INV-005/008/009/017/018 EX03 준비 기능: 실제 공개 광고·사용권의 scan/index 선택·누락·철회·정산 정합
+PASS V021-W02/G01 public politics: actual fox and pine body maturity govern consent and family leadership independently of human law
+PASS V021-G03 AI politics: direct rejected founding and second-phase preparation consume no IDs or resources
+PASS INV-020 politics: revoked or expired local charters cancel prepared sect policy and refund escrow
+PASS INV-018/019/020 politics: succession and independence preserve one creditor, debtor and enforcement owner
+PASS INV-019 politics: real province founding, territorial loss, restoration and territoryless persistence
+PASS INV-018/019/020 politics: actual enforcement jurisdiction, debtor assumption and personal estate transfer preserve principal IDs
+PASS INV-019 politics: adult household leadership is independent from Golden Core fertility and respects its own optional realm law
+PASS INV-018/020 politics: insufficient real payroll records one receivable per member and period
+PASS INV-018/020 politics: all ten detailed policy categories use actual input and effect semantics
+PASS INV-020 politics: adopted, insufficient, prepared, implemented and cancelled policy states reserve real resources
+PASS INV-019/020 politics: implementation rechecks current leader, charter, jurisdiction and application revision
+PASS V021-G02 public politics: actual loan, independence, death succession and territorial loss keep public accounts distinct
+PASS V021-M03/G02 public politics: actual death inheritance transfers personal land and preserves another operator's rights
+PASS V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation
+PASS V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty
+PASS V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office
+PASS V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching
+PASS V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration
+PASS V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation
+PASS INV-019 politics: ownership, administration, passage and claims remain separate from sovereignty
+PASS INV-004/020 politics: domain save roundtrip, resumed preparation and deterministic pure queries
+PASS INV-020 politics: actual sect founding, concurrent limit, local charter, offices, payroll and dissolution
+PASS INV-018/020 politics: organizations share actual labor, preparation rules snapshot and public account projections
+PASS INV-019 politics: atomic territorial transfer preserves property and revokes former public grants
+PASS INV-018/019 politics: vassal DAG, one resident tax and one direct-tax tribute per layer
+PASS INV-018/020 politics: atomic adopt/prepare failure and actual worker withdrawal cannot leave usable cancelled effects
+PASS INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다
+PASS INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존
+PASS INV-004/012/017 실제 양육 시간·식량·사회 관계·감정·판단 이력
+RESULT 308/308

@@ -1,0 +1,22 @@
+{
+  "selection": "canonical streaming hash:",
+  "total": 3,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/006 canonical streaming hash: null\u00B7\uC9C1\uB82C\uD654 \uC2E4\uD328\u00B7\uC2E4\uD328 \uD6C4 \uC0C8 \uD638\uCD9C\uC758 \uAE30\uC874 \uACC4\uC57D",
+      "passed": true,
+      "ms": 856
+    },
+    {
+      "name": "INV-004/006 canonical streaming hash: \uC2E4\uC81C N100 \uACE0\uC815 \uC6D0\uBCF8\u00B7\uD070 payload\u00B7\uBC18\uBCF5 \uC870\uD68C",
+      "passed": true,
+      "ms": 233
+    },
+    {
+      "name": "INV-004/006 canonical streaming hash: \uAE30\uC874 UTF8 oracle\u00B7Unicode\u00B7\uBB38\uD654\uAD8C\u00B7\uC0C1\uD0DC/RNG \uBCF4\uC874",
+      "passed": true,
+      "ms": 217
+    }
+  ]
+}

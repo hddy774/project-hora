@@ -1,0 +1,8 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+RESULT 1/1
+STABILITY population=2 month=0/120 living=2 elapsed=0.49s
+STABILITY population=2 month=30/120 living=2 elapsed=9.41s
+STABILITY population=2 month=60/120 living=2 elapsed=19.71s
+STABILITY population=2 month=90/120 living=2 elapsed=30.57s
+STABILITY population=2 month=120/120 living=2 elapsed=39.91s
+STABILITY CASE population=2 month=120/120 living=2 elapsed=39.91s result=completed

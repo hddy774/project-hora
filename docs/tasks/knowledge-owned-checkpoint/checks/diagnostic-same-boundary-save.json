@@ -1,0 +1,28 @@
+[
+  {
+    "population": 2,
+    "month": 120,
+    "old": "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/diagnostic-partial-saves/population-2.seonro",
+    "new": "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/diagnostic-partial-saves/population-2.seonro",
+    "bytes": 5027868,
+    "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+    "actualFilesByteEqual": true,
+    "storedSequence": 5,
+    "randomState": 13949347536074594688,
+    "nextId": 2100,
+    "comparison": "closed captured files, no new Game execution"
+  },
+  {
+    "population": 100,
+    "month": 30,
+    "old": "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/diagnostic-partial-saves/population-100.seonro",
+    "new": "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/diagnostic-partial-saves/population-100.seonro.backup",
+    "bytes": 28642572,
+    "sha256": "59b244023e8caf146ceb4e758cf7ed6e241e5aafa50cc88f53cada5000df3879",
+    "actualFilesByteEqual": true,
+    "storedSequence": 2,
+    "randomState": 11445686682911359655,
+    "nextId": 2492,
+    "comparison": "closed captured files, no new Game execution"
+  }
+]

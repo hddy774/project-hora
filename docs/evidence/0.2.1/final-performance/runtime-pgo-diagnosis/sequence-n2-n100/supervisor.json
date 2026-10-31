@@ -1,0 +1,257 @@
+{
+  "startedUtc": "2026-10-30T19:38:42.762504+00:00",
+  "status": "completed",
+  "completed": [
+    {
+      "index": 1,
+      "runtimeConfiguration": "default",
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/population-sequence-af91-diagnosis-1/01-default.json"
+      ],
+      "startedUtc": "2026-10-30T19:38:42.769879+00:00",
+      "eligibleForFinalPerformanceGate": false,
+      "configuredTieredPGO": null,
+      "status": "diagnostic-boundary-collected",
+      "pid": 133830,
+      "stopBoundaryObservedUtc": "2026-10-30T19:39:03.181198+00:00",
+      "stopBoundaryLine": "PERF-BEGIN 1000: 실제 fixture·독립 예열 시작",
+      "endedUtc": "2026-10-30T19:39:03.212832+00:00",
+      "exitCode": -15,
+      "intentionalDiagnosticStop": true,
+      "processTreeUserSeconds": 20.118057,
+      "processTreeSystemSeconds": 0.272467,
+      "reportSha256": "fbac638b2b110bbb6ccf39ad403d1538dddbad71da4b07922be52aa846184c97",
+      "rawComplete": false,
+      "completedSizes": [
+        2,
+        100
+      ],
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 2049.6898,
+          "monthlyP50Ms": 163.79505,
+          "monthlyP95Ms": 276.8714,
+          "queryMs": 38.6245,
+          "saveMs": 181.4524,
+          "loadMs": 185.4422,
+          "allocatedBytes": 149950368,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 11383.257499999998,
+          "monthlyP50Ms": 915.61055,
+          "monthlyP95Ms": 1769.7958,
+          "queryMs": 70.8561,
+          "saveMs": 1110.5765,
+          "loadMs": 1235.7386,
+          "allocatedBytes": 3063582312,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "runtimeConfiguration": "pgo-off",
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/population-sequence-af91-diagnosis-1/02-pgo-off.json"
+      ],
+      "startedUtc": "2026-10-30T19:39:03.220612+00:00",
+      "eligibleForFinalPerformanceGate": false,
+      "configuredTieredPGO": "0",
+      "status": "diagnostic-boundary-collected",
+      "pid": 133854,
+      "stopBoundaryObservedUtc": "2026-10-30T19:39:16.817031+00:00",
+      "stopBoundaryLine": "PERF-BEGIN 1000: 실제 fixture·독립 예열 시작",
+      "endedUtc": "2026-10-30T19:39:16.848676+00:00",
+      "exitCode": -15,
+      "intentionalDiagnosticStop": true,
+      "processTreeUserSeconds": 13.318045999999999,
+      "processTreeSystemSeconds": 0.240857,
+      "reportSha256": "a1f0c8cfdadba1bee0da1455e5ab6d92029aa4d4729c6835e1e3125d7a97cacb",
+      "rawComplete": false,
+      "completedSizes": [
+        2,
+        100
+      ],
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 2026.612,
+          "monthlyP50Ms": 166.7581,
+          "monthlyP95Ms": 283.9837,
+          "queryMs": 33.9018,
+          "saveMs": 174.6735,
+          "loadMs": 192.1438,
+          "allocatedBytes": 149943960,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 6787.0043000000005,
+          "monthlyP50Ms": 635.4543,
+          "monthlyP95Ms": 783.9745,
+          "queryMs": 44.0753,
+          "saveMs": 553.0805,
+          "loadMs": 646.7355,
+          "allocatedBytes": 3062952064,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "runtimeConfiguration": "pgo-off",
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/population-sequence-af91-diagnosis-1/03-pgo-off.json"
+      ],
+      "startedUtc": "2026-10-30T19:39:16.855783+00:00",
+      "eligibleForFinalPerformanceGate": false,
+      "configuredTieredPGO": "0",
+      "status": "diagnostic-boundary-collected",
+      "pid": 133876,
+      "stopBoundaryObservedUtc": "2026-10-30T19:39:30.193779+00:00",
+      "stopBoundaryLine": "PERF-BEGIN 1000: 실제 fixture·독립 예열 시작",
+      "endedUtc": "2026-10-30T19:39:30.225385+00:00",
+      "exitCode": -15,
+      "intentionalDiagnosticStop": true,
+      "processTreeUserSeconds": 12.982156999999994,
+      "processTreeSystemSeconds": 0.30078399999999994,
+      "reportSha256": "ad932ba52537c9c5fd6f652082393d2a59a15c5c62f76d06c6ea9db9f1c95435",
+      "rawComplete": false,
+      "completedSizes": [
+        2,
+        100
+      ],
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 1968.2293,
+          "monthlyP50Ms": 162.7052,
+          "monthlyP95Ms": 282.0255,
+          "queryMs": 37.4659,
+          "saveMs": 171.9891,
+          "loadMs": 185.8416,
+          "allocatedBytes": 149948568,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 6823.1646,
+          "monthlyP50Ms": 593.51085,
+          "monthlyP95Ms": 944.0885,
+          "queryMs": 52.0821,
+          "saveMs": 421.5645,
+          "loadMs": 474.4917,
+          "allocatedBytes": 3063119192,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "runtimeConfiguration": "default",
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--filter",
+        "INV-001/002/011",
+        "--performance",
+        "/workspace/scratch/population-sequence-af91-diagnosis-1/04-default.json"
+      ],
+      "startedUtc": "2026-10-30T19:39:30.240945+00:00",
+      "eligibleForFinalPerformanceGate": false,
+      "configuredTieredPGO": null,
+      "status": "diagnostic-boundary-collected",
+      "pid": 133929,
+      "stopBoundaryObservedUtc": "2026-10-30T19:39:51.624803+00:00",
+      "stopBoundaryLine": "PERF-BEGIN 1000: 실제 fixture·독립 예열 시작",
+      "endedUtc": "2026-10-30T19:39:51.656431+00:00",
+      "exitCode": -15,
+      "intentionalDiagnosticStop": true,
+      "processTreeUserSeconds": 21.09337200000001,
+      "processTreeSystemSeconds": 0.27643699999999993,
+      "reportSha256": "ce6a39d0785c78da85c5411aa3261e20849a5066d5de9eb60a07ca94bfb82fe3",
+      "rawComplete": false,
+      "completedSizes": [
+        2,
+        100
+      ],
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 2040.7043999999999,
+          "monthlyP50Ms": 170.98555,
+          "monthlyP95Ms": 267.7971,
+          "queryMs": 52.6978,
+          "saveMs": 185.4847,
+          "loadMs": 190.1551,
+          "allocatedBytes": 149949016,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 11721.8009,
+          "monthlyP50Ms": 963.98055,
+          "monthlyP95Ms": 1965.3934,
+          "queryMs": 83.7517,
+          "saveMs": 1430.9781,
+          "loadMs": 1521.3046,
+          "allocatedBytes": 3063498800,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    }
+  ],
+  "eligibleForFinalPerformanceGate": false,
+  "planSha256": "c9068f6b8dab849b70479ff928ebab6a91464f78af22d662372bfc1899cc2e1e",
+  "endedUtc": "2026-10-30T19:39:51.657575+00:00"
+}

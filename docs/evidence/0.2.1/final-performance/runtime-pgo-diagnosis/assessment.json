@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "kind": "runtime-pgo-diagnosis",
+  "eligible_for_final_performance_gate": false,
+  "quiet_complete": true,
+  "quiet_passed_fixed_budget": false,
+  "quiet_violations": [
+    {
+      "population": 100,
+      "metric": "monthlyP95Ms",
+      "baseline": 1035.0931,
+      "actual": 1986.7578,
+      "absoluteLimit": 1294,
+      "relativeLimit": 1293.866375
+    },
+    {
+      "population": 100,
+      "metric": "saveMs",
+      "baseline": 643.8757,
+      "actual": 1212.632,
+      "absoluteLimit": 805,
+      "relativeLimit": 804.8446250000001
+    },
+    {
+      "population": 100,
+      "metric": "loadMs",
+      "baseline": 869.4607,
+      "actual": 1769.0123,
+      "absoluteLimit": 1087,
+      "relativeLimit": 1086.825875
+    }
+  ],
+  "all_quiet_initial_final_hashes_match_baseline": true,
+  "sequence_results": [
+    {
+      "index": 1,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "default",
+      "exitCode": -15,
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 2049.6898,
+          "monthlyP50Ms": 163.79505,
+          "monthlyP95Ms": 276.8714,
+          "queryMs": 38.6245,
+          "saveMs": 181.4524,
+          "loadMs": 185.4422,
+          "allocatedBytes": 149950368,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 11383.257499999998,
+          "monthlyP50Ms": 915.61055,
+          "monthlyP95Ms": 1769.7958,
+          "queryMs": 70.8561,
+          "saveMs": 1110.5765,
+          "loadMs": 1235.7386,
+          "allocatedBytes": 3063582312,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "pgo-off",
+      "exitCode": -15,
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 2026.612,
+          "monthlyP50Ms": 166.7581,
+          "monthlyP95Ms": 283.9837,
+          "queryMs": 33.9018,
+          "saveMs": 174.6735,
+          "loadMs": 192.1438,
+          "allocatedBytes": 149943960,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 6787.0043000000005,
+          "monthlyP50Ms": 635.4543,
+          "monthlyP95Ms": 783.9745,
+          "queryMs": 44.0753,
+          "saveMs": 553.0805,
+          "loadMs": 646.7355,
+          "allocatedBytes": 3062952064,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "pgo-off",
+      "exitCode": -15,
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 1968.2293,
+          "monthlyP50Ms": 162.7052,
+          "monthlyP95Ms": 282.0255,
+          "queryMs": 37.4659,
+          "saveMs": 171.9891,
+          "loadMs": 185.8416,
+          "allocatedBytes": 149948568,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 6823.1646,
+          "monthlyP50Ms": 593.51085,
+          "monthlyP95Ms": 944.0885,
+          "queryMs": 52.0821,
+          "saveMs": 421.5645,
+          "loadMs": 474.4917,
+          "allocatedBytes": 3063119192,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "default",
+      "exitCode": -15,
+      "metrics": [
+        {
+          "population": 2,
+          "advance12MonthsMs": 2040.7043999999999,
+          "monthlyP50Ms": 170.98555,
+          "monthlyP95Ms": 267.7971,
+          "queryMs": 52.6978,
+          "saveMs": 185.4847,
+          "loadMs": 190.1551,
+          "allocatedBytes": 149949016,
+          "saveBytes": 2916145,
+          "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+          "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4"
+        },
+        {
+          "population": 100,
+          "advance12MonthsMs": 11721.8009,
+          "monthlyP50Ms": 963.98055,
+          "monthlyP95Ms": 1965.3934,
+          "queryMs": 83.7517,
+          "saveMs": 1430.9781,
+          "loadMs": 1521.3046,
+          "allocatedBytes": 3063498800,
+          "saveBytes": 15219437,
+          "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+          "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+        }
+      ]
+    }
+  ],
+  "single_population_results": [
+    {
+      "index": 1,
+      "sourceCommit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "runtimeConfiguration": "default",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 8471.165,
+        "monthlyP50Ms": 709.4176,
+        "monthlyP95Ms": 1085.6072,
+        "queryMs": 106.0735,
+        "saveMs": 684.1623,
+        "loadMs": 742.5109,
+        "allocatedBytes": 3063432464,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 2,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "default",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 8538.803,
+        "monthlyP50Ms": 708.02485,
+        "monthlyP95Ms": 1174.8954,
+        "queryMs": 100.5328,
+        "saveMs": 670.0477,
+        "loadMs": 713.2648,
+        "allocatedBytes": 3063467480,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 3,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "pgo-off",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 6881.017300000001,
+        "monthlyP50Ms": 601.74185,
+        "monthlyP95Ms": 880.9447,
+        "queryMs": 71.2838,
+        "saveMs": 543.2082,
+        "loadMs": 593.3264,
+        "allocatedBytes": 3063415184,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 4,
+      "sourceCommit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "runtimeConfiguration": "pgo-off",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 7733.2652,
+        "monthlyP50Ms": 689.1428000000001,
+        "monthlyP95Ms": 997.0071,
+        "queryMs": 79.3235,
+        "saveMs": 615.7437,
+        "loadMs": 687.342,
+        "allocatedBytes": 3063431920,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 5,
+      "sourceCommit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "runtimeConfiguration": "pgo-off",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 7012.864699999999,
+        "monthlyP50Ms": 628.1469,
+        "monthlyP95Ms": 842.9271,
+        "queryMs": 70.212,
+        "saveMs": 512.8028,
+        "loadMs": 638.7397,
+        "allocatedBytes": 3063433432,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 6,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "pgo-off",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 7093.979899999999,
+        "monthlyP50Ms": 640.32845,
+        "monthlyP95Ms": 890.2014,
+        "queryMs": 57.2719,
+        "saveMs": 468.0403,
+        "loadMs": 587.0189,
+        "allocatedBytes": 3063437728,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 7,
+      "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+      "runtimeConfiguration": "default",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 8796.3884,
+        "monthlyP50Ms": 751.5445500000001,
+        "monthlyP95Ms": 1207.3508,
+        "queryMs": 99.444,
+        "saveMs": 661.4468,
+        "loadMs": 776.6406,
+        "allocatedBytes": 3063432568,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    },
+    {
+      "index": 8,
+      "sourceCommit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+      "runtimeConfiguration": "default",
+      "exitCode": 0,
+      "metrics": {
+        "advance12MonthsMs": 8423.4082,
+        "monthlyP50Ms": 706.7082,
+        "monthlyP95Ms": 1133.3042,
+        "queryMs": 113.5003,
+        "saveMs": 691.7311,
+        "loadMs": 747.898,
+        "allocatedBytes": 3063421232,
+        "saveBytes": 15219437,
+        "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c"
+      }
+    }
+  ],
+  "source_scope": "c6e4704 and af91fb0 have identical runtime src/build properties before this change; the new product change is TieredPGO=false in Directory.Build.props only."
+}

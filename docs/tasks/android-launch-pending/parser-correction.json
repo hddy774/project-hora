@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-31T04:29:51.612220+00:00",
+  "issue": 253,
+  "pull_request": 254,
+  "frozen_execution_source": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "frozen_execution_tree": "b5f05ed97308e3f179a40272f2b1c9c50b078211",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "tracked_checkout_clean_before_tests": true,
+  "superseded_parser_source": "1cf01ac342448262410d6c725026869ec80c90eb",
+  "superseded_product_source_fingerprint": "72e6af0f7e89c0bbe0714efe0f8662e4faf3a84c2ff04a57fafb44288a854b5d",
+  "scope": "count every Status/Activity row, including blank/multiple-word values; no readiness policy or deadline change",
+  "before_probe": {
+    "log": "checks/parser-correction.initial-failure.log",
+    "tests": 1,
+    "reported_subtest_failures": 4,
+    "process_exit_not_separately_captured": true
+  },
+  "after_suite": {
+    "command": "taskset -c 3 python3 scripts/test-android-readiness.py -v",
+    "log": "checks/parser-correction.frozen-tests.log",
+    "tests": 24,
+    "result": "OK",
+    "cpu_affinity": 3
+  },
+  "static": {
+    "only_check_launch_AST_changed_since_1cf": true,
+    "original_f362_readiness_loop_AST_identical": true,
+    "Game_Core_Hosting_CSharpTests_workflows_verifier_ledger_unchanged": true,
+    "remote_3_file_requery_byte_equal": true,
+    "plan_self_tests": 11,
+    "progress_body_preservation_checks": 9,
+    "done": 52,
+    "validated": 56,
+    "in_progress": 3,
+    "completion_percent": 46.8
+  },
+  "remote_blobs": {
+    "scripts/android_readiness.py": "15167d23a45ba34c6a43b2d88741cbdb9fab8cd5",
+    "scripts/test-android-readiness.py": "dbf6818e9a8d91c42f2a4f88dfd025a171d8066d",
+    "scripts/fixtures/android-launch-timeout-api24-41165712717.txt": "77800603ead2a8db50977076c198e5573731ba85"
+  },
+  "files": [
+    {
+      "path": "scripts/android_readiness.py",
+      "bytes": 16167,
+      "sha256": "023f28b90ade3d55641a3504577e5eb2c0146edb1adfcaf5b5ae5e33f45daae3"
+    },
+    {
+      "path": "scripts/test-android-readiness.py",
+      "bytes": 27263,
+      "sha256": "d2f91bd15446b8dbe87b58987c5e1ca6c59c4f19aee1d6456221978168e36d81"
+    },
+    {
+      "path": "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "bytes": 196,
+      "sha256": "61a550a7508702ab6e2dcdf4a07a82b343d77a664289199fb04b887be417cd87"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/parser-correction.frozen-tests.log",
+      "bytes": 4145,
+      "sha256": "ddca62a648f8b6743772be63e6030524da21628f8e69c24986bafce082fb1ffd"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/parser-correction.initial-failure.log",
+      "bytes": 5790,
+      "sha256": "14d81c189753f18a86f27bf3659b6d46793a509ab3a7590b3696433cf91a0553"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/parser-correction.plan-self-test.json",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/parser-correction.plan.json",
+      "bytes": 310,
+      "sha256": "eba421959b6b40423dc5675f47c2ef82d5a1f29f33bde1a8881edfe17d15bb80"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/parser-correction.progress-self-test.json",
+      "bytes": 65,
+      "sha256": "f8919d7e88dda059f4331ffbb04af6e687363900ce43b8cc10b2b709854effb6"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/parser-correction.progress.log",
+      "bytes": 125,
+      "sha256": "e896134768799384854dd4968fa5d76894678a4ff069a8d94eb008a8549c4fc5"
+    }
+  ],
+  "new_Game_native_performance_growth_longterm_manual_CI_runs": 0,
+  "original_actual_failure_relabelled": false,
+  "earlier_logs_and_manifest_unchanged": true,
+  "native_and_full323_32metrics_120months": "new fingerprint integration acceptance remains required"
+}

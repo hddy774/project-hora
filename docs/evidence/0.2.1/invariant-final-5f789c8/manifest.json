@@ -1,0 +1,73 @@
+{
+  "schema": "seonro.invariant-evidence-manifest.v1",
+  "executed_source": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "product_source_fingerprint": "a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12",
+  "scope": "원문 사본과 파생 문서의 SHA 색인. manifest 자체는 제외하며 새 게임/성능 실행이나 원장/릴리스 판정이 아니다.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5534,
+      "sha256": "54afc9a8db3a0424386e26a4909bbc3f119840ff6fef03eac516ec17d3f31d2a"
+    },
+    {
+      "path": "execution-verification.json",
+      "bytes": 2925,
+      "sha256": "b1152a543a6e7450d33a225c11ffd5b42d315f2f356a5d6d6cb1749da3d30511"
+    },
+    {
+      "path": "functional.json",
+      "bytes": 64580,
+      "sha256": "f2c354e118a8a403a47d4989967abf001e6d177ddf947238eba665797841be92"
+    },
+    {
+      "path": "functional.log",
+      "bytes": 39268,
+      "sha256": "816f7ac01807d3d22395e3c492e0375f8f8c9bbcb8780bfaea81b47d3923b408"
+    },
+    {
+      "path": "map-additions.json",
+      "bytes": 8570,
+      "sha256": "2db761a9eda596452d828d5ad94a4e62e82c24b4a0ad38befa2093c263ec5a22"
+    },
+    {
+      "path": "preservation-checks.json",
+      "bytes": 1267,
+      "sha256": "d115e02d08fedd49952d5406fb9c1846b2cfa344eb5705ffd1859497822ad4bc"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 8083,
+      "sha256": "66fb5476492e246bbffeb6f5875980b91237e9609f58d46e69dd03fbde19b0bf"
+    },
+    {
+      "path": "release-build.log",
+      "bytes": 1055,
+      "sha256": "ac39ef73750ea4e0cbe6284081d471abcba7670bc75c61ada67f3eccf495b016"
+    },
+    {
+      "path": "root-run.original.json",
+      "bytes": 4840,
+      "sha256": "5d553dfbab24f2e7a75997ea481a5e1e2664e7abba890df1cc08ee6da5be1e04"
+    },
+    {
+      "path": "runtimeconfig.original.json",
+      "bytes": 371,
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+    },
+    {
+      "path": "../invariant-execution-map.json",
+      "bytes": 295845,
+      "sha256": "86b4990994a760c748592200aee86d55975d1692cdb7d54f3670e9eb36024d9a"
+    },
+    {
+      "path": "../invariant-execution-map.md",
+      "bytes": 89074,
+      "sha256": "e266255ec72bcbe4f87df70b31057912ea4343ac51c5cbc3b86fe0bbda3c2242"
+    },
+    {
+      "path": "../invariant-execution-source-review-5f789c8.json",
+      "bytes": 21659,
+      "sha256": "06a3ee5664faeec6ce354518748971d6054bf275869a68995e9413eab5c1f70a"
+    }
+  ]
+}

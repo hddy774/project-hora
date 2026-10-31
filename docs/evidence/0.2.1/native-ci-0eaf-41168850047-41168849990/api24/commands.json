@@ -1,0 +1,1012 @@
+[
+  {
+    "path": "prelaunch-logcat.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 157.421
+  },
+  {
+    "path": "clear-logcat.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-c"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 166.209
+  },
+  {
+    "path": "launch.txt",
+    "command": [
+      "adb",
+      "shell",
+      "am",
+      "start",
+      "-W",
+      "-n",
+      "org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 6672.357
+  },
+  {
+    "path": "attempt-001/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 6718.69
+  },
+  {
+    "path": "attempt-001/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 6739.672
+  },
+  {
+    "path": "attempt-001/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 6756.472
+  },
+  {
+    "path": "attempt-001/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 6777.543
+  },
+  {
+    "path": "attempt-001/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 8601.616
+  },
+  {
+    "path": "attempt-001/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 8621.392
+  },
+  {
+    "path": "attempt-001/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 8962.703
+  },
+  {
+    "path": "attempt-001/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 9007.288
+  },
+  {
+    "path": "attempt-001/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-001/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-001/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 9195.724
+  },
+  {
+    "path": "attempt-002/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 10311.699
+  },
+  {
+    "path": "attempt-002/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 10363.883
+  },
+  {
+    "path": "attempt-002/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 10408.215
+  },
+  {
+    "path": "attempt-002/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 10444.565
+  },
+  {
+    "path": "attempt-002/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 12072.638
+  },
+  {
+    "path": "attempt-002/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 12105.345
+  },
+  {
+    "path": "attempt-002/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 12591.675
+  },
+  {
+    "path": "attempt-002/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 12618.77
+  },
+  {
+    "path": "attempt-002/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-002/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-002/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 12820.326
+  },
+  {
+    "path": "attempt-003/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 13932.473
+  },
+  {
+    "path": "attempt-003/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 13975.848
+  },
+  {
+    "path": "attempt-003/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 14024.535
+  },
+  {
+    "path": "attempt-003/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 14068.648
+  },
+  {
+    "path": "attempt-003/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 15743.56
+  },
+  {
+    "path": "attempt-003/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 15750.695
+  },
+  {
+    "path": "attempt-003/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 16155.711
+  },
+  {
+    "path": "attempt-003/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 16202.416
+  },
+  {
+    "path": "attempt-003/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-003/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-003/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 16369.745
+  },
+  {
+    "path": "attempt-004/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 17495.35
+  },
+  {
+    "path": "attempt-004/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 17520.236
+  },
+  {
+    "path": "attempt-004/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 17536.648
+  },
+  {
+    "path": "attempt-004/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 17577.922
+  },
+  {
+    "path": "attempt-004/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 19114.827
+  },
+  {
+    "path": "attempt-004/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 19142.503
+  },
+  {
+    "path": "attempt-004/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 19598.961
+  },
+  {
+    "path": "attempt-004/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 19642.269
+  },
+  {
+    "path": "attempt-004/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-004/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-004/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 19837.833
+  },
+  {
+    "path": "attempt-005/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 20957.744
+  },
+  {
+    "path": "attempt-005/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 21000.899
+  },
+  {
+    "path": "attempt-005/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 21014.332
+  },
+  {
+    "path": "attempt-005/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 21061.007
+  },
+  {
+    "path": "attempt-005/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 22669.269
+  },
+  {
+    "path": "attempt-005/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 22690.047
+  },
+  {
+    "path": "attempt-005/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 23064.403
+  },
+  {
+    "path": "attempt-005/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 23114.599
+  },
+  {
+    "path": "attempt-005/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-005/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-005/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 23222.646
+  },
+  {
+    "path": "attempt-006/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 24276.491
+  },
+  {
+    "path": "attempt-006/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 24314.443
+  },
+  {
+    "path": "attempt-006/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 24348.728
+  },
+  {
+    "path": "attempt-006/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 24385.123
+  },
+  {
+    "path": "attempt-006/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 26027.145
+  },
+  {
+    "path": "attempt-006/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 26050.282
+  },
+  {
+    "path": "attempt-006/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 26535.489
+  },
+  {
+    "path": "attempt-006/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 26563.882
+  },
+  {
+    "path": "attempt-006/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-006/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-006/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 26725.731
+  },
+  {
+    "path": "attempt-007/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 27832.687
+  },
+  {
+    "path": "attempt-007/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 27850.277
+  },
+  {
+    "path": "attempt-007/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 27926.44
+  },
+  {
+    "path": "attempt-007/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 27956.368
+  },
+  {
+    "path": "attempt-007/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 29444.285
+  },
+  {
+    "path": "attempt-007/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 29464.445
+  },
+  {
+    "path": "attempt-007/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 29823.423
+  },
+  {
+    "path": "attempt-007/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 29847.263
+  },
+  {
+    "path": "attempt-007/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-007/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-007/render-log.txt"
+    ],
+    "returncode": 1,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 29983.209
+  },
+  {
+    "path": "attempt-008/render-log.txt",
+    "command": [
+      "adb",
+      "logcat",
+      "-d",
+      "-v",
+      "tag"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 31015.953
+  },
+  {
+    "path": "attempt-008/foreground.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "activity",
+      "activities"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 31024.665
+  },
+  {
+    "path": "attempt-008/pid.txt",
+    "command": [
+      "adb",
+      "shell",
+      "pidof",
+      "org.hora.xianxiaobserver"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 31032.342
+  },
+  {
+    "path": "attempt-008/remove-stale-ui.txt",
+    "command": [
+      "adb",
+      "shell",
+      "rm",
+      "-f",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 31038.091
+  },
+  {
+    "path": "attempt-008/uiautomator.txt",
+    "command": [
+      "adb",
+      "shell",
+      "uiautomator",
+      "dump",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 32169.156
+  },
+  {
+    "path": "attempt-008/ui.xml",
+    "command": [
+      "adb",
+      "exec-out",
+      "cat",
+      "/sdcard/v021-readiness-ui.xml"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 32180.406
+  },
+  {
+    "path": "attempt-008/screen.png",
+    "command": [
+      "adb",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 32312.355
+  },
+  {
+    "path": "attempt-008/window.txt",
+    "command": [
+      "adb",
+      "shell",
+      "dumpsys",
+      "window"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 32322.613
+  },
+  {
+    "path": "attempt-008/dom-checker.txt",
+    "command": [
+      "/usr/bin/python3",
+      "/home/runner/work/project-hora/project-hora/scripts/verify-android-ui.py",
+      "artifacts/api24/runtime/fresh/attempt-008/ui.xml",
+      "artifacts/api24/runtime/fresh/attempt-008/render-log.txt"
+    ],
+    "returncode": 0,
+    "timed_out": false,
+    "started_before_deadline": true,
+    "elapsed_ms": 32343.858
+  }
+]

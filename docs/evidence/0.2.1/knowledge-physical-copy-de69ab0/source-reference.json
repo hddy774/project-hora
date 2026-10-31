@@ -1,0 +1,32 @@
+{
+  "kind": "static-source-and-projection-equivalence-reference",
+  "reference_source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "candidate_source_commit": "de69ab07e53a395a6bdd2040b4759a6974e4038d",
+  "public_full_clone_file": "src/Chronicles.Game/Knowledge/KnowledgeValidation.cs",
+  "reference_file_sha256": "2c1bb083aeed266c0f9e5a7eaff727598191b75a7a561877fc2305175133ed41",
+  "candidate_file_sha256": "2c1bb083aeed266c0f9e5a7eaff727598191b75a7a561877fc2305175133ed41",
+  "public_full_clone_file_unchanged": true,
+  "original_media_selector": "Media = snapshot.Media.Select(m => m with { MissingChapters = m.MissingChapters.ToArray() }).ToList()",
+  "original_access_selector": "Access = snapshot.Access.Select(a => a with { }).ToList()",
+  "internal_projection": {
+    "signature": "internal (KnowledgeMedium[] Media, KnowledgeAccess[] Access) PhysicalCheckpoint(bool includeAccess = true)",
+    "media_copy": "state.Media.Select(m => m with { MissingChapters = m.MissingChapters.ToArray() }).ToArray()",
+    "access_copy": "includeAccess ? state.Access.Select(a => a with { }).ToArray() : []",
+    "order": "existing state list order; no filter/sort",
+    "first_call": "authority.PhysicalCheckpoint(includeAccess: false).Media",
+    "second_call": "authority.PhysicalCheckpoint() after physical synchronization"
+  },
+  "correctness_scope": "새기능검사는같은원천의public full Checkpoint 투영두필드와값/순서를동기화전후대조하고mutable배열·record격리를검사한다. 전체clone파일이926과byte동일하므로그실제reference구현을유지한다.",
+  "unchanged_contracts": [
+    "public KnowledgeAuthority.Restore/Checkpoint/full Clone",
+    "SaveKnowledge publication timing",
+    "rules/source/revisions/RNG and actual knowledge/rights semantics",
+    "world-owned isolation; no mutable authority-state alias",
+    "original926 metrics provenance and frozen186map"
+  ],
+  "limits": [
+    "기계적으로같은read-copy계약에대한근거이며새소스의population/stability/whole/native측정은별도다.",
+    "926의진행성장9/AI108을후보소스실측으로재표시하지않는다.",
+    "부분지식모듈JSON복원은공통GameCodec전체세계저장검사가아니며기존publicworld선택과별도로분류한다."
+  ]
+}

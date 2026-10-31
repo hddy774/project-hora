@@ -1,0 +1,15 @@
+2026-10-31T03:48:03.5075474Z Traceback (most recent call last):
+2026-10-31T03:48:03.5076662Z   File "/home/runner/work/_temp/v021-api24-probe.py", line 30, in <module>
+2026-10-31T03:48:03.5078877Z     fresh = native.actual_render(apk, proof, out / 'fresh')
+2026-10-31T03:48:03.5079944Z             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-31T03:48:03.5081162Z   File "/home/runner/work/project-hora/project-hora/scripts/v021-release-emulator.py", line 57, in actual_render
+2026-10-31T03:48:03.5083211Z     return readiness.await_ready(proof["launchable_activity"], proof["version"], out)
+2026-10-31T03:48:03.5084566Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-31T03:48:03.5086214Z   File "/home/runner/work/project-hora/project-hora/scripts/android_readiness.py", line 175, in await_ready
+2026-10-31T03:48:03.5088315Z     check_launch(code, launched + (reader.out / "launch.txt.stderr.txt").read_text(encoding="utf-8", errors="replace"), activity)
+2026-10-31T03:48:03.5090425Z   File "/home/runner/work/project-hora/project-hora/scripts/android_readiness.py", line 31, in check_launch
+2026-10-31T03:48:03.5092113Z     require(returncode == 0 and re.search(r"(?m)^Status:\s*ok\s*$", output) and
+2026-10-31T03:48:03.5093796Z   File "/home/runner/work/project-hora/project-hora/scripts/android_readiness.py", line 27, in require
+2026-10-31T03:48:03.5095075Z     raise ReadinessError(message)
+2026-10-31T03:48:03.5095960Z android_readiness.ReadinessError: Android launch did not succeed
+2026-10-31T03:48:03.5255451Z ##[error]The process '/usr/bin/sh' failed with exit code 1

@@ -1,0 +1,13 @@
+2026-10-30T19:46:11.3553312Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cbf09633cb2022a4125e1001978c579b54d09a64:refs/remotes/pull/202/merge
+2026-10-30T19:46:13.8863208Z  * [new ref]         cbf09633cb2022a4125e1001978c579b54d09a64 -> pull/202/merge
+2026-10-30T19:46:15.4448277Z HEAD is now at cbf0963 Merge 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5 into e5235ddf3dfb2a920cdf6e6ae68914a41df057bb
+2026-10-30T19:46:15.8746424Z cbf09633cb2022a4125e1001978c579b54d09a64
+2026-10-30T19:47:47.8159117Z Build succeeded.
+2026-10-30T19:47:47.8168187Z     0 Error(s)
+2026-10-30T19:47:51.9391863Z   "source_commit": "cbf09633cb2022a4125e1001978c579b54d09a64",
+2026-10-30T19:47:52.2481893Z ##[group]Run $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru
+2026-10-30T19:47:52.2483128Z [36;1m$process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru[0m
+2026-10-30T19:47:52.2484764Z [36;1mif (-not $process.WaitForExit(45000)) { $process.Kill(); throw 'Desktop smoke timeout' }[0m
+2026-10-30T19:48:38.5492907Z [31;1m[0m[36;1m[36;1m   3 | [0m … aitForExit(45000)) { $process.Kill(); [36;1mthrow 'Desktop smoke timeout'[0m }[0m
+2026-10-30T19:48:38.5495287Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mDesktop smoke timeout[0m
+2026-10-30T19:48:38.5742147Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "task": "V021-C01",
+  "observed_at_utc": "2026-10-30T13:34:29.398898+00:00",
+  "source_commit": "96b4b8d4bbadefdcaf1ee670e1f1609f438c30d6",
+  "raw_read_command": "gh api repos/hddy774/project-hora --jq '{description,homepage,name}'",
+  "actual_repository_metadata": {
+    "description": null,
+    "homepage": null,
+    "name": "project-hora"
+  },
+  "checks": {
+    "no_unrelated_about_description": true,
+    "no_unrelated_homepage": true,
+    "readme_seonro_title": true,
+    "readme_korean_project_description": true,
+    "readme_does_not_claim_released": true,
+    "android_label_seonro": true,
+    "windows_title_seonro": true,
+    "shared_shell_title_seonro": true
+  },
+  "evidence_files": [
+    {
+      "path": "README.md",
+      "sha256": "190afd522acb38ea7f2a32095e1b5116fa50447113de0cb78576bd9ba3bbb8d8"
+    },
+    {
+      "path": "VERSION",
+      "sha256": "71015c979ccb0fc8a0be7ca0ae83046ab045cdc2c8faa09fb2f0f7e440f9b4a6"
+    },
+    {
+      "path": "src/Chronicles.Android/Properties/AndroidManifest.xml",
+      "sha256": "383edc41aca21bba236a2f9bdd7a97f450246fb4b326de8417c54a5552fe53df"
+    },
+    {
+      "path": "src/Chronicles.Desktop/EcologyWindow.cs",
+      "sha256": "771943cf421caebb4e0f681eb31aec951f4334443eb80db37a668b46dd3b32b7"
+    },
+    {
+      "path": "src/Chronicles.Shell/index.html",
+      "sha256": "e521b56a3fb32f45cabe474a00020fd2ea9e5c7bc604739bd54cd9b0f02b445c"
+    },
+    {
+      "path": "docs/evidence/0.2.1/repository-migration.json",
+      "sha256": "3fa597801f52e4c03fa261d79c6398b4f902513f0c34acb370a7abc24574cc68"
+    }
+  ],
+  "notion": {
+    "page": "https://app.notion.com/p/408acc9e6175817ab59bd91bb9dc011d",
+    "latest_targeted_update_succeeded": true,
+    "overall_progress_at_update": "43.2% (48/111)",
+    "scope": "선로만상록 기획·사용자선택·현재개발단계·실시간진행추적 정합. 후속 완료율은 원장에 따라 갱신."
+  },
+  "limitations": [
+    "About 맞춤소개를 추가하는 이전 write는 Administration 권한부족403. 현재 raw GET의 description/homepage는 모두null이므로 무관한 기존소개는 존재하지 않는다. 맞춤소개추가는이슈67에선택적관리후속으로남기며 C01의명시수용조건에새필수조건을추가하지않는다.",
+    "전체 게임기능·성능·최종APK게시 완료를 주장하지 않는다."
+  ]
+}

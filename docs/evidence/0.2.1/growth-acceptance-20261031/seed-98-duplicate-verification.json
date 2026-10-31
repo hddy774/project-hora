@@ -1,0 +1,177 @@
+{
+  "verification": "PASS",
+  "verifiedAtUtc": "2026-10-31T05:03:02.991497+00:00",
+  "runId": 41159864831,
+  "attempt": 1,
+  "artifactId": 13030660873,
+  "artifactName": "v021-sensitivity-41159864831-1-seed-98",
+  "artifactExpiresAt": "2026-11-14T04:32:30Z",
+  "zipBytes": 1625359,
+  "zipSha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e",
+  "rawSha256": "f117037b167e8827369fc261fd21ee1b8a7309bd9942f1e2c2e024697af20ffd",
+  "oldRawSha256": "8e4763832aa14bd23d4ab528699329d14474598fdd0190b1eee234585f2fdd40",
+  "source": {
+    "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "source_tree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+    "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "version": "0.2.1",
+    "source_worktree_clean": true,
+    "workflow_source_commit": "836ff97e930e82af36a6f5fae6dae575c109f7d9",
+    "sdk": "10.0.403",
+    "scenario": "a",
+    "seed": 98,
+    "horizon_months": 6000,
+    "observation_interval_months": 120,
+    "metadata_source_commit": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+    "plan_sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+    "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+    "wall_minutes": 240,
+    "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+    "runtime_environment": {
+      "DOTNET_ROOT": "/home/runner/work/_temp/v021-sensitivity-41159864831-1-98/dotnet",
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "true",
+      "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+      "DOTNET_INSTALL_DIR": "/home/runner/work/_temp/v021-sensitivity-41159864831-1-98/dotnet",
+      "DOTNET_CLI_HOME": "/home/runner/work/_temp/v021-sensitivity-41159864831-1-98/dotnet-home",
+      "DOTNET_MULTILEVEL_LOOKUP": "0",
+      "DOTNET_NOLOGO": "true"
+    },
+    "input_contract": "기존 --sensitivity/--sensitivity-plan/--sensitivity-seed. 기본a·한 잠정법칙·값2개·세 실제seed; 새로운 프로그램/보고서 schema 없음"
+  },
+  "actualCommandAndStart": {
+    "command": [
+      "dotnet",
+      "/home/runner/work/_temp/v021-sensitivity-41159864831-1-98/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+      "--filter",
+      "INV-001/002/011",
+      "--sensitivity",
+      "/home/runner/work/_temp/v021-sensitivity-41159864831-1-98/out/sensitivity.json",
+      "--sensitivity-plan",
+      "/home/runner/work/_temp/v021-sensitivity-41159864831-1-98/inputs/plan.json",
+      "--sensitivity-seed",
+      "98"
+    ],
+    "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "metadata_source_commit": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+    "seed": 98,
+    "plan_sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+    "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+    "started_at_utc": "2026-10-31T02:25:04.230652+00:00",
+    "monotonic_started": 49.2550766,
+    "wall_cap_minutes": 240,
+    "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+    "timeout_meaning": "부분/중단은 실패로 보존하며 관찰창·시드·법칙이나 완료 플래그를 바꾸지 않음"
+  },
+  "actualExit": {
+    "process_exit": 0,
+    "log_exit": 0,
+    "finished_at_utc": "2026-10-31T04:32:30.652888+00:00",
+    "wall_seconds_including_genesis_logging_and_report_io": 7646.422243163,
+    "raw_sensitivity_report_modified_by_workflow": false
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-98/provenance/assemblies/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "702ef8b4a1026722f78a21b0f34d86c4c8312c8eb8854496fee7dc4ca84cfa60",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "oldSha256": "50d6158e18ed18ccb3e37a379ff39cb2264eef9e7e01bc02405e1566a0c6c541",
+      "binaryBytesEqualOldBuild": false
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-98/provenance/assemblies/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "45704db6f63476f43fb33ba647159da263f7d95a229e151673f00bbb104a170a",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "oldSha256": "19609292e1d21deccb596854f807ca3ed0d4cb458a8389377b91a58875ea43ca",
+      "binaryBytesEqualOldBuild": false
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-98/provenance/assemblies/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "34fa792beb4f1243bcb6c98a09b496bc031d087beee1c35d00d1a9e31ec3cc56",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "oldSha256": "b67ed0924b65a49a1a0da49f3d677ea1ff157b1eeab0213c62abfee28852ef12",
+      "binaryBytesEqualOldBuild": false
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "path": "/workspace/scratch/sensitivity-41159864831-7ce/seed-98/provenance/assemblies/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "bf691ee27fecf2c0f9a71af194d921bb0b8b70d61875533f620c48be66cd8420",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "oldSha256": "adbe969f49c4ed96555a85e15a2a808d3d7691ce04345b65109f96814fcf5781",
+      "binaryBytesEqualOldBuild": false
+    }
+  ],
+  "caseComparisons": [
+    {
+      "lawValue": 1500,
+      "seed": 98,
+      "observedThroughMonth": 6000,
+      "sampleCount": 51,
+      "finalHash": "5b98110d3f785b8f492476c4920f32a2d8bf21cf6023857f70f14f3177a0377c",
+      "finalHashEqualsOriginal": true,
+      "allNonTimingCaseFieldsEqualOriginal": true,
+      "actualDifferingCaseFields": [
+        "timeSeries",
+        "simulationMs",
+        "caseElapsedMs"
+      ],
+      "excludedTimingKeysRecursively": [
+        "simulationMs",
+        "caseElapsedMs"
+      ],
+      "newCaseElapsedMs": 3754609.6557,
+      "oldCaseElapsedMs": 3663938.4187,
+      "newSimulationMs": 1157200.8159000033,
+      "oldSimulationMs": 1169354.4123999998,
+      "finalPopulation": 2,
+      "births": 0,
+      "deaths": 0
+    },
+    {
+      "lawValue": 900,
+      "seed": 98,
+      "observedThroughMonth": 6000,
+      "sampleCount": 51,
+      "finalHash": "1c73094693db61e32410f2c640aa27039705ff6203c157839401cb94173b1740",
+      "finalHashEqualsOriginal": true,
+      "allNonTimingCaseFieldsEqualOriginal": true,
+      "actualDifferingCaseFields": [
+        "timeSeries",
+        "simulationMs",
+        "caseElapsedMs"
+      ],
+      "excludedTimingKeysRecursively": [
+        "simulationMs",
+        "caseElapsedMs"
+      ],
+      "newCaseElapsedMs": 3890546.6953,
+      "oldCaseElapsedMs": 3566191.4065,
+      "newSimulationMs": 1198173.4490000042,
+      "oldSimulationMs": 1134084.908799999,
+      "finalPopulation": 2,
+      "births": 0,
+      "deaths": 0
+    }
+  ],
+  "rawComplete": false,
+  "rawRequestedComplete": true,
+  "canonicalUniqueConditionsAdded": 0,
+  "canonicalUniqueCompletedStill": 4,
+  "canonicalSupplement1500Seed42And2026": "unverified;no seed artifacts at2026-10-31T05:00:42Z",
+  "wholeBatchOutcome": "in_progress at2026-10-31T05:00:42Z",
+  "wholePlanAccepted": false,
+  "limits": [
+    "Physical build SHA differ between runs;each is tied to its own PE/before/loadedbuild records. No binary-byte equality claim.",
+    "Two seed98 duplicate cases are not new canonical conditions.",
+    "Timing/environment differences are preserved and not treated as product performance results.",
+    "Original run failure and4complete/2partial are unchanged;new42/2026 andcollection status remain pending."
+  ],
+  "newGameMeasurementsExecutedByVerifier": 0,
+  "rawChanged": false
+}

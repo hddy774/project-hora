@@ -1,83 +1,26 @@
-# [M0-04] 월 정산 파이프라인 골격
+# [M0-04] 현재 명령·논리월·후보 원자성 계약
 
-## 배경 (왜)
-현행 게임은 월 정산 시 세계 전체를 깊은 복사하고 모든 모듈이 서로를 직접 호출해 느리고 테스트하기 어려웠다(피드백 T7, P1, P2). 고정 순서의 시스템 파이프라인으로 교체할 뼈대를 만든다. 실제 경제 로직은 M1에서 각 시스템에 채운다.
-관련: [기획서 §3, §7.2](../redesign/02-game-design.md), [코드 규칙 §9](../standards/coding-conventions.md)
+## 실제 인터페이스
 
-## 범위
-- 포함: `ISimulationSystem`, `WorldState`(빈 골격), `MonthContext`, `TurnPhase`, `MonthPipeline`, `ResolveResult`, 시스템별 실행 시간 측정, 테스트
-- 제외: 실제 경제 시스템 구현, 명령(Command) 체계(M1), 저장/불러오기
+`GameWorld.Create(ulong, IReadOnlyDictionary<string,long>?)`, `Execute(GameCommand)`,
+`AdvanceTo(long)`, `Checkpoint()`, `StateHash()`가 현재 진입점이다.
+메모리 저장은 `GameCodec.Encode/Decode`, 실제 파일은 Hosting의 `GameSaveStore.SaveAtomic/Load`가 맡는다.
 
-## 인터페이스 (계약)
-```csharp
-namespace Hora.Simulation
-{
-    public enum TurnPhase { Planning, Resolving, Report }
+## 동작 계약
 
-    public interface ISimulationSystem
-    {
-        string Name { get; }
-        void Execute(WorldState world, MonthContext context);
-    }
+- 세계는 정수 논리월로 진행하고 현재 완료/취소/월 정산 순서를 보존한다.
+  관찰/직접 제어/AI 인계는 같은 세계와 실제 예약/행동을 사용한다.
+- 명령은 현재 후보 트랜잭션에서 검증 후 받아들이고 실패 시 원본·RNG·ID·돈/실물·예약을 유지한다.
+- 공개 full-copy/strict 계약과 private opaque owned 경로를 구분한다.
+  private 후보의 alias/소유 토큰·stale fingerprint·전후 검증을 임의로 생략하지 않는다.
+- 세션 직렬화·파일 I/O는 Hosting 경계에서 수행하고 UI는 가변 GameState를 소유하지 않는다.
+  시간/원인 기록은 실제 순서와 영수증으로 설명한다.
 
-    public sealed class WorldState
-    {
-        public int MonthIndex { get; }          // 0부터. 게임 시작 월 = 0
-        public TurnPhase Phase { get; }
-        public ulong Seed { get; }
-        public WorldState(ulong seed);
-        // M1에서 테이블(CompanyTable 등)이 추가된다.
-        public ulong ComputeStateHash();        // 결정론 테스트용. 현재는 MonthIndex·Phase·Seed 기반 FNV-1a 64
-    }
+## 수용 기준과 확인
 
-    public sealed class MonthContext
-    {
-        public int MonthIndex { get; }
-        public ref DeterministicRandom RandomFor(int systemIndex); // 시스템별 독립 스트림
-    }
+- [ ] 명세에 변경되는 완료/시작/취소 hook 순서·예약 생애·거부 조건을 적는다.
+- [ ] 실제 중간상태 저장/재개·재전송·동일 입력 분할 진행의 결과를 필요한 시나리오로 대조한다.
+- [ ] 명령 거부와 후속 hook 실패가 부분 권위 변경을 남기지 않는다.
 
-    public sealed class MonthPipeline
-    {
-        public MonthPipeline(IReadOnlyList<ISimulationSystem> systems);  // 순서 = 실행 순서
-        public ResolveResult Resolve(WorldState world, IProgress<PipelineProgress>? progress = null);
-    }
-
-    public readonly struct PipelineProgress { public readonly int Completed; public readonly int Total; public readonly string SystemName; }
-
-    public sealed class ResolveResult
-    {
-        public bool IsSuccess { get; }
-        public IReadOnlyList<SystemTiming> Timings { get; }   // 시스템별 경과 시간(마이크로초)
-    }
-}
-```
-
-## 동작 규칙
-1. `Resolve` 는 `world.Phase == Planning` 일 때만 실행. 아니면 `IsSuccess=false` 반환(예외 아님).
-2. 실행 순서: Phase=Resolving → 시스템을 생성자 순서대로 1회씩 `Execute` → MonthIndex+1 → Phase=Report.
-   Report → Planning 전환은 `world.BeginPlanning()` 메서드로 (UI가 보고서를 닫을 때 호출).
-3. `WorldState` 의 setter는 `internal` 로 두고 `InternalsVisibleTo("Hora.Simulation.Tests")` 허용.
-4. 시스템 `i` 의 난수 스트림 = `new DeterministicRandom(world.Seed, (ulong)(monthIndex * 1000 + i))` — 다른 시스템을 추가해도 기존 시스템의 난수가 바뀌지 않도록 `i` 는 시스템 등록 인덱스.
-5. 시간 측정은 `Stopwatch.GetTimestamp()` 사용. 측정값은 결과에만 담고 **상태 해시에 포함하지 않는다**(결정론).
-6. 시스템이 예외를 던지면 잡지 않는다(버그). 단, 파이프라인은 world를 Resolving 상태로 남겨두며 이 사실을 XML 주석에 명시한다.
-7. 세계 상태 복사(clone, 직렬화 왕복) 금지.
-8. `progress` 는 각 시스템 완료 후 1회 보고 (R24 진행바용). null이면 보고하지 않는다.
-
-## 수용 기준
-- [ ] 위 타입 구현, 모든 타입·public 멤버 XML 주석
-- [ ] 빈 시스템 10개 파이프라인으로 120개월 실행 테스트 통과
-- [ ] 같은 시드로 두 번 120개월 실행 시 `ComputeStateHash` 동일
-- [ ] `tools/Hora.Tools` 에 `bench-pipeline` 명령: 빈 시스템 10개 × 120개월, 월당 평균 시간·할당 출력. 월당 할당 0B (progress=null)
-- [ ] 코드 규칙·format·전체 테스트 통과
-
-## 테스트 케이스
-- `Resolve_WhenNotPlanning_ReturnsFailureWithoutRunning`
-- `Resolve_RunsSystemsInRegistrationOrder`
-- `Resolve_IncrementsMonthAndEntersReport`
-- `BeginPlanning_FromReport_EntersPlanning`
-- `Resolve_ReportsProgressOncePerSystem`
-- `RandomFor_SameMonthAndSystem_IsDeterministic`
-- `Resolve_120Months_SameSeed_SameHash`
-
-## 참고
-- 선행: M0-02, M0-03
+선행: [M0-02](M0-02-money-quantity.md), [M0-03](M0-03-ids-random.md).
+현재 구현을 이름만 다른 WorldState/MonthPipeline으로 재작성하거나 clone/검증을 일괄 제거하는 작업이 아니다.

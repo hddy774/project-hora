@@ -1,0 +1,11 @@
+2026-10-30T21:36:46.1548633Z Version: 20261021.618
+2026-10-30T21:36:46.1551229Z Region: westus
+2026-10-30T21:36:46.1556870Z Image: windows-2025-vs2026
+2026-10-30T21:36:46.1557439Z Version: 20261030.294.1
+2026-10-30T21:36:54.0676737Z HEAD is now at 360eb09 Merge 8a7f23f7b53e79c8bbfe583bcbf375d494851cff into b5526184aebc8152a87abc31a6d66888ed830bea
+2026-10-30T21:37:45.2984459Z Build succeeded.
+2026-10-30T21:37:45.2992895Z     0 Error(s)
+2026-10-30T21:37:48.7111082Z [36;1mif (-not $process.WaitForExit(45000)) { $process.Kill(); throw 'Desktop smoke timeout' }[0m
+2026-10-30T21:38:37.9878647Z [31;1m[0m[36;1m[36;1m   3 | [0m … aitForExit(45000)) { $process.Kill(); [36;1mthrow 'Desktop smoke timeout'[0m }[0m
+2026-10-30T21:38:37.9880365Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mDesktop smoke timeout[0m
+2026-10-30T21:38:38.6214836Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,78 @@
+{
+  "hash": "SHA-256",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5276,
+      "sha256": "e64bad0fbb9850554516337e78cc6833fff215105f96ca6ffb14cfcb4c9c9148",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    },
+    {
+      "path": "collector-reference.json",
+      "bytes": 911,
+      "sha256": "2835c868ff799998d58ad7b2d265eae492c5a222f1e7f384616da7535d5c5252",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    },
+    {
+      "path": "manifest.original.json",
+      "bytes": 5402,
+      "sha256": "6d4dba436640d3251794e1c1c401646cbbcbb6fdb3af4ba4eee0c85d177b1135",
+      "role": "변형하지 않은 원문/기존 proof"
+    },
+    {
+      "path": "protected-after.projection.json",
+      "bytes": 7856,
+      "sha256": "24901f53d4651fc92638d15fe929dd15ea1a0ffad8bd526b2be0ebcf4033d3b4",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    },
+    {
+      "path": "protected-before.projection.json",
+      "bytes": 7850,
+      "sha256": "1635e02da1159d910f7e3a26ef492b000909e2659e3cf36839897a48b059d94f",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    },
+    {
+      "path": "protected-comparison.json",
+      "bytes": 918,
+      "sha256": "20a770c1a2a53c41f87a50eb7ccd6cbae8291570664992621fbfdb741e9dd318",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    },
+    {
+      "path": "public-byte-proof.json",
+      "bytes": 9752,
+      "sha256": "46ba73f7be59d57045bff89c2df78ae0c9622b031ae2cc34de92b499838e42fe",
+      "role": "변형하지 않은 원문/기존 proof"
+    },
+    {
+      "path": "public-index.original.json",
+      "bytes": 24058,
+      "sha256": "20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd",
+      "role": "변형하지 않은 원문/기존 proof"
+    },
+    {
+      "path": "publication-metadata.projection.json",
+      "bytes": 5565,
+      "sha256": "0b1bf3a03a377b903dcf8525f00229efe43589e7d7b08325bcf8e521f9cf21e2",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    },
+    {
+      "path": "status-index-comparison.json",
+      "bytes": 1708,
+      "sha256": "13e2d9604d43c0d347d9d175d5cb54483e959a4e9ae7f587d66109b342808004",
+      "role": "변형하지 않은 원문/기존 proof"
+    },
+    {
+      "path": "status.original.json",
+      "bytes": 785,
+      "sha256": "fde1bdc8cd4398cf49636239a546c4c8b69bbc3c9ebfd523c9b093fe0f8dc044",
+      "role": "변형하지 않은 원문/기존 proof"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 2451,
+      "sha256": "21bd8b4581dbe32e6c1a330ead38b1a8892923414fa91756fe331a1aee232ab3",
+      "role": "읽기 안내 또는 원형 출처를 명시한 투영·파생 검증"
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "kind": "real-session-entry-prepare",
+  "width": 1280,
+  "font_multiplier": 2,
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "passed": true,
+  "font_verification": {
+    "width": 1280,
+    "count": 41,
+    "samples": [
+      {
+        "selector": "body",
+        "size": 15,
+        "after": 30
+      },
+      {
+        "selector": "h1",
+        "size": 28,
+        "after": 56
+      },
+      {
+        "selector": "#run",
+        "size": 15,
+        "after": 30
+      },
+      {
+        "selector": "nav button",
+        "size": 15,
+        "after": 30
+      },
+      {
+        "selector": "h2",
+        "size": 27,
+        "after": 54
+      }
+    ],
+    "devicePixelRatio": 1,
+    "method": "test-only CSSOM absolute-px font-size multiplier2; inherited values retained"
+  },
+  "insufficient_feedback": "입문 토납·신식 감응 준비 부족·감응 전 토납·육체/정신 단련",
+  "actual_entry_teaching_months": 10,
+  "actual_ordinary_practice_commands": 4,
+  "ordinary_practice_did_not_auto_sense": true,
+  "entry_only_default_route": true,
+  "unobserved_site_fields_unknown": true,
+  "actual_incomplete_prepare_rejected": true,
+  "actual_ui_target0_data_path10": true,
+  "prepared_save_restore": true,
+  "actual_start_accepted": true,
+  "qi_method_understanding_or_personal_chapter_created": false,
+  "prepare_dialog_checks": [
+    {
+      "geometry": {
+        "root": 1280,
+        "body": 1280,
+        "viewport": 1280,
+        "targets": [
+          {
+            "id": "plannedPath",
+            "width": 568,
+            "height": 60
+          },
+          {
+            "id": "plannedSupport",
+            "width": 568,
+            "height": 60
+          },
+          {
+            "id": "confirm",
+            "width": 213.609375,
+            "height": 69.5
+          }
+        ]
+      },
+      "submission": "keyboard Tab and Enter"
+    },
+    {
+      "geometry": {
+        "root": 1280,
+        "body": 1280,
+        "viewport": 1280,
+        "targets": [
+          {
+            "id": "plannedPath",
+            "width": 568,
+            "height": 60
+          },
+          {
+            "id": "plannedSupport",
+            "width": 568,
+            "height": 60
+          },
+          {
+            "id": "confirm",
+            "width": 213.609375,
+            "height": 69.5
+          }
+        ]
+      },
+      "submission": "touch tap"
+    }
+  ],
+  "document_horizontal_overflow": false,
+  "javascript_errors": [],
+  "console_errors": [],
+  "commands": [
+    {
+      "id": "23cef4f5-1b5a-44c4-80c0-b0f322759598",
+      "actor": 0,
+      "kind": "lawBatch",
+      "target": 0,
+      "value": 0,
+      "data": "{\"birth.enabled\":0,\"ecology.foodUse\":0,\"ecology.disasterChance\":0,\"knowledge.misreadChance\":0,\"cultivation.entry\":1,\"cultivation.qi\":2,\"cultivation.foundation\":2,\"cultivation.breakthroughRisk\":0}"
+    },
+    {
+      "id": "2d141824-3b83-4efa-ba9e-dcd6acce29a9",
+      "actor": 0,
+      "kind": "create",
+      "target": 0,
+      "value": 0,
+      "data": "입문 화면 도제"
+    },
+    {
+      "id": "f3a28437-4e4b-4cda-a374-17b0288324df",
+      "actor": 2074,
+      "kind": "possess",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "b5ff1ec1-4f10-4568-907a-585b38744bc7",
+      "actor": 2074,
+      "kind": "observe",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "cc6e54b6-fa93-40da-9c1e-accdf00ea261",
+      "actor": 1,
+      "kind": "cancel",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "c28ab9b4-c18f-439d-9fa7-02e0ff2d336c",
+      "actor": 1,
+      "kind": "teach",
+      "target": 2074,
+      "value": 10,
+      "data": "entry"
+    },
+    {
+      "id": "bf858928-d8c2-462e-b8df-4c4009a9b2cb",
+      "actor": 2074,
+      "kind": "possess",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "48c07463-666b-4e69-a9c0-58c5f0388f1c",
+      "actor": 2074,
+      "kind": "cultivationprepare",
+      "target": 0,
+      "value": 0,
+      "data": "path.1.0"
+    },
+    {
+      "id": "3be1c867-980b-4310-831e-5e315f96cbb2",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "58d0a3ac-60ff-4914-bb7b-d9cf6fe1a8a1",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "ad2b5dff-74e9-4bce-8e34-bc2681dc5b7d",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "57ff8aa3-7c2b-458e-969e-bd015e8d1ee2",
+      "actor": 2074,
+      "kind": "cultivate",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    },
+    {
+      "id": "56b31937-f7b3-45ba-af15-00ca365fdafa",
+      "actor": 2074,
+      "kind": "cultivationprepare",
+      "target": 0,
+      "value": 0,
+      "data": "path.1.0"
+    },
+    {
+      "id": "76e90fb4-358b-4d8d-ad7d-8bf0d7dc47cf",
+      "actor": 2074,
+      "kind": "cultivationstart",
+      "target": 0,
+      "value": 0,
+      "data": ""
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "kind": "inventory-independent-reference-transcript",
+  "fixture": "policy-surplus",
+  "mode": "strict",
+  "sourceAssembly": "0.2.1\u002B56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+  "digest": "91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e",
+  "rows": [
+    "61c06134a3f30e5a10b15618f564b76a41e1ea75d8a6a12ef2217875a6a55b21",
+    "346ad790095213411025248254cb4c4f3b74d0fc58bba10f458768befffc1e44",
+    "4ab1ae7fb2783de513925e19a9026e4b9bb91f43da6cd72e92b13f52156d9383",
+    "{\u0022command\u0022:{\u0022Id\u0022:\u0022owned-ecology-buyer\u0022,\u0022Actor\u0022:36,\u0022Kind\u0022:\u0022possess\u0022,\u0022Target\u0022:0,\u0022Value\u0022:0,\u0022Data\u0022:\u0022\u0022,\u0022ExpectedRevision\u0022:-1},\u0022result\u0022:{\u0022Id\u0022:\u0022owned-ecology-buyer\u0022,\u0022Accepted\u0022:true,\u0022Message\u0022:\u0022\\uBA85\\uB839\\uC744 \\uC801\\uC6A9\\uD588\\uC2B5\\uB2C8\\uB2E4.\u0022,\u0022Revision\u0022:7548387619608724},\u0022Hash\u0022:\u00226100f7facf711119296ce9c6b7dc256f3bc362822160eb6c9bac2dd8287a94c2\u0022}",
+    "{\u0022command\u0022:{\u0022Id\u0022:\u0022owned-ecology-buy\u0022,\u0022Actor\u0022:36,\u0022Kind\u0022:\u0022trade\u0022,\u0022Target\u0022:2076,\u0022Value\u0022:0,\u0022Data\u0022:\u0022\u0022,\u0022ExpectedRevision\u0022:-1},\u0022result\u0022:{\u0022Id\u0022:\u0022owned-ecology-buy\u0022,\u0022Accepted\u0022:true,\u0022Message\u0022:\u0022\\uBA85\\uB839\\uC744 \\uC801\\uC6A9\\uD588\\uC2B5\\uB2C8\\uB2E4.\u0022,\u0022Revision\u0022:3555845759439127},\u0022Hash\u0022:\u0022a23de65aaab0e3f8eb1c63dfdfb88c5dd82ecb1d43ccfa1cabd596b25f9e8ad4\u0022}",
+    "bbc7f15bec3c7317278e0e1f9d9288885a0f8dc98ba3201506193b882cd070ca"
+  ],
+  "saves": [
+    {
+      "month": 1,
+      "bytes": 1962187,
+      "sha256": "4ab1ae7fb2783de513925e19a9026e4b9bb91f43da6cd72e92b13f52156d9383"
+    },
+    {
+      "month": 1,
+      "bytes": 1964128,
+      "sha256": "bbc7f15bec3c7317278e0e1f9d9288885a0f8dc98ba3201506193b882cd070ca"
+    }
+  ],
+  "projectionSnapshots": 0,
+  "typedSnapshots": 0
+}

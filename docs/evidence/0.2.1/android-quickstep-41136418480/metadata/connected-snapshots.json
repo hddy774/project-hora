@@ -1,0 +1,417 @@
+{
+  "steps": {
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "정확한 소스 가져오기",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "자바 개발 도구 설정(Java)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "개발 도구 설정(.NET)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "안드로이드 도구 설정(Android SDK)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5
+      },
+      {
+        "name": "안드로이드 개발 구성 설치(.NET 워크로드)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6
+      },
+      {
+        "name": "안드로이드 빌드 대상 설치(Android SDK)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7
+      },
+      {
+        "name": "검증 산출물 폴더 준비",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 8
+      },
+      {
+        "name": "앱 패키지 빌드(APK)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 9
+      },
+      {
+        "name": "안드로이드 실행 검증용 하드웨어 가속 허용(KVM)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 10
+      },
+      {
+        "name": "안드로이드 앱 실제 설치·실행",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 11
+      },
+      {
+        "name": "설치 검증용 앱 패키지(APK) 업로드",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 12
+      },
+      {
+        "name": "안드로이드 실제 실행 근거 업로드",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13
+      },
+      {
+        "name": "Post 개발 도구 설정(.NET)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "number": 24
+      },
+      {
+        "name": "Post 자바 개발 도구 설정(Java)",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 25
+      },
+      {
+        "name": "Post 정확한 소스 가져오기",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 26
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 27
+      }
+    ]
+  },
+  "artifacts": {
+    "artifacts": [
+      {
+        "id": 13015628987,
+        "name": "android-runtime-evidence",
+        "size_in_bytes": 141030,
+        "url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13015628987",
+        "archive_download_url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13015628987/zip",
+        "expired": false,
+        "created_at": "2026-10-30T22:14:47Z",
+        "expires_at": "2026-11-02T22:14:46Z",
+        "updated_at": "2026-10-30T22:14:47Z",
+        "digest": "sha256:d6ef5c831ce3ae395e943f6f46fe66e4c536150ce5157cf53f5d7c6e5db3c97e",
+        "workflow_run": {
+          "id": 41136418480,
+          "repository_id": 1402702966,
+          "head_repository_id": 1402702966,
+          "head_branch": "codex/v021-growth-926-archive",
+          "head_sha": "c61b05d21140772a366624324c1aea160997b6b5"
+        }
+      }
+    ]
+  },
+  "jobs": {
+    "jobs": [
+      {
+        "id": 124339878217,
+        "name": "이식형 제품 검증",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_id": 41136418480,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "정확한 소스 가져오기",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "개발 도구 설정(.NET)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "검증 산출물 폴더 준비",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "자바스크립트 실행 환경 설정(Node.js)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "커밋된 오프라인 화면 자산 검증",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "기획 원장과 거부 사례 검증",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "현재 제품 경계 정적 검증",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "이식형 제품 기능 시나리오 검증",
+            "status": "in_progress",
+            "conclusion": null,
+            "number": 9
+          },
+          {
+            "name": "공용 화면 호스트 빌드(Shell)",
+            "status": "pending",
+            "conclusion": null,
+            "number": 10
+          },
+          {
+            "name": "제품 검증 근거 업로드",
+            "status": "pending",
+            "conclusion": null,
+            "number": 11
+          },
+          {
+            "name": "작업 요약에 검증 결과 보존",
+            "status": "pending",
+            "conclusion": null,
+            "number": 12
+          },
+          {
+            "name": "Post 자바스크립트 실행 환경 설정(Node.js)",
+            "status": "pending",
+            "conclusion": null,
+            "number": 22
+          },
+          {
+            "name": "Post 개발 도구 설정(.NET)",
+            "status": "pending",
+            "conclusion": null,
+            "number": 23
+          },
+          {
+            "name": "Post 정확한 소스 가져오기",
+            "status": "pending",
+            "conclusion": null,
+            "number": 24
+          }
+        ]
+      },
+      {
+        "id": 124339878486,
+        "name": "윈도우 회귀·실제 화면 검증",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 41136418480,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "정확한 소스 가져오기",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "개발 도구 설정(.NET)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "윈도우 데스크톱 앱 빌드",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "이전 회귀·성능 검사 — 모든 기능 완료 후 최종 검증 전용",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 5
+          },
+          {
+            "name": "현재 제품 아키텍처 검증",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "데스크톱 실제 화면·코어 연결 검증",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Post 개발 도구 설정(.NET)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Post 정확한 소스 가져오기",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          }
+        ]
+      },
+      {
+        "id": 124339878666,
+        "name": "안드로이드 빌드·실제 실행 검증",
+        "status": "completed",
+        "conclusion": "failure",
+        "run_id": 41136418480,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "정확한 소스 가져오기",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "자바 개발 도구 설정(Java)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "개발 도구 설정(.NET)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "안드로이드 도구 설정(Android SDK)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "안드로이드 개발 구성 설치(.NET 워크로드)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "안드로이드 빌드 대상 설치(Android SDK)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "검증 산출물 폴더 준비",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "앱 패키지 빌드(APK)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "안드로이드 실행 검증용 하드웨어 가속 허용(KVM)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "안드로이드 앱 실제 설치·실행",
+            "status": "completed",
+            "conclusion": "failure",
+            "number": 11
+          },
+          {
+            "name": "설치 검증용 앱 패키지(APK) 업로드",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12
+          },
+          {
+            "name": "안드로이드 실제 실행 근거 업로드",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Post 개발 도구 설정(.NET)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 24
+          },
+          {
+            "name": "Post 자바 개발 도구 설정(Java)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25
+          },
+          {
+            "name": "Post 정확한 소스 가져오기",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27
+          }
+        ]
+      }
+    ]
+  }
+}

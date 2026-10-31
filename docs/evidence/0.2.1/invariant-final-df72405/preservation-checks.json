@@ -1,0 +1,109 @@
+{
+  "scenarios_before_after_equal": true,
+  "invariants_claims_anchors_before_after_equal": true,
+  "registered_scenarios": 314,
+  "invariants": 24,
+  "named_witness_links": 152,
+  "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+  "test_sources_fingerprint_unchanged": true,
+  "execution_status": "not_asserted",
+  "canonical_task_rows_changed": 0,
+  "canonical_proposed_test_status_unchanged": true,
+  "source_review_areas_before": 32,
+  "source_review_areas_after": 38,
+  "product_paths_reviewed": 21,
+  "helper_default_paths": 15,
+  "additional_manual_product_paths": [
+    ".github/workflows/v021-product.yml",
+    "scripts/android_readiness.py",
+    "scripts/fixtures/android-quickstep.xml",
+    "scripts/fixtures/android-window-windows-only.txt",
+    "scripts/test-android-readiness.py",
+    "scripts/update-v021-progress.py"
+  ],
+  "author_member_proof_current_file_matches": [
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "sha256": "9f7ca93cc2bbd9f7e21ab23f9de1e6340ac2a3d8608c422def8464f47de148c1",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "sha256": "418f335adbe3e9c5506e1a593cd92073a629fb5eeeb32af6f2476d3eccd826da",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "sha256": "0c850b77731558785885b5b0e718bc2f2550597ab216cf45c03457b51e9b5b3c",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "sha256": "25d05f7b4205abfc391ad3b8ca5ac98ede9a704204787a005da942f982c95926",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "sha256": "efd1a0cc5c5df67447d4aee7dcb278c6812920488c1a679285c8e490086da2e0",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "sha256": "bc922db1478bf2e90da5726f41bf00a82ec648bff6d1b150e54b265c8ad76385",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "sha256": "23e263379bcdd04176fb2e7de53199bdad2f44500a8ae523b1db8a7b4e784a25",
+      "proof": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "sha256": "6b0779a0a0061ef19a598beea23f4c5ab6a80d5a1bb56387b7abd90ec6fd5809",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "sha256": "0c965e44ed6c3454a181709efb1f3b49d3a094b88bf8da10ee067653fbbf7adf",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "sha256": "5fbbdf95bf2c071eccca373dbfc8b3ec43b8cc7f64e878bfb7f2ae47500fd3fc",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "sha256": "38895bf1c86893f9225b7a0df53ca0d4b97d5028cc409b2db1cb3856f64e3f20",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+      "sha256": "c3d84b4b2afc9f7372137baf9b77a6c12512948f9ec94773d2d5813ed2f9c12f",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "sha256": "1b506e983980c90f65838064fe3ad46ae65536be89ed751e82eeccda5e072d0c",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "sha256": "b188c64def2c2eae27dec7963944bf450e77ba7495f0cd99af1103aed68c53b5",
+      "proof": "docs/tasks/people-social-bridge-split/member-comparison.json"
+    }
+  ],
+  "old_current_map_preserved_at_fixed_commit": {
+    "source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "product_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+    "functional_report": "docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json",
+    "map_json_url": "https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.json",
+    "map_markdown_url": "https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.md",
+    "map_json_sha256": "afe9f900203bfffae3312616e07eb89a5c5e49c1782bd0e2b885f8e08bb82147",
+    "map_markdown_sha256": "a9cb32e64a8155c6a3cf7003d973c19a2ac14045287fa6599ad1ea5a4b22a236"
+  },
+  "new_game_runs": 0,
+  "new_builds": 0,
+  "new_performance_growth_runs": 0,
+  "readiness_written": false
+}

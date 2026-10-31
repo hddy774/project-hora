@@ -1,0 +1,63 @@
+{
+  "schema": "seonro.invariant-evidence-manifest.v1",
+  "executed_source": "df7240556a260202a248e57b1f9868e372b9d995",
+  "source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "scope": "원문 사본과 파생 문서의 SHA 색인. manifest 자체는 제외하며 게임 실행이나 최종 릴리스 판정이 아니다.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5494,
+      "sha256": "e8e5b0d529c979568d7658c1876e7fe97cb378801aaed8e654720dd6b0d00b7d"
+    },
+    {
+      "path": "execution-verification.json",
+      "bytes": 2925,
+      "sha256": "1d3f1e1deb5bcdeef55c219db6bc8d93898065d703946e263dd576b7c5691a51"
+    },
+    {
+      "path": "functional.json",
+      "bytes": 62871,
+      "sha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66"
+    },
+    {
+      "path": "functional.log",
+      "bytes": 38451,
+      "sha256": "f11002a6c982cf45567d906e5d1040b0f9ebb31532fe7f395317ea0f20e71c44"
+    },
+    {
+      "path": "preservation-checks.json",
+      "bytes": 5362,
+      "sha256": "f69754a11f95fe6de046247f0f5eee3e7abf044814ff8745bd08aad753d60c6e"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 7523,
+      "sha256": "c36724bfa4c705f56e94e3b28eef33a528240859b044df4a4c491d5348101e21"
+    },
+    {
+      "path": "root-run.original.json",
+      "bytes": 3054,
+      "sha256": "5de8a476737ff854e47214965d69cb377c3051cc4c8e6e64eb739b9236e9a5e2"
+    },
+    {
+      "path": "runtimeconfig.original.json",
+      "bytes": 371,
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+    },
+    {
+      "path": "../invariant-execution-map.json",
+      "bytes": 277948,
+      "sha256": "e65cb0323b55b27c889130ec7686ca3920d7c439b8048f047771ac3d603bf52d"
+    },
+    {
+      "path": "../invariant-execution-map.md",
+      "bytes": 80759,
+      "sha256": "a3558eb266db1c54c61a2d9edc9ca732d194e5e918e987bb38d973ec6245d389"
+    },
+    {
+      "path": "../invariant-execution-source-review-df72405.json",
+      "bytes": 39899,
+      "sha256": "5c76f903669f0715348d30c9a47a32c4ed57383d7852c155bbd86662a3552879"
+    }
+  ]
+}

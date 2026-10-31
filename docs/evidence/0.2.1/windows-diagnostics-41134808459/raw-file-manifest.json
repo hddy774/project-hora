@@ -1,0 +1,42 @@
+[
+  {
+    "path": "diagnostics/seonro-smoke-result.json",
+    "bytes": 374,
+    "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975"
+  },
+  {
+    "path": "diagnostics/stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "diagnostics/stdout.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "diagnostics/wrapper-observation.json",
+    "bytes": 2238,
+    "sha256": "5ec42cf0f61f268c604597b3a2e00d9b7c2cc29efdd66ac328b47ba05c4cd1f5"
+  },
+  {
+    "path": "request.json",
+    "bytes": 459,
+    "sha256": "bc840071f825a38809961d48673d674bac5afab7248fad34e681c63128352a0f"
+  },
+  {
+    "path": "runtimes.txt",
+    "bytes": 2478,
+    "sha256": "02ddd298846a379d0ba01621581c27d93b4452e682900f6e9b0fd2b0a917cb12"
+  },
+  {
+    "path": "sdk.txt",
+    "bytes": 10,
+    "sha256": "e4e6a678725873a4192c048849cd64d852983991bfcb210a40c3b80cc8fcf2eb"
+  },
+  {
+    "path": "source.json",
+    "bytes": 197,
+    "sha256": "273d8de2f5b162bfd1054093f73c79bb83cfd533592d57e75e11d23a150eecbb"
+  }
+]

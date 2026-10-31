@@ -1,0 +1,190 @@
+<UserControl x:Class="Chronicles.Desktop.WorldRecordsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource PanelBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="16,14,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="세계 기록"
+                           Foreground="{StaticResource PrimaryTextBrush}"
+                           FontSize="17"
+                           FontWeight="SemiBold" />
+                <TextBlock Text="최근 기록·영구 연대기·진단을 분리해 필요한 화면만 갱신합니다."
+                           Margin="0,4,0,0"
+                           Foreground="{StaticResource SecondaryTextBrush}"
+                           FontSize="10"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+            <TextBlock x:Name="OutputStatusText"
+                       Grid.Column="1"
+                       MaxWidth="116"
+                       Text="파일 기록 대기"
+                       TextAlignment="Right"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource SecondaryTextBrush}"
+                       FontSize="10" />
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="16,0,16,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="6" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <UniformGrid Rows="1" Columns="2">
+                <CheckBox x:Name="AutoWorldOutputCheckBox"
+                          Content="세계 자동 기록"
+                          Margin="0,0,4,0"
+                          Checked="AutoOutputCheckBox_Changed"
+                          Unchecked="AutoOutputCheckBox_Changed" />
+                <CheckBox x:Name="AutoDebugOutputCheckBox"
+                          Content="디버그 자동 기록"
+                          Margin="4,0,0,0"
+                          Checked="AutoOutputCheckBox_Changed"
+                          Unchecked="AutoOutputCheckBox_Changed" />
+            </UniformGrid>
+            <UniformGrid Grid.Row="2" Rows="1" Columns="3">
+                <Button Margin="0,0,3,0" Click="WorldExportButton_Click">세계 파일</Button>
+                <Button Margin="3,0" Click="DebugExportButton_Click">디버그 파일</Button>
+                <Button Margin="3,0,0,0" Click="FolderOpenButton_Click">폴더 열기</Button>
+            </UniformGrid>
+        </Grid>
+
+        <TabControl x:Name="RecordTabControl"
+                    Grid.Row="2"
+                    Background="{StaticResource PanelBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,1,0,0"
+                    SelectionChanged="RecordTabControl_SelectionChanged">
+            <TabItem Header="세계 로그">
+                <Grid Background="{StaticResource PanelBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TabControl x:Name="WorldLogCategoryTabControl"
+                                Height="34"
+                                Margin="12,8,12,0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SelectionChanged="RecordCategoryTabControl_SelectionChanged">
+                        <TabItem Header="전체" />
+                        <TabItem Header="경쟁" />
+                        <TabItem Header="전투" />
+                        <TabItem Header="수행" />
+                        <TabItem Header="경제" />
+                        <TabItem Header="윤회" />
+                        <TabItem Header="탐색" />
+                    </TabControl>
+                    <TextBlock x:Name="RecentCountText"
+                               Grid.Row="1"
+                               Margin="14,8,14,6"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="10" />
+                    <ListBox x:Name="RecentEventList"
+                             Grid.Row="2"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="{StaticResource PrimaryTextBrush}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,10">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock Text="{Binding Summary}" Margin="0,4,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="영구 연대기">
+                <Grid Background="{StaticResource PanelBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TabControl x:Name="WorldChronicleCategoryTabControl"
+                                Height="34"
+                                Margin="12,8,12,0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SelectionChanged="RecordCategoryTabControl_SelectionChanged">
+                        <TabItem Header="역사서" />
+                        <TabItem Header="수행" />
+                        <TabItem Header="순위" />
+                        <TabItem Header="생사·윤회" />
+                    </TabControl>
+                    <TextBlock x:Name="ChronicleCountText"
+                               Grid.Row="1"
+                               Margin="14,8,14,6"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="10" />
+                    <ListBox x:Name="WorldChronicleList"
+                             Grid.Row="2"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="{StaticResource PrimaryTextBrush}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,10">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock Text="{Binding Summary}" Margin="0,4,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="디버그">
+                <Grid Background="{StaticResource PanelBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="DebugCountText"
+                               Margin="14,10,14,6"
+                               Foreground="{StaticResource SecondaryTextBrush}"
+                               FontSize="10" />
+                    <ListBox x:Name="DebugLogList"
+                             Grid.Row="1"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="{StaticResource PrimaryTextBrush}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="14,10">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Time}" Foreground="{StaticResource SecondaryTextBrush}" FontSize="10" />
+                                        <TextBlock Text="{Binding Summary}" Margin="0,4,0,0" Foreground="{Binding Color}" TextWrapping="Wrap" FontSize="12" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -1,0 +1,2 @@
+I/WebViewFactory: Loading com.android.webview version 52.0.2743.100 (code 275610060)
+I/SeonroRender: {"rendered":true,"heading":"만상의 흐름","title":"선로만상록","version":"0.2.1","error":null,"connection":"연결됨"}

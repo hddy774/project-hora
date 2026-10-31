@@ -1,0 +1,151 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+    "actual_scenarios": 323,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/GameCodec.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "기존 canonical serializer/Options와 Hash 출력·예외·RNG를 per-call 비파일 SHA stream에서도 보존한다. 기본 UTF8본문16MiB 초과에서 기존 binary3를 선택하며 작은 JSON2 bytes/이전 큰 JSON 읽기·논리checksum·순번·Decode/Clone 경계는 유지한다. 기능과 실제 성능/장기 수용을 구분한다.; schema2 Payload를 전체 UTF16 문자열 없이16KiB UTF8 조각으로 작성하되 원래 property 순서·Encoder/indent/depth·escape·전체 bytes를 유지한다. 내부 binary/Decode/논리checksum·기본16MiB 경계는 그대로다."
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006"
+        ],
+        "registered_scenarios": [
+          "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+          "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+          "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트"
+        ],
+        "review_focus": []
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "src/Chronicles.Game/GameCodec.cs",
+      "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs"
+    ],
+    "review_note": "새 schema2 UTF8 조각2Name의 실제 GameWorld/codec 비교와 private writer 모듈 경계를 수동 연결했다. 두 검사는 INV004/006에만 연결하고 기존321개 행·167증인의 claim/kinds/anchors와24제목/한계를 보존한다. 전체 실행 결과는 root 종료0 확인 뒤 별도 실제 원문으로 연결하며 저장 byte 동등과 새 성능/장기 수용을 구분한다."
+  },
+  "initial_review_plan_before_manual_bindings": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+    "actual_scenarios": 323,
+    "added_names": [
+      "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+      "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트"
+    ],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/GameCodec.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "기존 canonical serializer/Options와 Hash 출력·예외·RNG를 per-call 비파일 SHA stream에서도 보존한다. 기본 UTF8본문16MiB 초과에서 기존 binary3를 선택하며 작은 JSON2 bytes/이전 큰 JSON 읽기·논리checksum·순번·Decode/Clone 경계는 유지한다. 기능과 실제 성능/장기 수용을 구분한다."
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+        "invariants": [],
+        "registered_scenarios": [
+          "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+          "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": []
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "manual_name_binding_changes_before_helper": {
+    "added_names": [
+      "INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성",
+      "INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트"
+    ],
+    "removed_names": [],
+    "reviewed_additions": "invariant-final-7901f34/map-additions.json",
+    "new_witness_links": 4,
+    "preserved_scenarios": 321,
+    "preserved_witness_links": 167
+  },
+  "review_details": [
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "sha256": "9add702bfbc52beb1487bb70285b2811bbb11be4574a591226d7a872e4e30302",
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-006"
+      ],
+      "review_note": "기존 schema2의 Format/Schema/Hash/Payload/Sequence 순서를 명시해 Utf8JsonWriter에 쓴다. payload만16KiB WriteStringValueSegment로 나누며 기존 serializer Options의 Encoder/WriteIndented/MaxDepth를 유지한다. canonical 본문/논리checksum·순번·기본16MiB threshold·binary3·Decode/Hash/Clone은 바꾸지 않는다. 기능의 byte 동등과 임시 사본 감소/성능 수용을 구분한다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs",
+      "sha256": "f16d7fe98e5701f1eeb24d1af3f70d0c3e10df988a94d4e30d00bd0f267bd06a",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "review_note": "실제 작은 GameWorld의 기존 전체 JSON bytes/공통 Decode·순번/Hash/RNG 비교1, private helper의 빈값/16KiB UTF8 문자/escape/property 순서 비교1이다. 독립 이전 encoder로 기대값을 유지하며 공개 명령/월 진행/실제 파일·성능을 실행한 것으로 확대하지 않는다."
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-5f789c8.json",
+  "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "fingerprint_attribution": "root가 계산·동결한 source/FP. 문서 작업에서 추가 전체 지문 계산 없음.",
+  "full_product_review_coverage": {
+    "paths": [
+      "src/Chronicles.Game/GameCodec.cs",
+      "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs"
+    ],
+    "helper_default_paths": [
+      "src/Chronicles.Game/GameCodec.cs",
+      "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs"
+    ],
+    "manual_additional_paths": [],
+    "scope": "helper가 일반적으로 scripts/WF를 생략하는 한계를 실제 product_path 분류와 별도 대조했다. 이번2경로는 같으며 범위 밖 추가 제품입력0개다. helper/검사기 변경 없음."
+  },
+  "functional_evidence_status": "actual_all_323_exit0_original_preserved",
+  "scope": "실제 소스/새 검사 연결과 별도 전체323/323 원문을 함께 보존한다. 원장/readiness/예산/게임 정책/기존 증인 의미 변경 없음. 새 성능/장기/native/민감도/릴리스 수용을 주장하지 않는다.",
+  "separate_functional_report": {
+    "path": "invariant-final-7901f34/functional.json",
+    "sha256": "1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba",
+    "executed_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "selection": "all",
+    "total": 323,
+    "failed": 0
+  }
+}

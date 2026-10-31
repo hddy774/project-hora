@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored /workspace/seonro-people-bridge-split-404767a/tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj (in 94 ms).
+  Restored /workspace/seonro-people-bridge-split-404767a/src/Chronicles.Hosting/Chronicles.Hosting.csproj (in 2 ms).
+  Restored /workspace/seonro-people-bridge-split-404767a/src/Chronicles.Game/Chronicles.Game.csproj (in 1 ms).
+  Restored /workspace/seonro-people-bridge-split-404767a/src/Chronicles.Core/Chronicles.Core.csproj (in 0.7 ms).
+  Chronicles.Core -> /workspace/seonro-people-bridge-split-404767a/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll
+  Chronicles.Game -> /workspace/seonro-people-bridge-split-404767a/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll
+  Chronicles.Hosting -> /workspace/seonro-people-bridge-split-404767a/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll
+  Chronicles.Game.Tests -> /workspace/seonro-people-bridge-split-404767a/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:31.39

@@ -1,0 +1,28 @@
+{
+  "kind": "preregistered-population-sequence-runtime-diagnosis-not-acceptance",
+  "createdUtc": "2026-10-30T19:38:40.679065+00:00",
+  "eligibleForFinalPerformanceGate": false,
+  "sourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "basis": "The preceding fixed eight single-N100 comparisons completed. Both source revisions have similar default single-N100 timing; PGO-off was lower in both repetitions. This follow-up tests the actual prior-N2 sequence, not a selected passing single-size result.",
+  "cases": [
+    "default",
+    "pgo-off",
+    "pgo-off",
+    "default"
+  ],
+  "countFixedBeforeExecution": 4,
+  "retries": 0,
+  "protocol": "Use the unchanged full four-population CLI. Preserve actual N2 and N100 warmup/12-month results. Terminate deliberately only after PERF-BEGIN 1000 is emitted (following the completed N100 row and progress write). Retain partial raw and actual termination code, never mark full completion.",
+  "runtimeAxis": "DOTNET_TieredPGO=0 versus inherited default only",
+  "cpuAffinity": [
+    0
+  ],
+  "constraints": [
+    "No profiler attached",
+    "No fixture/law/measurement code changes",
+    "No budget or baseline change",
+    "No diagnostic result may satisfy the final four-population gate",
+    "No repeat until pass"
+  ],
+  "cohosts": "CPU1/2 old926 growth restart1, CPU3 old926 seed2026, same4CPUquota; no additional local heavy work. Thermal/power unmeasured."
+}

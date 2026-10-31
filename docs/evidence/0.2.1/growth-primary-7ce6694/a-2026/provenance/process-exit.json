@@ -1,0 +1,8 @@
+{
+  "process_exit": 0,
+  "log_exit": 0,
+  "finished_at_utc": "2026-10-30T19:57:52.020957+00:00",
+  "wall_seconds_including_genesis_logging_and_report_io": 3442.279174751,
+  "timeout_exit_124_or_137_is_failure": true,
+  "raw_growth_report_modified_by_workflow": false
+}

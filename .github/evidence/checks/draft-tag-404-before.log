@@ -1,0 +1,20 @@
+test_draft_tag_endpoint_404_still_uploads_publishes_and_reads_same_id (test_release_lookup.ReleaseLookupTests.test_draft_tag_endpoint_404_still_uploads_publishes_and_reads_same_id) ... ERROR
+
+======================================================================
+ERROR: test_draft_tag_endpoint_404_still_uploads_publishes_and_reads_same_id (test_release_lookup.ReleaseLookupTests.test_draft_tag_endpoint_404_still_uploads_publishes_and_reads_same_id)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-evidence-archive/.github/evidence/test_release_lookup.py", line 19, in test_draft_tag_endpoint_404_still_uploads_publishes_and_reads_same_id
+    run.prepare_draft()
+  File "/workspace/seonro-evidence-archive/.github/evidence/archive_sensitivity.py", line 230, in prepare_draft
+    asset = self.assets()[item["planned_asset_name"]]
+            ^^^^^^^^^^^^^
+  File "/workspace/seonro-evidence-archive/.github/evidence/archive_sensitivity.py", line 166, in assets
+    return {asset["name"]: asset for asset in self.release["assets"]}
+                                              ~~~~~~~~~~~~^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (errors=1)

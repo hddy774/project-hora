@@ -1,0 +1,11 @@
+FAIL inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존: System.InvalidOperationException: 고정 strict 기준과 명령·월 경계·저장 해시가 달라졌습니다: 91b47814d83c487797382f3fad308b420f20ab815bbd9b7be14f92059f18802e
+   at Chronicles.Game.Tests.InventoryFixture.Check(Boolean condition, String message) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs:line 33
+   at Chronicles.Game.Tests.Features.InventoryReferenceTrace.AssertFixed(String expected) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs:line 13
+   at Chronicles.Game.Tests.Features.InventoryOwnedEcologyReferenceScenario.Run() in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 75
+   at Program.<>c__DisplayClass0_0.<<Main>$>g__Test|2(String name, Action body) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Program.cs:line 28
+FAIL inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존: System.InvalidOperationException: 고정 strict 기준과 명령·월 경계·저장 해시가 달라졌습니다: 718295d0cfda379974aa14e87d39b3d86578a2c372d1e0beb6434eba6b3ca160
+   at Chronicles.Game.Tests.InventoryFixture.Check(Boolean condition, String message) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryScenarios.cs:line 33
+   at Chronicles.Game.Tests.Features.InventoryReferenceTrace.AssertFixed(String expected) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs:line 13
+   at Chronicles.Game.Tests.Features.InventoryOwnedWorldReferenceScenario.Run() in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs:line 15
+   at Program.<>c__DisplayClass0_0.<<Main>$>g__Test|2(String name, Action body) in /workspace/chronicles-inventory/tests/Chronicles.Game.Tests/Program.cs:line 28
+RESULT 0/2

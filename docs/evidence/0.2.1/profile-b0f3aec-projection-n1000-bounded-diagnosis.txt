@@ -1,0 +1,229 @@
+b0f3aec opt-in N1000 관리 스택 진단 (정식 성능/전체완주 근거 아님)
+source b0f3aec986d9b09015021499e47627b869411b83
+기존 동일source Release DLL 재사용; Game/Tests 내장 InformationalVersion 대조. 창세 선택1/1PASS.
+dotnet-sampled-thread-time+gc-verbose50초, 자기runtime82950은54.75초에서종료. 기존프로세스attach/커널CPU권한변경/새product빌드없음.
+
+구간 | 관리thread가중ms | JSON하위% | ProjectedSnapshot% | ValidateCore%
+whole main thread |50002.88|44.384|48.183|34.503
+warmup actualAdvance |23717.35|42.677|51.110|37.700
+measured actualAdvance |22869.81|45.355|52.343|36.162
+
+부모/자식 inclusive중첩이므로합산금지. measuredValidate귀속: Apply22.341/Commit6.915/Snapshot초기6.906%.
+measured하위: CheckSchedule9.420%, ValidationReadIndex ctor5.836%, ProjectedFingerprint5.585%, Person ctor7.105%, Sync0.285%.
+
+whole main trace inclusive source top20:
+ 1  87.976%    43990.3ms Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)
+ 2  83.465%    41734.9ms Chronicles.Game!Chronicles.Game.GameWorld.Start(class Chronicles.Game.Person,class System.String,int64,class System.String)
+ 3  83.330%    41667.4ms Chronicles.Game!Chronicles.Game.GameWorld.TryInventoryCommand(class Chronicles.Game.GameCommand,class Chronicles.Game.Person,class System.String&)
+ 4  48.445%    24223.8ms Chronicles.Game!Chronicles.Game.GameWorld.CurrentOwnedInventory()
+ 5  48.186%    24094.3ms Chronicles.Game!Chronicles.Game.GameWorld.CreateOwnedInventory()
+ 6  48.183%    24092.6ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CreateProjectedSnapshot(class Chronicles.Game.GameState)
+ 7  34.511%    17256.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Validate(class Chronicles.Game.Inventory.InventoryState)
+ 8  34.503%    17252.3ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)
+ 9  21.826%    10913.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.Apply(class Chronicles.Game.Inventory.InventoryCommand)
+10   9.113%     4556.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CheckSchedule(class System.Collections.Generic.IEnumerable`1<class Chronicles.Game.Inventory.LaborReservation>,int32)
+11   8.352%     4176.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CommitTo(class Chronicles.Game.GameState)
+12   6.820%     3410.2ms Chronicles.Game!Chronicles.Game.Person..ctor()
+13   5.615%     2807.9ms Chronicles.Game!Chronicles.Game.GameWorld.BeginInventoryJob(class Chronicles.Game.Person,class Chronicles.Game.Inventory.InventoryCommand,value class Chronicles.Game.ActionKind,class System.String)
+14   5.499%     2749.6ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex..ctor(class Chronicles.Game.Inventory.InventoryState)
+15   5.260%     2630.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.ProjectedFingerprint(class Chronicles.Game.GameState)
+16   4.147%     2073.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.ReservedNaturalStock(int64)
+17   4.134%     2067.1ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.IndexJobs()
+18   3.615%     1807.7ms Chronicles.Game!Chronicles.Game.Invariants.Validate(class Chronicles.Game.GameState)
+19   3.548%     1774.1ms Chronicles.Game!Chronicles.Game.GameWorld.ValidateDomainState(class Chronicles.Game.GameState)
+20   2.872%     1436.2ms Chronicles.Game!Chronicles.Game.GameWorld.ProjectInventorySources()
+whole main trace exclusive managed leaf top20:
+ 1  14.558%     7279.6ms System.Private.CoreLib!System.Threading.Thread.<PollGC>g__PollGCWorker|67_0()
+ 2   8.981%     4490.8ms System.Text.Json!System.Text.Json.JsonReaderHelper.TranscodeHelper(value class System.ReadOnlySpan`1<unsigned int8>)
+ 3   6.703%     3351.5ms Chronicles.Game!Chronicles.Game.Person..ctor()
+ 4   6.695%     3347.7ms System.Text.Json!dynamicClass..ctor()
+ 5   4.125%     2062.6ms System.Private.CoreLib!System.Collections.Generic.HashSet`1[System.Int64].Resize(int32,bool)
+ 6   3.586%     1793.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.ProjectedFingerprint(class Chronicles.Game.GameState)
+ 7   3.583%     1791.4ms System.Linq!System.Linq.Enumerable.Distinct(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Collections.Generic.IEqualityComparer`1<!!0>)
+ 8   3.395%     1697.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CheckSchedule(class System.Collections.Generic.IEnumerable`1<class Chronicles.Game.Inventory.LaborReservation>,int32)
+ 9   3.394%     1697.2ms System.Linq!System.Linq.Enumerable+GroupByIterator`2[System.ValueTuple`2[System.Int64,System.Int32],System.Int64].ToArray()
+10   2.563%     1281.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex..ctor(class Chronicles.Game.Inventory.InventoryState)
+11   2.483%     1241.6ms System.Private.CoreLib!System.Collections.Generic.HashSet`1[System.Int64].Initialize(int32)
+12   2.239%     1119.7ms System.Linq!System.Linq.Enumerable+ListWhereIterator`1[System.__Canon].MoveNext()
+13   2.160%     1080.1ms System.Private.CoreLib!System.Collections.Generic.List`1[System.__Canon].AddWithResize(!0)
+14   1.898%      949.2ms System.Linq!System.Linq.Enumerable.Count(class System.Collections.Generic.IEnumerable`1<!!0>)
+15   1.888%      944.2ms System.Private.CoreLib!System.Collections.Generic.Dictionary`2[System.Int64,System.__Canon].Initialize(int32)
+16   1.861%      930.5ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CreateProjectedSnapshot(class Chronicles.Game.GameState)
+17   1.803%      901.4ms System.Private.CoreLib!System.Collections.Generic.Dictionary`2[System.Int64,System.__Canon].Resize()
+18   1.664%      832.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.CarryCapacity(class Chronicles.Game.Person)
+19   1.584%      791.9ms System.Private.CoreLib!System.Buffer.MemmoveInternal(unsigned int8&,unsigned int8&,unsigned int)
+20   1.239%      619.5ms Chronicles.Game!Chronicles.Game.GameWorld.RefreshPopulationIndices()
+
+warmup Advance inclusive source top20:
+ 1  95.097%    22554.4ms Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)
+ 2  90.736%    21520.1ms Chronicles.Game!Chronicles.Game.GameWorld.Start(class Chronicles.Game.Person,class System.String,int64,class System.String)
+ 3  90.582%    21483.6ms Chronicles.Game!Chronicles.Game.GameWorld.TryInventoryCommand(class Chronicles.Game.GameCommand,class Chronicles.Game.Person,class System.String&)
+ 4  51.386%    12187.5ms Chronicles.Game!Chronicles.Game.GameWorld.CurrentOwnedInventory()
+ 5  51.117%    12123.5ms Chronicles.Game!Chronicles.Game.GameWorld.CreateOwnedInventory()
+ 6  51.110%    12121.9ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CreateProjectedSnapshot(class Chronicles.Game.GameState)
+ 7  37.700%     8941.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)
+ 8  37.700%     8941.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Validate(class Chronicles.Game.Inventory.InventoryState)
+ 9  24.362%     5778.0ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.Apply(class Chronicles.Game.Inventory.InventoryCommand)
+10  11.839%     2807.9ms Chronicles.Game!Chronicles.Game.GameWorld.BeginInventoryJob(class Chronicles.Game.Person,class Chronicles.Game.Inventory.InventoryCommand,value class Chronicles.Game.ActionKind,class System.String)
+11  10.130%     2402.5ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CheckSchedule(class System.Collections.Generic.IEnumerable`1<class Chronicles.Game.Inventory.LaborReservation>,int32)
+12   9.216%     2185.9ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CommitTo(class Chronicles.Game.GameState)
+13   7.360%     1745.7ms Chronicles.Game!Chronicles.Game.Person..ctor()
+14   5.921%     1404.3ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex..ctor(class Chronicles.Game.Inventory.InventoryState)
+15   5.754%     1364.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.OwnProjectedForExperiment(class Chronicles.Game.GameState)
+16   5.754%     1364.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction..ctor(class Chronicles.Game.GameState,bool)
+17   5.704%     1352.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.ProjectedFingerprint(class Chronicles.Game.GameState)
+18   4.530%     1074.5ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.ReservedNaturalStock(int64)
+19   4.515%     1070.9ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.IndexJobs()
+20   3.198%      758.4ms Chronicles.Game!Chronicles.Game.GameWorld.ProjectInventorySources()
+warmup Advance exclusive managed leaf top20:
+ 1  14.419%     3419.8ms System.Private.CoreLib!System.Threading.Thread.<PollGC>g__PollGCWorker|67_0()
+ 2   9.035%     2142.8ms System.Text.Json!System.Text.Json.JsonReaderHelper.TranscodeHelper(value class System.ReadOnlySpan`1<unsigned int8>)
+ 3   7.160%     1698.1ms Chronicles.Game!Chronicles.Game.Person..ctor()
+ 4   6.969%     1652.8ms System.Text.Json!dynamicClass..ctor()
+ 5   4.491%     1065.3ms System.Private.CoreLib!System.Collections.Generic.HashSet`1[System.Int64].Resize(int32,bool)
+ 6   4.051%      960.8ms System.Linq!System.Linq.Enumerable.Distinct(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Collections.Generic.IEqualityComparer`1<!!0>)
+ 7   3.661%      868.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CheckSchedule(class System.Collections.Generic.IEnumerable`1<class Chronicles.Game.Inventory.LaborReservation>,int32)
+ 8   3.566%      845.7ms System.Linq!System.Linq.Enumerable+GroupByIterator`2[System.ValueTuple`2[System.Int64,System.Int32],System.Int64].ToArray()
+ 9   3.514%      833.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.ProjectedFingerprint(class Chronicles.Game.GameState)
+10   2.633%      624.4ms System.Private.CoreLib!System.Collections.Generic.HashSet`1[System.Int64].Initialize(int32)
+11   2.462%      583.8ms System.Linq!System.Linq.Enumerable+ListWhereIterator`1[System.__Canon].MoveNext()
+12   2.442%      579.1ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex..ctor(class Chronicles.Game.Inventory.InventoryState)
+13   2.311%      548.0ms System.Private.CoreLib!System.Collections.Generic.List`1[System.__Canon].AddWithResize(!0)
+14   2.064%      489.6ms System.Linq!System.Linq.Enumerable.Count(class System.Collections.Generic.IEnumerable`1<!!0>)
+15   2.014%      477.6ms System.Private.CoreLib!System.Collections.Generic.Dictionary`2[System.Int64,System.__Canon].Initialize(int32)
+16   1.948%      462.0ms System.Private.CoreLib!System.Collections.Generic.Dictionary`2[System.Int64,System.__Canon].Resize()
+17   1.799%      426.8ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CreateProjectedSnapshot(class Chronicles.Game.GameState)
+18   1.701%      403.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.CarryCapacity(class Chronicles.Game.Person)
+19   1.535%      364.1ms System.Private.CoreLib!System.Buffer.MemmoveInternal(unsigned int8&,unsigned int8&,unsigned int)
+20   1.185%      281.1ms Chronicles.Game!Chronicles.Game.GameWorld.RefreshPopulationIndices()
+warmup Advance GC할당표본: 15,504,372,336bytes / 128,172ticks (정확타입별할당아님), top20:
+ 1  1,800,631,280bytes   3,033ticks System.Byte[]
+ 2  1,711,590,920bytes  13,412ticks Entry[System.Int64][]
+ 3  1,333,756,824bytes  12,515ticks DistinctIterator`1[System.Int64]
+ 4  1,030,059,328bytes   9,704ticks System.Int32[]
+ 5    975,578,776bytes   9,148ticks System.String
+ 6    491,289,304bytes   4,606ticks Chronicles.Game.Person
+ 7    489,134,024bytes   4,203ticks Entry[System.Int64,Chronicles.Game.Person][]
+ 8    451,551,576bytes   4,243ticks System.Collections.Generic.HashSet`1[System.Int64]
+ 9    403,756,032bytes   3,788ticks System.ValueTuple`2[System.Int64,System.Int32][]
+10    368,019,192bytes   3,247ticks System.Int64[]
+11    355,266,568bytes   3,333ticks System.Linq.Grouping`2[System.Int64,System.ValueTuple`2[System.Int64,System.Int32]]
+12    270,498,064bytes   2,538ticks OrderedIterator`2[System.Linq.IGrouping`2[System.Int64,System.ValueTuple`2[System.Int64,System.Int32]],System.Int64]
+13    261,714,216bytes   2,355ticks Entry[System.Int64,System.Collections.Generic.List`1[Chronicles.Game.Inventory.ProductionJob]][]
+14    250,696,040bytes   2,345ticks Chronicles.Game.Inventory.ProductionJob[]
+15    237,490,320bytes   2,228ticks System.Linq.Grouping`2[System.Int64,System.ValueTuple`2[System.Int64,System.Int32]][]
+16    219,028,584bytes   2,055ticks SelectManySingleSelectorIterator`2[Chronicles.Game.Inventory.LaborReservation,System.ValueTuple`2[System.Int64,System.Int32]]
+17    215,093,280bytes   2,018ticks GroupByIterator`2[System.ValueTuple`2[System.Int64,System.Int32],System.Int64]
+18    205,573,960bytes   1,930ticks <>c__DisplayClass30_0
+19    194,012,048bytes   1,820ticks System.Linq.PartialArrayEnumerator`1[System.ValueTuple`2[System.Int64,System.Int32]]
+20    191,010,000bytes   1,791ticks System.Collections.Generic.TreeSet`1[System.Collections.Generic.KeyValuePair`2[System.String,System.Int32]]
+
+measured Advance inclusive source top20:
+ 1  93.730%    21435.9ms Chronicles.Game!Chronicles.Game.GameWorld.Decide(class Chronicles.Game.Person)
+ 2  88.391%    20214.8ms Chronicles.Game!Chronicles.Game.GameWorld.Start(class Chronicles.Game.Person,class System.String,int64,class System.String)
+ 3  88.255%    20183.8ms Chronicles.Game!Chronicles.Game.GameWorld.TryInventoryCommand(class Chronicles.Game.GameCommand,class Chronicles.Game.Person,class System.String&)
+ 4  52.630%    12036.4ms Chronicles.Game!Chronicles.Game.GameWorld.CurrentOwnedInventory()
+ 5  52.343%    11970.8ms Chronicles.Game!Chronicles.Game.GameWorld.CreateOwnedInventory()
+ 6  52.343%    11970.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CreateProjectedSnapshot(class Chronicles.Game.GameState)
+ 7  36.162%     8270.1ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.Validate(class Chronicles.Game.Inventory.InventoryState)
+ 8  36.162%     8270.1ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.ValidateCore(class Chronicles.Game.Inventory.InventoryState)
+ 9  22.455%     5135.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.Apply(class Chronicles.Game.Inventory.InventoryCommand)
+10   9.420%     2154.4ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CheckSchedule(class System.Collections.Generic.IEnumerable`1<class Chronicles.Game.Inventory.LaborReservation>,int32)
+11   8.703%     1990.3ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CommitTo(class Chronicles.Game.GameState)
+12   7.105%     1624.9ms Chronicles.Game!Chronicles.Game.Person..ctor()
+13   5.836%     1334.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex..ctor(class Chronicles.Game.Inventory.InventoryState)
+14   5.585%     1277.3ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.ProjectedFingerprint(class Chronicles.Game.GameState)
+15   4.365%      998.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.ReservedNaturalStock(int64)
+16   4.356%      996.2ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.IndexJobs()
+17   3.493%      798.9ms Chronicles.Game!Chronicles.Game.Politics.PoliticalDraft.Finish(class System.String)
+18   3.293%      753.0ms Chronicles.Game!Chronicles.Game.GameWorld.TryIntelligentGoal(class Chronicles.Game.Person)
+19   3.293%      753.0ms Chronicles.Game!Chronicles.Game.GameWorld.DiversePlan(class Chronicles.Game.Person)
+20   3.290%      752.3ms Chronicles.Game!Chronicles.Game.GameWorld.RunIntelligentGoal(class Chronicles.Game.Person)
+measured Advance exclusive managed leaf top20:
+ 1  14.314%     3273.7ms System.Private.CoreLib!System.Threading.Thread.<PollGC>g__PollGCWorker|67_0()
+ 2  10.087%     2306.8ms System.Text.Json!System.Text.Json.JsonReaderHelper.TranscodeHelper(value class System.ReadOnlySpan`1<unsigned int8>)
+ 3   7.260%     1660.4ms System.Text.Json!dynamicClass..ctor()
+ 4   7.105%     1624.9ms Chronicles.Game!Chronicles.Game.Person..ctor()
+ 5   4.337%      991.9ms System.Private.CoreLib!System.Collections.Generic.HashSet`1[System.Int64].Resize(int32,bool)
+ 6   4.197%      959.9ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.ProjectedFingerprint(class Chronicles.Game.GameState)
+ 7   3.723%      851.4ms System.Linq!System.Linq.Enumerable+GroupByIterator`2[System.ValueTuple`2[System.Int64,System.Int32],System.Int64].ToArray()
+ 8   3.626%      829.3ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine.CheckSchedule(class System.Collections.Generic.IEnumerable`1<class Chronicles.Game.Inventory.LaborReservation>,int32)
+ 9   3.610%      825.7ms System.Linq!System.Linq.Enumerable.Distinct(class System.Collections.Generic.IEnumerable`1<!!0>,class System.Collections.Generic.IEqualityComparer`1<!!0>)
+10   3.039%      695.0ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex..ctor(class Chronicles.Game.Inventory.InventoryState)
+11   2.657%      607.7ms System.Private.CoreLib!System.Collections.Generic.HashSet`1[System.Int64].Initialize(int32)
+12   2.327%      532.1ms System.Linq!System.Linq.Enumerable+ListWhereIterator`1[System.__Canon].MoveNext()
+13   2.306%      527.4ms System.Private.CoreLib!System.Collections.Generic.List`1[System.__Canon].AddWithResize(!0)
+14   2.202%      503.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+OwnedTransaction.CreateProjectedSnapshot(class Chronicles.Game.GameState)
+15   2.035%      465.3ms System.Private.CoreLib!System.Collections.Generic.Dictionary`2[System.Int64,System.__Canon].Initialize(int32)
+16   1.995%      456.2ms System.Linq!System.Linq.Enumerable.Count(class System.Collections.Generic.IEnumerable`1<!!0>)
+17   1.921%      439.4ms System.Private.CoreLib!System.Collections.Generic.Dictionary`2[System.Int64,System.__Canon].Resize()
+18   1.875%      428.7ms Chronicles.Game!Chronicles.Game.Inventory.InventoryEngine+ValidationReadIndex.CarryCapacity(class Chronicles.Game.Person)
+19   1.699%      388.5ms System.Private.CoreLib!System.Buffer.MemmoveInternal(unsigned int8&,unsigned int8&,unsigned int)
+20   1.477%      337.7ms Chronicles.Game!Chronicles.Game.GameWorld.RefreshPopulationIndices()
+measured Advance GC할당표본: 16,063,421,296bytes / 132,114ticks (정확타입별할당아님), top20:
+ 1  1,937,805,184bytes   3,084ticks System.Byte[]
+ 2  1,745,792,592bytes  13,666ticks Entry[System.Int64][]
+ 3  1,341,646,240bytes  12,589ticks DistinctIterator`1[System.Int64]
+ 4  1,074,738,840bytes  10,077ticks System.String
+ 5  1,060,395,416bytes   9,991ticks System.Int32[]
+ 6    494,740,632bytes   4,639ticks Chronicles.Game.Person
+ 7    485,345,952bytes   4,168ticks Entry[System.Int64,Chronicles.Game.Person][]
+ 8    453,967,080bytes   4,264ticks System.Collections.Generic.HashSet`1[System.Int64]
+ 9    405,395,288bytes   3,803ticks System.ValueTuple`2[System.Int64,System.Int32][]
+10    379,929,080bytes   3,361ticks System.Int64[]
+11    348,318,728bytes   3,267ticks System.Linq.Grouping`2[System.Int64,System.ValueTuple`2[System.Int64,System.Int32]]
+12    271,581,408bytes   2,548ticks OrderedIterator`2[System.Linq.IGrouping`2[System.Int64,System.ValueTuple`2[System.Int64,System.Int32]],System.Int64]
+13    265,402,576bytes   2,390ticks Entry[System.Int64,System.Collections.Generic.List`1[Chronicles.Game.Inventory.ProductionJob]][]
+14    257,299,896bytes   2,407ticks Chronicles.Game.Inventory.ProductionJob[]
+15    239,400,808bytes   2,246ticks System.Linq.Grouping`2[System.Int64,System.ValueTuple`2[System.Int64,System.Int32]][]
+16    217,109,184bytes   2,037ticks GroupByIterator`2[System.ValueTuple`2[System.Int64,System.Int32],System.Int64]
+17    214,677,960bytes   2,014ticks SelectManySingleSelectorIterator`2[Chronicles.Game.Inventory.LaborReservation,System.ValueTuple`2[System.Int64,System.Int32]]
+18    206,620,344bytes   1,940ticks <>c__DisplayClass30_0
+19    202,038,960bytes   1,895ticks System.Linq.PartialArrayEnumerator`1[System.ValueTuple`2[System.Int64,System.Int32]]
+20    196,301,632bytes   1,841ticks System.Collections.Generic.TreeSet`1[System.Collections.Generic.KeyValuePair`2[System.String,System.Int32]]
+
+source근거:
+src/Chronicles.Game/Inventory/InventoryPersonProjectionExperiment.cs:37 CreateProjectedSnapshot includes projected fingerprint, full isolated inventory/ledger JSON roundtrip and initial full Validate. Its52.343% inclusive overlaps6.906% initial validation; do not add these percentages.
+src/Chronicles.Game/Inventory/InventoryPersonProjectionExperiment.cs:34 ProjectedFingerprint still JSON-serializes the selected physical/person projection. Explicit frame5.585% in measuredAdvance; other serializer work may be inlined.
+src/Chronicles.Game/Inventory/InventoryValidation.cs:14 Full ValidateCore remains36.162% of measuredAdvance: Owned.Apply22.341%, CommitTo6.915%, CreateProjectedSnapshot6.906% by immediate parent.
+src/Chronicles.Game/Inventory/InventoryValidation.cs:86 Per-person/facility labor grouping and CheckSchedule rebuilding, CheckSchedule inclusive9.420% in measuredAdvance. Tuple arrays/Grouping/SelectMany types have substantial sampled allocations but type totals alone are not unique caller attribution.
+src/Chronicles.Game/Inventory/InventoryValidationIndex.cs:27 A new pure read index is built per validation, including people/items/metadata/reservation/labor/source dictionaries/sets. Constructor inclusive5.836% in measuredAdvance.
+src/Chronicles.Game/State.cs:40 Full Person constructor remains invoked by deserialization, with actual leaf7.105% in measuredAdvance; field initializers include arrays and multiple empty collections even though input is restricted to15 Person fields.
+src/Chronicles.Game/Inventory/InventoryValidationIndex.cs:124 One of four PDB candidates for allocation type<>c__DisplayClass30_0 is CarriedWeight predicate here. The same short type name also occurs in PoliticalPolicies.cs309-318, PoliticsEngine.cs391-394 and CultivationEngine.cs513. Its sampled206620344bytes cannot be uniquely assigned to one candidate without allocation stack/type identity resolution.
+
+closure PDB후보(중복이므로단일귀속불가):
+TYPE PoliticsEngine.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <PolicyJurisdiction>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticalPolicies.cs:309:56 → 309:71
+METHOD <PolicyJurisdiction>b__1
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticalPolicies.cs:311:51 → 312:89
+METHOD <PolicyJurisdiction>b__2
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticalPolicies.cs:317:85 → 318:123
+TYPE PoliticalDraft.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <ReleaseLabor>b__1
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticsEngine.cs:391:50 → 391:98
+METHOD <ReleaseLabor>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Politics/PoliticsEngine.cs:394:36 → 394:84
+TYPE CultivationEngine.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <TryDebit>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Cultivation/CultivationEngine.cs:513:62 → 513:101
+TYPE ValidationReadIndex.<>c__DisplayClass30_0
+METHOD .ctor
+METHOD <CarriedWeight>b__0
+/workspace/seonro-projection-b0f3aec/src/Chronicles.Game/Inventory/InventoryValidationIndex.cs:124:53 → 124:112
+
+범위/한계:
+Managed sampled thread-time100Hz + GCAllocationTick, not kernel CPU or isolated wall-time benchmark. GC safepoint/wait time can be charged to a managed stack. Inclusive rows overlap.
+Whole-trace percentages use only main application thread82950. Background blocked/finalizer thread weights are excluded from that denominator. WarmupAdvance and measuredAdvance have separate denominators; never add or compare them as independent speed gains.
+Warmup called AdvanceTo(1), thenAdvanceTo(2); the stack samples form one continuous observed window and cannot precisely split those call boundaries. The reported warmup window includes the first call and may include the second.
+Measured windows cover months1-3 and only the beginning of month4. Collection50seconds/own-runtime54.75seconds does not establish a completed12month result. Partial timings are profiled diagnostic values, not formal unprofiled comparisons.
+GC type bytes/ticks are sampled estimates, not exact allocated bytes/object counts. Compiler short closure names can be ambiguous; PDB candidates are preserved without false unique attribution.
+The source uses an explicit person15-projection experiment; this profile is not evidence that strict production defaults changed or that the experiment passes final release acceptance.
+No existing process attach, no kernel permission change, no product rebuild/source/ledger change, no10k/growth/UI execution. Trace50seconds and ownchild55second limit; no extension was performed.
+
+원시부분진행: {"experimental_configuration": true, "configuration": {"inventoryProjectionExperiment": true, "inventoryCandidateMode": "person15-projection-experiment"}, "complete": false, "completedSizes": [], "reportsCount": 0, "inProgress": {"population": 1000, "stage": "advancing_month_4", "completedMonths": 3, "monthlySamplesMs": [20929.9686, 558.3412, 633.255]}}
+
+결론: Remaining early N1000 costs concentrate in isolated projected JSON snapshot construction and repeated full validation; schedule rebuilding, validation-index allocation and Person construction are observed sub-costs. Sync remains small(0.285% measuredAdvance). Further scope should be decided from these data without changing transaction correctness contracts.

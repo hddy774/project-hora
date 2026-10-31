@@ -1,0 +1,57 @@
+{
+  "source_commit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5058,
+      "sha256": "8319d9217e41a10b5d90312a1056185a36d192ee43dd4098981e8083ef89e21e"
+    },
+    {
+      "path": "before-9704-golden.log",
+      "bytes": 473,
+      "sha256": "cee249ce437480f546b5b7fcb79c50802b9dc3fae1563d45019eb2098599822f"
+    },
+    {
+      "path": "before-9704-probe.cs.txt",
+      "bytes": 574,
+      "sha256": "ce6282323cc99b80516f249754740f6a41810f9239fcdcf1a737e87db04237f4"
+    },
+    {
+      "path": "before-9704-probe.csproj.txt",
+      "bytes": 595,
+      "sha256": "1d2a861ea179f43b6fbd7f64dcc3f7a2822189c452e6eb8650a21771f1ea6ffb"
+    },
+    {
+      "path": "copy-oracle-functional.json",
+      "bytes": 336,
+      "sha256": "da5072e76f013814220f3d6efdedd6bc0603116b4343cb320ef24c2eb5545e77"
+    },
+    {
+      "path": "copy-oracle-functional.log",
+      "bytes": 129,
+      "sha256": "7346d8094685d5e7745e44dd658d563a38c92c634bf8d5945ac68301233cb2f5"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 8257,
+      "sha256": "a8c98b3d9cae352255f12511adbb4b32a8498023ee40a7cecec7ece42fdf245c"
+    },
+    {
+      "path": "release-build.log",
+      "bytes": 657,
+      "sha256": "8abda5c1630c3c6301e945113d62984e1d1ac838431d71db74d2bf20f86326e3"
+    },
+    {
+      "path": "storage-functional.json",
+      "bytes": 14859,
+      "sha256": "fecabb69150b4f79a6c52593d1c138f3eddcd58a8ea9005e4efabc5f6abc07c4"
+    },
+    {
+      "path": "storage-functional.log",
+      "bytes": 12475,
+      "sha256": "85f533bebcdcdb944982777973205275183190d50e3b1b48640372ac97fcc107"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "kind": "실제 owner_context caller의 정적 step/job 토큰 전달 점검",
+  "baseCommit": "b5526184aebc8152a87abc31a6d66888ed830bea",
+  "recordedUtc": "2026-10-30T21:55:24.571570+00:00",
+  "beforeMissingToken": [
+    {
+      "job": "android_runtime",
+      "step": "실제 새 설치·화면 연결·기존 서명 업데이트 검증(DOM)",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "action.with.script",
+      "tokenScope": "missing",
+      "tokenIsCurrentGitHubTokenReference": false,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues"
+      ],
+      "permissionsSufficient": true
+    }
+  ],
+  "after": [
+    {
+      "job": "review",
+      "step": "릴리스 보호 조건 검증과 정확한 소스 기록",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "run",
+      "tokenScope": "step",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues"
+      ],
+      "permissionsSufficient": true
+    },
+    {
+      "job": "review",
+      "step": "서명 경로 진입 전 전체 기능 감사 완료 확인",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "run",
+      "tokenScope": "step",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues"
+      ],
+      "permissionsSufficient": true
+    },
+    {
+      "job": "sign",
+      "step": "소스·현재 실제 기능 검사·서명 전 바이트 재검증",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "run",
+      "tokenScope": "step",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues"
+      ],
+      "permissionsSufficient": true
+    },
+    {
+      "job": "android_runtime",
+      "step": "기존 인증서로 서명된 이전 공개 앱 내려받기(APK)",
+      "ownerContextCaller": false,
+      "previousApkDownload": true,
+      "invocationKind": "run",
+      "tokenScope": "step",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents"
+      ],
+      "permissionsSufficient": true
+    },
+    {
+      "job": "android_runtime",
+      "step": "실제 새 설치·화면 연결·기존 서명 업데이트 검증(DOM)",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "action.with.script",
+      "tokenScope": "step",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues"
+      ],
+      "permissionsSufficient": true
+    },
+    {
+      "job": "publish",
+      "step": "정본 단계별 기준선·후속 예산·장기 안정성과 동일 앱 플랫폼 근거 확인",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "run",
+      "tokenScope": "job",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues"
+      ],
+      "permissionsSufficient": true
+    },
+    {
+      "job": "publish",
+      "step": "게시 준비·다운로드·검증·게시·공개 바이트 재검증",
+      "ownerContextCaller": true,
+      "previousApkDownload": false,
+      "invocationKind": "run",
+      "tokenScope": "job",
+      "tokenIsCurrentGitHubTokenReference": true,
+      "requiredReadPermissions": [
+        "contents",
+        "pull-requests",
+        "issues",
+        "actions"
+      ],
+      "permissionsSufficient": true
+    }
+  ],
+  "ownerContextCallerSteps": 6,
+  "explicitGhDownloadSteps": 1,
+  "onlyWorkflowChange": "android-emulator-runner step의 GH_TOKEN:${{ github.token }} env 두줄",
+  "releaseScriptsByteIdentical": true,
+  "guardsPermissionsGatesAndCertificateChanged": false,
+  "productFingerprintInputsUnchanged": true,
+  "rootReportedFingerprintPrefix": "528",
+  "fullProductFingerprintRecomputed": false,
+  "featureAndPerformanceGateBodiesReviewed": false,
+  "certificateOrSecretValuesRead": false,
+  "actualGhApiOwnerContextOrEmulatorExecuted": false,
+  "actualReleaseSigningWorldOrOfficialPublicationExecuted": false,
+  "parser": {
+    "name": "PyYAML BaseLoader",
+    "version": "6.0.3"
+  }
+}

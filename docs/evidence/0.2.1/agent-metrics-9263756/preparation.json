@@ -1,0 +1,115 @@
+{
+  "kind": "seonro-agent-measurement-preparation",
+  "prepared_utc": "2026-10-30T17:08:40.830699+00:00",
+  "status": "준비완료·root 명시 go 전 실행 대기",
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "product_source_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "worktree": "/workspace/seonro-agent-9263756",
+  "source_clean": true,
+  "build_configuration": "Release",
+  "build_affinity_cpu": 4,
+  "build_log": "/workspace/scratch/agent-build-9263756.log",
+  "build_log_sha256": "c4968d8d60ae5f7559b3bdc777ba47586a69c2f9c27d901753a74cb8441bae30",
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "3dc3ad7a8c4ea88f345e7fbf7cf74d3a0a7f1b37a15ce3fa75ec5819d40746cd"
+    },
+    {
+      "name": "Chronicles.Game",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "d89a25e4057d4664e289d1d7733c7f2e0fad3913c07401ea1c9aa765c1d5350a"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "956989fd3808399e338764c7178fc8d3c53839c8f22b78b7bbb7bf1aa4f393cd"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "48757b90a575f409047aa2a33be0024e810373fe5eb4bb71fcae99d6b2a700f6"
+    }
+  ],
+  "plan_path": "/workspace/scratch/agent-metrics-plan-9263756.json",
+  "plan_sha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b",
+  "pending_path": "/workspace/scratch/agent-metrics-plan-pending-source.json",
+  "pending_sha256": "fbc43182e094a33d63e9d31a0232a8fe430704be22ed6b11dfa201f7d6a4c843",
+  "pending_unchanged": true,
+  "changed_plan_fields": [
+    "sourceCommit"
+  ],
+  "plan": {
+    "sourceCommit": "9263756b1d00b8696fddecacb077f55d95141f26",
+    "seeds": [
+      42,
+      73
+    ],
+    "horizonMonths": 144,
+    "repetitions": 2,
+    "warmupMonths": 2,
+    "planningBudgets": [
+      1,
+      16,
+      64
+    ],
+    "beliefBudget": 48,
+    "axisDelta": 1,
+    "stagnationMonths": 12,
+    "replayEveryMonths": 12,
+    "preparationLimitMonths": 120
+  },
+  "planned_case_count": 108,
+  "case_counts_by_family": {
+    "axes": 60,
+    "paper": 12,
+    "tool": 12,
+    "ecology": 12,
+    "correction": 4,
+    "cooperation": 4,
+    "fairness": 4
+  },
+  "loop_started": false,
+  "executed_metric_cases": 0,
+  "executed_growth_cases": 0,
+  "actual_start_authorization": null,
+  "planned_execution_cpu": 3,
+  "planned_after_completion_cpu_handoff": "성장 마지막 seed2026에 CPU3 인계",
+  "known_environment_at_preparation": {
+    "cgroup_cpu_max": "400000 100000",
+    "cpuset_effective": "0-4",
+    "thermal_state": "미측정",
+    "power_state": "미측정"
+  },
+  "rationale_and_scope": [
+    "기존 14축50 baseline와 한축+1의 실제 후보 점수 대조. 점수변화와 선택변화를 구분하고 지배/정체를 유한 관측으로 보존한다.",
+    "고정 fixture는 출생/식량소모/재해/오독 비활성, 한 동료Guard, 기존 자금 재분배와 선언 목표를 사용한다. 실제 기본 ecology 조건은 AI 예산 두 키 외 기본 법칙을 유지한다.",
+    "무료 실물·지식/숙련이나 강제 완수는 없다. 실제 유료 준비 실패도 source/seed/horizon을 바꾸지 않고 오류로 보존한다.",
+    "rawLatencySamples의 AdvanceTicks/할당은 실제 공개 월 경계 전체 비용이다. 순수 추론 지연이 아니며 실제 DecisionRecord.Expansions와 별도로 해석한다.",
+    "목표 미완수·미교정·정체·사망을144개월 유한 창의 결과로 보존한다. 성공까지 값/seed/horizon을 바꾸지 않는다.",
+    "매월 전체 hash와 주기12 메모리 저장/복원, 같은 seed·예산·축의 rep0/1 월별 hash를 그대로 비교한다. 정보공정성은 타인 간 기존 자금17 차이의 두 세계로 제한한다.",
+    "root whole/UI 완료와 명시 go 후 CPU3에서 한108묶음만 실행한다. 성능 CPU0·성장 CPU1/2와 실제 동시 여부/프로세스 출처는 시작 시 별도로 기록한다."
+  ],
+  "planned_command_not_executed": [
+    "taskset",
+    "-c",
+    "3",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/agent-metrics-9263756-preceding-functional.json",
+    "--agent-metrics",
+    "/workspace/scratch/agent-metrics-9263756.json",
+    "--agent-metrics-plan",
+    "/workspace/scratch/agent-metrics-plan-9263756.json"
+  ],
+  "planned_log_path": "/workspace/scratch/agent-metrics-9263756.log",
+  "product_cli_test_edits": 0
+}

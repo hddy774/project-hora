@@ -1,0 +1,57 @@
+{
+  "schema": "seonro-resume-supervisor-control.v1",
+  "status": "process_exited",
+  "started_utc": "2026-10-31T04:15:26.438758+00:00",
+  "supervisor_pid": 170429,
+  "supervisor_sid": 170429,
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "exec",
+    "--fx-version",
+    "10.0.14",
+    "/workspace/scratch/save-growth-resume-7901f34/bin/Release/net10.0/SaveGrowthResumeProbe.dll",
+    "/workspace/scratch/v021-three-case-diagnostic-7901f34/result-saves",
+    "/workspace/scratch/v021-n1000-resume-7901f34-once1/resume-world"
+  ],
+  "cap_seconds": 1575,
+  "maximum_attempts": 1,
+  "formal_t04_eligible": false,
+  "source_assemblies_sha256": {
+    "Chronicles.Core.dll": "19470b906faf107d42e9b728ed757f95112be70d14e1e19ea20c8b9351229a24",
+    "Chronicles.Game.dll": "fcec1a70b238a22b7aa3ef53902f0916ae0b2ccb38744be0a31bb7174e927364",
+    "Chronicles.Hosting.dll": "cbc7b6f3f74e254adf3d1558182be595f7bec218e7bc723ae2834c7a1004ce79"
+  },
+  "tiered_environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "scope": "1회30월 재개 파일 증가 진단의 프로세스 제어만 기록한다. 시간/힙/전체120개월/원격T04 합격 근거가 아니다.",
+  "child_pid": 170430,
+  "child_pgid": 170430,
+  "child_sid": 170430,
+  "actual_runtime_mapped_files": [
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.Concurrent.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Console.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Linq.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Memory.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.CoreLib.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Security.Cryptography.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Json.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Native.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Security.Cryptography.Native.OpenSsl.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libclrjit.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libcoreclr.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libhostpolicy.so"
+  ],
+  "child_exit_code": 0,
+  "ended_utc": "2026-10-31T04:29:09.234494+00:00",
+  "external_cap_reached": false,
+  "supervisor_control_elapsed_seconds": 822.7954706470045
+}

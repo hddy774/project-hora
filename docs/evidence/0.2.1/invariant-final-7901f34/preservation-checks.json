@@ -1,0 +1,24 @@
+{
+  "old_scenarios_preserved_exactly": 321,
+  "old_invariant_titles_limits_preserved_exactly": 24,
+  "old_witness_claims_kinds_anchors_preserved_exactly": 167,
+  "registered_scenarios": 323,
+  "feature_scenarios": 285,
+  "program_scenarios": 38,
+  "invariants": 24,
+  "named_witness_links": 171,
+  "new_scenarios": 2,
+  "new_witness_links": 4,
+  "execution_status": "not_asserted",
+  "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+  "old_map_preserved_at_fixed_commit": {
+    "source": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "product_source_fingerprint": "a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12",
+    "map_json_url": "https://github.com/hddy774/project-hora/blob/0d60b5e24c2e764e9a633132a5a7e8d3a45ae55a/docs/evidence/0.2.1/invariant-execution-map.json",
+    "map_markdown_url": "https://github.com/hddy774/project-hora/blob/0d60b5e24c2e764e9a633132a5a7e8d3a45ae55a/docs/evidence/0.2.1/invariant-execution-map.md",
+    "map_json_sha256": "86b4990994a760c748592200aee86d55975d1692cdb7d54f3670e9eb36024d9a",
+    "map_markdown_sha256": "e266255ec72bcbe4f87df70b31057912ea4343ac51c5cbc3b86fe0bbda3c2242"
+  },
+  "new_game_build_performance_growth_runs": 0,
+  "canonical_ledger_proposed_tests_readiness_changed": false
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "collection": "v021-sensitivity-41159864831",
+  "repository": "hddy774/project-hora",
+  "archive": {
+    "tag": "evidence/v0.2.1-sensitivity-41159864831",
+    "target_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "title": "0.2.1 보충 민감도 실행 원형 보관 (run41159864831)",
+    "index_name": "sensitivity-artifact-index-41159864831.json",
+    "prerelease": true,
+    "make_latest": false
+  },
+  "source_run": {
+    "id": 41159864831,
+    "attempt": 1,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+    "workflow_path": ".github/workflows/v021-growth-sensitivity.yml",
+    "workflow_source_commit": "836ff97e930e82af36a6f5fae6dae575c109f7d9",
+    "measured_source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304"
+  },
+  "run_metadata_snapshot": {
+    "file": "run-metadata.json",
+    "bytes": 12673,
+    "sha256": "d7dd05a843bf2d6dc73389e7ad807ba1e76606ac158eb7a6e9a7610d4b98c701"
+  },
+  "original_result": {
+    "classification": "workflowFAILED;4complete+2CLI-timeout-partial",
+    "completed_horizons": 4,
+    "cli_timeout_partial": 2,
+    "reports_complete_fields_remain_false": true,
+    "requested_flag_by_seed": {
+      "42": false,
+      "98": true,
+      "2026": false
+    },
+    "completed_1500_seed42_and_2026": true,
+    "partial_900_seed42_and_2026": true,
+    "different_plan_condition_index_is_not_batch_acceptance": true,
+    "acceptance_relabeling": false
+  },
+  "artifacts": [
+    {
+      "id": 13033147298,
+      "name": "v021-sensitivity-41159864831-1-seed-42",
+      "bytes": 1617563,
+      "sha256": "9c2467c8b7e14b94fd5d1420f3fd2342f20bb4ded72b2abacd32f87a994b57c1",
+      "created_at": "2026-10-31T06:25:20Z",
+      "expires_at": "2026-11-14T06:25:19Z",
+      "run_id": 41159864831,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-41159864831-1-seed-42.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13033147298/zip"
+    },
+    {
+      "id": 13030660873,
+      "name": "v021-sensitivity-41159864831-1-seed-98",
+      "bytes": 1625359,
+      "sha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e",
+      "created_at": "2026-10-31T04:32:32Z",
+      "expires_at": "2026-11-14T04:32:30Z",
+      "run_id": 41159864831,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-41159864831-1-seed-98.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13030660873/zip"
+    },
+    {
+      "id": 13032846688,
+      "name": "v021-sensitivity-41159864831-1-seed-2026",
+      "bytes": 1625931,
+      "sha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+      "created_at": "2026-10-31T06:25:19Z",
+      "expires_at": "2026-11-14T06:25:18Z",
+      "run_id": 41159864831,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-41159864831-1-seed-2026.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13032846688/zip"
+    },
+    {
+      "id": 13025494772,
+      "name": "v021-sensitivity-inputs-41159864831-1",
+      "bytes": 204978,
+      "sha256": "503f499ff67f73639c132a4551476f1435502bff4f16300ef6965c9e3558c8fd",
+      "created_at": "2026-10-31T02:24:34Z",
+      "expires_at": "2026-11-14T02:24:34Z",
+      "run_id": 41159864831,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-inputs-41159864831-1.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13025494772/zip"
+    },
+    {
+      "id": 13026322503,
+      "name": "v021-sensitivity-prepare-41159864831-1",
+      "bytes": 871,
+      "sha256": "3e92f4e8a0b19f4fe1d7d4add61cafea07860f39e44aaaabf262c52c0aef60cf",
+      "created_at": "2026-10-31T02:24:35Z",
+      "expires_at": "2026-11-14T02:24:35Z",
+      "run_id": 41159864831,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-prepare-41159864831-1.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13026322503/zip"
+    },
+    {
+      "id": 13032956600,
+      "name": "v021-sensitivity-collection-41159864831-1",
+      "bytes": 4877539,
+      "sha256": "a6ad994669f00135837aa995175b4d5e65e471aa41e805bd65fd9d9be58e2454",
+      "created_at": "2026-10-31T06:25:35Z",
+      "expires_at": "2026-11-14T06:25:33Z",
+      "run_id": 41159864831,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-collection-41159864831-1.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13032956600/zip"
+    }
+  ],
+  "input_provenance": {
+    "original_plan_sha256": "2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+    "supplemental_plan_sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+    "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+    "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+    "wall_minutes": 240,
+    "horizon_months": 6000,
+    "observation_interval_months": 120,
+    "law_values_in_order": [
+      1500,
+      900
+    ]
+  }
+}

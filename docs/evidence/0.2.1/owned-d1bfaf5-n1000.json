@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "kind": "seonro-population-baseline",
+  "complete": false,
+  "requestedSizes": [
+    1000
+  ],
+  "completedSizes": [],
+  "environment": {
+    "sourceCommit": "d1bfaf5ccb3c89854cdaaeca32a7810105180975",
+    "sourceWorktreeClean": true,
+    "buildConfiguration": "Release",
+    "platform": "host",
+    "engine": "none",
+    "device": "d6c5c2613b8c",
+    "runtime": ".NET 10.0.14",
+    "os": "Debian GNU/Linux 13 (trixie)",
+    "architecture": "X64",
+    "cpu": 4,
+    "totalAvailableMemoryBytes": 12884901888,
+    "precedingFunctionalSelection": "INV-001/002/011",
+    "processScope": "same process after the requested functional selection; shared/JIT caches may be warm; fixture worlds are independent",
+    "thermalState": "not measured; host result only",
+    "powerState": "not measured; host result only"
+  },
+  "totalElapsedSeconds": 187.9053014,
+  "reports": [],
+  "inProgress": {
+    "population": 1000,
+    "stage": "measuring",
+    "completedMonths": 3,
+    "monthlySamplesMs": [
+      90775.6694,
+      693.2356,
+      688.0215
+    ]
+  },
+  "note": "12-month live synthetic baseline; monthly timings exclude fixture/warmup/restore/full collection, total time includes them; retained memory is the collected process managed heap, not cumulative allocations or per-world attribution; numerical budgets follow measurement; partial sizes do not satisfy the final gate; not Android or legacy 100x acceptance."
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "path": "raw/runtimes.txt",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/runtimes.txt",
+    "bytes": 2478,
+    "sha256": "02ddd298846a379d0ba01621581c27d93b4452e682900f6e9b0fd2b0a917cb12",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/sdk.txt",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/sdk.txt",
+    "bytes": 10,
+    "sha256": "e4e6a678725873a4192c048849cd64d852983991bfcb210a40c3b80cc8fcf2eb",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/request.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/request.json",
+    "bytes": 459,
+    "sha256": "bc840071f825a38809961d48673d674bac5afab7248fad34e681c63128352a0f",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/source.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/source.json",
+    "bytes": 197,
+    "sha256": "273d8de2f5b162bfd1054093f73c79bb83cfd533592d57e75e11d23a150eecbb",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/diagnostics/wrapper-observation.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/diagnostics/wrapper-observation.json",
+    "bytes": 2238,
+    "sha256": "5ec42cf0f61f268c604597b3a2e00d9b7c2cc29efdd66ac328b47ba05c4cd1f5",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/diagnostics/stdout.txt",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/diagnostics/stdout.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/diagnostics/stderr.txt",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/diagnostics/stderr.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "byte_identical": true
+  },
+  {
+    "path": "raw/diagnostics/seonro-smoke-result.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw/diagnostics/seonro-smoke-result.json",
+    "bytes": 374,
+    "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975",
+    "byte_identical": true
+  },
+  {
+    "path": "final-ci-metadata.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/final-ci-metadata.json",
+    "bytes": 4817,
+    "sha256": "cc734dd67d0fc6f8100cae399965a59cd7aa68701d91eba95e278c8344578521",
+    "byte_identical": true
+  },
+  {
+    "path": "raw-file-manifest.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/raw-file-manifest.json",
+    "bytes": 1150,
+    "sha256": "63d202fce30f9d6a4fd3d86b65a52c82bc28aeb08d76c72305050cd411ab2ad1",
+    "byte_identical": true
+  },
+  {
+    "path": "verification.json",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/verification.json",
+    "bytes": 3959,
+    "sha256": "fa79f5d71cf2317a0f92d21a3def1325312eb95196441c7fbb2189f6fb6c7118",
+    "byte_identical": true
+  },
+  {
+    "path": "verify-artifact.py",
+    "origin": "/workspace/scratch/windows-diagnostics-41134808459-93b28c2/verify-artifact.py",
+    "bytes": 4396,
+    "sha256": "cbd0345938177457e5588f4ef4b2930782f20ed6e5be0253a55a852afb286dcd",
+    "byte_identical": true
+  }
+]

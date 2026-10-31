@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "kind": "L05 감사 문서와 소형 원문 사본 SHA256 목록",
+  "scope": "L05 감사·root 승인 반영 문서와 소형 원문 사본의 SHA256 목록. 승인 전 audit.json/독립검증 원문은 보존하며 게임 실행을 추가하지 않는다.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 13974,
+      "sha256": "d1368b08476dfb770d66f449d5f7b53e278a8b465d0d42af9a1c3d3a9c04181e"
+    },
+    {
+      "path": "acceptance-approved.json",
+      "bytes": 3310,
+      "sha256": "3c422f88d172f64b834162f8534b548bdc2ef882dafcdacb18e08f525b52419d"
+    },
+    {
+      "path": "audit.json",
+      "bytes": 11857,
+      "sha256": "53434bb9ebbe90cef91a2c57e0e1ebe04808012004bdc912c9332a7b8fa9dc57"
+    },
+    {
+      "path": "functional-evidence.json",
+      "bytes": 12576,
+      "sha256": "8e1ab3f2b324dfa18a2de5f3c0ecbe0b1ecd5e2625a88ca456a0617d597eb6c0"
+    },
+    {
+      "path": "growth-aggregate-provenance.original.json",
+      "bytes": 1682,
+      "sha256": "3750b5196220d793de701d11f8615bed8c7bb1d09893f475ece783c3f205a766"
+    },
+    {
+      "path": "growth-final-verification.original.json",
+      "bytes": 5278,
+      "sha256": "c74f85bd5c1aab95d403498039c1c400cab658618478c834608903a0d59196a0"
+    },
+    {
+      "path": "natural-observations.json",
+      "bytes": 11828,
+      "sha256": "c6893e2ef3cd400e41fd199ecf41148e97f9bb61fc392abd80e8712115586605"
+    },
+    {
+      "path": "plan-validation.approved.json",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "source-relationship.patch",
+      "bytes": 485,
+      "sha256": "055afcd85e7e461be576bb585ab677e891a9fcd863e113bac44d90140405abc6"
+    }
+  ]
+}

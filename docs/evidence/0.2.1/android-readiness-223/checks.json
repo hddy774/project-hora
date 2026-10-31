@@ -1,0 +1,89 @@
+{
+  "baseCommit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "issue": 223,
+  "unit": {
+    "command": "taskset -c 3 python3 scripts/test-android-readiness.py",
+    "tests": 15,
+    "passed": 15,
+    "exitCode": 0,
+    "nativeAndroidExecution": false,
+    "stalePrelaunchFixture": "유효한 APP_LOG 사전 표식을 저장하고 clear 뒤의 빈 로그로는 합격하지 않음"
+  },
+  "actionlint": {
+    "version": "1.7.12",
+    "exitCode": 0,
+    "files": [
+      ".github/workflows/v021-product.yml",
+      ".github/workflows/v021-api24-probe.yml"
+    ]
+  },
+  "releaseGuardSelfTest": "passed",
+  "planSelfTest": "passed",
+  "productBoundarySelfTest": "passed",
+  "syntaxAndProtectedSourceCheck": "passed",
+  "officialOwnerSourceSignPublishUpgradeChanged": false,
+  "actualPlatformProofOnNewSource": "pending automatic CI; no local Android/ADB execution",
+  "performanceGrowthLongRuns": 0,
+  "officialReleaseExecutions": 0,
+  "priorFp528Relabeled": false,
+  "rawLogs": {
+    "actionlint.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "boundary-static.log": {
+      "bytes": 3542,
+      "sha256": "b911c8c2ff2a4bc621cd74428443128622f8fb07acac4180885cc3e892ce9f9b"
+    },
+    "plan-static.log": {
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    "release-selftest.log": {
+      "bytes": 195,
+      "sha256": "fcbb790be7db5548dc2e17837502fefe98f6ab3960923f7a592ca3d5bfe173ac"
+    },
+    "unit.log": {
+      "bytes": 114,
+      "sha256": "bc12bc8894193f1b90c46460d32623dd83d65eff3fa61a7136bee5fe5776782c"
+    },
+    "kvm-flow.log": {
+      "bytes": 3702,
+      "sha256": "e368423142c1556c179c0f848913e1fa40b4d610aa92e892e12041745e2283fd"
+    },
+    "window-scope-before.log": {
+      "bytes": 2715,
+      "sha256": "ad330ea8c5f5b3b6bf7e35ea76584d3e68e4d395af5f8a735c13e5b54c528101"
+    },
+    "captured-ui-replay.log": {
+      "bytes": 171,
+      "sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4"
+    },
+    "capture-order-before.log": {
+      "bytes": 1456,
+      "sha256": "9e1599216e1902f09124d43a3a9ef62a6cae40938f230245465344fe2b481e5c"
+    }
+  },
+  "kvmShellFlow": {
+    "passed": 8,
+    "realUdevOrKvmOperations": 0,
+    "readerUnchangedInKvmCommit": true
+  },
+  "windowQueryRegression": {
+    "beforeExit": 1,
+    "afterPassed": 13,
+    "captured451OriginalVerifierReplayExit": 0,
+    "newAndroidOrAdbExecutions": 0
+  },
+  "expectedFailingRegression": {
+    "window-scope-before.log": "수정 전 windows-only query로 실제flow가 실패함을 보인 의도된 exit1",
+    "capture-order-before.log": "수정 전 늦은dialog/stale좌표 회귀의 의도된 exit1"
+  },
+  "captureOrderRegression": {
+    "beforeExit": 1,
+    "afterPassed": 15,
+    "lateDialogMustBeHandledBeforeSuccess": true,
+    "staleDialogCoordinatesNeverTapped": true,
+    "newAndroidOrAdbExecutionsLocally": 0
+  }
+}

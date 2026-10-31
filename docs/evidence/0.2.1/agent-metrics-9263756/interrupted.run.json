@@ -1,0 +1,83 @@
+{
+  "kind": "seonro-agent-108-run-provenance",
+  "status": "running",
+  "recorded_start_utc": "2026-10-30T17:12:23.699676+00:00",
+  "pid": 113736,
+  "process_start_host_text": "Fri Oct 30 17:11:52 2026",
+  "cwd": "/workspace/seonro-agent-9263756",
+  "actual_command": [
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/agent-metrics-9263756-preceding-functional.json",
+    "--agent-metrics",
+    "/workspace/scratch/agent-metrics-9263756.json",
+    "--agent-metrics-plan",
+    "/workspace/scratch/agent-metrics-plan-9263756.json"
+  ],
+  "affinity_cpu_list": "3",
+  "source_commit": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "product_source_fingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "source_clean_at_launch": true,
+  "plan_path": "/workspace/scratch/agent-metrics-plan-9263756.json",
+  "plan_sha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b",
+  "preparation_provenance": "/workspace/scratch/agent-preparation-9263756.json",
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "3dc3ad7a8c4ea88f345e7fbf7cf74d3a0a7f1b37a15ce3fa75ec5819d40746cd"
+    },
+    {
+      "name": "Chronicles.Game",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "d89a25e4057d4664e289d1d7733c7f2e0fad3913c07401ea1c9aa765c1d5350a"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "956989fd3808399e338764c7178fc8d3c53839c8f22b78b7bbb7bf1aa4f393cd"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "path": "/workspace/seonro-agent-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "informationalVersion": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+      "sha256": "48757b90a575f409047aa2a33be0024e810373fe5eb4bb71fcae99d6b2a700f6"
+    }
+  ],
+  "output": "/workspace/scratch/agent-metrics-9263756.json",
+  "console_log": "/workspace/scratch/agent-metrics-9263756.log",
+  "preceding_functional": "/workspace/scratch/agent-metrics-9263756-preceding-functional.json",
+  "preceding_functional_selection": "INV-001/002/011",
+  "cpu_max": "400000 100000",
+  "cpuset_effective": "0-4",
+  "root_reported_concurrency": "비용CPU0, 성장seed42/98 CPU1/2, 본AI108 CPU3; CPU4추가측정없음",
+  "root_authorization": "926 whole308/308 및 최종T05/독립N100AB 종료 뒤 실제108 GO",
+  "scope": "고정144개월·2seed·2rep·108case; 결과와 관계없이 수치/seed/horizon/소스 변경 없음; 월 전체 비용이며 순수 추론 지연 아님",
+  "planned_cpu_release": "프로세스 종료 즉시 root/politics에CPU3해제 통지. 해석·압축·문서는CPU3고정 프로세스를 유지하지 않음.",
+  "external_concurrent_intervals": [
+    {
+      "reported_by": "root",
+      "started_utc": "2026-10-30T17:48:59Z",
+      "ended_utc": "2026-10-30T17:56:54Z",
+      "source_commit": "9704e95508456ee317a378a9b8dac55985bf1849",
+      "cpu_affinity": "4",
+      "activity": "기능 정확성 전체 검사(309예상), 새 벤치 아님",
+      "cgroup_cpu_max": "400000 100000",
+      "measurement_affinities": "AI3/비용0/성장1,2와공유quota",
+      "interpretation": "공유quota의외부동시부하다. AI원시global월wall값을수정/제외하지않고exclusiveCPU/onCPU/순수추론비용으로표시하지않는다. 개별월의UTC/onCPU표본을추가계측했다고주장하지않는다.",
+      "source_promotion_forbidden": true,
+      "measurement_source_remains": "9263756b1d00b8696fddecacb077f55d95141f26",
+      "ended_utc_is_observed_upper_bound": true,
+      "exact_end_utc": null,
+      "exit_confirmed_utc": "2026-10-30T17:57:15Z",
+      "root_reported_result": "전체309/309·execsession1819 exit0",
+      "end_time_scope": "정밀 종료시각 캡처 없음.17:56:54 로그전체완료관측상한 및17:57:15확정exit확인.이후CPU4추가앱/측정없음이라는root통지."
+    }
+  ]
+}

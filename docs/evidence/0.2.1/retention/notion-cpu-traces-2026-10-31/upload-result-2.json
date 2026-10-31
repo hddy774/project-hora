@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "http_status": 400,
+  "error_type": "HTTPError",
+  "code": "validation_error",
+  "message": "File size of 14.374 MiB exceeds the limit of 5 MiB."
+}

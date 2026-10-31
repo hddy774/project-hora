@@ -1,0 +1,498 @@
+name: 0.2.1 고정 기준선의 단일 법칙 민감도 6조건
+
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      metadata_sha:
+        description: 계획과 portable 기준선 묶음이 있는 정확한 SHA40
+        type: string
+        required: true
+      bundle_path:
+        description: 계획 plan.json과 portable 기준선·원본9개가 있는 저장소 상대 경로
+        type: string
+        default: docs/evidence/0.2.1/growth-sensitivity/inputs
+        required: true
+      wall_minutes:
+        description: 실제 기준선 시간·계획 관찰창에 근거해 확정한 CLI 상한(1~330분)
+        type: number
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: v021-sensitivity-${{ github.run_id }}
+  cancel-in-progress: false
+
+env:
+  SOURCE_SHA: 7ce66943b539420c9dc1e3fa8a611daae58020ff
+  PRODUCT_FINGERPRINT: 4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  DOTNET_MULTILEVEL_LOOKUP: '0'
+  PYTHONDONTWRITEBYTECODE: '1'
+  V021_THERMAL_STATE: GitHub 호스트 VM·물리 호스트의 열 상태 미측정
+  V021_POWER_STATE: GitHub 호스트 VM·물리 호스트의 전력·전원 상태 미측정
+
+jobs:
+  prepare:
+    name: 확정 계획과 같은 소스의 실제 기준선9개 고정
+    if: >-
+      ${{ github.repository == 'hddy774/project-hora' &&
+          github.actor == github.repository_owner &&
+          github.triggering_actor == github.repository_owner &&
+          ((github.event_name == 'pull_request' && github.event.action == 'labeled' &&
+            github.event.label.name == '0.2.1 민감도 실측 실행' &&
+            github.event.pull_request.head.repo.full_name == github.repository) ||
+           (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      metadata_sha: ${{ steps.stage.outputs.metadata_sha }}
+      plan_sha: ${{ steps.stage.outputs.plan_sha }}
+      baseline_sha: ${{ steps.stage.outputs.baseline_sha }}
+      horizon: ${{ steps.stage.outputs.horizon }}
+      interval: ${{ steps.stage.outputs.interval }}
+      wall_minutes: ${{ steps.stage.outputs.wall_minutes }}
+      wall_file_sha: ${{ steps.stage.outputs.wall_file_sha }}
+      input_artifact: ${{ steps.stage.outputs.input_artifact }}
+    env:
+      METADATA_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.metadata_sha }}
+      BUNDLE_PATH: ${{ github.event_name == 'workflow_dispatch' && inputs.bundle_path || 'docs/evidence/0.2.1/growth-sensitivity/inputs' }}
+      WALL_MINUTES: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.wall_minutes) || '' }}
+      WORKFLOW_SOURCE_SHA: ${{ github.workflow_sha }}
+    steps:
+      - name: 입력 요청과 체크아웃 밖 경로 기록
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, re
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / ('v021-sensitivity-inputs-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT'])
+          root.mkdir(exist_ok=False)
+          (root / 'provenance').mkdir()
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write('RESULT_DIR=' + str(root) + '\n')
+          request = {k: os.environ.get(k) for k in ['METADATA_SHA', 'BUNDLE_PATH', 'WALL_MINUTES', 'SOURCE_SHA',
+                     'PRODUCT_FINGERPRINT', 'WORKFLOW_SOURCE_SHA', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_EVENT_NAME']}
+          (root / 'provenance/request.json').write_text(json.dumps(request, ensure_ascii=False, indent=2) + '\n')
+          assert re.fullmatch('[0-9a-f]{40}', os.environ['METADATA_SHA']), '계획 원본의 정확한 SHA40이 필요합니다'
+          PY
+      - name: 워크플로와 입력 문서 소스 체크아웃
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.METADATA_SHA }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: 원문 byte를 바꾸지 않고 portable 묶음 고정
+        id: stage
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, shutil, subprocess
+          workspace = pathlib.Path(os.environ['GITHUB_WORKSPACE']).resolve()
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == os.environ['METADATA_SHA']
+          source = (workspace / os.environ['BUNDLE_PATH']).resolve()
+          assert source.is_relative_to(workspace / 'docs/evidence/0.2.1') and source.is_dir(), '증거 디렉터리 안의 확정 입력 묶음이 필요합니다'
+          assert all(not p.is_symlink() for p in source.rglob('*')), '이동 가능한 실제 파일만 사용합니다'
+          target = root / 'inputs'
+          shutil.copytree(source, target)
+          wall_bytes = (target / 'cli-wall-minutes.txt').read_bytes()
+          def wall_value(data):
+              assert re.fullmatch(rb'[0-9]+(?:\r?\n)?', data), 'CLI 상한 파일은 순수 ASCII 정수 한 줄이어야 합니다'
+              value = int(data)
+              assert 1 <= value <= 330, '기준선 실측·관찰창에 근거한 1~330분 상한을 먼저 확정하세요'
+              return value
+          wall_minutes = wall_value(wall_bytes)
+          if os.environ['GITHUB_EVENT_NAME'] == 'workflow_dispatch':
+              assert wall_value(os.environ['WALL_MINUTES'].encode('ascii')) == wall_minutes, '수동 상한도 버전 관리된 실제 채택값과 일치해야 합니다'
+          plan_bytes = (target / 'plan.json').read_bytes()
+          plan = json.loads(plan_bytes)
+          assert plan['schemaVersion'] == 1 and plan['kind'] == 'seonro-growth-sensitivity-plan'
+          assert len(plan['seeds']) == 3 and set(plan['seeds']) == {42, 98, 2026}
+          assert len(plan['values']) == len(set(plan['values'])) == 2
+          assert all(type(v) is int for v in plan['values'])
+          assert type(plan['horizonMonths']) is int and type(plan['observationIntervalMonths']) is int
+          assert 0 < plan['observationIntervalMonths'] <= plan['horizonMonths'] <= 6000
+          assert plan['horizonMonths'] % plan['observationIntervalMonths'] == 0
+          baseline_path = (target / plan['baselineReportPath']).resolve()
+          assert not pathlib.Path(plan['baselineReportPath']).is_absolute() and baseline_path.is_relative_to(target)
+          baseline_bytes = baseline_path.read_bytes()
+          baseline = json.loads(baseline_bytes)
+          digest = lambda data: hashlib.sha256(data).hexdigest()
+          assert plan['sourceCommit'] == baseline['sourceCommit'] == os.environ['SOURCE_SHA']
+          assert plan['productSourceFingerprint'] == baseline['productSourceFingerprint'] == os.environ['PRODUCT_FINGERPRINT']
+          assert digest(baseline_bytes) == plan['baselineReportSha256']
+          assert baseline['kind'] == 'seonro-growth-cohorts-aggregate' and baseline['complete'] is True
+          assert baseline['requested_complete'] is True and baseline['completedCases'] == 9
+          assert len(baseline['reports']) == 9
+          assert {(r['scenario'], r['seed']) for r in baseline['reports']} == {(s, seed) for s in 'abc' for seed in [42, 98, 2026]}
+          artifacts = baseline['inputArtifacts']
+          assert len(artifacts) == 9, '최종 원격 기준선의 실제9원본이 모두 필요합니다'
+          assert len({artifact['path'] for artifact in artifacts}) == 9
+          for artifact in artifacts:
+              relative = pathlib.Path(artifact['path'])
+              path = (baseline_path.parent / relative).resolve()
+              assert not relative.is_absolute() and path.is_relative_to(target), '절대 경로를 사후 수정하지 말고 정식 통합기로 portable 집계하세요'
+              assert digest(path.read_bytes()) == artifact['sha256'], '기준 원본 byte/SHA가 다릅니다'
+          records = []
+          for path in sorted(p for p in target.rglob('*') if p.is_file()):
+              relative = path.relative_to(target).as_posix()
+              assert relative != 'bundle.sha256' and '\n' not in relative and '\\' not in relative
+              records.append(digest(path.read_bytes()) + '  ' + relative)
+          (target / 'bundle.sha256').write_text('\n'.join(records) + '\n')
+          artifact = 'v021-sensitivity-inputs-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']
+          values = {'metadata_sha': os.environ['METADATA_SHA'], 'plan_sha': digest(plan_bytes),
+                    'baseline_sha': digest(baseline_bytes), 'horizon': plan['horizonMonths'],
+                    'interval': plan['observationIntervalMonths'], 'wall_minutes': wall_minutes,
+                    'wall_file_sha': digest(wall_bytes),
+                    'input_artifact': artifact}
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.writelines(str(k) + '=' + str(v) + '\n' for k, v in values.items())
+          (root / 'provenance/staged.json').write_text(json.dumps(values, ensure_ascii=False, indent=2) + '\n')
+          PY
+      - name: 같은 원문 입력을 세 작업에 전달
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.stage.outputs.input_artifact }}
+          path: ${{ env.RESULT_DIR }}/inputs/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
+      - name: 준비 실패도 요청 출처 보존
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-sensitivity-prepare-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.RESULT_DIR }}/provenance/
+          if-no-files-found: error
+          retention-days: 14
+
+  sensitivity:
+    name: 단일 법칙 두 값 · 시드 ${{ matrix.seed }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        seed: [42, 98, 2026]
+    env:
+      SEED: ${{ matrix.seed }}
+      SCENARIO: a
+      METADATA_SHA: ${{ needs.prepare.outputs.metadata_sha }}
+      PLAN_SHA: ${{ needs.prepare.outputs.plan_sha }}
+      BASELINE_SHA: ${{ needs.prepare.outputs.baseline_sha }}
+      HORIZON_MONTHS: ${{ needs.prepare.outputs.horizon }}
+      INTERVAL_MONTHS: ${{ needs.prepare.outputs.interval }}
+      WALL_MINUTES: ${{ needs.prepare.outputs.wall_minutes }}
+      WALL_FILE_SHA: ${{ needs.prepare.outputs.wall_file_sha }}
+      WORKFLOW_SOURCE_SHA: ${{ github.workflow_sha }}
+    steps:
+      - name: 실제 측정·입력·빌드를 체크아웃 밖에 준비
+        run: |
+          python3 - <<'PY'
+          import os, pathlib
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / ('v021-sensitivity-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT'] + '-' + os.environ['SEED'])
+          root.mkdir(exist_ok=False)
+          for name in ['inputs', 'out', 'logs', 'environment', 'provenance', 'build', 'tmp', 'dotnet', 'dotnet-home', 'nuget']:
+              (root / name).mkdir()
+          values = {'RESULT_DIR': root, 'DOTNET_INSTALL_DIR': root / 'dotnet', 'DOTNET_ROOT': root / 'dotnet',
+                    'DOTNET_CLI_HOME': root / 'dotnet-home', 'NUGET_PACKAGES': root / 'nuget',
+                    'TMPDIR': root / 'tmp', 'TMP': root / 'tmp', 'TEMP': root / 'tmp'}
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.writelines(str(k) + '=' + str(v) + '\n' for k, v in values.items())
+          PY
+      - name: 준비한 계획·기준선·실제9원본 먼저 받기
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.prepare.outputs.input_artifact }}
+          path: ${{ env.RESULT_DIR }}/inputs/
+      - name: 고정한 기존 측정 소스7ce 체크아웃
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 7ce66943b539420c9dc1e3fa8a611daae58020ff
+          fetch-depth: 1
+          persist-credentials: false
+      - name: 기준선과 같은 SDK10.0.403 설치
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.403'
+      - name: 소스·실제 CPU·메모리·쿼터·디스크·런타임 기록
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, platform, shutil, subprocess
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          subprocess.run(['sha256sum', '--check', 'bundle.sha256'], cwd=root / 'inputs', check=True)
+          def run(*args):
+              return subprocess.check_output(args, text=True).strip()
+          def optional(path):
+              p = pathlib.Path(path)
+              return p.read_text().strip() if p.is_file() else None
+          sha = run('git', 'rev-parse', 'HEAD')
+          assert sha == os.environ['SOURCE_SHA'] and not run('git', 'status', '--porcelain', '--untracked-files=all'), '고정 SHA·깨끗한 소스가 아닙니다'
+          sdk = run('dotnet', '--version')
+          assert sdk == '10.0.403', '요청 SDK 설치에 실패했습니다. 다른 버전으로 대체하지 않습니다'
+          fingerprint = run('python3', 'scripts/verify-v021-release.py', 'fingerprint', '--commit', sha)
+          assert fingerprint == os.environ['PRODUCT_FINGERPRINT'], '기준선7ce 제품 지문과 다릅니다'
+          version = pathlib.Path('VERSION').read_text().strip()
+          assert version == '0.2.1'
+          cpuinfo = pathlib.Path('/proc/cpuinfo').read_text()
+          meminfo = pathlib.Path('/proc/meminfo').read_text()
+          cgroup_names = ['cpu.max', 'cpuset.cpus.effective', 'memory.max', 'memory.current', 'memory.peak', 'memory.events', 'memory.swap.max']
+          environment = {'os': platform.platform(), 'uname': list(platform.uname()), 'runner_name': os.environ.get('RUNNER_NAME'),
+              'runner_os': os.environ.get('RUNNER_OS'), 'runner_arch': os.environ.get('RUNNER_ARCH'),
+              'runner_environment': os.environ.get('RUNNER_ENVIRONMENT'), 'image_os': os.environ.get('ImageOS'),
+              'image_version': os.environ.get('ImageVersion'), 'os_cpu_count': os.cpu_count(),
+              'affinity_cpus': sorted(os.sched_getaffinity(0)),
+              'cpu_model': next((line.split(':', 1)[1].strip() for line in cpuinfo.splitlines() if line.startswith('model name')), None),
+              'meminfo': meminfo, 'disk_bytes': dict(shutil.disk_usage(root)._asdict()),
+              'cgroup': {name: optional('/sys/fs/cgroup/' + name) for name in cgroup_names},
+              'sdk': sdk, 'dotnet_info': run('dotnet', '--info'), 'runtimes': run('dotnet', '--list-runtimes'),
+              'thermal_state': os.environ['V021_THERMAL_STATE'], 'power_state': os.environ['V021_POWER_STATE'],
+              'nominal_runner': 'GitHub 공개 ubuntu-24.04 표준 4vCPU/16GB; 실제 값은 이 원본을 따름',
+              'cross_vm_limit': '3개 독립 VM의 CPU 모델·쿼터·메모리·디스크·열·전원 동일성을 보장하지 않음. 실행시간은 동일 머신의 paired 비교가 아님',
+              'scope': '고정 기본a의 단일 법칙 반사실 관측. Android/기기 성능·실제 플레이 배속·인구 균형의 보편적 증명이 아님'}
+          (root / 'environment/before.json').write_text(json.dumps(environment, ensure_ascii=False, indent=2) + '\n')
+          (root / 'environment/cpuinfo.txt').write_text(cpuinfo)
+          assert environment['runner_environment'] == 'github-hosted', 'GitHub 공개 호스트 러너가 아닙니다'
+          source = {'source_commit': sha, 'source_tree': run('git', 'rev-parse', 'HEAD^{tree}'),
+                    'product_source_fingerprint': fingerprint, 'version': version, 'source_worktree_clean': True,
+                    'workflow_source_commit': os.environ['WORKFLOW_SOURCE_SHA'], 'sdk': sdk,
+                    'scenario': os.environ['SCENARIO'], 'seed': int(os.environ['SEED']),
+                    'horizon_months': int(os.environ['HORIZON_MONTHS']), 'observation_interval_months': int(os.environ['INTERVAL_MONTHS']),
+                    'metadata_source_commit': os.environ['METADATA_SHA'], 'plan_sha256': os.environ['PLAN_SHA'],
+                    'baseline_sha256': os.environ['BASELINE_SHA'], 'wall_minutes': int(os.environ['WALL_MINUTES']),
+                    'wall_minutes_file_sha256': os.environ['WALL_FILE_SHA'],
+                    'runtime_environment': {k: v for k, v in os.environ.items() if k.startswith('DOTNET_')},
+                    'input_contract': '기존 --sensitivity/--sensitivity-plan/--sensitivity-seed. 기본a·한 잠정법칙·값2개·세 실제seed; 새로운 프로그램/보고서 schema 없음'}
+          (root / 'provenance/source.json').write_text(json.dumps(source, ensure_ascii=False, indent=2) + '\n')
+          with open(os.environ['GITHUB_ENV'], 'a') as stream:
+              stream.write('PRODUCT_FINGERPRINT=' + fingerprint + '\nPRODUCT_VERSION=' + version + '\n')
+          PY
+      - name: 모든 출력이 체크아웃 밖인 Release 빌드
+        run: |
+          set -o pipefail
+          dotnet build tests/Chronicles.Game.Tests -c Release -m:1 --artifacts-path "$RESULT_DIR/build" \
+            -p:ContinuousIntegrationBuild=true -p:SourceRevisionId="$SOURCE_SHA" \
+            -p:IncludeSourceRevisionInInformationalVersion=true -p:UseSharedCompilation=false \
+            2>&1 | tee "$RESULT_DIR/logs/build.log"
+          git status --porcelain --untracked-files=all > "$RESULT_DIR/provenance/git-after-build.txt"
+          test ! -s "$RESULT_DIR/provenance/git-after-build.txt"
+          python3 - <<'PY'
+          import os, pathlib
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          candidates = list((root / 'build/bin').rglob('Chronicles.Game.Tests.dll'))
+          assert len(candidates) == 1 and candidates[0].is_relative_to(root)
+          with open(os.environ['GITHUB_ENV'], 'a') as stream:
+              stream.write('TEST_DLL=' + str(candidates[0]) + '\nBUILD_OUTPUT=' + str(candidates[0].parent) + '\n')
+          PY
+      - name: 측정 전 네 DLL·런타임 설정 원본 보존
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, shutil
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          output = pathlib.Path(os.environ['BUILD_OUTPUT'])
+          target = root / 'provenance/assemblies'
+          target.mkdir()
+          records = []
+          for name in ['Chronicles.Core', 'Chronicles.Game', 'Chronicles.Hosting', 'Chronicles.Game.Tests']:
+              path = output / (name + '.dll')
+              data = path.read_bytes()
+              shutil.copy2(path, target / path.name)
+              records.append({'assembly': name, 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+          for path in output.glob('*.runtimeconfig.json'):
+              shutil.copy2(path, target / path.name)
+          (root / 'provenance/assemblies-before.json').write_text(json.dumps(records, indent=2) + '\n')
+          PY
+      - name: 기존 CLI로 해당 시드의 두 반사실 값 관측
+        run: |
+          python3 - <<'PY'
+          import datetime, json, os, pathlib, time
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          assert not any((root / 'out').iterdir()), '이전 원본을 덮어쓰지 않습니다'
+          command = ['dotnet', os.environ['TEST_DLL'], '--filter', 'INV-001/002/011',
+                     '--sensitivity', str(root / 'out/sensitivity.json'), '--sensitivity-plan', str(root / 'inputs/plan.json'),
+                     '--sensitivity-seed', os.environ['SEED']]
+          data = {'command': command, 'source_commit': os.environ['SOURCE_SHA'], 'metadata_source_commit': os.environ['METADATA_SHA'],
+                  'seed': int(os.environ['SEED']), 'plan_sha256': os.environ['PLAN_SHA'], 'baseline_sha256': os.environ['BASELINE_SHA'],
+                  'started_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'monotonic_started': time.monotonic(),
+                  'wall_cap_minutes': int(os.environ['WALL_MINUTES']),
+                  'wall_minutes_file_sha256': os.environ['WALL_FILE_SHA'],
+                  'timeout_meaning': '부분/중단은 실패로 보존하며 관찰창·시드·법칙이나 완료 플래그를 바꾸지 않음'}
+          (root / 'provenance/process-start.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          PY
+          set +e
+          timeout --signal=TERM --kill-after=30s "${WALL_MINUTES}m" dotnet "$TEST_DLL" \
+            --filter INV-001/002/011 --sensitivity "$RESULT_DIR/out/sensitivity.json" \
+            --sensitivity-plan "$RESULT_DIR/inputs/plan.json" --sensitivity-seed "$SEED" \
+            2>&1 | tee "$RESULT_DIR/logs/sensitivity.log"
+          statuses=("${PIPESTATUS[@]}")
+          set -e
+          python3 - "${statuses[0]}" "${statuses[1]}" <<'PY'
+          import datetime, json, os, pathlib, sys, time
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          start = json.loads((root / 'provenance/process-start.json').read_text())
+          data = {'process_exit': int(sys.argv[1]), 'log_exit': int(sys.argv[2]),
+                  'finished_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                  'wall_seconds_including_genesis_logging_and_report_io': time.monotonic() - start['monotonic_started'],
+                  'raw_sensitivity_report_modified_by_workflow': False}
+          (root / 'provenance/process-exit.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+          PY
+          if [ "${statuses[0]}" -ne 0 ]; then exit "${statuses[0]}"; fi
+          exit "${statuses[1]}"
+      - name: 기존 보고서의 요청2개 완주·단일 법칙·실제 네 DLL 검증
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, subprocess
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          subprocess.run(['sha256sum', '--check', 'bundle.sha256'], cwd=root / 'inputs', check=True)
+          assert not subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all'], text=True).strip()
+          plan_bytes = (root / 'inputs/plan.json').read_bytes()
+          plan = json.loads(plan_bytes)
+          report = json.loads((root / 'out/sensitivity.json').read_text())
+          assert hashlib.sha256(plan_bytes).hexdigest() == report['planSha256'] == os.environ['PLAN_SHA']
+          assert report['baselineReportSha256'] == os.environ['BASELINE_SHA'] == plan['baselineReportSha256']
+          assert report['kind'] == 'seonro-growth-sensitivity' and report['schema_version'] == 1
+          assert report['sourceCommit'] == os.environ['SOURCE_SHA'] and report['productSourceFingerprint'] == os.environ['PRODUCT_FINGERPRINT']
+          assert report['plan'] == plan and report['baselineCompletedCases'] == 9 and report['plannedCases'] == 6
+          assert report['requested_complete'] is True and report['complete'] is False and report['status'] == 'requested-completed'
+          assert report['runningCase'] is None and report['completedCases'] == 2 and len(report['reports']) == 2
+          seed = int(os.environ['SEED'])
+          assert report['requestedCases'] == [{'value': v, 'seed': seed} for v in plan['values']]
+          assert {r['lawValue'] for r in report['reports']} == set(plan['values'])
+          assert report['counterfactual'] is True and report['usesProductDefaultLaws'] is False and report['selectedBloodPolicy'] == 'a'
+          assert report['changedLaw'] == plan['lawKey']
+          baseline = json.loads((root / 'inputs' / plan['baselineReportPath']).read_text())
+          base = next(r for r in baseline['reports'] if r['scenario'] == 'a' and r['seed'] == seed)['usedLaws']
+          for row in report['reports']:
+              assert row['seed'] == seed and row['scenario'] == 'a' and row['status'] == 'completed' and row['error'] is None
+              assert row['observedThroughMonth'] == plan['horizonMonths']
+              assert [p['month'] for p in row['timeSeries']] == list(range(0, plan['horizonMonths'] + 1, plan['observationIntervalMonths']))
+              assert all(p['explicitArrivals'] == 0 for p in row['timeSeries'])
+              assert row['counterfactual'] is True and row['usesProductDefaultLaws'] is False and row['selectedBloodPolicy'] == 'a'
+              assert row['changedLaw'] == plan['lawKey'] and set(row['usedLaws']) == set(base)
+              assert {key for key in base if row['usedLaws'][key] != base[key]} == {plan['lawKey']}
+              assert row['usedLaws'][plan['lawKey']] == row['lawValue']
+          assert report['environment']['runtime'] == '.NET 10.0.14' and report['environment']['sourceWorktreeClean'] is True
+          before = json.loads((root / 'provenance/assemblies-before.json').read_text())
+          assert len(report['builds']) == 4 and {r['assembly'] for r in report['builds']} == {r['assembly'] for r in before}
+          for saved in before:
+              actual = next(r for r in report['builds'] if r['assembly'] == saved['assembly'])
+              assert actual['informationalVersion'].endswith('+' + os.environ['SOURCE_SHA'])
+              assert actual['sha256'] == saved['sha256']
+              for directory in [pathlib.Path(os.environ['BUILD_OUTPUT']), root / 'provenance/assemblies']:
+                  assert hashlib.sha256((directory / (saved['assembly'] + '.dll')).read_bytes()).hexdigest() == saved['sha256']
+          print('요청한 두 값의 실제 관찰 완주를 확인했습니다. 원본 complete=false는 유지하며 전체6개나 균형 수용으로 재명명하지 않습니다.')
+          PY
+      - name: 실패·시간 초과에도 원시 partial와 입력·환경·해시 보존
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, pathlib
+          root = pathlib.Path(os.environ['RESULT_DIR'])
+          files = []
+          for directory in ['inputs', 'out', 'logs', 'environment', 'provenance']:
+              for path in sorted((root / directory).rglob('*')):
+                  if path.is_file() and path.name != 'files.json':
+                      data = path.read_bytes()
+                      files.append({'path': path.relative_to(root).as_posix(), 'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()})
+          (root / 'provenance/files.json').write_text(json.dumps({'files': files, 'observed_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'source_commit': os.environ['SOURCE_SHA'], 'plan_sha256': os.environ['PLAN_SHA'], 'raw_report_rewritten': False}, ensure_ascii=False, indent=2) + '\n')
+          PY
+      - name: 시드별 실제 원본·입력·실패 기록 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-sensitivity-${{ github.run_id }}-${{ github.run_attempt }}-seed-${{ matrix.seed }}
+          path: |
+            ${{ env.RESULT_DIR }}/inputs/
+            ${{ env.RESULT_DIR }}/out/
+            ${{ env.RESULT_DIR }}/logs/
+            ${{ env.RESULT_DIR }}/environment/
+            ${{ env.RESULT_DIR }}/provenance/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
+
+  collect:
+    name: 원본을 바꾸지 않고 실제6개 완료 확인
+    needs: [prepare, sensitivity]
+    if: ${{ always() && needs.prepare.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PLAN_SHA: ${{ needs.prepare.outputs.plan_sha }}
+      BASELINE_SHA: ${{ needs.prepare.outputs.baseline_sha }}
+      MATRIX_RESULT: ${{ needs.sensitivity.result }}
+    steps:
+      - name: 수집 요청을 먼저 기록
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / ('v021-sensitivity-collection-' + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT'])
+          root.mkdir(exist_ok=False)
+          (root / 'inputs').mkdir()
+          (root / 'provenance').mkdir()
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write('COLLECTION_DIR=' + str(root) + '\n')
+          (root / 'provenance/request.json').write_text(json.dumps({k: os.environ.get(k) for k in [
+              'SOURCE_SHA', 'PRODUCT_FINGERPRINT', 'PLAN_SHA', 'BASELINE_SHA', 'MATRIX_RESULT', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT']}, indent=2) + '\n')
+          PY
+      - name: 현재 실행·시도의 세 실제 시드 원본만 수집
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v021-sensitivity-${{ github.run_id }}-${{ github.run_attempt }}-seed-*
+          path: ${{ env.COLLECTION_DIR }}/inputs/
+          merge-multiple: false
+      - name: 세 원본의 두 값씩6개를 확인하고 원문 유지
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib
+          root = pathlib.Path(os.environ['COLLECTION_DIR'])
+          paths = sorted((root / 'inputs').glob('*/out/sensitivity.json'))
+          assert len(paths) == 3, '누락/부분 원본을 완료로 바꾸지 않습니다'
+          keys, seeds, records, plans = set(), set(), [], []
+          for path in paths:
+              data = path.read_bytes()
+              report = json.loads(data)
+              assert report['kind'] == 'seonro-growth-sensitivity' and report['schema_version'] == 1
+              assert report['sourceCommit'] == os.environ['SOURCE_SHA'] and report['productSourceFingerprint'] == os.environ['PRODUCT_FINGERPRINT']
+              assert report['planSha256'] == os.environ['PLAN_SHA'] and report['baselineReportSha256'] == os.environ['BASELINE_SHA']
+              assert report['requested_complete'] is True and report['complete'] is False and report['status'] == 'requested-completed'
+              assert report['completedCases'] == 2 and report['plannedCases'] == 6 and report['runningCase'] is None
+              assert len(report['reports']) == 2 and report['baselineCompletedCases'] == 9
+              assert report['counterfactual'] is True and report['selectedBloodPolicy'] == 'a' and report['usesProductDefaultLaws'] is False
+              plans.append(report['plan'])
+              for row in report['reports']:
+                  key = (row['lawValue'], row['seed'])
+                  assert key not in keys and row['status'] == 'completed' and row['error'] is None
+                  assert row['observedThroughMonth'] == report['plan']['horizonMonths']
+                  assert [p['month'] for p in row['timeSeries']] == list(range(0, report['plan']['horizonMonths'] + 1, report['plan']['observationIntervalMonths']))
+                  keys.add(key)
+                  seeds.add(row['seed'])
+              process = json.loads((path.parent.parent / 'provenance/process-exit.json').read_text())
+              assert process['process_exit'] == process['log_exit'] == 0
+              records.append(path.relative_to(root).as_posix() + '  ' + hashlib.sha256(data).hexdigest())
+          assert all(plan == plans[0] for plan in plans)
+          assert seeds == {42, 98, 2026} and keys == {(v, s) for v in plans[0]['values'] for s in [42, 98, 2026]} and len(keys) == 6
+          assert os.environ['MATRIX_RESULT'] == 'success', '출처/검증 실패가 있는 작업을 수집 완료로 승격하지 않습니다'
+          text = '기존 단일 법칙·기본a의 실제 관찰6/6 완주 확인.\n시드 원본 complete=false 유지. 새 통합 보고서 schema/재작성/성장 성공조건 없음.\n' + '\n'.join(records) + '\n'
+          (root / 'provenance/verified-six.txt').write_text(text)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(text + '\n수치 보정의 채택·성장 균형·금단 도달 성공을 의미하지 않습니다.\n')
+          print(text)
+          PY
+      - name: 부분·실패를 포함한 수집 원문과 검증 기록 보존
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-sensitivity-collection-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.COLLECTION_DIR }}/inputs/
+            ${{ env.COLLECTION_DIR }}/provenance/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14

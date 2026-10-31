@@ -1,0 +1,410 @@
+{
+  "run": {
+    "id": 41136183920,
+    "head_sha": "190e016b7d996befc7d94fd095d14e4a75cb94be",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_attempt": 1,
+    "event": "pull_request",
+    "created_at": "2026-10-30T22:09:19Z",
+    "updated_at": "2026-10-30T22:12:12Z",
+    "html_url": "https://github.com/hddy774/project-hora/actions/runs/41136183920"
+  },
+  "jobs": [
+    {
+      "id": 124339099067,
+      "name": "윈도우 환경 관측 2",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T22:09:21Z",
+      "completed_at": "2026-10-30T22:11:28Z",
+      "runner_name": "GitHub Actions 1000002682",
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:22Z",
+          "completed_at": "2026-10-30T22:09:24Z"
+        },
+        {
+          "name": "고정 실행 요청 기록",
+          "number": 2,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:24Z",
+          "completed_at": "2026-10-30T22:09:24Z"
+        },
+        {
+          "name": "지정한 정확한 제품 소스 가져오기",
+          "number": 3,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:24Z",
+          "completed_at": "2026-10-30T22:09:33Z"
+        },
+        {
+          "name": "파이썬 실행 환경 설정(Python)",
+          "number": 4,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:33Z",
+          "completed_at": "2026-10-30T22:09:33Z"
+        },
+        {
+          "name": "기존 함수로 실제 소스·지문 확인",
+          "number": 5,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:33Z",
+          "completed_at": "2026-10-30T22:09:46Z"
+        },
+        {
+          "name": "고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 6,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:46Z",
+          "completed_at": "2026-10-30T22:09:49Z"
+        },
+        {
+          "name": "실제 개발 도구 버전 기록",
+          "number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:49Z",
+          "completed_at": "2026-10-30T22:09:57Z"
+        },
+        {
+          "name": "기존 릴리스 구성으로 데스크톱 앱 빌드",
+          "number": 8,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:57Z",
+          "completed_at": "2026-10-30T22:10:43Z"
+        },
+        {
+          "name": "기존 45초 화면 판정과 실패 원문 보존",
+          "number": 9,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:43Z",
+          "completed_at": "2026-10-30T22:11:23Z"
+        },
+        {
+          "name": "성공·실패 진단 원문 업로드",
+          "number": 10,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:11:23Z",
+          "completed_at": "2026-10-30T22:11:24Z"
+        },
+        {
+          "name": "Post 고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 18,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:11:24Z",
+          "completed_at": "2026-10-30T22:11:24Z"
+        },
+        {
+          "name": "Post 파이썬 실행 환경 설정(Python)",
+          "number": 19,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:11:24Z",
+          "completed_at": "2026-10-30T22:11:24Z"
+        },
+        {
+          "name": "Post 지정한 정확한 제품 소스 가져오기",
+          "number": 20,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:11:24Z",
+          "completed_at": "2026-10-30T22:11:26Z"
+        },
+        {
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:11:26Z",
+          "completed_at": "2026-10-30T22:11:26Z"
+        }
+      ]
+    },
+    {
+      "id": 124339099399,
+      "name": "윈도우 환경 관측 3",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-30T22:09:22Z",
+      "completed_at": "2026-10-30T22:12:12Z",
+      "runner_name": "GitHub Actions 1000002683",
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:23Z",
+          "completed_at": "2026-10-30T22:09:24Z"
+        },
+        {
+          "name": "고정 실행 요청 기록",
+          "number": 2,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:24Z",
+          "completed_at": "2026-10-30T22:09:25Z"
+        },
+        {
+          "name": "지정한 정확한 제품 소스 가져오기",
+          "number": 3,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:25Z",
+          "completed_at": "2026-10-30T22:09:35Z"
+        },
+        {
+          "name": "파이썬 실행 환경 설정(Python)",
+          "number": 4,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:35Z",
+          "completed_at": "2026-10-30T22:09:36Z"
+        },
+        {
+          "name": "기존 함수로 실제 소스·지문 확인",
+          "number": 5,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:36Z",
+          "completed_at": "2026-10-30T22:09:55Z"
+        },
+        {
+          "name": "고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 6,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:55Z",
+          "completed_at": "2026-10-30T22:09:58Z"
+        },
+        {
+          "name": "실제 개발 도구 버전 기록",
+          "number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:58Z",
+          "completed_at": "2026-10-30T22:10:04Z"
+        },
+        {
+          "name": "기존 릴리스 구성으로 데스크톱 앱 빌드",
+          "number": 8,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:04Z",
+          "completed_at": "2026-10-30T22:10:37Z"
+        },
+        {
+          "name": "기존 45초 화면 판정과 실패 원문 보존",
+          "number": 9,
+          "status": "completed",
+          "conclusion": "failure",
+          "started_at": "2026-10-30T22:10:37Z",
+          "completed_at": "2026-10-30T22:12:07Z"
+        },
+        {
+          "name": "성공·실패 진단 원문 업로드",
+          "number": 10,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:12:07Z",
+          "completed_at": "2026-10-30T22:12:08Z"
+        },
+        {
+          "name": "Post 고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 18,
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_at": "2026-10-30T22:12:08Z",
+          "completed_at": "2026-10-30T22:12:08Z"
+        },
+        {
+          "name": "Post 파이썬 실행 환경 설정(Python)",
+          "number": 19,
+          "status": "completed",
+          "conclusion": "skipped",
+          "started_at": "2026-10-30T22:12:08Z",
+          "completed_at": "2026-10-30T22:12:08Z"
+        },
+        {
+          "name": "Post 지정한 정확한 제품 소스 가져오기",
+          "number": 20,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:12:08Z",
+          "completed_at": "2026-10-30T22:12:10Z"
+        },
+        {
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:12:10Z",
+          "completed_at": "2026-10-30T22:12:11Z"
+        }
+      ]
+    },
+    {
+      "id": 124339099556,
+      "name": "윈도우 환경 관측 1",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T22:09:22Z",
+      "completed_at": "2026-10-30T22:10:54Z",
+      "runner_name": "GitHub Actions 1000002684",
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:23Z",
+          "completed_at": "2026-10-30T22:09:24Z"
+        },
+        {
+          "name": "고정 실행 요청 기록",
+          "number": 2,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:24Z",
+          "completed_at": "2026-10-30T22:09:25Z"
+        },
+        {
+          "name": "지정한 정확한 제품 소스 가져오기",
+          "number": 3,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:25Z",
+          "completed_at": "2026-10-30T22:09:34Z"
+        },
+        {
+          "name": "파이썬 실행 환경 설정(Python)",
+          "number": 4,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:34Z",
+          "completed_at": "2026-10-30T22:09:34Z"
+        },
+        {
+          "name": "기존 함수로 실제 소스·지문 확인",
+          "number": 5,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:34Z",
+          "completed_at": "2026-10-30T22:09:45Z"
+        },
+        {
+          "name": "고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 6,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:09:45Z",
+          "completed_at": "2026-10-30T22:10:15Z"
+        },
+        {
+          "name": "실제 개발 도구 버전 기록",
+          "number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:15Z",
+          "completed_at": "2026-10-30T22:10:16Z"
+        },
+        {
+          "name": "기존 릴리스 구성으로 데스크톱 앱 빌드",
+          "number": 8,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:16Z",
+          "completed_at": "2026-10-30T22:10:38Z"
+        },
+        {
+          "name": "기존 45초 화면 판정과 실패 원문 보존",
+          "number": 9,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:38Z",
+          "completed_at": "2026-10-30T22:10:48Z"
+        },
+        {
+          "name": "성공·실패 진단 원문 업로드",
+          "number": 10,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:48Z",
+          "completed_at": "2026-10-30T22:10:49Z"
+        },
+        {
+          "name": "Post 고정 개발 도구 설정(.NET 10.0.403)",
+          "number": 18,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:49Z",
+          "completed_at": "2026-10-30T22:10:50Z"
+        },
+        {
+          "name": "Post 파이썬 실행 환경 설정(Python)",
+          "number": 19,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:50Z",
+          "completed_at": "2026-10-30T22:10:50Z"
+        },
+        {
+          "name": "Post 지정한 정확한 제품 소스 가져오기",
+          "number": 20,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:50Z",
+          "completed_at": "2026-10-30T22:10:53Z"
+        },
+        {
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-30T22:10:53Z",
+          "completed_at": "2026-10-30T22:10:53Z"
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13017061874,
+      "name": "v021-windows-diagnostics-41136183920-1-sample1",
+      "size_in_bytes": 2784,
+      "digest": "sha256:cd5a2750a30c1b7c11337be55a7fb2ec5b000bf814938b770a47c5333d7b6d47",
+      "created_at": "2026-10-30T22:10:49Z",
+      "expires_at": "2026-11-13T22:10:49Z"
+    },
+    {
+      "id": 13016102865,
+      "name": "v021-windows-diagnostics-41136183920-1-sample2",
+      "size_in_bytes": 2803,
+      "digest": "sha256:cb792a9d1859ad325b979c62c53baef37740a41760d2b69d2265e0c05c2034c9",
+      "created_at": "2026-10-30T22:11:24Z",
+      "expires_at": "2026-11-13T22:11:23Z"
+    },
+    {
+      "id": 13016013306,
+      "name": "v021-windows-diagnostics-41136183920-1-sample3",
+      "size_in_bytes": 2932,
+      "digest": "sha256:83b102bbd0e8a95495c614f752934306ef193dfb39bdebc5367e3e80c7393f78",
+      "created_at": "2026-10-30T22:12:08Z",
+      "expires_at": "2026-11-13T22:12:07Z"
+    }
+  ]
+}

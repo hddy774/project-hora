@@ -1,0 +1,14 @@
+{
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "summary_sha256": "5244faf3e1434c66eb72d35e3995b339f3c5f981bac0a1bbdc41b6145fd77cbe",
+  "original_report_sha256": "f98380608d7159cc234d9a9c22b181db8cc469465c6850cb7fc521963eff35ee",
+  "population": 1000,
+  "month": 0,
+  "raw_payload_bytes": 14868179,
+  "json_envelope_bytes": 23035239,
+  "binary_envelope_bytes": 14868243,
+  "escaping_extra_bytes": 8166926,
+  "scope": "CPU3 공유호스트의 codec 진단. 장기 저장/최종32지표 통과 또는 memorypool root 증거가 아니다.",
+  "binary_was_forced_via_existing_internal_seam": true,
+  "below_new_default_boundary": true
+}

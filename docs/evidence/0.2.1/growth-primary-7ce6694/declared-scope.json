@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "prepared_at_utc": "2026-10-30T21:04:04.371108+00:00",
+  "document_base": "ff829a23f61e5bb76f96ad669cebede993c15e9b",
+  "document_base_product_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "growth_source": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "growth_product_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "growth_independent_finite_observations_completed": 9,
+  "growth_balance_claim": false,
+  "product_test_or_workflow_or_ledger_changes": false,
+  "new_simulation_or_measurement": false,
+  "original_files_modified": false,
+  "derived_documents": [
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/94-windows-failure.excerpt.txt",
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/94-api24-kvm-failure.excerpt.txt",
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/4fe-windows-smoke.excerpt.txt",
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/4fe-api24-webview-provider.excerpt.txt",
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/excerpt-provenance.json",
+    "docs/evidence/0.2.1/growth-primary-7ce6694/README.md",
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/README.md",
+    "docs/evidence/0.2.1/growth-primary-7ce6694/copied-file-manifest.json",
+    "docs/evidence/0.2.1/native-debug-528-94-4fe/copied-file-manifest.json"
+  ],
+  "native_source_scope": "94/4fe fingerprint528 actual CI; debug fresh install, not retained sameAPK/upgrade/release",
+  "portable_bundle_or_reaggregation_performed_here": false
+}

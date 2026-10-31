@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "kind": "seonro-growth-sensitivity-plan",
+  "sourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "baselineReportPath": "baseline.json",
+  "baselineReportSha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "lawKey": "cultivation.foundation",
+  "values": [
+    1500,
+    900
+  ],
+  "seeds": [
+    42,
+    98,
+    2026
+  ],
+  "horizonMonths": 6000,
+  "observationIntervalMonths": 120,
+  "rationale": "전수 검증한7ce 기본9코호트 뒤 채택한 단일법칙 반사실 비교다. 축기1200개월은 FlowPerMonth5000에서 구조 목표600만 작업량이며900/1500은450만/750만(기본 대비 ±25%)이다. 기본a의 시드42/98/2026은 출생17/0/6·후손금단0/0/0·6000개월 내2세대0을 관찰했으나 집계만으로 Qi/축기 중 지배 병목은 확정하지 못한다. c2026의 실제 후손금단 형성4326개월을 고려해 동일6000개월/120간격을 유지하고 미도달·사망·부재·오른쪽 검열을 성공 목표 없이 기록한다. 한 키는 상위 목표와 시조 초기60% 절대구조도 재계산하므로 특정 후손 단계만 격리한 인과효과로 주장하지 않는다. 혈연허용·양친금단·유입0·다른 법칙·미교란 잠정모델을 유지하고 제품 기본값은 바꾸지 않는다. CLI240분은 같은7ce 기본a 실제 CLI최대57.3713196분×두값×운영상 여유2를30분 단위로 올린 잠정 운영경계다. 반사실 인구·AI행동과 다른VM 환경으로 초과할 수 있으며 partial/timeout을6완주로 승격하지 않는다."
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "owned-inventory-unprofiled-measurement",
+  "source": "d1bfaf5ccb3c89854cdaaeca32a7810105180975",
+  "sourceWorktreeCleanBefore": true,
+  "sourceWorktreeCleanAfter": true,
+  "population": 1000,
+  "wallLimitSeconds": 300,
+  "startedUtc": "2026-10-30T12:11:30.967346+00:00",
+  "finishedUtc": "2026-10-30T12:16:30.988571+00:00",
+  "elapsedSeconds": 300.02123013899836,
+  "exitCode": -9,
+  "timedOut": true,
+  "command": [
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-owned-d1bfaf5/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/owned-d1bfaf5-n1000-genesis.json",
+    "--performance",
+    "/workspace/scratch/owned-d1bfaf5-n1000.json",
+    "--performance-size",
+    "1000"
+  ],
+  "note": "Shared host, one unprofiled run per size; concurrent unrelated builds may affect timing. Sampler preceded only by explicitly selected genesis 1/1, not a full functional suite. N10000 not run. Allocation scope differs from older loop-wide baselines: current allocation includes process-wide deltas only around AdvanceTo, excluding monthly progress reporting.",
+  "artifacts": {
+    "/workspace/scratch/owned-d1bfaf5-n1000.json": {
+      "bytes": 1442,
+      "sha256": "7574ebc01e8c07a9295d8429f19f708a06eaff3e34e01346772fb6e8feec2716"
+    },
+    "/workspace/scratch/owned-d1bfaf5-n1000.log": {
+      "bytes": 230,
+      "sha256": "681412652fa37c6834cda962090f67862f86647798f4f7fd168137c29c1e8a60"
+    },
+    "/workspace/scratch/owned-d1bfaf5-n1000-genesis.json": {
+      "bytes": 252,
+      "sha256": "3e32af2fd284aaab0a3433673c7c65094e05f5c4af4a5be8a26142763fdcfbf9"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "source": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "assemblySource": "0.2.1\u002B068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "originalSemanticAssertionsCompleted": true,
+  "originalLawsCount": 113,
+  "originalHash": "78106f3f4849297ab421a258b2634c3e000a58795a8bce29cdc58cb30bcfa28e",
+  "removedOnlyKey": "ai.ecologyFailureMonths",
+  "removedValue": 3,
+  "lawsCountAfter": 112,
+  "hashAfterRemovingOnlyTtl": "a7035140b4f98dd6b78032c590f6fe2bcd216284138fcc88e7fd36d1b733c3d0",
+  "originalExpected": "a7035140b4f98dd6b78032c590f6fe2bcd216284138fcc88e7fd36d1b733c3d0"
+}

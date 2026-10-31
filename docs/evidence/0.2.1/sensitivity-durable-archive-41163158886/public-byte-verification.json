@@ -1,0 +1,82 @@
+{
+  "complete": true,
+  "assets": [
+    {
+      "id": 694202127,
+      "name": "sensitivity-artifact-index-20261031.json",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/sensitivity-artifact-index-20261031.json",
+      "bytes": 22726,
+      "sha256": "0a16fedf7185e2223befe8f69626380cfc16cfc32068a44c4cdd94d229fcccea",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:11:50.399261+00:00"
+    },
+    {
+      "id": 694201637,
+      "name": "v021-sensitivity-41131479924-1-seed-2026.zip",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-41131479924-1-seed-2026.zip",
+      "bytes": 1629500,
+      "sha256": "fe760fca1291c12011cf16534e99dd15fd38ed3dbf40efbfb40e91ca3bb5c719",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:11:52.575927+00:00"
+    },
+    {
+      "id": 694201731,
+      "name": "v021-sensitivity-41131479924-1-seed-42.zip",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-41131479924-1-seed-42.zip",
+      "bytes": 1606840,
+      "sha256": "e06c71ba7b60812afc4211c31114c65d680dd57008f1ab41d2575b57c3220848",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:11:54.463550+00:00"
+    },
+    {
+      "id": 694201829,
+      "name": "v021-sensitivity-41131479924-1-seed-98.zip",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-41131479924-1-seed-98.zip",
+      "bytes": 1625169,
+      "sha256": "5cfcf65768d31d1d6815689e601795c0f7495fcf811251508454913510ce4587",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:11:56.519118+00:00"
+    },
+    {
+      "id": 694201587,
+      "name": "v021-sensitivity-collection-41131479924-1.zip",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-collection-41131479924-1.zip",
+      "bytes": 4870195,
+      "sha256": "b4d92d45670c34a12d26fd834a7bd125408d9fc1fe1056e5a0c6e11b719f8ea0",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:11:59.571139+00:00"
+    },
+    {
+      "id": 694201906,
+      "name": "v021-sensitivity-inputs-41131479924-1.zip",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-inputs-41131479924-1.zip",
+      "bytes": 204982,
+      "sha256": "3a9d3651fdf41e4169c4af69c65cb64b6e5b55550046c38a2b4fb053a6d1f556",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:12:01.164402+00:00"
+    },
+    {
+      "id": 694201962,
+      "name": "v021-sensitivity-prepare-41131479924-1.zip",
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-prepare-41131479924-1.zip",
+      "bytes": 877,
+      "sha256": "0a0c569896c6f649bc9597a8e9ccd59abefc55735c4d90593d88e7aa7a788e31",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "authorizationSent": false,
+      "checkedAtUtc": "2026-10-31T03:12:02.239117+00:00"
+    }
+  ]
+}

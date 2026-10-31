@@ -1,0 +1,7 @@
+{
+  "validator_self_test_only": true,
+  "accepted_synthetic_report": 1,
+  "rejected_invalid_reports": 9,
+  "rejected_invalid_maps": 8,
+  "rejected_duplicate_json": true
+}

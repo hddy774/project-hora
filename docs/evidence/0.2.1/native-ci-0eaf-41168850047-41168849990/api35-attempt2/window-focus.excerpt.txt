@@ -1,0 +1,1 @@
+  mCurrentFocus=Window{3e06f5c u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity}

@@ -1,0 +1,219 @@
+{
+  "schema": "seonro-ex05-malformed-brotli-correctness-v1",
+  "capturedUtc": "2026-10-30T16:39:54.044553+00:00",
+  "kind": "bounded-functional-correctness-evidence-not-benchmark",
+  "before": {
+    "sourceCommit": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+    "sourceState": "Clean new worktree at exact068 before the first run.",
+    "passed": false,
+    "total": 1,
+    "failed": 1,
+    "actualError": "InvalidOperationException: Decoder ran into invalid data; BrotliStream.TryDecompress -> ReadExactly -> Unpack:120 -> ProbeRecovery:77",
+    "command": [
+      "taskset",
+      "-c",
+      "4",
+      "/workspace/.dotnet/dotnet",
+      "run",
+      "--project",
+      "tests/Chronicles.Game.Tests",
+      "-c",
+      "Release",
+      "-p:UseSharedCompilation=false",
+      "--",
+      "--filter",
+      "EX05 준비 기능",
+      "--report",
+      "/workspace/scratch/v021-ex05-068-before-correctness.json"
+    ],
+    "cwd": "/workspace/chronicles-snapshot-correctness",
+    "beforeDllSnapshotRetained": false,
+    "beforeDllSha256": null
+  },
+  "after": {
+    "testedSourceContentCommit": "5ef9d30aed82c71db56fd65df00149dae48b0023",
+    "buildHeadCommit": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+    "buildSourceState": "Working patch of the one file, later committed byte-identically as5ef. Do not label this as a DLL built with embedded revision5ef.",
+    "passed": true,
+    "total": 1,
+    "failed": 0,
+    "command": [
+      "taskset",
+      "-c",
+      "4",
+      "/workspace/.dotnet/dotnet",
+      "run",
+      "--project",
+      "tests/Chronicles.Game.Tests",
+      "-c",
+      "Release",
+      "--no-restore",
+      "-p:UseSharedCompilation=false",
+      "--",
+      "--filter",
+      "EX05 준비 기능",
+      "--report",
+      "/workspace/scratch/v021-ex05-068-after-correctness.json"
+    ],
+    "cwd": "/workspace/chronicles-snapshot-correctness",
+    "coverage": [
+      "Existing midpoint xor0x40 corruption fixture unchanged.",
+      "Existing complete/partial pending, corrupt primary and unsupported-original checks retained.",
+      "Actual malformed compressed primary falls back to the existing valid backup.",
+      "Saving afterward preserves the actual malformed compressed bytes exactly."
+    ],
+    "sourceCodeFilesChanged": [
+      "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs"
+    ]
+  },
+  "sourceFileHashes": [
+    {
+      "commit": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+      "path": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+      "sha256": "f0b6fe724f1e6b8dba0eb3ae1cabbad44c419f65b10da3232679cf1474dbc5be"
+    },
+    {
+      "commit": "5ef9d30aed82c71db56fd65df00149dae48b0023",
+      "path": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+      "sha256": "fc6ffd1fe6b6df1bb73eede3e3569ac9a1bd761d687ef9b9b76285ddf7063938"
+    },
+    {
+      "commit": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+      "path": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+      "sha256": "fc6ffd1fe6b6df1bb73eede3e3569ac9a1bd761d687ef9b9b76285ddf7063938"
+    }
+  ],
+  "retainedAfterCorrectnessDlls": [
+    {
+      "assembly": "Chronicles.Core",
+      "path": "/workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "bfdba2d1c10f8c14749bce8604356b9f598cc4648ba4b39129964f71ebe99878",
+      "generatedAssemblyInfoPath": "/workspace/chronicles-snapshot-correctness/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "c29b7ad5d04cbb9cb173481ece01692dab2228a0a4d26b091de134e9a9175def",
+      "informationalVersionDeclaredByGeneratedAssemblyInfo": "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+      "matchingVersionStringPresentInDll": true,
+      "embeddedVersionLikeStrings": [
+        "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5"
+      ],
+      "versionEvidenceScope": "Generated AssemblyInfo declaration plus matching binary string; version-like test-fixture literals are not treated as assembly metadata. No new runtime metadata probe/build was executed.",
+      "role": "Retained current DLL after the changed-source correctness build; not a separately captured before-run binary."
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "path": "/workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "bytes": 2256896,
+      "sha256": "3345066d24590b7cfd58a638635b2f63efb906b2bb29e863b25dfd3d725b6ff5",
+      "generatedAssemblyInfoPath": "/workspace/chronicles-snapshot-correctness/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "67e15ac8c2e4d0f63ab45dbbf5caec486720a70d24b0adf16a98f12e00f28b4e",
+      "informationalVersionDeclaredByGeneratedAssemblyInfo": "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+      "matchingVersionStringPresentInDll": true,
+      "embeddedVersionLikeStrings": [
+        "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5"
+      ],
+      "versionEvidenceScope": "Generated AssemblyInfo declaration plus matching binary string; version-like test-fixture literals are not treated as assembly metadata. No new runtime metadata probe/build was executed.",
+      "role": "Retained current DLL after the changed-source correctness build; not a separately captured before-run binary."
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "path": "/workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "bef98838b191a8ebaca5ca42ab945751ace602caeac0d92c56b1c517ab242c12",
+      "generatedAssemblyInfoPath": "/workspace/chronicles-snapshot-correctness/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "9cbbee1be4a37dfb5a4937a183f09bfaa643a0a7f1fbf40b8f4db338cb8f917b",
+      "informationalVersionDeclaredByGeneratedAssemblyInfo": "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+      "matchingVersionStringPresentInDll": true,
+      "embeddedVersionLikeStrings": [
+        "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5"
+      ],
+      "versionEvidenceScope": "Generated AssemblyInfo declaration plus matching binary string; version-like test-fixture literals are not treated as assembly metadata. No new runtime metadata probe/build was executed.",
+      "role": "Retained current DLL after the changed-source correctness build; not a separately captured before-run binary."
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "path": "/workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "bytes": 1476096,
+      "sha256": "1730fb2e2a8af6482dbe66bda7d3499ba50c29383d525ac598963723f7d7160c",
+      "generatedAssemblyInfoPath": "/workspace/chronicles-snapshot-correctness/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "generatedAssemblyInfoSha256": "6b982ed275f9ad7b13748cdd7f0f79e730af024a77bd68fe5fbcb8803f1fe31f",
+      "informationalVersionDeclaredByGeneratedAssemblyInfo": "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+      "matchingVersionStringPresentInDll": true,
+      "embeddedVersionLikeStrings": [
+        "0.2.1+068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+        "0.2.1+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "versionEvidenceScope": "Generated AssemblyInfo declaration plus matching binary string; version-like test-fixture literals are not treated as assembly metadata. No new runtime metadata probe/build was executed.",
+      "role": "Retained current DLL after the changed-source correctness build; not a separately captured before-run binary."
+    }
+  ],
+  "documentationBase": {
+    "commit": "56bbfb2ff3cec2df79fa28234d61a03fe4a50e63",
+    "trackedCSharpFileCount": 454,
+    "csharpSnapshotSha256": "f27a955bac718fa3bc001f2a9f4004f273d2440f0f9d2b6ccd830f13126ff716",
+    "algorithm": "SHA256 of ordinal sorted UTF8(path)+NUL+lowercase SHA256(file bytes)+LF. Each current C# file also matches its git blob at56bb.",
+    "sourceDiffFrom56bb": "empty; documentation-only changes are required from this point"
+  },
+  "files": [
+    {
+      "file": "before.original.json",
+      "originalPath": "/workspace/scratch/v021-ex05-068-before-correctness.json",
+      "bytes": 1963,
+      "sha256": "33fb7da49649f967cbd7942f077b960aeef137b25062412e75f50e7f65e73471",
+      "byteExactCopy": true,
+      "total": 1,
+      "failed": 1
+    },
+    {
+      "file": "after.original.json",
+      "originalPath": "/workspace/scratch/v021-ex05-068-after-correctness.json",
+      "bytes": 380,
+      "sha256": "bc66e3761a57792b60ad8ea93c6b01bad5b182c11ecc807234d656c2cd07a8a4",
+      "byteExactCopy": true,
+      "total": 1,
+      "failed": 0
+    },
+    {
+      "file": "fix-068-to-5ef.patch",
+      "bytes": 2786,
+      "sha256": "859c4b556d095f3532c94a76ee64eced46bb099b40f25c12a9ded9311e4dce38",
+      "command": [
+        "git",
+        "diff",
+        "--binary",
+        "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+        "5ef9d30aed82c71db56fd65df00149dae48b0023",
+        "--",
+        "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs"
+      ]
+    },
+    {
+      "file": "README.md",
+      "bytes": 2187,
+      "sha256": "da72e648ac4bfd195993d60866a30c4d33446289240d72b2dbcd31a1722156bc"
+    }
+  ],
+  "executionScope": {
+    "boundedCorrectnessRuns": 2,
+    "failedCorrectnessRuns": 1,
+    "passedCorrectnessRuns": 1,
+    "wholeFunctionalRuns": 0,
+    "actualBenchmarkRuns": 0,
+    "actualGrowthRuns": 0,
+    "actualStabilityRuns": 0,
+    "actualProfileRuns": 0,
+    "newRunsDuringDocumentationStep": 0,
+    "newBuildsDuringDocumentationStep": 0
+  },
+  "limitations": [
+    "Before-run DLL set/hash was not separately retained. Current DLL hashes are only after-build observations, not proof of before binaries.",
+    "The after source content matches5ef but generated assembly revision remains068 because the working patch was built before committing.",
+    "Test DLL contains a synthetic all-a version literal; raw string search alone cannot identify the assembly metadata attribute.",
+    "This evidence does not claim whole56bb functional success, native/platform acceptance, performance gain or product adoption of Brotli saves."
+  ],
+  "relationships": {
+    "upperPullRequest": 84,
+    "integrationPullRequest": 174,
+    "relatedIssue": 179,
+    "fixPullRequest": 181
+  }
+}

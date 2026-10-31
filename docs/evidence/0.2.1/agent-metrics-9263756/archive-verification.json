@@ -1,0 +1,199 @@
+{
+  "observedUtc": "2026-10-30T19:42:28.908109+00:00",
+  "measurementSource": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "measurementWorktreeStillClean": true,
+  "allFourAssembliesStillIdentical": true,
+  "originalPreservedArtifactChecks": [
+    {
+      "sourcePath": "/workspace/scratch/agent-metrics-9263756.json",
+      "sha256": "d223c825160d783f4e6500c289166ae170cea0ef10b36f69071727470ab27e64",
+      "bytes": 70215681
+    },
+    {
+      "sourcePath": "/workspace/scratch/agent-metrics-9263756-run.json",
+      "sha256": "20d7dc7299fefd8f25674aeb9aab75ee951509a4a6cb53bf91bbd564493ec4ae",
+      "bytes": 4574
+    },
+    {
+      "sourcePath": "/workspace/scratch/agent-metrics-9263756.log",
+      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96",
+      "bytes": 75
+    },
+    {
+      "sourcePath": "/workspace/scratch/agent-metrics-9263756-preceding-functional.json",
+      "sha256": "64b0e5071d7ba7a12d2b213e6021a16ce89bb4bce855250ff214eec0e57001c9",
+      "bytes": 252
+    },
+    {
+      "sourcePath": "/workspace/scratch/agent-metrics-plan-9263756.json",
+      "sha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b",
+      "bytes": 339
+    },
+    {
+      "sourcePath": "/workspace/scratch/agent-metrics-plan-pending-source.json",
+      "sha256": "fbc43182e094a33d63e9d31a0232a8fe430704be22ed6b11dfa201f7d6a4c843",
+      "bytes": 299
+    },
+    {
+      "sourcePath": "/workspace/scratch/observed-measurement-interruption-20261030T1806Z.json",
+      "sha256": "f4f632ce6ae547d3d4c419719584270a1fba4c33459ae0e1ce0bd901808733a3",
+      "bytes": 509
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalPath": "/workspace/scratch/agent-metrics-plan-9263756.json",
+      "sha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b",
+      "bytes": 339,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "pending-plan.original.json",
+      "originalPath": "/workspace/scratch/agent-metrics-plan-pending-source.json",
+      "sha256": "fbc43182e094a33d63e9d31a0232a8fe430704be22ed6b11dfa201f7d6a4c843",
+      "bytes": 299,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "preparation.json",
+      "originalPath": "/workspace/scratch/agent-preparation-9263756.json",
+      "sha256": "03196124b7eeec1e875ac0d31783d86aeda7ec5ad0b66d6ee019f747da0db4a0",
+      "bytes": 5299,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "assemblies.json",
+      "originalPath": "/workspace/scratch/agent-assemblies-9263756.json",
+      "sha256": "51434e7e7f834d26c8391b8fdcac0d39268728a65e3d51e0fb30f43b0e81cadd",
+      "bytes": 1650,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "build.log",
+      "originalPath": "/workspace/scratch/agent-build-9263756.log",
+      "sha256": "c4968d8d60ae5f7559b3bdc777ba47586a69c2f9c27d901753a74cb8441bae30",
+      "bytes": 1004,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "interrupted.run.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-run.json",
+      "sha256": "20d7dc7299fefd8f25674aeb9aab75ee951509a4a6cb53bf91bbd564493ec4ae",
+      "bytes": 4574,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "interrupted.log",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756.log",
+      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96",
+      "bytes": 75,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "interrupted.genesis.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-preceding-functional.json",
+      "sha256": "64b0e5071d7ba7a12d2b213e6021a16ce89bb4bce855250ff214eec0e57001c9",
+      "bytes": 252,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "interruption.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-interruption-provenance.json",
+      "sha256": "7638ec0d2f77e3be613aaecbd8008ec9f1f061c4b37dc7e780857a7fc2674faa",
+      "bytes": 2510,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "external-interruption-observation.json",
+      "originalPath": "/workspace/scratch/observed-measurement-interruption-20261030T1806Z.json",
+      "sha256": "f4f632ce6ae547d3d4c419719584270a1fba4c33459ae0e1ce0bd901808733a3",
+      "bytes": 509,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "restart1.run.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1-run.json",
+      "sha256": "21db0e894b9b014d832b2bb924ec431fa4cd4decbd6c662da68235e20ad33edf",
+      "bytes": 4156,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "restart1.exit.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1-exit.json",
+      "sha256": "aaa9f4a379061faaea5b9ad42ac3e24476c83f865eef6b87a0af66030a2f5956",
+      "bytes": 125,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "restart1.log",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1.log",
+      "sha256": "8e5315b585fdb74e08060dcccdd830df0baad2484e435d95ce8dd2087ab945d2",
+      "bytes": 179,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "restart1.genesis.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1-preceding-functional.json",
+      "sha256": "c93299868662a0e4145faf2ac446c07f83444515466f56518c185fc6a79a9138",
+      "bytes": 252,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "completion-observed.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1-completion-observed.json",
+      "sha256": "3a9e28f3a2a96361cbdefb494f8f1c289160cb0db55d07ddf5fcda26683f5c19",
+      "bytes": 1723,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "restart1.progress.jsonl",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1-progress.jsonl",
+      "sha256": "d5f8a972077fdeb7d2affd6f20bcf6f6be287032b559f109bf19602efda6e5e0",
+      "bytes": 35883,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "interrupted.progress.jsonl",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-progress.jsonl",
+      "sha256": "57e86d0cb44b1d12bfa1e5c8883e276ad85159ad7c5dcb4b17308ed99c535345",
+      "bytes": 19399,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "overlap-78.first-observation.json",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1-overlap-original-78.json",
+      "sha256": "f0f982b70886c3477dea966dc7aa20dd01b93d9a95c5b8ca4a33b8a5d8b77a05",
+      "bytes": 19635,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "supervisor.original.py",
+      "originalPath": "/workspace/scratch/agent-metrics-restart1-launcher-9263756.py",
+      "sha256": "5ebca71f24da4b9de69c3b74d2e8be5069b69a5ef66727e8ee066e8d0420abf5",
+      "bytes": 5815,
+      "transformation": "동일바이트복사"
+    },
+    {
+      "path": "interrupted.raw.json.gz",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756.json",
+      "sha256": "f35ce55e16cda0c5b75022a6c59175a8e4af82385eef5c75dabef041c91c6f6e",
+      "bytes": 3209491,
+      "uncompressedSha256": "d223c825160d783f4e6500c289166ae170cea0ef10b36f69071727470ab27e64",
+      "uncompressedBytes": 70215681,
+      "transformation": "gzip level1·mtime0·filename없음,복원바이트SHA동일"
+    },
+    {
+      "path": "restart1.raw.json.gz",
+      "originalPath": "/workspace/scratch/agent-metrics-9263756-restart1.json",
+      "sha256": "282cfb96d44cc3b17956003aa03bce948ce1adee40d6a84d4a337473c96ead82",
+      "bytes": 4443591,
+      "uncompressedSha256": "435c2db02e2f85b2ae2138161805786a371bf7214b306d3030a06bd3b832995d",
+      "uncompressedBytes": 96940045,
+      "transformation": "gzip level1·mtime0·filename없음,복원바이트SHA동일"
+    }
+  ],
+  "originalFilesModified": false,
+  "newGameRuns": 0,
+  "postprocessing": "root의실제quiet종료19:39:51통지뒤만수행. CPU4의문서후처리이며CPU3새사용0."
+}

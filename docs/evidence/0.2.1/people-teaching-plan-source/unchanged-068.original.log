@@ -1,0 +1,5 @@
+FAIL INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests: System.InvalidOperationException: Actual AI fallback must delegate the unresolved method to the same canonical adapter, reserve its own waiting month and deliver its real source to the busy teacher.
+   at Chronicles.Game.Tests.Features.PeopleFixture.Check(Boolean condition, String message) in /workspace/chronicles-people/tests/Chronicles.Game.Tests/Features/PeopleScenarios.cs:line 10
+   at Chronicles.Game.Tests.Features.PeoplePublicTeachingRequestAdapterScenario.Run() in /workspace/chronicles-people/tests/Chronicles.Game.Tests/Features/PeopleTeachingIntegrationScenarios.cs:line 24
+   at Program.<>c__DisplayClass0_0.<<Main>$>g__Test|2(String name, Action body) in /workspace/chronicles-people/tests/Chronicles.Game.Tests/Program.cs:line 30
+RESULT 0/1

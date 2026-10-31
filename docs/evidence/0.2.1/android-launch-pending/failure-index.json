@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "issue": 253,
+  "run_url": "https://github.com/hddy774/project-hora/actions/runs/41165712717",
+  "job_id": 124432709700,
+  "failed_step": {
+    "number": 12,
+    "name": "기본 API 24의 실제 새 설치·DOM·코어 연결 확인"
+  },
+  "actual_source": {
+    "schema_version": 1,
+    "kind": "api24-debug-native-probe",
+    "source_commit": "f3627aa4db4282a8aebb572bffe2048261e0756a",
+    "source_tree": "2f609b308ea5e5da57925bba072f58a1b695faec",
+    "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+    "event_sha": "12fca3d7886f482c68119298d2ef507a7fa6f7a9",
+    "event_name": "pull_request",
+    "run_id": "41165712717",
+    "run_attempt": "1",
+    "version": "0.2.1",
+    "workflow_sha256": "7ce2e38f4e332fee46990eb702ea405b13b88615d9f343086b273b6019d89a7d",
+    "scope": "API24 x86_64 기본 이미지의 디버그 APK 새 설치·DOM·실제 GameSession 연결만 검증",
+    "retained_signature_or_upgrade_claim": false,
+    "release_publication": false
+  },
+  "artifact": {
+    "id": 13028898344,
+    "bytes": 115518,
+    "zip_sha256": "9c56be71848c58a0399d93daab9a86a1d10beffcf4a1cf4b234c9635e5758adf",
+    "download_digest_matches": true,
+    "expires_at": "2026-11-14T03:48:07Z"
+  },
+  "preserved_original_result": "failure",
+  "observed_launch": {
+    "classification": "Android am start -W launch timeout before first readiness-loop observation",
+    "adb_returncode": 0,
+    "adb_outer_timeout": false,
+    "android_launch_status": "timeout",
+    "android_WaitTime_ms": 10094,
+    "reader_elapsed_ms": 12319.533,
+    "snapshot_attempts": 0,
+    "launcher_waits": 0,
+    "required_Status_ok_predicate_was_false": true,
+    "strict_failure_preserved": true
+  },
+  "observations": {
+    "install_success": true,
+    "APK_SDK_build_steps_success": true,
+    "KVM_step_success": true,
+    "app_pid": "2759",
+    "app_resumed_activity_present": true,
+    "post_capture_window_currentFocus": "null",
+    "final_screenshot": "blank grey app area with normal system bars; manually viewed; no ANR dialog",
+    "SeonroRender_records": 0,
+    "WebViewFactory_load_records": 0,
+    "Android_launch_timeout_log": "W/ActivityManager: Launch timeout has expired, giving up wake lock!",
+    "verified_app_crash_or_ANR_in_captured_log": false,
+    "later_healthy_DOM_observed": false,
+    "optional_ALPN_method_missing_info_not_treated_as_crash": true
+  },
+  "scope": "original failure; later pending-readiness policy and mock results are separate",
+  "repository_copies": [
+    {
+      "source_path": "native-evidence/source.json",
+      "repository_path": "docs/evidence/0.2.1/android-launch-pending/failure/source.original.json",
+      "bytes": 733,
+      "sha256": "3dd267a753992d68934df6ec76ee7faf2ca9279a529f8c393702e6f7f4ef11ce",
+      "byte_identical": true
+    },
+    {
+      "source_path": "native-evidence/runtime/fresh/readiness.json",
+      "repository_path": "docs/evidence/0.2.1/android-launch-pending/failure/readiness.original.json",
+      "bytes": 245,
+      "sha256": "6952c7061fc239d5835c6b642c72eb4e08c6ba6b9c0632857a0abf3c9c810c77",
+      "byte_identical": true
+    },
+    {
+      "source_path": "native-evidence/runtime/fresh/commands.json",
+      "repository_path": "docs/evidence/0.2.1/android-launch-pending/failure/commands.original.json",
+      "bytes": 2806,
+      "sha256": "bd83e99fd6eba64afa898013850e0f36289ce9603a98ae68b4d038c6f09a3178",
+      "byte_identical": true
+    },
+    {
+      "source_path": "native-evidence/runtime/fresh/ui.xml",
+      "repository_path": "docs/evidence/0.2.1/android-launch-pending/failure/ui.original.xml",
+      "bytes": 78,
+      "sha256": "413e52f19c3474dc62fb7ad0f7743ebb1c889f14c5bb4721349e79c28b04b8a8",
+      "byte_identical": true
+    },
+    {
+      "source_path": "failure-traceback.excerpt.txt",
+      "repository_path": "docs/evidence/0.2.1/android-launch-pending/failure/failure-traceback.excerpt.txt",
+      "bytes": 1637,
+      "sha256": "e44e912ff54c4aa6ef796190c968f0742920cd6ac8f24cb80b6934ad756e5f2a",
+      "byte_identical": true
+    },
+    {
+      "source_path": "native-evidence/runtime/fresh/launch.txt",
+      "repository_path": "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "bytes": 196,
+      "sha256": "61a550a7508702ab6e2dcdf4a07a82b343d77a664289199fb04b887be417cd87",
+      "byte_identical": true
+    }
+  ],
+  "scratch_only_raws": [
+    {
+      "path": "native-evidence/runtime/fresh/window.txt",
+      "bytes": 16248,
+      "sha256": "5dc50cc5fbf9738996ceff476641d4cb4330402434f6e65cdc15591153932e7e"
+    },
+    {
+      "path": "native-evidence/runtime/fresh/render-log.txt",
+      "bytes": 18818,
+      "sha256": "ad9c70b27dead629c7b1551289ac58d4ed3d1928a14f87e9bc956ae4e60ef8b9"
+    },
+    {
+      "path": "native-evidence/runtime/fresh/screen.png",
+      "bytes": 28667,
+      "sha256": "a15f8bdfc5b22aac4a017327cacec5d5248e68f26c21b5d0e85f4772d3e83a94"
+    },
+    {
+      "path": "native-evidence/runtime/logcat-all.txt",
+      "bytes": 20043,
+      "sha256": "42eae4152aa6ba0aa00f37341b3d4ccfbb864f5d62bb61d432194cbcc41e0a10"
+    },
+    {
+      "path": "native-evidence.zip",
+      "bytes": 115518,
+      "sha256": "9c56be71848c58a0399d93daab9a86a1d10beffcf4a1cf4b234c9635e5758adf"
+    },
+    {
+      "path": "job124432709700.decoded.log",
+      "bytes": 262566,
+      "sha256": "c9690d34349f63e8ecf7c5a03ca6be45d0a206683291ead59e41736e08880943"
+    }
+  ],
+  "scratch_directory": "/workspace/scratch/native-f3627aa-41165712717",
+  "entire_zip_copied_into_git": false,
+  "new_device_or_CI_run": false
+}

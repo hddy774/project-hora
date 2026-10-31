@@ -1,0 +1,2587 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-execution-ex01-ex02-ex04",
+  "failure": null,
+  "host": {
+    "Commit": "174e4a93f81defce44b18421629330bd280fb891",
+    "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "Runtime": ".NET 10.0.14",
+    "Device": "runnervm48cm3",
+    "OperatingSystem": "Ubuntu 24.04.5 LTS",
+    "Architecture": "X64",
+    "CpuCount": 4,
+    "ThermalState": "GitHub \uD638\uC2A4\uD2B8 VM\u00B7\uC2E4\uC81C \uD638\uC2A4\uD2B8 \uC5F4 \uC0C1\uD0DC \uBBF8\uCE21\uC815",
+    "PowerState": "GitHub \uD638\uC2A4\uD2B8 VM\u00B7\uC2E4\uC81C \uD638\uC2A4\uD2B8 \uC804\uB825\u00B7\uC804\uC6D0 \uC0C1\uD0DC \uBBF8\uCE21\uC815",
+    "ProcessScope": "\uB3D9\uC77C \uD504\uB85C\uC138\uC2A4\u00B7\uC55E\uC120 \uAE30\uB2A5/JIT/\uACF5\uC720 \uCE90\uC2DC \uC601\uD5A5 \uAC00\uB2A5. \uC608\uC5F4\uACFC \uAC01 \uCE21\uC815 \uC138\uACC4\uB294 \uBCC4\uB3C4 \uC785\uB825\uC5D0\uC11C \uC0C8\uB85C \uBCF5\uC6D0\uD55C\uB2E4."
+  },
+  "complete": true,
+  "requested_complete": true,
+  "requested_experiments": [
+    "EX-04"
+  ],
+  "all_owned_experiments_complete": false,
+  "total_elapsed_nanoseconds": 104634042010,
+  "requested_populations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "repetitions": 1,
+  "finished": [
+    "EX-04:population:2:repetition:0",
+    "EX-04:population:100:repetition:0",
+    "EX-04:population:1000:repetition:0",
+    "EX-04:population:10000:repetition:0",
+    "EX-04:direct-kernel-boundaries"
+  ],
+  "rows": [
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:actual-assess",
+      "Population": 2,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "CommandHash": "6e86dde5377dfea62ea4fc5738c87e3faf0dc1bde34be2a41d4a9e30a2dfd30a",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 48,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "MeasuredOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 664589
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 181286
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 92896
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 35544
+        }
+      ],
+      "P50Nanoseconds": 181286,
+      "P95Nanoseconds": 664589,
+      "P99Nanoseconds": 664589,
+      "ProcessRetainedManagedBytes": 17741520,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 664589,
+          "P95Nanoseconds": 664589,
+          "P99Nanoseconds": 664589
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 181286,
+          "P95Nanoseconds": 181286,
+          "P99Nanoseconds": 181286
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:actual-assess",
+      "Population": 2,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "CommandHash": "6e86dde5377dfea62ea4fc5738c87e3faf0dc1bde34be2a41d4a9e30a2dfd30a",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 48,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "MeasuredOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 791663
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 134931
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 134560
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 35544
+        }
+      ],
+      "P50Nanoseconds": 134931,
+      "P95Nanoseconds": 791663,
+      "P99Nanoseconds": 791663,
+      "ProcessRetainedManagedBytes": 17751896,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 791663,
+          "P95Nanoseconds": 791663,
+          "P99Nanoseconds": 791663
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 134931,
+          "P95Nanoseconds": 134931,
+          "P99Nanoseconds": 134931
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:actual-assess",
+      "Population": 2,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "CommandHash": "6e86dde5377dfea62ea4fc5738c87e3faf0dc1bde34be2a41d4a9e30a2dfd30a",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 48,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "MeasuredOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 382677
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 127694
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 73664
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 35544
+        }
+      ],
+      "P50Nanoseconds": 127694,
+      "P95Nanoseconds": 382677,
+      "P99Nanoseconds": 382677,
+      "ProcessRetainedManagedBytes": 17753448,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 382677,
+          "P95Nanoseconds": 382677,
+          "P99Nanoseconds": 382677
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 127694,
+          "P95Nanoseconds": 127694,
+          "P99Nanoseconds": 127694
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:actual-assess",
+      "Population": 2,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "CommandHash": "6e86dde5377dfea62ea4fc5738c87e3faf0dc1bde34be2a41d4a9e30a2dfd30a",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 48,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "MeasuredOpeningHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 557017
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 192100
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 73664
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 35544
+        }
+      ],
+      "P50Nanoseconds": 192100,
+      "P95Nanoseconds": 557017,
+      "P99Nanoseconds": 557017,
+      "ProcessRetainedManagedBytes": 17754960,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c16982d6f5ffee0b92306599fe0a5dad3893effd5e48d827b54f8dcdfee9d0f0",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 557017,
+          "P95Nanoseconds": 557017,
+          "P99Nanoseconds": 557017
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 192100,
+          "P95Nanoseconds": 192100,
+          "P99Nanoseconds": 192100
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:actual-assess",
+      "Population": 100,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "CommandHash": "341d542bf411af3d8db5203fa7e3eb252ba088ebaa095cd42f4d133b9d201e4c",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "MeasuredOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 19604706
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 8361251
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 4693088
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 1788568
+        }
+      ],
+      "P50Nanoseconds": 8361251,
+      "P95Nanoseconds": 19604706,
+      "P99Nanoseconds": 19604706,
+      "ProcessRetainedManagedBytes": 26656128,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 19604706,
+          "P95Nanoseconds": 19604706,
+          "P99Nanoseconds": 19604706
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 8361251,
+          "P95Nanoseconds": 8361251,
+          "P99Nanoseconds": 8361251
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:actual-assess",
+      "Population": 100,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "CommandHash": "341d542bf411af3d8db5203fa7e3eb252ba088ebaa095cd42f4d133b9d201e4c",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "MeasuredOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 35726211
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 9155136
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 6776288
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 1788568
+        }
+      ],
+      "P50Nanoseconds": 9155136,
+      "P95Nanoseconds": 35726211,
+      "P99Nanoseconds": 35726211,
+      "ProcessRetainedManagedBytes": 26657688,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 35726211,
+          "P95Nanoseconds": 35726211,
+          "P99Nanoseconds": 35726211
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 9155136,
+          "P95Nanoseconds": 9155136,
+          "P99Nanoseconds": 9155136
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:actual-assess",
+      "Population": 100,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "CommandHash": "341d542bf411af3d8db5203fa7e3eb252ba088ebaa095cd42f4d133b9d201e4c",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "MeasuredOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 16557865
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 7616012
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 3731488
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 1788568
+        }
+      ],
+      "P50Nanoseconds": 7616012,
+      "P95Nanoseconds": 16557865,
+      "P99Nanoseconds": 16557865,
+      "ProcessRetainedManagedBytes": 26659192,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 16557865,
+          "P95Nanoseconds": 16557865,
+          "P99Nanoseconds": 16557865
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 7616012,
+          "P95Nanoseconds": 7616012,
+          "P99Nanoseconds": 7616012
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:actual-assess",
+      "Population": 100,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "CommandHash": "341d542bf411af3d8db5203fa7e3eb252ba088ebaa095cd42f4d133b9d201e4c",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "MeasuredOpeningHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 15831579
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 7358279
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 3731488
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 1788568
+        }
+      ],
+      "P50Nanoseconds": 7358279,
+      "P95Nanoseconds": 15831579,
+      "P99Nanoseconds": 15831579,
+      "ProcessRetainedManagedBytes": 26660704,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3ed8606072e0dcb123c97122d18b4245caad2e0f8b5a68fb18195542da494abe",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 15831579,
+          "P95Nanoseconds": 15831579,
+          "P99Nanoseconds": 15831579
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 7358279,
+          "P95Nanoseconds": 7358279,
+          "P99Nanoseconds": 7358279
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:actual-assess",
+      "Population": 1000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "CommandHash": "46bd24fbff35f2befe01abcb5362dfff60a47bafb16f554a237aa92238a0132e",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 24000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "MeasuredOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 54468302
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 25482107
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 33378944
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 16607768
+        }
+      ],
+      "P50Nanoseconds": 25482107,
+      "P95Nanoseconds": 54468302,
+      "P99Nanoseconds": 54468302,
+      "ProcessRetainedManagedBytes": 97775128,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 54468302,
+          "P95Nanoseconds": 54468302,
+          "P99Nanoseconds": 54468302
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 25482107,
+          "P95Nanoseconds": 25482107,
+          "P99Nanoseconds": 25482107
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:actual-assess",
+      "Population": 1000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "CommandHash": "46bd24fbff35f2befe01abcb5362dfff60a47bafb16f554a237aa92238a0132e",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 24000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "MeasuredOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 58007712
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 64139531
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 53954944
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 16480056
+        }
+      ],
+      "P50Nanoseconds": 58007712,
+      "P95Nanoseconds": 64139531,
+      "P99Nanoseconds": 64139531,
+      "ProcessRetainedManagedBytes": 97776720,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 58007712,
+          "P95Nanoseconds": 58007712,
+          "P99Nanoseconds": 58007712
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 64139531,
+          "P95Nanoseconds": 64139531,
+          "P99Nanoseconds": 64139531
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:actual-assess",
+      "Population": 1000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "CommandHash": "46bd24fbff35f2befe01abcb5362dfff60a47bafb16f554a237aa92238a0132e",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 24000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "MeasuredOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 36997465
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 19362181
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 35794944
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 16479768
+        }
+      ],
+      "P50Nanoseconds": 19362181,
+      "P95Nanoseconds": 36997465,
+      "P99Nanoseconds": 36997465,
+      "ProcessRetainedManagedBytes": 97778224,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 36997465,
+          "P95Nanoseconds": 36997465,
+          "P99Nanoseconds": 36997465
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 19362181,
+          "P95Nanoseconds": 19362181,
+          "P99Nanoseconds": 19362181
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:actual-assess",
+      "Population": 1000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "CommandHash": "46bd24fbff35f2befe01abcb5362dfff60a47bafb16f554a237aa92238a0132e",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 24000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "MeasuredOpeningHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 36351015
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 19060883
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 35794944
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 16479768
+        }
+      ],
+      "P50Nanoseconds": 19060883,
+      "P95Nanoseconds": 36351015,
+      "P99Nanoseconds": 36351015,
+      "ProcessRetainedManagedBytes": 97779736,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "3b642682e0053a3ced65f2257b0339444be852a71dce2e817e6fb1b2839b8141",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 36351015,
+          "P95Nanoseconds": 36351015,
+          "P99Nanoseconds": 36351015
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 19060883,
+          "P95Nanoseconds": 19060883,
+          "P99Nanoseconds": 19060883
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:actual-assess",
+      "Population": 10000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "CommandHash": "335254454a2a72fa64429398cdd5059ce39b59572e7847e552268d2bc3ff16c4",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 240000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "MeasuredOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 1466260898
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 725753348
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 424210016
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 165343112
+        }
+      ],
+      "P50Nanoseconds": 725753348,
+      "P95Nanoseconds": 1466260898,
+      "P99Nanoseconds": 1466260898,
+      "ProcessRetainedManagedBytes": 1061005608,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 1466260898,
+          "P95Nanoseconds": 1466260898,
+          "P99Nanoseconds": 1466260898
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 725753348,
+          "P95Nanoseconds": 725753348,
+          "P99Nanoseconds": 725753348
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:actual-assess",
+      "Population": 10000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "CommandHash": "335254454a2a72fa64429398cdd5059ce39b59572e7847e552268d2bc3ff16c4",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 240000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "MeasuredOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 1660575602
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 701334931
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 540370552
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 165343112
+        }
+      ],
+      "P50Nanoseconds": 701334931,
+      "P95Nanoseconds": 1660575602,
+      "P99Nanoseconds": 1660575602,
+      "ProcessRetainedManagedBytes": 1061002112,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 1660575602,
+          "P95Nanoseconds": 1660575602,
+          "P99Nanoseconds": 1660575602
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 701334931,
+          "P95Nanoseconds": 701334931,
+          "P99Nanoseconds": 701334931
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:actual-assess",
+      "Population": 10000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "CommandHash": "335254454a2a72fa64429398cdd5059ce39b59572e7847e552268d2bc3ff16c4",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 240000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "MeasuredOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 1394454794
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 741867925
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 358770016
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 165343112
+        }
+      ],
+      "P50Nanoseconds": 741867925,
+      "P95Nanoseconds": 1394454794,
+      "P99Nanoseconds": 1394454794,
+      "ProcessRetainedManagedBytes": 1061003616,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 1394454794,
+          "P95Nanoseconds": 1394454794,
+          "P99Nanoseconds": 1394454794
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 741867925,
+          "P95Nanoseconds": 741867925,
+          "P99Nanoseconds": 741867925
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:actual-assess",
+      "Population": 10000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "CommandHash": "335254454a2a72fa64429398cdd5059ce39b59572e7847e552268d2bc3ff16c4",
+        "KernelVersion": "actual-assess-full-boundary-v1",
+        "BatchLength": 240000,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "MeasuredOpeningHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 1373986744
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 748121151
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 358770016
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 165343112
+        }
+      ],
+      "P50Nanoseconds": 748121151,
+      "P95Nanoseconds": 1373986744,
+      "P99Nanoseconds": 1373986744,
+      "ProcessRetainedManagedBytes": 1061005128,
+      "OperationLabels": [
+        "cold-source-capture-verify-publish",
+        "warm-derived-cache-and-dynamic-current-expression"
+      ],
+      "Scope": "\uC2E4\uC81C PeopleAptitude \uC804\uCCB4: context\u00B7\uC120\uCC9C/\uC720\uC804/source fingerprint\u00B7\uC785\uB825 \uBCF5\uC0AC\u00B7pool\u00B7\uCEE4\uB110\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD55C \uBC88 \uAC8C\uC2DC\u00B7\uB3D9\uC801 \uD559\uC2B5/\uAC74\uAC15/\uD2B9\uC131\u00B7\uCD9C\uB825 \uBC30\uC5F4. cold\uC640 warm raw \uD45C\uBCF8\uC744 \uBCC4\uB3C4 label\uB85C \uB0A8\uAE34\uB2E4.",
+      "Excluded": "fixture/restore\u00B7\uBCC4\uB3C4 \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest/\uB3D9\uC77C\uC131 \uAC80\uC0AC\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16. thread \uD560\uB2F9\uC740 background/native\uB97C \uD3EC\uD568\uD558\uC9C0 \uC54A\uC73C\uBA70 \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uD504\uB85C\uC138\uC2A4 \uBC94\uC704\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "749be45cf0882f969b77f9be3d64e4fc69f03b6f0b2e634bf5f93dd20bb02435",
+      "Distributions": [
+        {
+          "OperationKind": "cold-source-capture-verify-publish",
+          "Samples": 1,
+          "P50Nanoseconds": 1373986744,
+          "P95Nanoseconds": 1373986744,
+          "P99Nanoseconds": 1373986744
+        },
+        {
+          "OperationKind": "warm-derived-cache-and-dynamic-current-expression",
+          "Samples": 1,
+          "P50Nanoseconds": 748121151,
+          "P95Nanoseconds": 748121151,
+          "P99Nanoseconds": 748121151
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "CommandHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 0,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "MeasuredOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 19023
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2184
+        }
+      ],
+      "P50Nanoseconds": 19023,
+      "P95Nanoseconds": 19023,
+      "P99Nanoseconds": 19023,
+      "ProcessRetainedManagedBytes": 648795056,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 19023,
+          "P95Nanoseconds": 19023,
+          "P99Nanoseconds": 19023
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "CommandHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 0,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "MeasuredOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 4356
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2184
+        }
+      ],
+      "P50Nanoseconds": 4356,
+      "P95Nanoseconds": 4356,
+      "P99Nanoseconds": 4356,
+      "ProcessRetainedManagedBytes": 648796080,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 4356,
+          "P95Nanoseconds": 4356,
+          "P99Nanoseconds": 4356
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "CommandHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 0,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "MeasuredOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 4012
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2184
+        }
+      ],
+      "P50Nanoseconds": 4012,
+      "P95Nanoseconds": 4012,
+      "P99Nanoseconds": 4012,
+      "ProcessRetainedManagedBytes": 648796984,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 4012,
+          "P95Nanoseconds": 4012,
+          "P99Nanoseconds": 4012
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "CommandHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 0,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "MeasuredOpeningHash": "8af71b6b66afb5dca470077764e9aa596c20464122fefde0223ba2ffb144a746",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 3807
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2184
+        }
+      ],
+      "P50Nanoseconds": 3807,
+      "P95Nanoseconds": 3807,
+      "P99Nanoseconds": 3807,
+      "ProcessRetainedManagedBytes": 648797864,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 3807,
+          "P95Nanoseconds": 3807,
+          "P99Nanoseconds": 3807
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "CommandHash": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 1,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "MeasuredOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 3759
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2832
+        }
+      ],
+      "P50Nanoseconds": 3759,
+      "P95Nanoseconds": 3759,
+      "P99Nanoseconds": 3759,
+      "ProcessRetainedManagedBytes": 648799144,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 3759,
+          "P95Nanoseconds": 3759,
+          "P99Nanoseconds": 3759
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "CommandHash": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 1,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "MeasuredOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 4508
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2704
+        }
+      ],
+      "P50Nanoseconds": 4508,
+      "P95Nanoseconds": 4508,
+      "P99Nanoseconds": 4508,
+      "ProcessRetainedManagedBytes": 648800040,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 4508,
+          "P95Nanoseconds": 4508,
+          "P99Nanoseconds": 4508
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "CommandHash": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 1,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "MeasuredOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 4133
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2544
+        }
+      ],
+      "P50Nanoseconds": 4133,
+      "P95Nanoseconds": 4133,
+      "P99Nanoseconds": 4133,
+      "ProcessRetainedManagedBytes": 648800944,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 4133,
+          "P95Nanoseconds": 4133,
+          "P99Nanoseconds": 4133
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "CommandHash": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 1,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "MeasuredOpeningHash": "6adb5a42c294e61528d8efeabd5ea1711d4c91afa8d295afbdc779b4a2feb631",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 4344
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2544
+        }
+      ],
+      "P50Nanoseconds": 4344,
+      "P95Nanoseconds": 4344,
+      "P99Nanoseconds": 4344,
+      "ProcessRetainedManagedBytes": 648801824,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "4080559ff9be838fd739dc0596047f130248d1326699bee33e897fba336d8bbf",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 4344,
+          "P95Nanoseconds": 4344,
+          "P99Nanoseconds": 4344
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "CommandHash": "d71a595b6e83e7180caf80e813a0e1b08c48963fd436c20da78927c8f489902a",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 7,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "MeasuredOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6202
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 5736
+        }
+      ],
+      "P50Nanoseconds": 6202,
+      "P95Nanoseconds": 6202,
+      "P99Nanoseconds": 6202,
+      "ProcessRetainedManagedBytes": 648803088,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6202,
+          "P95Nanoseconds": 6202,
+          "P99Nanoseconds": 6202
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "CommandHash": "d71a595b6e83e7180caf80e813a0e1b08c48963fd436c20da78927c8f489902a",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 7,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "MeasuredOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 7123
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 4840
+        }
+      ],
+      "P50Nanoseconds": 7123,
+      "P95Nanoseconds": 7123,
+      "P99Nanoseconds": 7123,
+      "ProcessRetainedManagedBytes": 648803984,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 7123,
+          "P95Nanoseconds": 7123,
+          "P99Nanoseconds": 7123
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "CommandHash": "d71a595b6e83e7180caf80e813a0e1b08c48963fd436c20da78927c8f489902a",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 7,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "MeasuredOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6467
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 3816
+        }
+      ],
+      "P50Nanoseconds": 6467,
+      "P95Nanoseconds": 6467,
+      "P99Nanoseconds": 6467,
+      "ProcessRetainedManagedBytes": 648804888,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6467,
+          "P95Nanoseconds": 6467,
+          "P99Nanoseconds": 6467
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "CommandHash": "d71a595b6e83e7180caf80e813a0e1b08c48963fd436c20da78927c8f489902a",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 7,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "MeasuredOpeningHash": "e546a287d3463361f54728021e1e2388d08d408edc44cabbd5ae20d62f2b950a",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6486
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 3816
+        }
+      ],
+      "P50Nanoseconds": 6486,
+      "P95Nanoseconds": 6486,
+      "P99Nanoseconds": 6486,
+      "ProcessRetainedManagedBytes": 648805768,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "c7b98ccd3daa93e56633e18068ff325aad7b94785d1efa51693435aca417b8c2",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6486,
+          "P95Nanoseconds": 6486,
+          "P99Nanoseconds": 6486
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "CommandHash": "29101ebf1ead685029508789eee51c4d4fff65524064d8e32a48efded7036982",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 8,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "MeasuredOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 5881
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 6208
+        }
+      ],
+      "P50Nanoseconds": 5881,
+      "P95Nanoseconds": 5881,
+      "P99Nanoseconds": 5881,
+      "ProcessRetainedManagedBytes": 648806960,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 5881,
+          "P95Nanoseconds": 5881,
+          "P99Nanoseconds": 5881
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "CommandHash": "29101ebf1ead685029508789eee51c4d4fff65524064d8e32a48efded7036982",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 8,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "MeasuredOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 11510
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 10080
+        }
+      ],
+      "P50Nanoseconds": 11510,
+      "P95Nanoseconds": 11510,
+      "P99Nanoseconds": 11510,
+      "ProcessRetainedManagedBytes": 648807856,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 11510,
+          "P95Nanoseconds": 11510,
+          "P99Nanoseconds": 11510
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "CommandHash": "29101ebf1ead685029508789eee51c4d4fff65524064d8e32a48efded7036982",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 8,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "MeasuredOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6567
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 4016
+        }
+      ],
+      "P50Nanoseconds": 6567,
+      "P95Nanoseconds": 6567,
+      "P99Nanoseconds": 6567,
+      "ProcessRetainedManagedBytes": 648808760,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6567,
+          "P95Nanoseconds": 6567,
+          "P99Nanoseconds": 6567
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "CommandHash": "29101ebf1ead685029508789eee51c4d4fff65524064d8e32a48efded7036982",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 8,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "MeasuredOpeningHash": "670fe0d015765b70cac296d347e406b59de4cbf98de6ac77c9763276dae076c0",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6603
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 4016
+        }
+      ],
+      "P50Nanoseconds": 6603,
+      "P95Nanoseconds": 6603,
+      "P99Nanoseconds": 6603,
+      "ProcessRetainedManagedBytes": 648809640,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "cc95233fdd82373b2ecaaffd9d631f11d9d6a7fef06a1a7c0b350f225e2e6886",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6603,
+          "P95Nanoseconds": 6603,
+          "P99Nanoseconds": 6603
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "CommandHash": "5cfc4211e4918b07c75c1ec51a90d9f5423607c3fb588a14a3bd8d0d415f8886",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 9,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "MeasuredOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 4792
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 6704
+        }
+      ],
+      "P50Nanoseconds": 4792,
+      "P95Nanoseconds": 4792,
+      "P99Nanoseconds": 4792,
+      "ProcessRetainedManagedBytes": 648810856,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 4792,
+          "P95Nanoseconds": 4792,
+          "P99Nanoseconds": 4792
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "CommandHash": "5cfc4211e4918b07c75c1ec51a90d9f5423607c3fb588a14a3bd8d0d415f8886",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 9,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "MeasuredOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 12344
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 10448
+        }
+      ],
+      "P50Nanoseconds": 12344,
+      "P95Nanoseconds": 12344,
+      "P99Nanoseconds": 12344,
+      "ProcessRetainedManagedBytes": 648812008,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 12344,
+          "P95Nanoseconds": 12344,
+          "P99Nanoseconds": 12344
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "CommandHash": "5cfc4211e4918b07c75c1ec51a90d9f5423607c3fb588a14a3bd8d0d415f8886",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 9,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "MeasuredOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6701
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 4240
+        }
+      ],
+      "P50Nanoseconds": 6701,
+      "P95Nanoseconds": 6701,
+      "P99Nanoseconds": 6701,
+      "ProcessRetainedManagedBytes": 648812912,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6701,
+          "P95Nanoseconds": 6701,
+          "P99Nanoseconds": 6701
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "CommandHash": "5cfc4211e4918b07c75c1ec51a90d9f5423607c3fb588a14a3bd8d0d415f8886",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 9,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "MeasuredOpeningHash": "e6b8727ad43b3bee37f7f834ad47f4ec0255946637e3617985ca4590135ddf91",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6178
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 4240
+        }
+      ],
+      "P50Nanoseconds": 6178,
+      "P95Nanoseconds": 6178,
+      "P99Nanoseconds": 6178,
+      "ProcessRetainedManagedBytes": 648813792,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "23b8e786050cd75983f3c81ab8ac1734cb7dc863f7040b6a1947bdcffa11096e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6178,
+          "P95Nanoseconds": 6178,
+          "P99Nanoseconds": 6178
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "CommandHash": "2643659e4e20637a8ef2e12565ea16f87db9bf6267d9538fd69a2701df186d04",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 24,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "MeasuredOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 9544
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 13952
+        }
+      ],
+      "P50Nanoseconds": 9544,
+      "P95Nanoseconds": 9544,
+      "P99Nanoseconds": 9544,
+      "ProcessRetainedManagedBytes": 648815152,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 9544,
+          "P95Nanoseconds": 9544,
+          "P99Nanoseconds": 9544
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "CommandHash": "2643659e4e20637a8ef2e12565ea16f87db9bf6267d9538fd69a2701df186d04",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 24,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "MeasuredOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 25248
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 25568
+        }
+      ],
+      "P50Nanoseconds": 25248,
+      "P95Nanoseconds": 25248,
+      "P99Nanoseconds": 25248,
+      "ProcessRetainedManagedBytes": 648816048,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 25248,
+          "P95Nanoseconds": 25248,
+          "P99Nanoseconds": 25248
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "CommandHash": "2643659e4e20637a8ef2e12565ea16f87db9bf6267d9538fd69a2701df186d04",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 24,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "MeasuredOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 7133
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 7408
+        }
+      ],
+      "P50Nanoseconds": 7133,
+      "P95Nanoseconds": 7133,
+      "P99Nanoseconds": 7133,
+      "ProcessRetainedManagedBytes": 648816952,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 7133,
+          "P95Nanoseconds": 7133,
+          "P99Nanoseconds": 7133
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "CommandHash": "2643659e4e20637a8ef2e12565ea16f87db9bf6267d9538fd69a2701df186d04",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 24,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "MeasuredOpeningHash": "74920af62990f96077f12c3e30d0b76ba6222ea9a66f83430ffb667fa16f62d6",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 6736
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 7408
+        }
+      ],
+      "P50Nanoseconds": 6736,
+      "P95Nanoseconds": 6736,
+      "P99Nanoseconds": 6736,
+      "ProcessRetainedManagedBytes": 648817832,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "345d78d161ff3c2a97f256b8ebefa33a862499b65f3ab003e825e6c3d3fc3d4f",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 6736,
+          "P95Nanoseconds": 6736,
+          "P99Nanoseconds": 6736
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "canonical-csharp-scalar-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "CommandHash": "e3e0c332c77784f85d4b1dc44961a2a97d61f93ca1864c931319bb3163dae461",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "MeasuredOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 353042
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 1163936
+        }
+      ],
+      "P50Nanoseconds": 353042,
+      "P95Nanoseconds": 353042,
+      "P99Nanoseconds": 353042,
+      "ProcessRetainedManagedBytes": 648863944,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 353042,
+          "P95Nanoseconds": 353042,
+          "P99Nanoseconds": 353042
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "catalog-csharp-vector-int32-v1:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "CommandHash": "e3e0c332c77784f85d4b1dc44961a2a97d61f93ca1864c931319bb3163dae461",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "MeasuredOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 1804184
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 2325536
+        }
+      ],
+      "P50Nanoseconds": 1804184,
+      "P95Nanoseconds": 1804184,
+      "P99Nanoseconds": 1804184,
+      "ProcessRetainedManagedBytes": 648864840,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 1804184,
+          "P95Nanoseconds": 1804184,
+          "P99Nanoseconds": 1804184
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "partial-output-discard-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "CommandHash": "e3e0c332c77784f85d4b1dc44961a2a97d61f93ca1864c931319bb3163dae461",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "MeasuredOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 195420
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 511120
+        }
+      ],
+      "P50Nanoseconds": 195420,
+      "P95Nanoseconds": 195420,
+      "P99Nanoseconds": 195420,
+      "ProcessRetainedManagedBytes": 648865744,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 195420,
+          "P95Nanoseconds": 195420,
+          "P99Nanoseconds": 195420
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-04",
+      "Variant": "unsupported-and-scalar:direct-kernel",
+      "Population": 1,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "CommandHash": "e3e0c332c77784f85d4b1dc44961a2a97d61f93ca1864c931319bb3163dae461",
+        "KernelVersion": "canonical-24talent-request-batch-v1",
+        "BatchLength": 2400,
+        "SupportedFeatures": "Vector.IsHardwareAccelerated=True;Vector\u003Cint\u003E.Count=8",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "MeasuredOpeningHash": "e1fcaaafd2dfe573b2973bf1dba0c0acd6d84b823c97bca99d532e4263902918",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 195420
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 511120
+        }
+      ],
+      "P50Nanoseconds": 195420,
+      "P95Nanoseconds": 195420,
+      "P99Nanoseconds": 195420,
+      "ProcessRetainedManagedBytes": 648866624,
+      "OperationLabels": [
+        "capture-calculate-verify-commit"
+      ],
+      "Scope": "\uAC19\uC740 \uC2E4\uC81C \uCD08\uAE30 \uC778\uBB3C\uC758 \uC7AC\uB2A5 \uC694\uCCAD \uBC30\uCE58(\uC0AC\uB78C \uC218\uAC00 \uC544\uB2D8). \uC785\uB825 fingerprint\u00B7\uBCF5\uC0AC\u00B7\uC784\uC2DC \uBC30\uC5F4\u00B7\uBCC0\uD658\u00B7\uC815\uBCF8/\uBC94\uC704 \uAC80\uC99D\u00B7\uD604\uC7AC \uC785\uB825 \uB300\uC870\u00B7\uC804\uCCB4 \uACB0\uACFC \uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 \uC778\uBB3C fixture\u00B7\uC694\uCCAD index \uBC30\uC5F4\u00B7\uB3C5\uB9BD \uC608\uC5F4\u00B7\uBC18\uD658\uAC12 digest \uBE44\uAD50\u00B7GC\u00B7\uBCF4\uACE0\uB294 \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uB300\uB7C9 \uC694\uCCAD\uC744 \uB300\uB7C9 \uC778\uAD6C \uC2E4\uD589\uC73C\uB85C \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4.",
+      "Boundaries": [],
+      "OutputDigest": "2e967a149543dba29160df95681d56ba47aeec1835ec42589d3b4a9d8abac55e",
+      "Distributions": [
+        {
+          "OperationKind": "capture-calculate-verify-commit",
+          "Samples": 1,
+          "P50Nanoseconds": 195420,
+          "P95Nanoseconds": 195420,
+          "P99Nanoseconds": 195420
+        }
+      ]
+    }
+  ],
+  "adoption": "revisit",
+  "mandatory_population_baseline_replacement": false,
+  "note": "EX02 \uBCC4\uB3C4 \uC0DD\uC0AC \uACBD\uACC4 \uCD08\uAE30\uC870\uAC74\uC740 \uAE30\uBCF8 \uC778\uAD6C \uAE30\uC900\uC120\uC744 \uB300\uCCB4\uD558\uC9C0 \uC54A\uB294\uB2E4. \uC804\uCCB4\uC2DC\uAC04\uC740 \uC18C\uC2A4\uD655\uC778/fixture/\uC608\uC5F4/GC/\uC55E\uC120 \uBCF4\uACE0\uC4F0\uAE30\uB97C \uD3EC\uD568\uD558\uBA70 \uB9C8\uC9C0\uB9C9 \uBCF4\uACE0\uC4F0\uAE30\uB9CC \uC81C\uC678\uD55C\uB2E4. \uBD80\uBD84\uADDC\uBAA8\uB294 complete\uAC00 \uC544\uB2C8\uB2E4. \uC2E4\uC81C \uD45C\uBCF8 \uC678 \uBE44\uC6A9\u00B7\uD50C\uB7AB\uD3FC\u00B7\uC804\uB7B5 \uCC44\uD0DD\uC744 \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4."
+}

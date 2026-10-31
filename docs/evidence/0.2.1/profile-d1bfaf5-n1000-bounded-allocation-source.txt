@@ -1,0 +1,4 @@
+TYPE InventoryEngine.<>c__DisplayClass96_6
+METHOD .ctor
+METHOD <ValidateCore>b__37
+/workspace/seonro-profile-d1bfaf5/src/Chronicles.Game/Inventory/InventoryValidation.cs:97:57 → 97:120

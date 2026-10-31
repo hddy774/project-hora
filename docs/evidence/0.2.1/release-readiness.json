@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "repository": "hddy774/project-hora",
+  "version": "0.2.1",
+  "feature_functional_complete": false,
+  "publication_enabled": false,
+  "audited_source_commit": null,
+  "product_source_fingerprint": null,
+  "task_ledger_sha256": null,
+  "functional_report": null,
+  "functional_report_sha256": null,
+  "final_performance_complete": false,
+  "final_performance_report": null,
+  "final_performance_report_sha256": null,
+  "status": "미게시·대용량 저장 수정313/313과 네 인구 규모 저장/읽기 기준선 완료. 운송 중 파일복원 검사1/1 뒤 전체314·최종소스 인구측정·장기·성장/행동·R&D·플랫폼·게시 수용을 기다립니다. 기존 실패 원본과 readiness false를 유지합니다.",
+  "release_task_exception": "V021-T06은 이 배포 실행 자체의 결과를 기록하므로 사전 done 조건에 포함하지 않습니다."
+}

@@ -1,0 +1,70 @@
+{
+  "verifiedAtUtc": "2026-10-31T06:28:49.327439+00:00",
+  "run": 41159864831,
+  "attempt": 1,
+  "verification": "PASS;actual6ZIPbytes/SHA/CRC,not measurement acceptance",
+  "artifacts": [
+    {
+      "artifactId": 13033147298,
+      "name": "v021-sensitivity-41159864831-1-seed-42",
+      "zipPath": "/workspace/scratch/sensitivity-41159864831-7ce/seed-42.zip",
+      "bytes": 1617563,
+      "sha256": "9c2467c8b7e14b94fd5d1420f3fd2342f20bb4ded72b2abacd32f87a994b57c1",
+      "expiresAt": "2026-11-14T06:25:19Z",
+      "crcAndActualBytesShaVerified": true,
+      "members": 30
+    },
+    {
+      "artifactId": 13032956600,
+      "name": "v021-sensitivity-collection-41159864831-1",
+      "zipPath": "/workspace/scratch/sensitivity-41159864831-7ce/collection.zip",
+      "bytes": 4877539,
+      "sha256": "a6ad994669f00135837aa995175b4d5e65e471aa41e805bd65fd9d9be58e2454",
+      "expiresAt": "2026-11-14T06:25:33Z",
+      "crcAndActualBytesShaVerified": true,
+      "members": 90
+    },
+    {
+      "artifactId": 13032846688,
+      "name": "v021-sensitivity-41159864831-1-seed-2026",
+      "zipPath": "/workspace/scratch/sensitivity-41159864831-7ce/seed-2026.zip",
+      "bytes": 1625931,
+      "sha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+      "expiresAt": "2026-11-14T06:25:18Z",
+      "crcAndActualBytesShaVerified": true,
+      "members": 30
+    },
+    {
+      "artifactId": 13030660873,
+      "name": "v021-sensitivity-41159864831-1-seed-98",
+      "zipPath": "/workspace/scratch/sensitivity-41159864831-7ce/seed-98.zip",
+      "bytes": 1625359,
+      "sha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e",
+      "expiresAt": "2026-11-14T04:32:30Z",
+      "crcAndActualBytesShaVerified": true,
+      "members": 29
+    },
+    {
+      "artifactId": 13026322503,
+      "name": "v021-sensitivity-prepare-41159864831-1",
+      "zipPath": "/workspace/scratch/sensitivity-41159864831-7ce/prepare.zip",
+      "bytes": 871,
+      "sha256": "3e92f4e8a0b19f4fe1d7d4add61cafea07860f39e44aaaabf262c52c0aef60cf",
+      "expiresAt": "2026-11-14T02:24:35Z",
+      "crcAndActualBytesShaVerified": true,
+      "members": 2
+    },
+    {
+      "artifactId": 13025494772,
+      "name": "v021-sensitivity-inputs-41159864831-1",
+      "zipPath": "/workspace/scratch/sensitivity-41159864831-7ce/inputs.zip",
+      "bytes": 204978,
+      "sha256": "503f499ff67f73639c132a4551476f1435502bff4f16300ef6965c9e3558c8fd",
+      "expiresAt": "2026-11-14T02:24:34Z",
+      "crcAndActualBytesShaVerified": true,
+      "members": 13
+    }
+  ],
+  "oldBatchChanged": false,
+  "newRemoteWritesOrMeasurements": 0
+}

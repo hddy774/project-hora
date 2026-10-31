@@ -1,0 +1,152 @@
+{
+  "schema": "seonro.invariant-final-provenance.v1",
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "fingerprint_attribution": "root의동결통지/원래run.json 값;문서작업의추가전체지문계산없음",
+  "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+  "run_original": "root-run.original.json",
+  "functional_command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--report",
+    "/workspace/scratch/v021-integration-df72405/functional.json"
+  ],
+  "worktree": "/workspace/seonro-integration-df72405",
+  "cpu_affinity": "0",
+  "build_exit_code": 0,
+  "functional_exit_code": 0,
+  "functional_started_utc": "2026-10-31T01:25:30.872438+00:00",
+  "functional_ended_utc": "2026-10-31T01:34:20.747566+00:00",
+  "selection": "all",
+  "total": 314,
+  "failed": 0,
+  "functional_report_sha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66",
+  "functional_log_sha256": "f11002a6c982cf45567d906e5d1040b0f9ebb31532fe7f395317ea0f20e71c44",
+  "source_clean_at_document_readout": true,
+  "clean_scope": "현재실행worktree Git HEAD/clean을읽었다. 과거프로세스load의독립인증으로확대하지않는다. root는frozen 실행으로인계했다.",
+  "sdk": "10.0.403",
+  "runtime_version": {
+    "reported_by_root": ".NET 10.0.14",
+    "runtimeconfig_target": "10.0.0"
+  },
+  "runtimeconfig_sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+  "runtime_tiered_pgo": false,
+  "runtime_environment_overrides_original": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Hosting",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638",
+      "bytes": 23552,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-df72405/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+      "generated_info_sha256": "73ba7c15ca48b2304408a4093329b6aee97fa126ceb0ba11d7f4365fa764f924",
+      "informational_version": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+        "scope": "PE/CLI와직렬화값의정적확인. 독립과거프로세스load/attribute실행인증은아니다."
+      }
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b",
+      "bytes": 2258432,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-df72405/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+      "generated_info_sha256": "862143323a04ce1bb186a3f66d71d637f2de798b9309c5867e14f3dedd0930e2",
+      "informational_version": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+        "scope": "PE/CLI와직렬화값의정적확인. 독립과거프로세스load/attribute실행인증은아니다."
+      }
+    },
+    {
+      "assembly": "Chronicles.Core",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04",
+      "bytes": 5120,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-df72405/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+      "generated_info_sha256": "402d62deafee648f60090ae9586ed211348c86a5f9ec7f9e866eac3b7e16243d",
+      "informational_version": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+        "scope": "PE/CLI와직렬화값의정적확인. 독립과거프로세스load/attribute실행인증은아니다."
+      }
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "actual_entrypoint_copy": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7",
+      "bytes": 1500672,
+      "current_sha_matches_original_run": true,
+      "generated_assembly_info": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+      "generated_info_sha256": "4f08b491b3b5e1b7358d030f8d0a8781defd01cdf7a5fc07238cd20db7f46a61",
+      "informational_version": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "pe_metadata": {
+        "pe_signature_valid": true,
+        "cli_metadata_root": "BSJB",
+        "streams": [
+          "#Blob",
+          "#GUID",
+          "#Strings",
+          "#US",
+          "#~"
+        ],
+        "informational_version_serialized_value_found_in_blob": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+        "scope": "PE/CLI와직렬화값의정적확인. 독립과거프로세스load/attribute실행인증은아니다."
+      }
+    }
+  ],
+  "functional_timings_are_performance_samples": false,
+  "historical_source": {
+    "source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "product_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+    "functional_report": "docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json",
+    "map_json_url": "https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.json",
+    "map_markdown_url": "https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.md",
+    "map_json_sha256": "afe9f900203bfffae3312616e07eb89a5c5e49c1782bd0e2b885f8e08bb82147",
+    "map_markdown_sha256": "a9cb32e64a8155c6a3cf7003d973c19a2ac14045287fa6599ad1ea5a4b22a236"
+  },
+  "separate_native_performance_growth_release_acceptance": true
+}

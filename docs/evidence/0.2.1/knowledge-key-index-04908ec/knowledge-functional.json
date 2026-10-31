@@ -1,0 +1,167 @@
+{
+  "selection": "knowledge",
+  "total": 32,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "passed": true,
+      "ms": 1910
+    },
+    {
+      "name": "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+      "passed": true,
+      "ms": 3742
+    },
+    {
+      "name": "INV-004/023/024 adopted knowledge revision\u00B7actual support reservation\u00B7no book mastery",
+      "passed": true,
+      "ms": 68
+    },
+    {
+      "name": "INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding",
+      "passed": true,
+      "ms": 60
+    },
+    {
+      "name": "INV-009/024 knowledge: \uD5C8\uAC00\uD55C \uC2E4\uC81C \uB9E4\uCCB4\uB97C \uC804\uCCB4\uC218\u00B7\uC815\uB82C\u00B7\uD398\uC774\uC9C0 \uC804\uC5D0 \uD544\uD130\uD558\uC5EC \uBC14\uAE65 \uB3C4\uC11C\uB97C \uC778\uC9C0\uD558\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs",
+      "passed": true,
+      "ms": 5
+    },
+    {
+      "name": "INV-024 knowledge: experiments refute adopted claims and corrections never rewrite history",
+      "passed": true,
+      "ms": 16
+    },
+    {
+      "name": "INV-015/024 knowledge: physical missing pages and book loss preserve learned memory",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-024 knowledge bridge contract: explicit genesis transmission licence and existing comprehension baseline",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-024 knowledge: personal misinterpretation and oral transmission do not mutate editions",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-004/024 knowledge: loss of an action\u0027s physical source prevents completion without refunding spent inputs",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights",
+      "passed": true,
+      "ms": 10
+    },
+    {
+      "name": "INV-024 knowledge: physical ownership grants neither comprehension nor mastery",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "INV-006/008/024 knowledge: scoped paged queries are pure isolated and culture independent",
+      "passed": true,
+      "ms": 18
+    },
+    {
+      "name": "INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected",
+      "passed": true,
+      "ms": 8
+    },
+    {
+      "name": "INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke",
+      "passed": true,
+      "ms": 9
+    },
+    {
+      "name": "INV-006/012/024 knowledge: parents mentors and apprentices spend both participants\u0027 time",
+      "passed": true,
+      "ms": 11
+    },
+    {
+      "name": "INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-017/018/024 knowledge public world: an actual blank book carries no text until paid transcription",
+      "passed": true,
+      "ms": 1353
+    },
+    {
+      "name": "INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history",
+      "passed": true,
+      "ms": 2731
+    },
+    {
+      "name": "INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery",
+      "passed": true,
+      "ms": 514
+    },
+    {
+      "name": "INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain",
+      "passed": true,
+      "ms": 651
+    },
+    {
+      "name": "INV-004/017/024 knowledge public world: real request and teaching share both participants\u0027 labor and cancel together",
+      "passed": true,
+      "ms": 1374
+    },
+    {
+      "name": "INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book",
+      "passed": true,
+      "ms": 788
+    },
+    {
+      "name": "INV-008/009/015 people receipts public: unseen remote oath end cannot update personal agreement knowledge",
+      "passed": true,
+      "ms": 4098
+    },
+    {
+      "name": "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests",
+      "passed": true,
+      "ms": 587
+    },
+    {
+      "name": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+      "passed": true,
+      "ms": 240
+    },
+    {
+      "name": "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity",
+      "passed": true,
+      "ms": 6
+    },
+    {
+      "name": "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+      "passed": true,
+      "ms": 746
+    },
+    {
+      "name": "V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching",
+      "passed": true,
+      "ms": 1520
+    }
+  ]
+}

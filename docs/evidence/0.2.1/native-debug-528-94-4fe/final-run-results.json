@@ -1,0 +1,18 @@
+{
+  "source_head": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+  "product_ci_actual_checkout": "4ab393cfca5667b5763c7ad226656df1b77ff30c",
+  "product_run": 41120849698,
+  "product_run_conclusion": "success",
+  "functional": {
+    "total": 314,
+    "failed": 0,
+    "raw_sha256": "881a3769b3b2834848b5eaa82b4ba9b0ab8cc6294d56e7a69a05a381fb40ff26"
+  },
+  "artifact": {
+    "id": 13009631448,
+    "bytes": 15641,
+    "sha": "add436fc54ad90481818b4cd3e5b668b8df4a9ad954dc7095653b0147ee43832"
+  },
+  "native_detail": "diagnostic-summary.json",
+  "limits": "Original failed94 runs remain failed. This is separate debug native CI, not retained sameAPK/upgrade/release or growth7ce evidence."
+}

@@ -1,0 +1,28 @@
+df724 CPU3 codec/save bounded diagnostic (not final performance acceptance)
+Source df7240556a260202a248e57b1f9868e372b9d995
+Product FP 0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e
+Completed 2026-10-31T01:42:31.938883+00:00; child elapsed 19.167s; preparation within fixed ten-minute cap.
+SDK10.0.403 / .NET10.0.14 / TieredPGO=false / actual4DLL SHA matched frozen whole-functional provenance.
+All units below: ms and decimal MB allocated on current thread. N1000 is Month0 synthetic opening, no AdvanceTo.
+Operation | N100 median ms / MB | N1000 median ms / MB
+SerializeCanonicalUtf8 | 12.285 / 2.604920 | 36.243 / 15.447000
+GameCodec.Hash | 13.370 / 2.605128 | 45.618 / 15.447208
+HashExistingCanonicalBuffer_attribution_only | 1.456 / 0.000208 | 8.620 / 0.000208
+ScratchStreamCanonicalHash_candidate | 13.214 / 0.060840 | 42.625 / 0.580464
+GameCodec.Clone | 43.111 / 8.525928 | 197.858 / 53.855560
+DeserializeExistingBuffer_attribution_only | 28.074 / 5.828520 | 124.897 / 37.704072
+Invariants.Validate | 28.900 / 9.321508 | 220.811 / 73.791148
+GameCodec.Encode_default | 109.810 / 29.542116 | 532.654 / 195.977772
+GameCodec.Encode_forced_binary_existing_seam | 86.934 / 23.010080 | 448.266 / 158.074168
+GameCodec.Decode_default | 121.597 / 31.358896 | 631.854 / 210.191824
+GameSaveStore.SaveAtomic_new | 227.721 / 64.896312 | 1118.407 / 429.200488
+GameSaveStore.SaveAtomic_overwrite | 468.659 / 135.585240 | 2309.797 / 894.923496
+GameSaveStore.Load_primary_and_backup | 258.363 / 70.704640 | 1031.417 / 465.970912
+WriteThroughFlush_existing_encoded_bytes_attribution_only | 2.458 / 0.000232 | 5.366 / 0.000232
+
+JSON token added bytes exactly equal rawQuotes*5+rawBackslashes for both measured fixtures. N1000 raw14,868,179B -> JSON23,035,239B (1.5493x), binary14,868,243B.
+Canonical UTF8 stream bytes, hash, all clone/codec/file roundtrip hashes and RNG checks passed. Original state unchanged.
+Stream hash candidate N1000 allocated0.580MB vs current15.447MB (96.24% less allocated); elapsed42.625 vs45.618ms ordered shared-host, not a final timing effect.
+Default vs forced-existing-binary Encode allocation about37.90MB difference, consistent with avoiding payload UTF16 string + expanded output.
+No post-frame heap-root/retained-size sampling here; these counters do NOT prove ArrayPool/RSS retention or explain the other heap diagnostic by themselves.
+Proposals only: canonical streaming Hash first; review existing binary policy using expansion/transient size second; same-call SaveAtomic duplicate decode reuse only after recovery/race review. No product patch.

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "source_commit": "89d581d6ad68813c378f495c208c5ee8e8155cad",
+  "report": "docs/evidence/0.2.1/validation-155-n1000.json",
+  "report_sha256": "ef99405b3ac8f9669649c0b0f54e0959c4da5e7031f6b2c9779e70ad38a0a065",
+  "preceding_functional_selection": "INV-001/002/011",
+  "preceding_functional_count": 1,
+  "measured_population": 1000,
+  "completed_months": 12,
+  "four_population_complete": false,
+  "scope": "기능 개발 마감 후 격리된 소스에서 실제 생존AI 1000명의12개월 진행·조회·저장 왕복·메모리 측정. 전체 네 규모와 Android 실기기 성능은 별도.",
+  "limitations": [
+    "한 번의 공유 호스트 실행이며 열/전원·기기 성능 검증으로 치환하지 않는다.",
+    "아직 인구별 예산·장기 안정성·성장·전체 확장 실험·릴리스 수용을 마감하지 않았다."
+  ]
+}

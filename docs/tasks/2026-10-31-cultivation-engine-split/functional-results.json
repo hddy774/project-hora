@@ -1,0 +1,378 @@
+{
+  "baselineCommit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "scope": "기존 수행 기능 선택 검사. 성능·성장·장기 모드 실행 없음.",
+  "sdk": "10.0.403",
+  "cpuAffinity": [
+    1
+  ],
+  "buildConfiguration": "Release",
+  "verifiedSourceFiles": [
+    {
+      "file": "CultivationEngine.Formation.cs",
+      "sha256": "9f7ca93cc2bbd9f7e21ab23f9de1e6340ac2a3d8608c422def8464f47de148c1",
+      "methods": 5
+    },
+    {
+      "file": "CultivationEngine.Martial.cs",
+      "sha256": "418f335adbe3e9c5506e1a593cd92073a629fb5eeeb32af6f2476d3eccd826da",
+      "methods": 2
+    },
+    {
+      "file": "CultivationEngine.Practice.cs",
+      "sha256": "0c850b77731558785885b5b0e718bc2f2550597ab216cf45c03457b51e9b5b3c",
+      "methods": 6
+    },
+    {
+      "file": "CultivationEngine.Preparation.cs",
+      "sha256": "25d05f7b4205abfc391ad3b8ca5ac98ede9a704204787a005da942f982c95926",
+      "methods": 9
+    },
+    {
+      "file": "CultivationEngine.Progression.cs",
+      "sha256": "efd1a0cc5c5df67447d4aee7dcb278c6812920488c1a679285c8e490086da2e0",
+      "methods": 11
+    },
+    {
+      "file": "CultivationEngine.Recovery.cs",
+      "sha256": "bc922db1478bf2e90da5726f41bf00a82ec648bff6d1b150e54b265c8ad76385",
+      "methods": 3
+    },
+    {
+      "file": "CultivationEngine.cs",
+      "sha256": "23e263379bcdd04176fb2e7de53199bdad2f44500a8ae523b1db8a7b4e784a25",
+      "methods": 7
+    }
+  ],
+  "total": 24,
+  "failedBatches": 0,
+  "batches": [
+    {
+      "filter": "10 realm structures",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "10 realm structures",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/011/023 10 realm structures·30 paths·genesis provenance",
+            "passed": true,
+            "ms": 105
+          }
+        ]
+      }
+    },
+    {
+      "filter": "four-process energy",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "four-process energy",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/022 four-process energy·actual supply·crowding·rights",
+            "passed": true,
+            "ms": 106
+          }
+        ]
+      }
+    },
+    {
+      "filter": "prepare/start/fracture",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "prepare/start/fracture",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/013/023 prepare/start/fracture·mandatory Nascent failure death",
+            "passed": true,
+            "ms": 117
+          }
+        ]
+      }
+    },
+    {
+      "filter": "adopted knowledge revision",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "adopted knowledge revision",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/023/024 adopted knowledge revision·actual support reservation·no book mastery",
+            "passed": true,
+            "ms": 98
+          }
+        ]
+      }
+    },
+    {
+      "filter": "all 30 paths",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "all 30 paths",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/014/023 all 30 paths form their unique realm structure once",
+            "passed": true,
+            "ms": 127
+          }
+        ]
+      }
+    },
+    {
+      "filter": "regression·real recovery",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "regression·real recovery",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/015/023 regression·real recovery·costed route conversion·retreat boundaries",
+            "passed": true,
+            "ms": 101
+          }
+        ]
+      }
+    },
+    {
+      "filter": "every minor-stage tribulation",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "every minor-stage tribulation",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/013/023 every minor-stage tribulation including entry/ninth/completion",
+            "passed": true,
+            "ms": 108
+          }
+        ]
+      }
+    },
+    {
+      "filter": "independent root-free ten-stage",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "independent root-free ten-stage",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/011/015 independent root-free ten-stage martial growth·600-year cap",
+            "passed": true,
+            "ms": 88
+          }
+        ]
+      }
+    },
+    {
+      "filter": "canonical eight axes",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "canonical eight axes",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-006/008/015/023 canonical eight axes·single-source effects·conditional potential",
+            "passed": true,
+            "ms": 95
+          }
+        ]
+      }
+    },
+    {
+      "filter": "감응 출처 선택",
+      "expectedCases": 5,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "감응 출처 선택",
+        "total": 5,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지",
+            "passed": true,
+            "ms": 108
+          },
+          {
+            "name": "INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다",
+            "passed": true,
+            "ms": 33
+          },
+          {
+            "name": "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+            "passed": true,
+            "ms": 13519
+          },
+          {
+            "name": "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+            "passed": true,
+            "ms": 1901
+          },
+          {
+            "name": "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+            "passed": true,
+            "ms": 6207
+          }
+        ]
+      }
+    },
+    {
+      "filter": "public cultivation·actual",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "public cultivation·actual",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/018 public cultivation·actual time/source debit/mastery/save/query purity",
+            "passed": true,
+            "ms": 1717
+          }
+        ]
+      }
+    },
+    {
+      "filter": "public scheduled fracture",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "public scheduled fracture",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/013/023 public scheduled fracture·restore·same life death authority",
+            "passed": true,
+            "ms": 1783
+          }
+        ]
+      }
+    },
+    {
+      "filter": "public martial:",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "public martial:",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/011/015 W01 public martial: ten real stages, root-free labor, saved continuation, combat and 600-year boundary",
+            "passed": true,
+            "ms": 31065
+          }
+        ]
+      }
+    },
+    {
+      "filter": "AI 수행 연결",
+      "expectedCases": 5,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "AI 수행 연결",
+        "total": 5,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+            "passed": true,
+            "ms": 7774
+          },
+          {
+            "name": "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+            "passed": true,
+            "ms": 4988
+          },
+          {
+            "name": "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+            "passed": true,
+            "ms": 13860
+          },
+          {
+            "name": "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+            "passed": true,
+            "ms": 31267
+          },
+          {
+            "name": "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+            "passed": true,
+            "ms": 4018
+          }
+        ]
+      }
+    },
+    {
+      "filter": "legal cultivation law edits",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "legal cultivation law edits",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts",
+            "passed": true,
+            "ms": 2472
+          }
+        ]
+      }
+    },
+    {
+      "filter": "public pill reservation",
+      "expectedCases": 1,
+      "exitCode": 0,
+      "passed": true,
+      "report": {
+        "selection": "public pill reservation",
+        "total": 1,
+        "failed": 0,
+        "results": [
+          {
+            "name": "INV-004/016/017/018 public pill reservation·cancel·consume exactly once",
+            "passed": true,
+            "ms": 1648
+          }
+        ]
+      }
+    }
+  ]
+}

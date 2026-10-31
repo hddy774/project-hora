@@ -1,0 +1,86 @@
+{
+  "out/growth.json": {
+    "bytes": 188055,
+    "sha256": "310525a4d7f51a1e6639f7843153f1ad3bcb2bc0dab12ac117a9fecb089252e4"
+  },
+  "out/genesis.json": {
+    "bytes": 252,
+    "sha256": "7ddbf7d9075d73b9468dd00623acff5b0d7995f658d34c98feebe0378ede0c07"
+  },
+  "logs/growth.log": {
+    "bytes": 6801,
+    "sha256": "d5f4256d204cc3db2deedcc08620be61bae34739939fb9b730dc47de02b09fd1"
+  },
+  "logs/build.log": {
+    "bytes": 1120,
+    "sha256": "4f1653f17d31ddfc7ff8f47b41b449446e23e5994ea6606f99acc5573258518c"
+  },
+  "logs/assembly-inspector.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment/before.json": {
+    "bytes": 5302,
+    "sha256": "c09d92aa942f4e4a7cb5e339fc5f0af0331671a81de8705e97f8ef8f4a593a5e"
+  },
+  "environment/cpuinfo.txt": {
+    "bytes": 5832,
+    "sha256": "0ee90096b6d470aa77b9cfb2f02144d8e98bb3c587f4c7cd76ee88310b1a0bc1"
+  },
+  "environment/after.json": {
+    "bytes": 1943,
+    "sha256": "c712c3dd8d51caf797f77dbbd7e54dc8c3e43d9b685284a63f2b84e8077bbc79"
+  },
+  "provenance/request.json": {
+    "bytes": 534,
+    "sha256": "8216fbd810c29b5588669311ca088363ef108f23c149ce6977a9fcb6409b4f61"
+  },
+  "provenance/process-exit.json": {
+    "bytes": 273,
+    "sha256": "54e7d95e0b3546c1a662e6a8ca772ae8578baf687befa09abebde5e09a051bee"
+  },
+  "provenance/git-after-build.txt": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "provenance/assemblies.json": {
+    "bytes": 1415,
+    "sha256": "9646af27d5f2d23797a96e9c386ec7f904cd80ab2d84748cd7f2b79d9959ea59"
+  },
+  "provenance/selected-completion.json": {
+    "bytes": 255,
+    "sha256": "3db0c0d34e31819651dc62414fafc2f1fa6ba73120b8a2346f47142654f0673d"
+  },
+  "provenance/source.json": {
+    "bytes": 590,
+    "sha256": "0060f5ca22cac62b08a9643cb39f5bceebaeb8d298ece4759f3bc546412a05d8"
+  },
+  "provenance/process-start.json": {
+    "bytes": 800,
+    "sha256": "ad30215d6c0a72a173bf3a3f2dc49116937e0c42a472e2a2908135a4a7f06991"
+  },
+  "provenance/assemblies/Chronicles.Game.Tests.dll": {
+    "bytes": 1500672,
+    "sha256": "20dcf87b50438ddd0874aa2503cc233658755e07ae2c559c9742b39e88afb2fa"
+  },
+  "provenance/assemblies/Chronicles.Hosting.dll": {
+    "bytes": 23552,
+    "sha256": "022799d690f1e00ee173ddd048a6d5e14dd342b0f83388040d9c08773012f122"
+  },
+  "provenance/assemblies/Chronicles.Core.dll": {
+    "bytes": 5120,
+    "sha256": "da3f12a39c7eef81d805e4fb82868a79cc2e27405ba8ac950014b3354b55e303"
+  },
+  "provenance/assemblies/Chronicles.Game.dll": {
+    "bytes": 2258432,
+    "sha256": "ed07986be58603da587e42ee4dc16c4a0fff72aa052d64529b15b78e0f184f2c"
+  },
+  "tools/Program.cs": {
+    "bytes": 3019,
+    "sha256": "4ed94a0ffd1bfa66324b09120e12994a2755a0738efdf5b2ae7e27b357e109bd"
+  },
+  "tools/Inspector.csproj": {
+    "bytes": 211,
+    "sha256": "38e201f047792df530db8c7d157c2b6b19d1ed2e4134dba5da5c59e97d3b0da2"
+  }
+}

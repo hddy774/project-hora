@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-v021-execution-short-functional-contracts",
+  "product_source_commit": "c67beddf6d97740dd35d0c371010041e2d1da5ed",
+  "core_implementation_commit": "f55d6c9",
+  "passed": true,
+  "measurements_executed": false,
+  "performance_adoption_claim": false,
+  "whole_integrated_suite_claim": false,
+  "functional_reports": [
+    {
+      "selection": "H0",
+      "total": 6,
+      "failed": 0,
+      "results": [
+        {
+          "name": "INV-001/004/006/022 H04 actual due queue contracts: same-month changes, cancellation, generation and stable rebuild",
+          "passed": true
+        },
+        {
+          "name": "INV-001/004/006/021/022 H04 dynamic hot columns: original person order, slot generations and lease relocation lifetime",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil's due token in the actual month",
+          "passed": true
+        },
+        {
+          "name": "INV-001/004/006/021/022 H04 saved life boundary: real lifespan death and explicit new arrival reuse no old token",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply",
+          "passed": true
+        },
+        {
+          "name": "INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "selection": "query",
+      "total": 12,
+      "failed": 0,
+      "results": [
+        {
+          "name": "combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity",
+          "passed": true
+        },
+        {
+          "name": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+          "passed": true
+        },
+        {
+          "name": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/018 public cultivation·actual time/source debit/mastery/save/query purity",
+          "passed": true
+        },
+        {
+          "name": "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt",
+          "passed": true
+        },
+        {
+          "name": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+          "passed": true
+        },
+        {
+          "name": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+          "passed": true
+        },
+        {
+          "name": "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts",
+          "passed": true
+        },
+        {
+          "name": "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+          "passed": true
+        },
+        {
+          "name": "INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots",
+          "passed": true
+        },
+        {
+          "name": "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+          "passed": true
+        },
+        {
+          "name": "INV-009/010 rich query: cached people and places precede hidden truth projection",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "selection": "authority",
+      "total": 5,
+      "failed": 0,
+      "results": [
+        {
+          "name": "V021-O01/O05 ecology kernel: bounded source history and pure culture-independent isolated queries preserve world authority",
+          "passed": true
+        },
+        {
+          "name": "INV-004/006/013/023 public scheduled fracture·restore·same life death authority",
+          "passed": true
+        },
+        {
+          "name": "INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority",
+          "passed": true
+        },
+        {
+          "name": "INV-008/009/015 people receipts public: remote rejection and hidden authority cannot change an undelivered request belief",
+          "passed": true
+        },
+        {
+          "name": "INV-004/014/015 people social public: actual historical founders, lost authority and no title restoration through soul",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "static_boundary": {
+    "passed": true,
+    "source_commit": "c67beddf6d97740dd35d0c371010041e2d1da5ed"
+  },
+  "source_sha256": {
+    "src/Chronicles.Game/Chronicles.Game.csproj": "d835bcc0def4f5311c98ee0048f8cee9cbf0f57527f1b42873014dfba33d7293",
+    "src/Chronicles.Game/Execution/InnateTalentBatch.cs": "7075876c6650e9e1449d8a2a1a735857b2c493a5384a99160be4539a55795592",
+    "src/Chronicles.Game/Execution/PopulationColumns.cs": "fe541361e30fe84c011f132fd26c7e2264522d17caacfd28e3f51894823b3edd",
+    "src/Chronicles.Game/Execution/ScopedLease.cs": "33ef0cd9629732cf0573932d80fad857e55e899d6e17d0573c5e252accdfc6e9",
+    "src/Chronicles.Game/Execution/StableEventQueue.cs": "a006490fa6ab71c7597ba26c53d468002097238850679da4db255b7f1aaa5b8b",
+    "src/Chronicles.Game/People/Aptitudes.cs": "2bd7b7915284801e2ff685b6f788c112274c8070340b4100e479151c7429c719",
+    "src/Chronicles.Game/People/InnateTalentSnapshot.cs": "32894794845c236ae38a91da420b19f80d2b6975968213f42ec92526fd7bd0eb",
+    "src/Chronicles.Game/World.CultivationBridge.cs": "d0bda554ddbfef6b56e8f98410faf40deaa10585fbf823c8e2aefa64e66ce746",
+    "src/Chronicles.Game/World.ExecutionBridge.cs": "6743799e045aafa227865c2bb5dd6dfe99524a17788e9fc142fb0405a2b4290c",
+    "src/Chronicles.Game/World.PeopleBridge.cs": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84",
+    "src/Chronicles.Game/World.Population.cs": "4dc5eb2526e686b351cd0458845b5316c951f92ade02d61a0896670c98774d9f",
+    "src/Chronicles.Game/World.cs": "b75d109757f47a8dd00532b223cdbd56b331fa0c2cca035140e2d320a694785e",
+    "tests/Chronicles.Game.Tests/Experiments/ExecutionComparisonHarness.cs": "7ef9bc9648bc09f301752ff7d43be75330414366d34ec874e45d68213360124b",
+    "tests/Chronicles.Game.Tests/Experiments/ExperimentEvidence.cs": "fb29660c0de6db3a8dcd0eae67fa5c258b7614d2cfdb717d0d240947bc335bb8",
+    "tests/Chronicles.Game.Tests/Features/ExecutionInfrastructureScenarios.cs": "7cbd33afd7c85b7fc6134a801b8f6859b0e69684d44747bf7ec8facc764678d1"
+  },
+  "limits": [
+    "작은 기능 비교이며 시간 계측·대량 인구·성장·장기 실행은 하지 않았다.",
+    "EX01 실제 세계 의미 비교와 EX04 정수 커널/실패 비교를 구현했다.",
+    "EX02 확장 측정 및 EX03/05/06 후보 측정은 별도 후속 작업이다.",
+    "제품 backend는 스칼라 C#이며 SIMD·네이티브의 성능 채택은 측정하지 않았다."
+  ]
+}

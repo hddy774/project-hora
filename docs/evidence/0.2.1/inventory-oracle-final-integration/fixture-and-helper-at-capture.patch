@@ -1,0 +1,224 @@
+diff --git a/tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs b/tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs
+new file mode 100644
+index 0000000..0613e18
+--- /dev/null
++++ b/tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs
+@@ -0,0 +1,23 @@
++namespace Chronicles.Game.Tests.Features;
++
++public sealed class InventoryCopyPolicyEquivalenceScenario : IFeatureScenario
++{
++    public string Name => "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등";
++    public void Run()
++    {
++        Compare(new InventoryOwnedWorldReferenceScenario().Capture(), new InventoryOwnedWorldReferenceScenario(true).Capture(),
++            new InventoryOwnedWorldReferenceScenario(true, true).Capture(), InventoryOwnedWorldReferenceScenario.Baseline);
++        Compare(new InventoryOwnedEcologyReferenceScenario().Capture(), new InventoryOwnedEcologyReferenceScenario(true).Capture(),
++            new InventoryOwnedEcologyReferenceScenario(true, true).Capture(), InventoryOwnedEcologyReferenceScenario.Baseline);
++    }
++
++    private static void Compare(InventoryReferenceTrace strict, InventoryReferenceTrace json, InventoryReferenceTrace typed, string expected)
++    {
++        // Every independently built world must match the pre-captured constant, not another execution's actual digest.
++        strict.AssertFixed(expected); json.AssertFixed(expected); typed.AssertFixed(expected);
++        InventoryFixture.Check(strict.Mode == "strict" && strict.ProjectionSnapshots == 0 && strict.TypedSnapshots == 0 &&
++            json.Mode == "json15" && json.ProjectionSnapshots > 0 && json.TypedSnapshots == 0 &&
++            typed.Mode == "typed15" && typed.ProjectionSnapshots > 0 && typed.TypedSnapshots > 0, "삼자 대조가 실제 서로 다른 복사 경로를 실행하지 않았습니다.");
++        strict.AssertEquivalent(json); strict.AssertEquivalent(typed);
++    }
++}
+diff --git a/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs b/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs
+new file mode 100644
+index 0000000..e2a4042
+--- /dev/null
++++ b/tests/Chronicles.Game.Tests/Features/InventoryOwnedReferenceScenarios.cs
+@@ -0,0 +1,94 @@
++using Chronicles.Game.Inventory;
++
++namespace Chronicles.Game.Tests.Features;
++
++public sealed class InventoryOwnedWorldReferenceScenario : IFeatureScenario
++{
++    private readonly bool projected;
++    private readonly bool typedCopy;
++    public InventoryOwnedWorldReferenceScenario() { }
++    internal InventoryOwnedWorldReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
++    // Independently captured in strict mode at 0680ff7 after #169/#170/#171; the old751 witness is archived unchanged.
++    internal const string Baseline = "ec01b5c4fa2f10268514912f0885f2debbd47a9ad9cc8aec85a8b73a1c311b56";
++    public string Name => "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존";
++
++    public void Run() => Capture().AssertFixed(Baseline);
++    internal InventoryReferenceTrace Capture()
++    {
++        var world = InventoryWorldFixture.Create(73, new Dictionary<string, long> { ["combat.hitMinimum"] = 10000, ["combat.hitMaximum"] = 10000 });
++        var state = world.Checkpoint(); var actor = state.People[0].Id; var other = state.People[1].Id;
++        InventoryWorldFixture.Add(state, actor, "ore", 5); InventoryWorldFixture.Add(state, actor, "cloth", 2);
++        InventoryWorldFixture.Add(state, actor, "bag", 1); InventoryWorldFixture.Add(state, actor, "herb", 4);
++        world = GameWorld.Restore(state); var trace = new InventoryWorldTranscript(world, projected, typedCopy);
++        void Apply(string id, long person, string kind, long target = 0, long value = 0, string data = "", bool expected = true) =>
++            trace.Command(new(id, person, kind, target, value, data), expected);
++        long Own(string definition) => world.Checkpoint().Items.Last(i => i.Owner == actor && i.Definition == definition).Id;
++
++        Apply("owned-control", actor, "possess");
++        Apply("owned-no-materials", actor, "craft", data: "pill", expected: false);
++        Apply("owned-craft", actor, "craft", data: "armor"); trace.Save();
++        Apply("owned-craft", actor, "craft", data: "armor");
++        Apply("owned-craft", actor, "craft", data: "tool", expected: false);
++        trace.Advance(world.Checkpoint().People.Single(p => p.Id == actor).Due);
++        InventoryFixture.Check(world.Checkpoint().Inventory.Jobs.Single(j => j.Actor == actor && j.Recipe == "armor").Status == "completed", "기준 제작이 실물을 완성하지 못했습니다.");
++        var armor = Own("armor"); Apply("owned-equip", actor, "equip", armor); Apply("owned-bind", actor, "bind", armor);
++        Apply("owned-opponent", other, "possess");
++        if (world.Checkpoint().People.Single(p => p.Id == other).Action != ActionKind.Idle) Apply("owned-ready", other, "cancel");
++        Apply("owned-hit", other, "attack", actor);
++        var damage = world.Checkpoint().Items.Single(i => i.Id == armor).Damage;
++        InventoryFixture.Check(damage > 0, "실제 타격이 기준 장비에 손상을 남기지 않았습니다.");
++        Apply("owned-owner", actor, "possess"); trace.Advance(world.Checkpoint().People.Single(p => p.Id == actor).Due);
++        Apply("owned-repair", actor, "repair", armor); trace.Save(); trace.Advance(world.Checkpoint().People.Single(p => p.Id == actor).Due);
++        InventoryFixture.Check(world.Checkpoint().Items.Single(i => i.Id == armor).Damage < damage, "기준 수리가 실제 손상을 줄이지 않았습니다.");
++        var herbs = Own("herb"); var bag = Own("bag");
++        Apply("owned-store", actor, "store", herbs, bag); Apply("owned-split", actor, "split", herbs, 2);
++        var split = Own("herb"); Apply("owned-merge", actor, "merge", herbs, split);
++        Apply("owned-take", actor, "store", herbs); Apply("owned-offer", actor, "offer", herbs, 5);
++        var sale = world.Checkpoint().Inventory.Contracts.Single(c => c.Item == herbs && c.Status == "open").Id;
++        Apply("owned-withdraw", actor, "withdraw", sale); Apply("owned-resale", actor, "offer", herbs, 6);
++        sale = world.Checkpoint().Inventory.Contracts.Single(c => c.Item == herbs && c.Status == "open").Id;
++        Apply("owned-buyer", other, "possess"); Apply("owned-buy", other, "trade", sale); Apply("owned-buy", other, "trade", sale);
++        Apply("owned-auction-owner", actor, "possess"); var tool = Own("tool"); Apply("owned-auction", actor, "offer", tool, 5, "auction");
++        var auction = world.Checkpoint().Inventory.Contracts.Single(c => c.Item == tool && c.Status == "open");
++        Apply("owned-bidder", other, "possess"); Apply("owned-bid", other, "bid", auction.Id, 7);
++        Apply("owned-unfunded", other, "bid", auction.Id, long.MaxValue, expected: false);
++        Apply("owned-seller-again", actor, "possess"); Apply("owned-no-withdraw", actor, "withdraw", auction.Id, expected: false);
++        trace.Save(); trace.Advance(auction.Due);
++        state = world.Checkpoint(); InventoryFixture.Check(state.Inventory.Contracts.Single(c => c.Id == auction.Id).Status == "completed" &&
++            state.Items.Single(i => i.Id == tool).Owner == other && state.Items.Single(i => i.Id == herbs).Owner == other,
++            "실제 매매 또는 경매가 수취인에게 실물을 인도하지 못했습니다.");
++        trace.Command(new("owned-stale-revision", actor, "split", herbs, 1, ExpectedRevision: world.Revision - 1), false);
++        trace.Save(); return trace.Complete("manual");
++    }
++}
++
++public sealed class InventoryOwnedEcologyReferenceScenario : IFeatureScenario
++{
++    private readonly bool projected;
++    private readonly bool typedCopy;
++    public InventoryOwnedEcologyReferenceScenario() { }
++    internal InventoryOwnedEcologyReferenceScenario(bool projected, bool typedCopy = false) { this.projected = projected; this.typedCopy = typedCopy; }
++    // Current ordinary trade, with an explicit commercial personality, must execute private split+offer above reserve3.
++    // Fixed only after the strict original transcript was saved and committed at a4e1efd.
++    internal const string Baseline = "904c4750ee5f986367f50ca85f8502bf63555a140ea090249eaed114b51133e1";
++    public string Name => "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존";
++    public void Run() => Capture().AssertFixed(Baseline);
++    internal InventoryReferenceTrace Capture()
++    {
++        var world = InventoryWorldFixture.Create(109, new Dictionary<string, long> { ["founder.initialFood"] = 8, ["ecology.foodUse"] = 1, ["economy.foodReserveMonths"] = 3 });
++        var state = world.Checkpoint(); var seller = state.People[0].Id; var buyer = state.People[1].Id;
++        state.People[0].Personality = new int[14]; state.People[0].Personality[4] = 100; state.People[0].Personality[5] = 100;
++        state.People[1].Action = ActionKind.Guard; state.People[1].Due = 1000; world = GameWorld.Restore(state);
++        var trace = new InventoryWorldTranscript(world, projected, typedCopy); var food = state.Items.Single(i => i.Owner == seller && i.Definition == "food").Id;
++        trace.Advance(1); state = world.Checkpoint();
++        var offer = state.Inventory.Contracts.Single(c => c.Seller == seller && c.Status == "open" && c.AdvertisedDefinition == "food");
++        var target = state.Laws["ecology.foodUse"] * state.Laws["economy.foodReserveMonths"];
++        InventoryFixture.Check(target == 3 && offer.Item != food && offer.AdvertisedQuantity == 7 - target && state.People[0].ActionData == "ecology:market" &&
++            state.People[0].Goal == "실제 잉여품 교환" && state.People[0].DecisionCandidates.Any(c => c.Goal == "교역·교섭" && c.Score > 0) &&
++            state.Items.Single(i => i.Id == food).Quantity == target, "명시 거래 성향의 일반 교역 목표가 실제 비축 경계와 잉여분을 분할·판매하지 않았습니다.");
++        trace.Save(); trace.Command(new("owned-ecology-buyer", buyer, "possess"));
++        trace.Command(new("owned-ecology-buy", buyer, "trade", offer.Id)); trace.Save();
++        InventoryFixture.Check(world.Checkpoint().Items.Single(i => i.Id == offer.Item).Owner == buyer, "생계 AI 매물을 실제 구매자에게 전달하지 못했습니다.");
++        return trace.Complete("policy-surplus");
++    }
++}
+diff --git a/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs b/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs
+new file mode 100644
+index 0000000..c691d68
+--- /dev/null
++++ b/tests/Chronicles.Game.Tests/Features/InventoryReferenceTranscript.cs
+@@ -0,0 +1,89 @@
++using System.Reflection;
++using System.Security.Cryptography;
++using System.Text;
++using System.Text.Json;
++
++namespace Chronicles.Game.Tests.Features;
++
++internal sealed record InventoryReferenceSave(long Month, byte[] Bytes);
++internal sealed record InventoryReferenceTrace(string Fixture, string Mode, string[] Rows, InventoryReferenceSave[] Saves,
++    string Digest, long ProjectionSnapshots, long TypedSnapshots)
++{
++    private static readonly JsonSerializerOptions CaptureOptions = new() { WriteIndented = true };
++    internal void AssertFixed(string expected) => InventoryFixture.Check(Digest == expected,
++        "고정 strict 기준과 명령·월 경계·저장 해시가 달라졌습니다: " + Digest);
++
++    internal void AssertEquivalent(InventoryReferenceTrace other)
++    {
++        InventoryFixture.Check(Fixture == other.Fixture && Rows.SequenceEqual(other.Rows), "독립 복사 경로의 전체 명령 응답·거부·월 경계 전사가 다릅니다.");
++        InventoryFixture.Check(Saves.Length == other.Saves.Length && Saves.Zip(other.Saves).All(pair => pair.First.Month == pair.Second.Month && pair.First.Bytes.SequenceEqual(pair.Second.Bytes)),
++            "독립 복사 경로의 실제 저장 bytes가 다릅니다.");
++    }
++
++    internal void CaptureIfRequested()
++    {
++        var directory = Environment.GetEnvironmentVariable("CHRONICLES_INVENTORY_REFERENCE_CAPTURE");
++        if (string.IsNullOrEmpty(directory)) return;
++        Directory.CreateDirectory(directory);
++        // This optional audit output never changes the fixed expected digest or bypasses any assertion.
++        File.WriteAllText(Path.Combine(directory, Fixture + "-" + Mode + ".json"), JsonSerializer.Serialize(new
++        {
++            schema_version = 1, kind = "inventory-independent-reference-transcript", fixture = Fixture, mode = Mode,
++            sourceAssembly = typeof(GameWorld).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,
++            digest = Digest, rows = Rows, saves = Saves.Select(s => new { month = s.Month, bytes = s.Bytes.Length,
++                sha256 = Convert.ToHexStringLower(SHA256.HashData(s.Bytes)) }), projectionSnapshots = ProjectionSnapshots, typedSnapshots = TypedSnapshots
++        }, CaptureOptions));
++    }
++}
++
++internal sealed class InventoryWorldTranscript
++{
++    private readonly GameWorld world;
++    private readonly bool projected;
++    private readonly bool typedCopy;
++    private readonly List<string> rows;
++    private readonly List<InventoryReferenceSave> saves = [];
++    private GameWorld? saved;
++    internal InventoryWorldTranscript(GameWorld world, bool projected = false, bool typedCopy = false)
++    {
++        if (typedCopy && !projected) throw new ArgumentException("Typed transcript requires the projected input contract.", nameof(typedCopy));
++        this.world = world; this.projected = projected; this.typedCopy = typedCopy; rows = [world.StateHash()];
++        InventoryFixture.Check(world.InventoryProjectionEnabled && !world.InventoryTypedCopyExperimentEnabled, "일반 세계의 기본 경로가 채택된 JSON Person 투영이 아닙니다.");
++        if (typedCopy) world.EnableInventoryTypedCopyForExperiment(); else if (!projected) world.UseStrictInventoryForVerification();
++    }
++    internal void Command(GameCommand command, bool accepted = true)
++    {
++        var before = world.StateHash(); var result = world.Execute(command);
++        InventoryFixture.Check(result.Accepted == accepted, command.Kind + ": " + result.Message);
++        if (!accepted) InventoryFixture.Check(world.StateHash() == before, "거부된 공개 명령이 상태를 변경했습니다.");
++        if (saved is not null) InventoryFixture.Check(saved.Execute(command) == result && saved.StateHash() == world.StateHash(), "저장 이후 실제 명령 응답 또는 상태가 갈라졌습니다.");
++        rows.Add(JsonSerializer.Serialize(new { command, result, Hash = world.StateHash() }));
++    }
++    internal void Advance(long due)
++    {
++        while (world.Month < due)
++        {
++            world.AdvanceTo(world.Month + 1); saved?.AdvanceTo(world.Month);
++            if (saved is not null) InventoryFixture.Check(world.StateHash() == saved.StateHash(), "저장 이후 실제 월 경계 결과가 갈라졌습니다.");
++            rows.Add(world.StateHash());
++        }
++    }
++    internal void Save()
++    {
++        var encoded = GameCodec.Encode(world); var restored = GameCodec.Decode(encoded);
++        InventoryFixture.Check(world.StateHash() == restored.StateHash() && encoded.SequenceEqual(GameCodec.Encode(restored)), "저장 왕복이 실제 권위 상태를 변경했습니다.");
++        InventoryFixture.Check(restored.InventoryProjectionEnabled && !restored.InventoryTypedCopyExperimentEnabled, "저장 재개가 채택된 기본 JSON Person 투영 경로를 사용하지 않습니다.");
++        if (typedCopy) restored.EnableInventoryTypedCopyForExperiment(); else if (!projected) restored.UseStrictInventoryForVerification();
++        saved = restored; saves.Add(new(world.Month, encoded)); rows.Add(Convert.ToHexStringLower(SHA256.HashData(encoded)));
++    }
++    internal InventoryReferenceTrace Complete(string fixture)
++    {
++        Invariants.Validate(world.Checkpoint());
++        InventoryFixture.Check(projected ? world.InventoryProjectionSnapshots > 0 : world.InventoryProjectionSnapshots == 0, "선택된 strict/JSON factory를 실행하지 않았습니다.");
++        InventoryFixture.Check(typedCopy ? world.InventoryTypedCopySnapshots > 0 : world.InventoryTypedCopySnapshots == 0, "선택된 typed/JSON factory를 실행하지 않았습니다.");
++        var digest = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", rows))));
++        var trace = new InventoryReferenceTrace(fixture, !projected ? "strict" : typedCopy ? "typed15" : "json15", rows.ToArray(), saves.ToArray(), digest,
++            world.InventoryProjectionSnapshots, world.InventoryTypedCopySnapshots);
++        trace.CaptureIfRequested(); return trace;
++    }
++}

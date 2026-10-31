@@ -1,0 +1,62 @@
+{
+  "verification": "PASS",
+  "verifiedAtUtc": "2026-10-31T00:49:42.305057+00:00",
+  "runId": 41131479924,
+  "artifactId": 13020234556,
+  "zipSha256": "5cfcf65768d31d1d6815689e601795c0f7495fcf811251508454913510ce4587",
+  "rawSha256": "8e4763832aa14bd23d4ab528699329d14474598fdd0190b1eee234585f2fdd40",
+  "sourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "planSha256": "2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+  "baselineSha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "seed": 98,
+  "completedCaseKeys": [
+    [
+      900,
+      98
+    ],
+    [
+      1500,
+      98
+    ]
+  ],
+  "rawComplete": false,
+  "rawRequestedComplete": true,
+  "actualStartUtc": "2026-10-30T21:30:36.242635+00:00",
+  "actualExit": {
+    "process_exit": 0,
+    "log_exit": 0,
+    "finished_at_utc": "2026-10-30T23:31:07.698831+00:00",
+    "wall_seconds_including_genesis_logging_and_report_io": 7231.456200953,
+    "raw_sensitivity_report_modified_by_workflow": false
+  },
+  "assemblies": [
+    {
+      "path": "/workspace/scratch/sensitivity-41131479924-7ce/seed-98/provenance/assemblies/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "50d6158e18ed18ccb3e37a379ff39cb2264eef9e7e01bc02405e1566a0c6c541",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "path": "/workspace/scratch/sensitivity-41131479924-7ce/seed-98/provenance/assemblies/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "19609292e1d21deccb596854f807ca3ed0d4cb458a8389377b91a58875ea43ca",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "path": "/workspace/scratch/sensitivity-41131479924-7ce/seed-98/provenance/assemblies/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "b67ed0924b65a49a1a0da49f3d677ea1ff157b1eeab0213c62abfee28852ef12",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    },
+    {
+      "path": "/workspace/scratch/sensitivity-41131479924-7ce/seed-98/provenance/assemblies/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "adbe969f49c4ed96555a85e15a2a808d3d7691ce04345b65109f96814fcf5781",
+      "assemblyInformationalVersion": "0.2.1+7ce66943b539420c9dc1e3fa8a611daae58020ff"
+    }
+  ],
+  "scope": "Original artifact/input hashes, actual PE custom attributes, exit, fixed policy and two complete6000/120 cases. Whole6 and balance/default acceptance remain separate.",
+  "newMeasurementsExecuted": 0,
+  "rawChanged": false
+}

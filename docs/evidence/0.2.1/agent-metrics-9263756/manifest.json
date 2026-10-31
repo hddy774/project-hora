@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "kind": "AI108 원문/요약/수용감사 보존 manifest",
+  "measurementSource": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "measurementFingerprint": "7c61d0bb5cccdb079108d705bc042fa0080932c39667cf1d912e77ed1afcb634",
+  "collectedCases": 108,
+  "declaredTargets": 32,
+  "completedTargets": 24,
+  "uncompletedTargets": 8,
+  "stagnationCandidates": 10,
+  "allOriginalsPreserved": true,
+  "newGameRunsDuringAnalysis": 0,
+  "ledgerChanged": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 9842,
+      "sha256": "88e47bb8a05bb2b65b737e890481f3ac0b24aca1a7b2d00a66565fadbbb70d31"
+    },
+    {
+      "path": "acceptance-approved.json",
+      "bytes": 3121,
+      "sha256": "6d5314f8bc1f3df306d023a5c83f111b0e69871ac42f9c8b54f2213ecc28030f"
+    },
+    {
+      "path": "acceptance-review.json",
+      "bytes": 9175,
+      "sha256": "f44fd9e5f8b2427529cdeb4da3e15fd5ab5f898ac810ebe27237c67d6c46eb8a"
+    },
+    {
+      "path": "acceptance-review.md",
+      "bytes": 8198,
+      "sha256": "d71e65898929f882377481af12a2831233a8da3fed542c5ca87a35c10db67482"
+    },
+    {
+      "path": "analyze.py",
+      "bytes": 14070,
+      "sha256": "f6f9823e6470d70c3e712f7bc3420dbbf337dfac26dda6b8d9d2d7ab5d067a2b"
+    },
+    {
+      "path": "archive-verification.json",
+      "bytes": 8212,
+      "sha256": "e3a38012a377f4877b2fdc7c454022d4a015f5b86b9989503e6fd8c177bbe2f0"
+    },
+    {
+      "path": "assemblies.json",
+      "bytes": 1650,
+      "sha256": "51434e7e7f834d26c8391b8fdcac0d39268728a65e3d51e0fb30f43b0e81cadd"
+    },
+    {
+      "path": "axis-comparisons.json",
+      "bytes": 97443,
+      "sha256": "a504ec6c6c397da47cd05d1e207f69aa08e2f80c01dbee0a191de2e502a20cfe"
+    },
+    {
+      "path": "build.log",
+      "bytes": 1004,
+      "sha256": "c4968d8d60ae5f7559b3bdc777ba47586a69c2f9c27d901753a74cb8441bae30"
+    },
+    {
+      "path": "case-metrics.json",
+      "bytes": 855071,
+      "sha256": "00f15ed52bf5a6185a0f533c9815b23460d1c594e4abd4e23e3661918dd2b2c8"
+    },
+    {
+      "path": "cognition-review.json",
+      "bytes": 21607,
+      "sha256": "5d403bf52c4bf02e3b1dd4acecb1d5765b8ea4031d536875b125d0379b8aecda"
+    },
+    {
+      "path": "collection-provenance.json",
+      "bytes": 4590,
+      "sha256": "1da4c84be17d4050ebac9ac3f5513c4baf7defee5c6cd8ddf189d58216d4d2a9"
+    },
+    {
+      "path": "completion-observed.json",
+      "bytes": 1723,
+      "sha256": "3a9e28f3a2a96361cbdefb494f8f1c289160cb0db55d07ddf5fcda26683f5c19"
+    },
+    {
+      "path": "external-interruption-observation.json",
+      "bytes": 509,
+      "sha256": "f4f632ce6ae547d3d4c419719584270a1fba4c33459ae0e1ce0bd901808733a3"
+    },
+    {
+      "path": "interrupted.genesis.json",
+      "bytes": 252,
+      "sha256": "64b0e5071d7ba7a12d2b213e6021a16ce89bb4bce855250ff214eec0e57001c9"
+    },
+    {
+      "path": "interrupted.log",
+      "bytes": 75,
+      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+    },
+    {
+      "path": "interrupted.progress.jsonl",
+      "bytes": 19399,
+      "sha256": "57e86d0cb44b1d12bfa1e5c8883e276ad85159ad7c5dcb4b17308ed99c535345"
+    },
+    {
+      "path": "interrupted.raw.json.gz",
+      "bytes": 3209491,
+      "sha256": "f35ce55e16cda0c5b75022a6c59175a8e4af82385eef5c75dabef041c91c6f6e"
+    },
+    {
+      "path": "interrupted.run.json",
+      "bytes": 4574,
+      "sha256": "20d7dc7299fefd8f25674aeb9aab75ee951509a4a6cb53bf91bbd564493ec4ae"
+    },
+    {
+      "path": "interruption.json",
+      "bytes": 2510,
+      "sha256": "7638ec0d2f77e3be613aaecbd8008ec9f1f061c4b37dc7e780857a7fc2674faa"
+    },
+    {
+      "path": "ledger-change-check.json",
+      "bytes": 1298,
+      "sha256": "57587ca422eb91d3de833a6cced202ff4ffdc3f9d85e4a68d16c99e6ba4071b7"
+    },
+    {
+      "path": "overlap-78.first-observation.json",
+      "bytes": 19635,
+      "sha256": "f0f982b70886c3477dea966dc7aa20dd01b93d9a95c5b8ca4a33b8a5d8b77a05"
+    },
+    {
+      "path": "pending-plan.original.json",
+      "bytes": 299,
+      "sha256": "fbc43182e094a33d63e9d31a0232a8fe430704be22ed6b11dfa201f7d6a4c843"
+    },
+    {
+      "path": "plan-validation.approved.json",
+      "bytes": 346,
+      "sha256": "79d12a6bad5b9bed96313cae035ba0f5c67343f251f4c1bed7692d9af61bdf89"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 339,
+      "sha256": "f0df62e9edc7cd1855148dda4d9c6ee99d0d0a32d063f7e32016071feb93122b"
+    },
+    {
+      "path": "preparation.json",
+      "bytes": 5299,
+      "sha256": "03196124b7eeec1e875ac0d31783d86aeda7ec5ad0b66d6ee019f747da0db4a0"
+    },
+    {
+      "path": "repetition-and-overlap.json",
+      "bytes": 30361,
+      "sha256": "0d6d50149a2ea0b19f6546d4c1573a4e29dd85884ef744bdeebfe130ca0eaad1"
+    },
+    {
+      "path": "restart1.exit.json",
+      "bytes": 125,
+      "sha256": "aaa9f4a379061faaea5b9ad42ac3e24476c83f865eef6b87a0af66030a2f5956"
+    },
+    {
+      "path": "restart1.genesis.json",
+      "bytes": 252,
+      "sha256": "c93299868662a0e4145faf2ac446c07f83444515466f56518c185fc6a79a9138"
+    },
+    {
+      "path": "restart1.log",
+      "bytes": 179,
+      "sha256": "8e5315b585fdb74e08060dcccdd830df0baad2484e435d95ce8dd2087ab945d2"
+    },
+    {
+      "path": "restart1.progress.jsonl",
+      "bytes": 35883,
+      "sha256": "d5f8a972077fdeb7d2affd6f20bcf6f6be287032b559f109bf19602efda6e5e0"
+    },
+    {
+      "path": "restart1.raw.json.gz",
+      "bytes": 4443591,
+      "sha256": "282cfb96d44cc3b17956003aa03bce948ce1adee40d6a84d4a337473c96ead82"
+    },
+    {
+      "path": "restart1.run.json",
+      "bytes": 4156,
+      "sha256": "21db0e894b9b014d832b2bb924ec431fa4cd4decbd6c662da68235e20ad33edf"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 33804,
+      "sha256": "c1cdb38b7c3af34032a605ca05079d7599e17fe3f9c1b816e4a5f8a621f55b11"
+    },
+    {
+      "path": "supervisor.original.py",
+      "bytes": 5815,
+      "sha256": "5ebca71f24da4b9de69c3b74d2e8be5069b69a5ef66727e8ee066e8d0420abf5"
+    }
+  ],
+  "verification": "JSON/JSONL 문법·Python AST·문서 상대링크·분석기 독립감사0오류 및압축복원SHA동일확인. 새기능/성능실행아님.",
+  "ledgerUpdateByRootApproval": {
+    "changedTasks": [
+      "V021-L03",
+      "V021-L04",
+      "V021-L07"
+    ],
+    "closedTasks": [
+      "V021-L04"
+    ],
+    "other108TaskRowsUnchanged": true,
+    "largeMeasurementArtifactsRehashedOrRewritten": false,
+    "collectionAndInitialAnalysisLedgerChanged": false
+  },
+  "approvedLedgerValidation": {
+    "validatorInvocations": 1,
+    "pureNegativeCases": 11,
+    "gameTestsExecuted": false,
+    "ledgerSourceCommit": "7fc4ad54fb9cddddf1002afba2e6c23a50f6fdf7",
+    "counts": {
+      "done": 50,
+      "validated": 55,
+      "in_progress": 6,
+      "planned": 0,
+      "blocked": 0
+    }
+  }
+}

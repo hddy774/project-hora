@@ -1,0 +1,23 @@
+{
+  "kind": "offline-read-of-closed-capture",
+  "game_or_collector_started": false,
+  "steps": [
+    {
+      "step": "convert",
+      "exit": 0
+    },
+    {
+      "step": "cpu-analysis",
+      "exit": 0
+    },
+    {
+      "step": "allocation-analysis",
+      "exit": 0
+    }
+  ],
+  "seconds": 21.358827829360962,
+  "affinity": [
+    1
+  ],
+  "ended_utc": "2026-10-31T01:47:59.415265+00:00"
+}

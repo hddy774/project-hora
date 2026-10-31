@@ -1,0 +1,35 @@
+{
+  "base_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "GameCodec_only_JSON_return_private_helper_and_using_changed": true,
+  "restored_original_GameCodec_sha256": "978fb8ac7c360753c15f1063741ca53310b3547ed38c018a5a456c80ccdf18ac",
+  "baseline_GameCodec_sha256": "978fb8ac7c360753c15f1063741ca53310b3547ed38c018a5a456c80ccdf18ac",
+  "unchanged_files": [
+    {
+      "path": "src/Chronicles.Game/CanonicalHashSink.cs",
+      "byte_identical": true,
+      "sha256": "65a0b7dc45b79164e8a7a196cebc62ac0dd9732fcae9940537e9d74fb7fcefed"
+    },
+    {
+      "path": "src/Chronicles.Hosting/GameSaveStore.cs",
+      "byte_identical": true,
+      "sha256": "06f48cfd001d702645f194cd5a8a662f532624ea2ceeac624b825a07fd2fb8d3"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+      "byte_identical": true,
+      "sha256": "de9a7e4b9ab7761a437ddef1f953b9014a383a9cfaa6dc0361be0f6997727cef"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceCognitionMeasurements.cs",
+      "byte_identical": true,
+      "sha256": "3af57d1284f82c649f179da3c98d364bbc5bb77fcaa7ac87836e6920ed5d1924"
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance/stability-plan.json",
+      "byte_identical": true,
+      "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+    }
+  ],
+  "new_private_helper_lines": 32
+}

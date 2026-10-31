@@ -1,0 +1,67 @@
+{
+  "selection": "agent planning:",
+  "total": 12,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-008/017/018 agent planning: \uC2E4\uC81C \uC815\uCC45 \uBE44\uCD95\uC744 \uB118\uB294 \uC2DD\uB7C9\uC744 \uC77C\uBC18 \uAC70\uB798 \uBAA9\uD45C\uC5D0\uC11C \uCD9C\uD488\uD558\uACE0 \uBCF4\uC720 \uC2E4\uBB3C\uB9CC \uC778\uB3C4\uD55C\uB2E4",
+      "passed": true,
+      "ms": 1716
+    },
+    {
+      "name": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+      "passed": true,
+      "ms": 6861
+    },
+    {
+      "name": "INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person\u0027s intent",
+      "passed": true,
+      "ms": 260
+    },
+    {
+      "name": "INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice",
+      "passed": true,
+      "ms": 3420
+    },
+    {
+      "name": "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation",
+      "passed": true,
+      "ms": 5084
+    },
+    {
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "passed": true,
+      "ms": 497
+    },
+    {
+      "name": "INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal",
+      "passed": true,
+      "ms": 9315
+    },
+    {
+      "name": "INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources",
+      "passed": true,
+      "ms": 8453
+    },
+    {
+      "name": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+      "passed": true,
+      "ms": 4534
+    },
+    {
+      "name": "INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict",
+      "passed": true,
+      "ms": 183
+    },
+    {
+      "name": "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+      "passed": true,
+      "ms": 622
+    },
+    {
+      "name": "INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need",
+      "passed": true,
+      "ms": 295
+    }
+  ]
+}

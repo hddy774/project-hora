@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "ownerPullRequest": "#181",
+  "ownerFrozenLeaf": "5ef9d30aed82c71db56fd65df00149dae48b0023",
+  "beforeSource": "068ecefd3226d9d0530aa351fcb28c4002b9edf5",
+  "scope": "원저자가 보고한 수정 전/후 기능 원문을 SHA256 대조 후 그대로 보존. after는 해당 leaf와 같은 파일 내용이며 최종 source56bbfb2 전체 기능으로 별도 검증한다.",
+  "changedFile": "tests/Chronicles.Game.Tests/Experiments/SnapshotStorageExperiment.cs",
+  "unchangedCorruptionFixture": "가운데 bitflip ^=0x40 유지",
+  "change": "압축 해석 ReadExactly/ReadByte의 decoder InvalidOperationException만 InnerException을 유지한 InvalidDataException으로 정규화. 실제 손상 primary에서 backup복구와 손상 원문 보존을 추가 확인.",
+  "gameCoreProgramChanged": false,
+  "reports": [
+    {
+      "file": "before.original.json",
+      "sha256": "33fb7da49649f967cbd7942f077b960aeef137b25062412e75f50e7f65e73471",
+      "total": 1,
+      "failed": 1
+    },
+    {
+      "file": "after.original.json",
+      "sha256": "bc66e3761a57792b60ad8ea93c6b01bad5b182c11ecc807234d656c2cd07a8a4",
+      "total": 1,
+      "failed": 0
+    }
+  ],
+  "performanceGrowthSoakExecutions": 0
+}

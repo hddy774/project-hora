@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "chronicles-v021-politics-prototype-archive",
+  "source_repository": "https://github.com/hddy774/project-hora",
+  "source_snapshot": "049ef40d509e2601ffa6466c395db411d1645032",
+  "archive_is_current_product": false,
+  "reason": "Unused prototype handlers and settlement retained beside the typed political domain after command fallbacks were retired.",
+  "retired_members": ["Found", "Join", "Policy", "Govern", "ReleaseProvince", "Vassal", "Dissolve", "SettleGroups", "CombatAttributes"],
+  "preserved_product_members": ["Adopt", "Attack"],
+  "replacement": "World.PoliticsBridge typed commands, Politics pure transitions, monthly SettlePolitics, and canonical CultivationCombatFor combat projection",
+  "legacy_group_fields": {
+    "fields": ["PendingPolicies", "PolicyDue", "PolicyEscrow"],
+    "compatibility": "Retained serialized shape requires empty/zero values. Nonzero prototype data is rejected, never silently converted or counted as current preparation money.",
+    "nonzero_migration": "No automatic conversion: prototype fields lack the actual author, workers, adopted law inputs and lifecycle evidence required to reconstruct a preparation. Preserve the original rejected save; any explicit future migration must reconcile its real money and evidence atomically.",
+    "current_authority": "GameState.Politics.Preparations"
+  },
+  "files": [
+    {
+      "source_path": "src/Chronicles.Game/World.Politics.cs",
+      "source_commit": "049ef40d509e2601ffa6466c395db411d1645032",
+      "archive_path": "legacy/v021-prototypes/politics/World.Politics.cs",
+      "sha256": "d9cd99da93b2aa6cdf5c2d1348d5f5245588b42ebfeb2031bcfb659a48fa0f12"
+    }
+  ]
+}

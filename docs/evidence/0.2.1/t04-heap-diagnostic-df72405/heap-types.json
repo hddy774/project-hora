@@ -1,0 +1,104 @@
+[
+  {
+    "mode": "fresh",
+    "types": {
+      "Chronicles.Game.GameWorld": {
+        "mt": "7f96f231d0a0",
+        "count": 1,
+        "bytes": 200
+      },
+      "Chronicles.Game.GameState": {
+        "mt": "7f96f1e07958",
+        "count": 1,
+        "bytes": 328
+      },
+      "Chronicles.Game.Person": {
+        "mt": "7f96f231f480",
+        "count": 1000,
+        "bytes": 488000
+      },
+      "System.Byte[]": {
+        "mt": "7f96f2882960",
+        "count": 21911,
+        "bytes": 34536025
+      },
+      "System.Char[]": {
+        "mt": "7f96f1decbb8",
+        "count": 8,
+        "bytes": 10594
+      },
+      "System.String": {
+        "mt": "7f96f1d3dd58",
+        "count": 125661,
+        "bytes": 10753854
+      }
+    }
+  },
+  {
+    "mode": "sequential",
+    "types": {
+      "Chronicles.Game.GameWorld": {
+        "mt": "7f504ff1d0a0",
+        "count": 2,
+        "bytes": 400
+      },
+      "Chronicles.Game.GameState": {
+        "mt": "7f504fa07958",
+        "count": 3,
+        "bytes": 984
+      },
+      "Chronicles.Game.Person": {
+        "mt": "7f504ff1f480",
+        "count": 1200,
+        "bytes": 585600
+      },
+      "System.Byte[]": {
+        "mt": "7f5050482960",
+        "count": 22066,
+        "bytes": 34543645
+      },
+      "System.Char[]": {
+        "mt": "7f504f9ecbb8",
+        "count": 10,
+        "bytes": 50342290
+      },
+      "System.String": {
+        "mt": "7f504f93dd58",
+        "count": 173245,
+        "bytes": 14203552
+      }
+    }
+  },
+  {
+    "mode": "post-return-fresh",
+    "types": {
+      "Chronicles.Game.GameWorld": {
+        "count": 0,
+        "bytes": 0
+      },
+      "Chronicles.Game.GameState": {
+        "count": 0,
+        "bytes": 0
+      },
+      "Chronicles.Game.Person": {
+        "count": 0,
+        "bytes": 0
+      },
+      "System.Byte[]": {
+        "mt": "7f34a0c72960",
+        "count": 22078,
+        "bytes": 269425062
+      },
+      "System.Char[]": {
+        "mt": "7f34a01dcbb8",
+        "count": 9,
+        "bytes": 268446074
+      },
+      "System.String": {
+        "mt": "7f34a012dd58",
+        "count": 9720,
+        "bytes": 486572
+      }
+    }
+  }
+]

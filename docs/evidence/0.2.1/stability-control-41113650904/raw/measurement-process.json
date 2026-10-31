@@ -1,0 +1,27 @@
+{
+  "status": "process-ended",
+  "started_utc": "2026-10-30T19:15:29.431424+00:00",
+  "command": [
+    "dotnet",
+    "exec",
+    "--fx-version",
+    "10.0.14",
+    "/home/runner/work/_temp/v021-stability-41113650904-1/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/home/runner/work/_temp/v021-stability-41113650904-1/pre.json",
+    "--stability",
+    "/home/runner/work/_temp/v021-stability-41113650904-1/result.json",
+    "--stability-plan",
+    "docs/evidence/0.2.1/final-performance/stability-plan.json"
+  ],
+  "wall_cap_seconds": 19800,
+  "cap_exit_is_failure": true,
+  "case_time_limits": "검토된 계획의 하네스 값. 외부330분 cap은 이를 바꾸지 않음.",
+  "checkpoint_logs": "0개월·각 실제 파일 checkpoint·끝의 STABILITY 로그를 그대로 보존한다.",
+  "ended_utc": "2026-10-31T00:20:16.281704+00:00",
+  "process_exit_code": 0,
+  "tee_exit_code": 0,
+  "outer_wall_cap_or_kill": false
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "kind": "L03/L04/L05/L07 자체수용 근거감사 초안",
+  "createdUtc": "2026-10-30T19:51:25.520566+00:00",
+  "canonicalTaskSnapshot": {
+    "artifactTreeCommit": "1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f",
+    "path": "docs/plans/v021-tasks.json",
+    "sha256": "f891934628e156cd6d9169c9dc92e18b58536f72901485f9f8dbf5023de55b7c"
+  },
+  "newGameRuns": 0,
+  "ledgerChanged": false,
+  "notionChanged": false,
+  "sourceSeparation": {
+    "artifactTreeCommit": "1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f",
+    "reviewSourceCommit": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+    "baselineSourceCommit": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+    "baseline": {
+      "path": "docs/evidence/0.2.1/final-performance/baseline.json",
+      "sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+      "url": "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/final-performance/baseline.json",
+      "complete": true,
+      "completedSizes": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "configuration": {
+        "inventoryProjectionExperiment": false,
+        "inventoryTypedCopyExperiment": false,
+        "inventoryCandidateMode": "person15-adopted",
+        "inventoryProjectionAdoptedByDefault": true,
+        "inventorySnapshotCopy": "json"
+      }
+    },
+    "functional": {
+      "path": "docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+      "sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87",
+      "url": "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+      "total": 314,
+      "failed": 0
+    }
+  },
+  "measurementSource": "9263756b1d00b8696fddecacb077f55d95141f26",
+  "tasks": [
+    {
+      "id": "V021-L03",
+      "title": "AI 다양성·의사결정 비용 검증",
+      "canonicalAcceptance": "고정 조건/실제 생태계에서 행동 분포·지배 전략·정체·추론 비용 비교 · 나머지 축을 하나씩 활성화한 인과/다양성 보정·지배 전략 분리",
+      "dependencies": [
+        "V021-L02",
+        "V021-B04",
+        "V021-G03",
+        "V021-O02"
+      ],
+      "ownAcceptanceProposal": "측정·비교 조항 자체 근거 충족으로 수용 권고",
+      "evidence": [
+        "summary.json",
+        "axis-comparisons.json",
+        "case-metrics.json",
+        "restart1.raw.json.gz"
+      ],
+      "findings": [
+        "고정조건60/실제생태계12를분리한행동·목표분포와월비용을기록했다.",
+        "56/56점수인과, +1축대조선택변화0/56을보존했다.",
+        "고정Cultivate97.92%,생태계16/64 Cultivate59.94%,예산1의Wait우세·정체를분리했다."
+      ],
+      "limits": [
+        "최적전략/모든축의실제선택변화/무한교착해소를보장하지않는다.",
+        "순수추론지연은분리하지않았으며실제월비용+탐색량으로정의했다.",
+        "최종원장수용은root가정본의보정·다양성결과와선행작업을함께판단한다."
+      ],
+      "neededInputs": []
+    },
+    {
+      "id": "V021-L04",
+      "title": "인지·믿음·기억·실패 학습",
+      "canonicalAcceptance": "관측/주장·확신/유효기간·모순/오해·결과 귀인·경험 출처, 숨은 실제 정보/무료 숙련 유입0 · 인물당 믿음 예산·결정론적 만료/망각/요약·중요 이력/원천 보존·2/100/1000/10000 메모리/저장 측정",
+      "dependencies": [
+        "V021-L02",
+        "V021-N01"
+      ],
+      "ownAcceptanceProposal": "기능·4규모 인지/저장 측정 자체 근거 충족으로 수용 권고",
+      "evidence": [
+        "cognition-review.json",
+        "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/final-performance/baseline.json",
+        "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/invariant-final-af91fb0/functional.json"
+      ],
+      "findings": [
+        "실제2/100/1000/10000에서UTF-8인지bytes/전체세계저장bytes/관리heap과예산수를측정했다.",
+        "통합48/activeclaim12예산초과인물0;최대단위4/4/32/48.",
+        "TTL120·결정24·개인일지100·실제습성집계100 및안정퇴출코드를대조했고동일소스314기능근거에연결했다."
+      ],
+      "limits": [
+        "4규모각12개월/독립예열2개월/반복1회의명시합성초기상태다. 자연10k성장근거가아니다.",
+        "측정fixture는식량소비/출생/재해비활성·명시Qi/초기이해/장수/원천조건을쓴다. 수치와준비조건은원문에있고기본자연세계로확대하지않는다.",
+        "네규모의원천관측수는0이므로이표만으로대규모원천탐색/모든TTL경계를실행했다고주장하지않는다. 실제원천/유료정보경계는별도공개기능검사와AI108교정사례에연결한다.",
+        "메모리/저장실제값은L04의근거이나고정성능예산PASS가아니다. N100 p95와10k query의별도FAIL 및이후PGO진단/재측정은root의판정범위다.",
+        "정본에없는전계수sweep/추가측정의무를만들지않는다. 원장상태는변경하지않는다."
+      ],
+      "neededInputs": []
+    },
+    {
+      "id": "V021-L05",
+      "title": "다단계 목표·계획·정보 탐색",
+      "canonicalAcceptance": "알려진 행동 전제/예상 효과·제한 탐색·정보 획득·계획 수정/교착 복구·추론 예산·예약/재검사",
+      "dependencies": [
+        "V021-L04",
+        "V021-R07",
+        "V021-I03",
+        "V021-K08"
+      ],
+      "ownAcceptanceProposal": "최종성장 연결 전 보수 보류",
+      "evidence": [
+        "https://github.com/hddy774/project-hora/blob/1d1c89920fc5bbb51fa3fa9e94cc5c1537e9166f/docs/evidence/0.2.1/invariant-final-af91fb0/functional.json",
+        "summary.json",
+        "cognition-review.json"
+      ],
+      "findings": [
+        "314원문에서실제AI수행연결5개·공개감응출처3개와유료식량경합회복4개/재확인법칙1개를확인했다.",
+        "입문전수→실제토납/준비·시도,정책이해도반복전수,오독/실패뒤재학습·재시도와과거출처를검증한다.",
+        "생계는예약경합/고갈을구분하고유료food관측·알려진이동·학습된농사를쓴다. tinybelief1의즉시퇴출/실패도무예외·저장결정론을보존한다.",
+        "AI108은실제제한탐색/생산/실패교정과예산1정체도보존한다."
+      ],
+      "limits": [
+        "기존b0실제성장반례로재검증중인항목이다. 짧은명시fixture314나144mo AI108을기본500년성공으로확대하지않는다.",
+        "정책10%까지반복전수검사는책의자발적최초독서증거가아니다. 오독재독해검사는선언한실물책의수동초회study10개월뒤AI재독해다.",
+        "현재이감사에는최종remote7ce9성장원문/종료판정이입력되지않았다. 결과를예상하거나기존926성장으로대체하지않는다."
+      ],
+      "neededInputs": [
+        "root/성장담당의최종remote7ce9 전체SHA·원문/provenance경로·완료범위·성공/실패판정. 진행중이면그대로기록."
+      ]
+    },
+    {
+      "id": "V021-L07",
+      "title": "AI 지능·학습·공정성 검증",
+      "canonicalAcceptance": "장기 과제 완수·자원/노동 효율·잘못된 믿음 교정·탐험/협력·교착·예산/재현·정보 동등성 지표",
+      "dependencies": [
+        "V021-L06",
+        "V021-R08",
+        "V021-O05"
+      ],
+      "ownAcceptanceProposal": "고정계획 지표수집 자체 근거 충족으로 수용 권고",
+      "evidence": [
+        "summary.json",
+        "case-metrics.json",
+        "repetition-and-overlap.json",
+        "restart1.raw.json.gz"
+      ],
+      "findings": [
+        "108수집중선언목표32는24완수/8미완수이며76건은선언목표완수항목이없다.",
+        "종이21/도구24개월·교정prep58+측정33개월을품목별소비/행동점유·실제영수증과함께기록한다.",
+        "4교정2개월지연,4실제상환10,정체후보10,탐색예산위반0,54반복쌍전체월hash동일,fairness4/4를기록한다."
+      ],
+      "limits": [
+        "두seed·두반복은독립seed네개가아니다. 144개월미달/정체는유한창관측이며보편완수/영구교착/평생효율을보장하지않는다.",
+        "자원은품목별수량/실제월경계점유이며가치효율로임의가중합산하지않는다.",
+        "공정성은타인간기존자금17분배한조건만,사망은매월생존자수기록범위만확인한다.",
+        "새source/PGOoff/Native/T05/자연10k/전체릴리스수용으로승격하지않는다."
+      ],
+      "neededInputs": []
+    }
+  ],
+  "scope": "원장done/validated나전체진행률을자동변경하지않는다. 선행작업·최신소스·실제원격성장과최종수용은담당root가판단한다."
+}

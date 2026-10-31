@@ -1,0 +1,11 @@
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Chronicles.Game;
+var world = GameWorld.Create(191);
+Console.WriteLine(typeof(GameWorld).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion);
+foreach (var seq in new long[] {0, 7})
+{
+    var bytes = GameCodec.Encode(world, seq);
+    Console.WriteLine(JsonSerializer.Serialize(new { sequence=seq, bytes=bytes.Length, sha256=Convert.ToHexStringLower(SHA256.HashData(bytes)), worldHash=world.StateHash(), rng=world.Checkpoint().RandomState }));
+}

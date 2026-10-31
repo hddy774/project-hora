@@ -1,0 +1,468 @@
+param(
+    [string]$SourceManifestPath,
+    [string]$OutputPath,
+    [switch]$Check
+)
+
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+
+$pcRoot = Split-Path -Parent $PSScriptRoot
+$workspaceRoot = Split-Path -Parent $pcRoot
+if ([string]::IsNullOrWhiteSpace($SourceManifestPath)) {
+    $SourceManifestPath = Join-Path $workspaceRoot 'data/alpha110/requirement_coverage_manifest.json'
+}
+if ([string]::IsNullOrWhiteSpace($OutputPath)) {
+    $OutputPath = Join-Path $pcRoot 'docs/traceability/pc-port-ledger.json'
+}
+
+if (-not (Test-Path -LiteralPath $SourceManifestPath -PathType Leaf)) {
+    throw "Alpha 1.1.0 요구사항 정본을 찾을 수 없습니다: $SourceManifestPath"
+}
+
+$source = Get-Content -LiteralPath $SourceManifestPath -Raw | ConvertFrom-Json
+if ($source.contract -ne 'ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1' -or $source.requirement_count -ne 238) {
+    throw '지원하지 않는 요구사항 정본입니다. ALPHA_1_1_0_REQUIREMENT_COVERAGE_V1 238행이 필요합니다.'
+}
+
+$targetVersions = @{
+    M01 = '0.0.15'; M02 = '0.0.22'; M03 = '0.0.16'; M04 = '0.0.16'
+    M05 = '0.0.18'; M06 = '0.0.16'; M07 = '0.0.16'; M08 = '0.0.17'
+    M09 = '0.0.25'; M10 = '0.0.17'; M11 = '0.0.24'; M12 = '0.0.24'
+    M13 = '0.0.26'; M14 = '0.0.23'
+}
+
+$masterGap = @{
+    M01 = '공통 Stable Registry 수직 계약은 0.0.21에서 진단 UI까지 연결되어 이식 완료되었다.'
+    M02 = 'M02 실행·후보 검증·복구·진행률 수직 계약은 연결되었으나 승인 정본의 53-table 논리 도메인 물리 스키마는 아직 단일 canonical authority_snapshot payload로 구현되어 있다.'
+    M03 = '현재 Goal→선택 행동 trace는 있으나 Plan/Task, 객관 사실·인지·Memory 분리, Event Instance/Record와 Causal Thread가 없다.'
+    M04 = 'Soul/Body/Person과 생 계보는 있으나 성별·외형·흉터, 육신 소실과 생명 owner command/result 수직 계약이 완성되지 않았다.'
+    M05 = '0.0.18 수행 수직 계약으로 이식 완료되었으며 미확정 수치와 비활성 외부 연결은 PC_TEMP_REVIEW로 추적한다.'
+    M06 = '단계형 윤회는 존재하지만 부모·가문·출생 후보, 영혼 손상과 장기 대기 예외 등 전체 수직 계약이 미완성이다.'
+    M07 = '희소 관계와 Teaching은 존재하지만 일반 상호작용·대화, Knowledge Claim, 조직·평판 연결과 공통 resolution이 미완성이다.'
+    M08 = '현재 지도는 3×3 호환 구역뿐이며 층천→대륙→대지역→구역→장소 Atlas, 1·2층천, 영맥과 개인 공간 지식이 없다.'
+    M09 = 'Organization Core·명령·역사·저장·지연 조회는 구현했지만 전승/서적 연결, 승인 사회 자질, 가문 준비집단 승격, 왕조 조건 붕괴와 10,000명 전체 조직 분포 증거가 후속이다.'
+    M10 = '도시 시장 정산은 존재하지만 공통 Owner/Holder, Offer/Reservation, 복수 시장·조직 권리와 전체 경제 수직 계약이 미완성이다.'
+    M11 = 'Definition/Instance/Provenance·비경 발견·붕괴·저장·지연 UI는 구현했으나 창작·변형·사용의 원자 흐름, 시장·수행·조직·법칙 연결과 AI 획득·사용·창작이 후속이다.'
+    M12 = 'Content/Edition/실물 binding·접근·오해·교정·provenance는 구현했으나 조직 전승, Teaching의 실제 Edition 연결, 복원·재구성 공식과 AI 저술·필사·학습이 후속이다.'
+    M13 = '10+44개 후보·개인 이해·세계 AI·천도 REVIEW authority는 존재하지만 실제 Adapter·Metric·State I/O·Stable LawId는 사용자 결정에 따라 DataUnavailable/PC_TEMP_REVIEW로 보존한다.'
+    M14 = '현재 WPF 관찰 화면은 존재하지만 독립 Queries/Presentation 계약, 전체 도메인 탐색, 관심 목록·설정 복원·접근성·오류 상태가 미완성이다.'
+}
+
+$masterEvidence = @{
+    M01 = @(
+        'FILE::src/Chronicles.Core/AuthorityRegistry.cs::AuthorityRegistry',
+        'FILE::src/Chronicles.Simulation/FormulaRegistry.cs::FormulaRegistry',
+        'FILE::src/Chronicles.Application/AuthorityRegistryDiagnostics.cs::AuthorityRegistryDiagnosticsProjection',
+        'FILE::src/Chronicles.Desktop/SettingsWorkspaceView.xaml.cs::SetAuthorityRegistryDiagnostics',
+        'TRACE::docs/traceability/PC-AUTHORITY-REGISTRY-021.md::권위·진단 계약')
+    M02 = @(
+        'FILE::src/Chronicles.Runtime/SimulationRunner.cs::CreateSaveCapture',
+        'FILE::src/Chronicles.Runtime/SimulationRunner.cs::RestoreCheckpoint',
+        'FILE::src/Chronicles.Runtime/SimulationRunner.cs::SimulationRunner',
+        'FILE::src/Chronicles.Persistence/WorldSaveCodec.cs::WorldSaveCodec',
+        'FILE::src/Chronicles.Persistence/SlotSaveStore.cs::SlotSaveStore',
+        'FILE::src/Chronicles.Application/GameApplicationSession.cs::SaveSlotAsync',
+        'FILE::src/Chronicles.Application/SaveOperationProgress.cs::SaveOperationProgress',
+        'FILE::src/Chronicles.Desktop/SaveWorkspaceView.xaml.cs::SetOperationProgress',
+        'TRACE::docs/traceability/PC-SAVE-RUNTIME-021.md::수직 계약')
+    M03 = @(
+        'FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::AgentCausalPathState',
+        'FILE::src/Chronicles.Simulation/AgentCausalRuntime.cs::CausalResolutionCode',
+        'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::AgentDecisionTraceState')
+    M04 = @(
+        'FILE::src/Chronicles.Simulation/PersonLifeAuthority.cs::PersonLifeAuthorityRules',
+        'FILE::src/Chronicles.Simulation/PersonCausalModel.cs::PersonIdentitySnapshot',
+        'FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore',
+        'FILE::src/Chronicles.Simulation/SimulationModel.cs::LifeChronicleEntry')
+    M05 = @(
+        'FILE::src/Chronicles.Simulation/CultivationModel.cs::CultivationFormulaRegistry',
+        'FILE::src/Chronicles.Simulation/CultivationDetailProgress.cs::CultivationDetailProgressRules',
+        'FILE::src/Chronicles.Simulation/RealmRules.cs::RealmRules',
+        'FILE::src/Chronicles.Simulation/AptitudeModel.cs::AptitudeRules',
+        'FILE::src/Chronicles.Simulation/World.Cultivation.cs::ResolveBreakthroughAttempt',
+        'FILE::src/Chronicles.Simulation/FoundationFormationAuthorityStore.cs::FoundationFormationAuthorityStore',
+        'FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::GetCultivationEnvironmentQualityHundredths',
+        'TRACE::docs/traceability/PC-CULTIVATION-018.md::권위 계약',
+        'TRACE::docs/traceability/PC-CULTIVATION-DETAIL-021.md::계산·권위 계약')
+    M06 = @(
+        'FILE::src/Chronicles.Simulation/ReincarnationModel.cs::ReincarnationRules',
+        'FILE::src/Chronicles.Simulation/ReincarnationStore.cs::ReincarnationStore',
+        'FILE::src/Chronicles.Simulation/ReincarnationStore.Persistence.cs::CreateCheckpoint',
+        'FILE::src/Chronicles.Simulation/World.Reincarnation.cs::ResolveReincarnationStage')
+    M07 = @(
+        'FILE::src/Chronicles.Simulation/RelationModel.cs::SparseRelationStore',
+        'FILE::src/Chronicles.Simulation/RelationModel.cs::RelationExternalContextSnapshot',
+        'FILE::src/Chronicles.Simulation/TeachingModel.cs::TeachingRules',
+        'FILE::src/Chronicles.Simulation/World.Teaching.cs::TryPrepareTeaching')
+    M08 = @(
+        'FILE::src/Chronicles.Simulation/WorldAtlasModel.cs::WorldAtlasRules',
+        'FILE::src/Chronicles.Simulation/SpatialAuthorityStore.cs::SpatialAuthorityStore',
+        'FILE::src/Chronicles.Simulation/WorldMapModel.cs::WorldMapRules',
+        'FILE::src/Chronicles.Simulation/World.Map.cs::CreateMapSnapshot',
+        'FILE::src/Chronicles.Desktop/MapObservationView.xaml.cs::MapObservationView',
+        'TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::Atlas와 이동 권위')
+    M09 = @(
+        'FILE::src/Chronicles.Simulation/OrganizationModel.cs::OrganizationStore',
+        'FILE::src/Chronicles.Simulation/OrganizationTransitions.cs::TryJoin',
+        'FILE::src/Chronicles.Simulation/World.Organizations.cs::AdvanceOrganizationSystem',
+        'FILE::src/Chronicles.Simulation/WorldCheckpoint.cs::OrganizationStoreCheckpoint',
+        'FILE::src/Chronicles.Simulation/OrganizationModel.cs::CreateSnapshot',
+        'FILE::src/Chronicles.Desktop/OrganizationWorkspaceView.xaml.cs::OrganizationWorkspaceView',
+        'TRACE::docs/traceability/PC-ORGANIZATION-020.md::권위·명령·저장 계약')
+    M10 = @(
+        'FILE::src/Chronicles.Simulation/MarketAuthorityModel.cs::EconomicOwnerRef',
+        'FILE::src/Chronicles.Simulation/CityMarket.Contracts.cs::ReserveCityOffer',
+        'FILE::src/Chronicles.Simulation/CityMarket.cs::CityMarket',
+        'FILE::src/Chronicles.Simulation/CityMarket.Settlement.cs::SettlePurchase',
+        'FILE::src/Chronicles.Simulation/EconomyRules.cs::EconomyRules',
+        'TRACE::docs/traceability/PC-ECON-MARKET-013.md::구현 계약',
+        'TRACE::docs/traceability/PC-ATLAS-ECONOMY-017.md::시장 권위')
+    M11 = @(
+        'FILE::src/Chronicles.Simulation/ContentAuthorityStore.cs::ContentAuthorityStore',
+        'FILE::src/Chronicles.Simulation/World.Content.cs::TryDiscoverSecretRealm',
+        'FILE::src/Chronicles.Desktop/ContentWorkspaceView.xaml.cs::ShouldLoadSecretRealmRows',
+        'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Content authority')
+    M12 = @(
+        'FILE::src/Chronicles.Simulation/KnowledgeAuthorityModel.cs::KnowledgeAuthorityCheckpoint',
+        'FILE::src/Chronicles.Simulation/KnowledgeAuthorityStore.cs::KnowledgeAuthorityStore',
+        'FILE::src/Chronicles.Simulation/ContentAuthorityStore.cs::ContentAuthorityStore',
+        'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Knowledge authority')
+    M13 = @(
+        'FILE::src/Chronicles.Simulation/LawAuthorityModel.cs::LawCandidateCheckpoint',
+        'FILE::src/Chronicles.Simulation/LawAuthorityStore.cs::TryRecordWorldJudgment',
+        'TRACE::docs/traceability/PC-CONTENT-KNOWLEDGE-LAW-021.md::Law review authority')
+    M14 = @(
+        'FILE::src/Chronicles.Simulation/SimulationModel.cs::ObservationSections',
+        'FILE::src/Chronicles.Desktop/MainWindow.xaml.cs::GetVisibleObservationSections',
+        'FILE::src/Chronicles.Desktop/WorldRecordsView.xaml.cs::WorldRecordsView')
+}
+
+$masterTests = @{
+    M01 = @(
+        'TEST::공식 Registry·typed command·원자 transaction·causal event',
+        'TEST::관찰 조회 무영향')
+    M02 = @(
+        'TEST::schema 25→26 SQLite 다중 슬롯·후보 원자 복원',
+        'TEST::관찰 조회 무영향',
+        'TEST::저장 codec 결정론 왕복',
+        'TEST::손상 저장 거부',
+        'TEST::원자 저장 파일 왕복')
+    M03 = @(
+        'TEST::영혼·육신·현생 신원과 AI 행동 이유 권위',
+        'TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위',
+        'TEST::관찰 조회 무영향')
+    M04 = @(
+        'TEST::0세 탄생·6대 자질·일대기·윤회',
+        'TEST::영혼·육신·현생 신원과 AI 행동 이유 권위',
+        'TEST::Goal→Plan→Task→Action 인과·인지·생별 기억·외형 권위',
+        'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전')
+    M05 = @(
+        'TEST::자질 50.00 대경지 1층→9층 대원만 전체 기준',
+        'TEST::대경지별 5단계 세부 수행 진척·지연 관찰',
+        'TEST::승인 Effect 0개·Typed 실패·수행 외부 계수 계약',
+        'TEST::입문 Gate 병목 단련·적용 Work·저장 왕복',
+        'TEST::Notion 수행 Work·준비·Preflight·안착 상태',
+        'TEST::9층 소경지·대원만 분리와 수행 Formula Trace',
+        'TEST::소경지·대경지 돌파 영구 연대기',
+        'TEST::6대 자질 60개 Component·대표값·지연 조회·저장 이전',
+        'TEST::180년 장기 수행·사냥·전투 참여 회귀',
+        'TEST::저장 codec 결정론 왕복',
+        'TEST::관찰 조회 무영향')
+    M06 = @(
+        'TEST::0세 탄생·6대 자질·일대기·윤회',
+        'TEST::단계형 윤회·계보·6영역 흔적·schema 22 이전',
+        'TEST::관찰 조회 무영향')
+    M07 = @(
+        'TEST::희소 방향 관계 6축·초기 Role·생애 경계',
+        'TEST::사제 성립·Teaching 결과·전승 provenance·직접 수행 0%',
+        'TEST::관찰 조회 무영향')
+    M08 = @(
+        'TEST::5층천 Atlas·1·2층천·900 영맥·개인 공간 지식',
+        'TEST::3×3 지도와 지형별 요수 생태',
+        'TEST::지도 내부 탭 지연 투영 성능',
+        'TEST::관찰 조회 무영향')
+    M09 = @(
+        'TEST::조직 Core·창설 Gate·중복 소속·승계·병합·schema 25→26',
+        'TEST::관찰 조회 무영향',
+        'TEST::활성 UI 구역 선택 조회 성능')
+    M10 = @(
+        'TEST::도시 임무·영석·재료·단약·법보 경제 순환',
+        'TEST::시장 원자 정산·중복 source·품질 개선 구매',
+        'TEST::시장 Offer→Reservation→만료·원자 체결',
+        'TEST::시장 소유자 용량 초과 원자 거부',
+        'TEST::최근 12개월 수급 창·관찰 snapshot 재사용',
+        'TEST::schema 24 시장 수급·원장 codec·source 재생 방지',
+        'TEST::관찰 조회 무영향')
+    M11 = @('TEST::콘텐츠 Definition·Instance·Provenance·발견·원자 소유권')
+    M12 = @('TEST::서적 Content·Edition·실물·접근·오해·교정 권위')
+    M13 = @('TEST::법칙 후보·개인 이해·세계 AI·천도 REVIEW 권위')
+    M14 = @(
+        'TEST::관찰 조회 무영향',
+        'TEST::활성 UI 구역 선택 조회 성능',
+        'TEST::지도 내부 탭 지연 투영 성능')
+}
+
+$portIds = @(
+    'A110-M01-V01', 'A110-M01-V02', 'A110-M01-V03', 'A110-M01-V04',
+    'A110-M01-V05', 'A110-M01-V06', 'A110-M01-V07', 'A110-M01-V08',
+    'A110-M01-V09', 'A110-M01-V10', 'A110-M01-V11', 'A110-M01-V12',
+    'A110-M01-V13', 'A110-M01-V14', 'A110-M01-V15', 'A110-M01-V16',
+    'A110-M01-V17',
+    'A110-M02-V01', 'A110-M02-V02', 'A110-M02-V03', 'A110-M02-V04',
+    'A110-M02-V05', 'A110-M02-V06', 'A110-M02-V07', 'A110-M02-V08',
+    'A110-M02-V09', 'A110-M02-V10', 'A110-M02-V11', 'A110-M02-V12',
+    'A110-M02-V14', 'A110-M02-V15', 'A110-M02-V16',
+    'A110-M03-V01', 'A110-M03-V02', 'A110-M03-V03', 'A110-M03-V05',
+    'A110-M03-V06', 'A110-M03-V07', 'A110-M03-V08', 'A110-M03-V10',
+    'A110-M03-V11', 'A110-M03-V13', 'A110-M03-V14', 'A110-M03-V16',
+    'A110-M03-V17',
+    'A110-M04-V01', 'A110-M04-V02', 'A110-M04-V03', 'A110-M04-V05',
+    'A110-M04-V06', 'A110-M04-V07', 'A110-M04-V08', 'A110-M04-V09',
+    'A110-M04-V10', 'A110-M04-V11', 'A110-M04-V13', 'A110-M04-V14',
+    'A110-M04-V15', 'A110-M04-V16', 'A110-M04-V17',
+    'A110-M05-V02', 'A110-M05-V03', 'A110-M05-V04', 'A110-M05-V05',
+    'A110-M05-V06', 'A110-M05-V07', 'A110-M05-V10', 'A110-M05-V11',
+    'A110-M05-V13', 'A110-M05-V15', 'A110-M05-V16', 'A110-M05-V17',
+    'A110-M06-V02', 'A110-M06-V03', 'A110-M06-V06', 'A110-M06-V09',
+    'A110-M06-V10', 'A110-M06-V11', 'A110-M06-V13', 'A110-M06-V15',
+    'A110-M06-V17',
+    'A110-M07-V01', 'A110-M07-V03', 'A110-M07-V04', 'A110-M07-V06',
+    'A110-M07-V09', 'A110-M07-V10', 'A110-M07-V11', 'A110-M07-V13',
+    'A110-M07-V15', 'A110-M07-V16', 'A110-M07-V17',
+    'A110-M08-V01', 'A110-M08-V03', 'A110-M08-V04', 'A110-M08-V07',
+    'A110-M08-V09', 'A110-M08-V10', 'A110-M08-V11', 'A110-M08-V13',
+    'A110-M08-V14', 'A110-M08-V15', 'A110-M08-V16', 'A110-M08-V17',
+    'A110-M09-V03', 'A110-M09-V05', 'A110-M09-V06', 'A110-M09-V10',
+    'A110-M09-V13', 'A110-M09-V15',
+    'A110-M10-V01', 'A110-M10-V03', 'A110-M10-V04', 'A110-M10-V05',
+    'A110-M10-V06', 'A110-M10-V10', 'A110-M10-V11', 'A110-M10-V13',
+    'A110-M10-V15', 'A110-M10-V16', 'A110-M10-V17',
+    'A110-M11-V15',
+    'A110-M12-V01', 'A110-M12-V03', 'A110-M12-V11', 'A110-M12-V13',
+    'A110-M12-V15',
+    'A110-M13-V09'
+)
+
+$pcAdaptIds = @(
+    'A110-M02-V13', 'A110-M02-V17',
+    'A110-M03-V12',
+    'A110-M04-V12', 'A110-M05-V12', 'A110-M06-V12', 'A110-M07-V12',
+    'A110-M08-V12', 'A110-M10-V12',
+    'A110-M14-V01', 'A110-M14-V06', 'A110-M14-V09', 'A110-M14-V10',
+    'A110-M14-V12', 'A110-M14-V14', 'A110-M14-V15'
+)
+
+$tempReviewIds = @(
+    'A110-M03-V04', 'A110-M03-V09', 'A110-M03-V15',
+    'A110-M04-V04',
+    'A110-M05-V01', 'A110-M05-V08', 'A110-M05-V09', 'A110-M05-V14',
+    'A110-M06-V01', 'A110-M06-V04', 'A110-M06-V05', 'A110-M06-V07',
+    'A110-M06-V08', 'A110-M06-V14', 'A110-M06-V16',
+    'A110-M07-V02', 'A110-M07-V05', 'A110-M07-V07', 'A110-M07-V08',
+    'A110-M07-V14',
+    'A110-M08-V02', 'A110-M08-V05', 'A110-M08-V06', 'A110-M08-V08',
+    'A110-M09-V14',
+    'A110-M10-V02', 'A110-M10-V07', 'A110-M10-V08', 'A110-M10-V09',
+    'A110-M10-V14',
+    'A110-M13-V05'
+)
+
+$reviewIds = @{
+    M03 = @('PC-TEMP-AI-UTILITY-113', 'PC-TEMP-MEMORY-POLICY-113')
+    M04 = @('PC-TEMP-APPEARANCE-DISTRIBUTION-113')
+    M05 = @(
+        'PC-TEMP-TRAIT-DIST-113',
+        'PC-TEMP-TRAIT-ROLE-113',
+        'PC-TEMP-SPIRIT-ROOT-113',
+        'PC-TEMP-CULT-FLOOR-WEIGHTS-113',
+        'PC-TEMP-CULT-COMPONENT-TARGETS-113',
+        'PC-TEMP-CULT-METHOD-PREFLIGHT-113',
+        'PC-TEMP-CULT-STABILIZATION-113',
+        'PC-TEMP-CULT-ENVIRONMENT-113',
+        'PC-TEMP-CULT-FOUNDATION-SOURCE-113',
+        'PC-TEMP-CULT-UPPER-REALM-113',
+        'PC-TEMP-CULT-LAW-LUCK-BRIDGE-113')
+    M06 = @(
+        'PC-TEMP-REINCARNATION-UPPER-DURATION-113',
+        'PC-TEMP-REINCARNATION-STAGES-113',
+        'PC-TEMP-REINCARNATION-TRACE-113',
+        'PC-TEMP-REINCARNATION-BIRTH-CANDIDATE-113',
+        'PC-TEMP-REINCARNATION-SOUL-DAMAGE-113')
+    M07 = @(
+        'PC-TEMP-RELATION-BALANCE-113',
+        'PC-TEMP-TEACHING-BALANCE-113',
+        'PC-TEMP-RELATION-EXTERNAL-CONTEXT-113')
+    M08 = @(
+        'PC-TEMP-ATLAS-NAMES-113',
+        'PC-TEMP-VEIN-PROFILES-113',
+        'PC-TEMP-LAYER-ACCESS-113')
+    M09 = @(
+        'PC-TEMP-ORG-APTITUDE-MAPPING-020',
+        'PC-TEMP-ORG-SUCCESSION-020',
+        'PC-TEMP-ORG-STRATEGY-020',
+        'PC-TEMP-ORG-AI-DECISION-020',
+        'PC-TEMP-ORG-CONTRIBUTION-020')
+    M10 = @(
+        'PC-TEMP-MARKET-WINDOW-113',
+        'PC-TEMP-MARKET-LEDGER-113',
+        'PC-TEMP-MARKET-BOOK-BASE-113',
+        'PC-TEMP-MARKET-CONTRACT-LIFETIME-113',
+        'PC-TEMP-MARKET-ORGANIZATION-CHANNEL-113')
+    M13 = @(
+        'PC-TEMP-LAW-CANDIDATE-CATALOG-021',
+        'PC-TEMP-LAW-READINESS-GATE-021')
+}
+
+$rowAdaptationOverrides = @{
+    'A110-M02-V13' = 'PC는 논리 도메인의 권위 상태를 schema 25 authority_snapshot과 typed checkpoint에 정규화하여 저장한다. 모바일 정본의 53개 물리 테이블 수는 플랫폼 구현 세부로 보며 동일한 저장·복구 의미를 PC 저장 계약으로 제공한다.'
+}
+
+$classification = @{}
+foreach ($id in $portIds) { $classification[$id] = 'Port' }
+foreach ($id in $pcAdaptIds) {
+    if ($classification.ContainsKey($id)) { throw "분류가 중복되었습니다: $id" }
+    $classification[$id] = 'PC Adapt'
+}
+foreach ($id in $tempReviewIds) {
+    if ($classification.ContainsKey($id)) { throw "분류가 중복되었습니다: $id" }
+    $classification[$id] = 'PC_TEMP_REVIEW'
+}
+
+$rootReferenceNames = @(
+    'registry_ref', 'authority_owner_ref', 'command_ref', 'result_ref', 'event_ref',
+    'save_ref', 'query_ref', 'test_ref', 'benchmark_ref', 'evidence_ref')
+
+$rows = foreach ($sourceRow in $source.rows) {
+    $id = [string]$sourceRow.requirement_id
+    $master = [string]$sourceRow.master_id
+    $disposition = if ($classification.ContainsKey($id)) {
+        [string]$classification[$id]
+    } else {
+        'Gap/Deferred'
+    }
+
+    $targetPortMode = if ($disposition -eq 'PC_TEMP_REVIEW') {
+        'PC_TEMP_REVIEW'
+    } elseif ($master -eq 'M14' -or [int]$sourceRow.vertical_spec_index -eq 12) {
+        'PC Adapt'
+    } else {
+        'Port'
+    }
+
+    $excludedClauses = @()
+    if ($id -eq 'A110-M02-V17') {
+        $excludedClauses += 'Android 실기기 검증은 PC 범위에서 제외하고 Windows x64 직접 실행 검증으로 대체한다.'
+    }
+    if ($id -eq 'A110-M14-V01') {
+        $excludedClauses += '모바일 세로 UI 표면은 제외하고 Windows WPF 관찰 화면으로 대체한다.'
+    }
+    if ($id -eq 'A110-M14-V17') {
+        $excludedClauses += 'Android 실기기 성능은 제외하고 Windows x64 UI/GC 성능으로 대체한다.'
+    }
+
+    $rootRefs = [ordered]@{}
+    foreach ($name in $rootReferenceNames) {
+        $rootRefs[$name] = $sourceRow.$name
+    }
+
+    $pcRefs = @($masterEvidence[$master])
+    $testRefs = @($masterTests[$master])
+    [ordered]@{
+        requirement_id = $id
+        master_id = $master
+        master_title_ko = [string]$sourceRow.master_title_ko
+        vertical_spec_index = [int]$sourceRow.vertical_spec_index
+        vertical_spec_type_ko = [string]$sourceRow.vertical_spec_type_ko
+        implementation_phase = [string]$sourceRow.implementation_phase
+        source_planned_pr = [string]$sourceRow.planned_pr
+        notion_url = [string]$sourceRow.notion_url
+        notion_requirement_text_ko = [string]$sourceRow.notion_requirement_text_ko
+        notion_requirement_sha256 = [string]$sourceRow.notion_requirement_sha256
+        notion_master_requirement_sha256 = [string]$sourceRow.notion_master_requirement_sha256
+        source_disposition = [string]$sourceRow.disposition
+        source_evidence_state = [string]$sourceRow.evidence_state
+        source_root_refs = $rootRefs
+        disposition = $disposition
+        target_port_mode = $targetPortMode
+        target_version = if ($disposition -eq 'Gap/Deferred') { $targetVersions[$master] } else { $null }
+        pc_evidence_refs = $pcRefs
+        pc_test_refs = $testRefs
+        review_ids = if ($disposition -eq 'PC_TEMP_REVIEW') { @($reviewIds[$master]) } else { @() }
+        excluded_platform_clauses = $excludedClauses
+        adaptation_note = if ($targetPortMode -eq 'PC Adapt') {
+            if ($rowAdaptationOverrides.ContainsKey($id)) {
+                [string]$rowAdaptationOverrides[$id]
+            } else {
+                'Android/모바일 전달 표면을 제외하고 같은 관찰·조회 의미를 Windows WPF와 Windows x64 검증으로 제공한다.'
+            }
+        } else {
+            $null
+        }
+        gap_summary = if ($disposition -eq 'Gap/Deferred') { $masterGap[$master] } else { $null }
+    }
+}
+
+$sourceGitSha = $null
+if ($Check -and (Test-Path -LiteralPath $OutputPath -PathType Leaf)) {
+    $existingLedger = Get-Content -LiteralPath $OutputPath -Raw | ConvertFrom-Json
+    $existingSourceGitSha = [string]$existingLedger.source_git_sha
+    $sourceGitSha = if ([string]::IsNullOrWhiteSpace($existingSourceGitSha)) { $null } else { $existingSourceGitSha }
+} else {
+    try {
+        $sourceGitSha = (& git -C $workspaceRoot rev-parse HEAD 2>$null).Trim()
+    } catch {
+        $sourceGitSha = $null
+    }
+}
+
+$statusCounts = [ordered]@{}
+foreach ($name in @('Port', 'PC Adapt', 'PC_TEMP_REVIEW', 'Platform Excluded', 'Gap/Deferred')) {
+    $statusCounts[$name] = @($rows | Where-Object disposition -eq $name).Count
+}
+
+$ledger = [ordered]@{
+    schema_version = 1
+    contract = 'CMIP_PC_PORT_LEDGER_V1'
+    ledger_revision = 1
+    requirement_count = 238
+    source_contract = [string]$source.contract
+    source_manifest_path = 'data/alpha110/requirement_coverage_manifest.json'
+    source_manifest_sha256 = (Get-FileHash -LiteralPath $SourceManifestPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    source_git_sha = $sourceGitSha
+    source_traceability_refs = @(
+        'docs/traceability/alpha-1.1.0-vertical-acceptance.md',
+        'docs/traceability/alpha-1.1.2-release-scope.md',
+        'docs/traceability/alpha-1.1.2-release-evidence.md')
+    pc_baseline_version = '0.0.13'
+    pc_baseline_git_sha = '558a184d2cf88b0f1a2318eb028125257786d261'
+    allowed_dispositions = @('Port', 'PC Adapt', 'PC_TEMP_REVIEW', 'Platform Excluded', 'Gap/Deferred')
+    status_semantics = [ordered]@{
+        Port = 'PC에서 요구 문장 전체의 권위·조회·검증 증거가 연결됨.'
+        'PC Adapt' = '모바일 전달 표면을 PC로 바꿨으며 PC 범위 요구 문장 전체의 증거가 연결됨.'
+        PC_TEMP_REVIEW = 'PC 동작과 검증은 있으나 하나 이상의 수치·공식이 안정 review ID로 다음 검토에 이관됨.'
+        'Platform Excluded' = '행 전체가 Android 전용이라 PC 제품 범위에서 제외됨.'
+        'Gap/Deferred' = '요구 문장 일부 또는 전부를 증명하지 못해 완료로 주장하지 않음.'
+    }
+    status_counts = $statusCounts
+    rows = @($rows)
+}
+
+$json = $ledger | ConvertTo-Json -Depth 16
+if ($Check) {
+    if (-not (Test-Path -LiteralPath $OutputPath -PathType Leaf)) {
+        throw "검사할 PC port ledger가 없습니다: $OutputPath"
+    }
+
+    $expectedJson = (Get-Content -LiteralPath $OutputPath -Raw).TrimEnd()
+    if ($expectedJson -cne $json.TrimEnd()) {
+        throw 'PC port ledger가 생성기와 다릅니다. generate-port-ledger.ps1로 재생성해야 합니다.'
+    }
+
+    Write-Host "PC port ledger generator check: PASS ($OutputPath)"
+    return
+}
+
+[System.IO.File]::WriteAllText($OutputPath, $json + [Environment]::NewLine, [System.Text.UTF8Encoding]::new($false))
+Write-Host "PC port ledger generated: $OutputPath"
+Write-Host ($statusCounts | ConvertTo-Json -Compress)

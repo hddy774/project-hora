@@ -1,0 +1,14 @@
+{
+  "package": "dotnet-dump",
+  "version": "10.0.750501+ad724c4b85e7ae775e42f393c6e95a7557a57954",
+  "path": "/workspace/scratch/t04-retained-heap-plan-5398700/tools/dotnet-dump",
+  "existingTraceVersion": "10.0.750501",
+  "dotnetRoot": "/workspace/.dotnet",
+  "sdk": "10.0.403",
+  "productSdkOrSourceChanged": false,
+  "installLogSha256": "6841541d748540b0be48757b632011c6f09ca459f1ab56ec902500768a75e1b6",
+  "versionProbeExit": 0,
+  "attachOrCollectRuns": 0,
+  "profilerRuns": 0,
+  "worldRuns": 0
+}

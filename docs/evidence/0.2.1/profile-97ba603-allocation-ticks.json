@@ -1,0 +1,4132 @@
+{
+  "note": "GCAllocationTick sampled byte estimates; interval from managed AdvanceTo stacks, not exact allocations per object/type",
+  "measured": {
+    "count": 60730,
+    "sampledAllocationBytes": 8782896856,
+    "top": [
+      {
+        "type": "System.Byte[]",
+        "ticks": 1807,
+        "sampledAllocationBytes": 2473639840
+      },
+      {
+        "type": "System.String",
+        "ticks": 11622,
+        "sampledAllocationBytes": 1254661904
+      },
+      {
+        "type": "\u003C\u003Ec__DisplayClass21_0",
+        "ticks": 6966,
+        "sampledAllocationBytes": 742050368
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeEvidence",
+        "ticks": 3482,
+        "sampledAllocationBytes": 371088568
+      },
+      {
+        "type": "System.Int32[]",
+        "ticks": 2588,
+        "sampledAllocationBytes": 276132384
+      },
+      {
+        "type": "System.Text.Json.ArgumentState",
+        "ticks": 2491,
+        "sampledAllocationBytes": 265456752
+      },
+      {
+        "type": "ListWhereIterator\u00601[Chronicles.Game.Inventory.ProductionJob]",
+        "ticks": 1964,
+        "sampledAllocationBytes": 209303480
+      },
+      {
+        "type": "System.Text.Json.Arguments\u00604[System.String,System.Int64,System.String,System.Object]",
+        "ticks": 1754,
+        "sampledAllocationBytes": 186917304
+      },
+      {
+        "type": "Chronicles.Game.Inventory.NaturalStock",
+        "ticks": 1743,
+        "sampledAllocationBytes": 185748208
+      },
+      {
+        "type": "System.Func\u00602[Chronicles.Game.Inventory.ProductionJob,System.Boolean]",
+        "ticks": 1628,
+        "sampledAllocationBytes": 173490504
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeActivity",
+        "ticks": 1461,
+        "sampledAllocationBytes": 155748528
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate",
+        "ticks": 1441,
+        "sampledAllocationBytes": 153619152
+      },
+      {
+        "type": "Entry[System.Int64][]",
+        "ticks": 863,
+        "sampledAllocationBytes": 102932600
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate[]",
+        "ticks": 936,
+        "sampledAllocationBytes": 99756616
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PersonalKnowledge",
+        "ticks": 744,
+        "sampledAllocationBytes": 79311920
+      },
+      {
+        "type": "\u003C\u003Ec__DisplayClass91_6",
+        "ticks": 689,
+        "sampledAllocationBytes": 73447136
+      },
+      {
+        "type": "Node[System.Collections.Generic.KeyValuePair\u00602[System.String,System.Int32]]",
+        "ticks": 670,
+        "sampledAllocationBytes": 71431872
+      },
+      {
+        "type": "System.Collections.Generic.HashSet\u00601[System.Int64]",
+        "ticks": 551,
+        "sampledAllocationBytes": 58704824
+      },
+      {
+        "type": "Chronicles.Game.Person",
+        "ticks": 526,
+        "sampledAllocationBytes": 56068192
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeAdoption",
+        "ticks": 495,
+        "sampledAllocationBytes": 52776896
+      },
+      {
+        "type": "System.Int64",
+        "ticks": 433,
+        "sampledAllocationBytes": 46142624
+      },
+      {
+        "type": "DistinctIterator\u00601[System.Int64]",
+        "ticks": 429,
+        "sampledAllocationBytes": 45704856
+      },
+      {
+        "type": "System.Int64[]",
+        "ticks": 408,
+        "sampledAllocationBytes": 44345192
+      },
+      {
+        "type": "ArraySelectIterator\u00602[Chronicles.Game.Knowledge.KnowledgeAdoption,Chronicles.Game.Knowledge.KnowledgeAdoption]",
+        "ticks": 335,
+        "sampledAllocationBytes": 35694968
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeTimeUse",
+        "ticks": 331,
+        "sampledAllocationBytes": 35288840
+      },
+      {
+        "type": "System.Func\u00602[Chronicles.Game.Item,System.Boolean]",
+        "ticks": 327,
+        "sampledAllocationBytes": 34833632
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PracticalKnowledge",
+        "ticks": 325,
+        "sampledAllocationBytes": 34636736
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeRules",
+        "ticks": 311,
+        "sampledAllocationBytes": 33159264
+      },
+      {
+        "type": "Chronicles.Game.PlaceObservation",
+        "ticks": 295,
+        "sampledAllocationBytes": 31400624
+      },
+      {
+        "type": "Chronicles.Game.Inventory.NaturalStock[]",
+        "ticks": 288,
+        "sampledAllocationBytes": 31325912
+      }
+    ]
+  },
+  "all": {
+    "count": 75513,
+    "sampledAllocationBytes": 11124050632,
+    "top": [
+      {
+        "type": "System.Byte[]",
+        "ticks": 2489,
+        "sampledAllocationBytes": 3104085432
+      },
+      {
+        "type": "System.String",
+        "ticks": 13917,
+        "sampledAllocationBytes": 1568607144
+      },
+      {
+        "type": "\u003C\u003Ec__DisplayClass21_0",
+        "ticks": 8715,
+        "sampledAllocationBytes": 928406976
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeEvidence",
+        "ticks": 3518,
+        "sampledAllocationBytes": 374916096
+      },
+      {
+        "type": "System.Int32[]",
+        "ticks": 3191,
+        "sampledAllocationBytes": 340413768
+      },
+      {
+        "type": "ListWhereIterator\u00601[Chronicles.Game.Inventory.ProductionJob]",
+        "ticks": 2768,
+        "sampledAllocationBytes": 294984576
+      },
+      {
+        "type": "System.Text.Json.ArgumentState",
+        "ticks": 2706,
+        "sampledAllocationBytes": 288354656
+      },
+      {
+        "type": "Chronicles.Game.Inventory.NaturalStock",
+        "ticks": 2456,
+        "sampledAllocationBytes": 261724560
+      },
+      {
+        "type": "System.Func\u00602[Chronicles.Game.Inventory.ProductionJob,System.Boolean]",
+        "ticks": 2375,
+        "sampledAllocationBytes": 253091744
+      },
+      {
+        "type": "System.Func\u00602[Chronicles.Game.Inventory.ItemMetadata,System.Boolean]",
+        "ticks": 1918,
+        "sampledAllocationBytes": 204435608
+      },
+      {
+        "type": "System.Text.Json.Arguments\u00604[System.String,System.Int64,System.String,System.Object]",
+        "ticks": 1840,
+        "sampledAllocationBytes": 196087072
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate",
+        "ticks": 1499,
+        "sampledAllocationBytes": 159799712
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeActivity",
+        "ticks": 1469,
+        "sampledAllocationBytes": 156600032
+      },
+      {
+        "type": "Entry[System.Int64][]",
+        "ticks": 1149,
+        "sampledAllocationBytes": 137429736
+      },
+      {
+        "type": "System.Char[]",
+        "ticks": 1,
+        "sampledAllocationBytes": 134217752
+      },
+      {
+        "type": "Chronicles.Game.DecisionCandidate[]",
+        "ticks": 975,
+        "sampledAllocationBytes": 103908608
+      },
+      {
+        "type": "\u003C\u003Ec__DisplayClass91_6",
+        "ticks": 964,
+        "sampledAllocationBytes": 102751328
+      },
+      {
+        "type": "Node[System.Collections.Generic.KeyValuePair\u00602[System.String,System.Int32]]",
+        "ticks": 882,
+        "sampledAllocationBytes": 94019352
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.PersonalKnowledge",
+        "ticks": 758,
+        "sampledAllocationBytes": 80801688
+      },
+      {
+        "type": "Chronicles.Game.Person",
+        "ticks": 715,
+        "sampledAllocationBytes": 76198368
+      },
+      {
+        "type": "System.Collections.Generic.HashSet\u00601[System.Int64]",
+        "ticks": 623,
+        "sampledAllocationBytes": 66367768
+      },
+      {
+        "type": "System.Int64",
+        "ticks": 604,
+        "sampledAllocationBytes": 64356960
+      },
+      {
+        "type": "System.Int64[]",
+        "ticks": 564,
+        "sampledAllocationBytes": 61262576
+      },
+      {
+        "type": "DistinctIterator\u00601[System.Int64]",
+        "ticks": 571,
+        "sampledAllocationBytes": 60834688
+      },
+      {
+        "type": "Chronicles.Game.Knowledge.KnowledgeAdoption",
+        "ticks": 499,
+        "sampledAllocationBytes": 53199136
+      },
+      {
+        "type": "Chronicles.Game.Inventory.NaturalStock[]",
+        "ticks": 433,
+        "sampledAllocationBytes": 47052080
+      },
+      {
+        "type": "System.Func\u00602[Chronicles.Game.Item,System.Boolean]",
+        "ticks": 440,
+        "sampledAllocationBytes": 46741736
+      },
+      {
+        "type": "Chronicles.Game.PlaceObservation",
+        "ticks": 355,
+        "sampledAllocationBytes": 37796016
+      },
+      {
+        "type": "System.Collections.Generic.TreeSet\u00601[System.Collections.Generic.KeyValuePair\u00602[System.String,System.Int32]]",
+        "ticks": 345,
+        "sampledAllocationBytes": 36771424
+      },
+      {
+        "type": "ArraySelectIterator\u00602[Chronicles.Game.Knowledge.KnowledgeAdoption,Chronicles.Game.Knowledge.KnowledgeAdoption]",
+        "ticks": 335,
+        "sampledAllocationBytes": 35694968
+      }
+    ]
+  },
+  "gcStarts": [
+    {
+      "at": 9525.810156,
+      "count": 120,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9570.740022,
+      "count": 121,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9657.373609,
+      "count": 122,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9766.606455,
+      "count": 123,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9816.620513,
+      "count": 124,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9864.445642,
+      "count": 125,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 9895.439552,
+      "count": 126,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9956.065025,
+      "count": 127,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 9987.269028,
+      "count": 128,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10008.975537,
+      "count": 129,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10065.356017,
+      "count": 130,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10100.571785,
+      "count": 131,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10120.628532,
+      "count": 132,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10169.821478,
+      "count": 133,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10202.730381,
+      "count": 134,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10217.271447,
+      "count": 135,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10264.371245,
+      "count": 136,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10296.702467,
+      "count": 137,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10312.226478,
+      "count": 138,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10355.775037,
+      "count": 139,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10391.465423,
+      "count": 140,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10403.252978,
+      "count": 141,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 10448.641969,
+      "count": 142,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10486.886027,
+      "count": 143,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10489.989569,
+      "count": 144,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 10534.37872,
+      "count": 145,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10574.117595,
+      "count": 146,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10587.985029,
+      "count": 147,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10631.317465,
+      "count": 148,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10672.505789,
+      "count": 149,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10678.564142,
+      "count": 150,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 10728.261589,
+      "count": 151,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10767.091961,
+      "count": 152,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10769.917769,
+      "count": 153,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 10823.240836,
+      "count": 154,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10865.072308,
+      "count": 155,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10865.125127,
+      "count": 156,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10917.422676,
+      "count": 157,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 10961.016091,
+      "count": 158,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 10961.067838,
+      "count": 159,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11010.628231,
+      "count": 160,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11057.326581,
+      "count": 161,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11057.343887,
+      "count": 162,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11104.280542,
+      "count": 163,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11152.714407,
+      "count": 164,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11164.006064,
+      "count": 165,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11201.078338,
+      "count": 166,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11248.277193,
+      "count": 167,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11265.166527,
+      "count": 168,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11296.43043,
+      "count": 169,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11345.208157,
+      "count": 170,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11368.599415,
+      "count": 171,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11395.2452,
+      "count": 172,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11443.29373,
+      "count": 173,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11466.694312,
+      "count": 174,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11492.560045,
+      "count": 175,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11540.843005,
+      "count": 176,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11565.290686,
+      "count": 177,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11591.167887,
+      "count": 178,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11640.033744,
+      "count": 179,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11666.036091,
+      "count": 180,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11690.551383,
+      "count": 181,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11740.140125,
+      "count": 182,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11767.873875,
+      "count": 183,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11788.033277,
+      "count": 184,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11836.829366,
+      "count": 185,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11872.150594,
+      "count": 186,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11890.955387,
+      "count": 187,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11938.154406,
+      "count": 188,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 11979.768862,
+      "count": 189,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 11992.021461,
+      "count": 190,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12043.068274,
+      "count": 191,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12088.674038,
+      "count": 192,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12093.313051,
+      "count": 193,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 12144.486993,
+      "count": 194,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12191.607575,
+      "count": 195,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12191.660143,
+      "count": 196,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12248.156667,
+      "count": 197,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12293.916191,
+      "count": 198,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12308.965468,
+      "count": 199,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12353.427467,
+      "count": 200,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12397.738833,
+      "count": 201,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12420.609105,
+      "count": 202,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12451.519239,
+      "count": 203,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12504.359995,
+      "count": 204,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12532.215607,
+      "count": 205,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12556.721236,
+      "count": 206,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12607.767689,
+      "count": 207,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12643.392118,
+      "count": 208,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12664.695445,
+      "count": 209,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12716.030137,
+      "count": 210,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12762.339019,
+      "count": 211,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 12768.882991,
+      "count": 212,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 12838.160061,
+      "count": 213,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12912.059951,
+      "count": 214,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 12938.356549,
+      "count": 215,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13000.042657,
+      "count": 216,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13087.493591,
+      "count": 217,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13147.457862,
+      "count": 218,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13171.161407,
+      "count": 219,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13238.441781,
+      "count": 220,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13264.293487,
+      "count": 221,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13302.67183,
+      "count": 222,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13359.85682,
+      "count": 223,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13378.516267,
+      "count": 224,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13420.97403,
+      "count": 225,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13478.01823,
+      "count": 226,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13495.500153,
+      "count": 227,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13544.320948,
+      "count": 228,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13604.229076,
+      "count": 229,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13604.269876,
+      "count": 230,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13660.328137,
+      "count": 231,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13709.553846,
+      "count": 232,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13723.456635,
+      "count": 233,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13783.649337,
+      "count": 234,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13824.454517,
+      "count": 235,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13848.736093,
+      "count": 236,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13908.586775,
+      "count": 237,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 13939.675264,
+      "count": 238,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 13968.614211,
+      "count": 239,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14029.4156,
+      "count": 240,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14059.835263,
+      "count": 241,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14092.441875,
+      "count": 242,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14154.067874,
+      "count": 243,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14183.45619,
+      "count": 244,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14220.962493,
+      "count": 245,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14280.964972,
+      "count": 246,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14310.063846,
+      "count": 247,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14351.915356,
+      "count": 248,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14418.732139,
+      "count": 249,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14443.808299,
+      "count": 250,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14487.296878,
+      "count": 251,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14557.660947,
+      "count": 252,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14557.673746,
+      "count": 253,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14625.724509,
+      "count": 254,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14682.216987,
+      "count": 255,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14700.728314,
+      "count": 256,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14762.663793,
+      "count": 257,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14803.662631,
+      "count": 258,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14831.984388,
+      "count": 259,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14900.527862,
+      "count": 260,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 14935.31418,
+      "count": 261,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 14970.384862,
+      "count": 262,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15038.632564,
+      "count": 263,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15069.004868,
+      "count": 264,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15106.457838,
+      "count": 265,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15168.575321,
+      "count": 266,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15204.677639,
+      "count": 267,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15245.52916,
+      "count": 268,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15313.568161,
+      "count": 269,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15347.152509,
+      "count": 270,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15389.791643,
+      "count": 271,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15463.196085,
+      "count": 272,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15499.637969,
+      "count": 273,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15536.07775,
+      "count": 274,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15602.252735,
+      "count": 275,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15626.179791,
+      "count": 276,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15681.395144,
+      "count": 277,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15747.808675,
+      "count": 278,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15779.027911,
+      "count": 279,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15820.342291,
+      "count": 280,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15890.093623,
+      "count": 281,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 15903.546318,
+      "count": 282,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 15965.032892,
+      "count": 283,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16029.459874,
+      "count": 284,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16029.472162,
+      "count": 285,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16107.789312,
+      "count": 286,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16160.915333,
+      "count": 287,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16186.760185,
+      "count": 288,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16262.28162,
+      "count": 289,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16306.222442,
+      "count": 290,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16338.727854,
+      "count": 291,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16415.106836,
+      "count": 292,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16449.09786,
+      "count": 293,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16492.747138,
+      "count": 294,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16571.716218,
+      "count": 295,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16607.266624,
+      "count": 296,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16656.196306,
+      "count": 297,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16729.227363,
+      "count": 298,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16768.560112,
+      "count": 299,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16814.704085,
+      "count": 300,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16890.761278,
+      "count": 301,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 16923.020483,
+      "count": 302,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 16975.262418,
+      "count": 303,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17052.696162,
+      "count": 304,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17089.193728,
+      "count": 305,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 17146.105538,
+      "count": 306,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17223.268008,
+      "count": 307,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17266.126908,
+      "count": 308,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 17308.003716,
+      "count": 309,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17390.030611,
+      "count": 310,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17430.092786,
+      "count": 311,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 17477.700449,
+      "count": 312,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17564.708953,
+      "count": 313,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17615.869868,
+      "count": 314,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 17656.667649,
+      "count": 315,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17742.173405,
+      "count": 316,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17777.572635,
+      "count": 317,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 17837.797419,
+      "count": 318,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 17921.309876,
+      "count": 319,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 17921.323196,
+      "count": 320,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18014.411805,
+      "count": 321,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18076.856205,
+      "count": 322,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 18110.743478,
+      "count": 323,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18196.540418,
+      "count": 324,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18243.265165,
+      "count": 325,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 18286.320649,
+      "count": 326,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18376.363541,
+      "count": 327,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18414.376956,
+      "count": 328,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 18470.866026,
+      "count": 329,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18561.163137,
+      "count": 330,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18720.287204,
+      "count": 331,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 18745.960731,
+      "count": 332,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18837.793619,
+      "count": 333,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18876.660304,
+      "count": 334,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 18900.803992,
+      "count": 335,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18924.881752,
+      "count": 336,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18937.43056,
+      "count": 337,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18950.225927,
+      "count": 338,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18962.382552,
+      "count": 339,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 18974.152321,
+      "count": 340,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19056.026929,
+      "count": 341,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19210.729971,
+      "count": 342,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19265.771846,
+      "count": 343,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 19303.413937,
+      "count": 344,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19353.710054,
+      "count": 345,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 19353.748762,
+      "count": 346,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19380.185274,
+      "count": 347,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19391.538092,
+      "count": 348,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19404.41503,
+      "count": 349,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19415.46056,
+      "count": 350,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19426.501404,
+      "count": 351,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19437.089994,
+      "count": 352,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19448.037348,
+      "count": 353,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19548.898052,
+      "count": 354,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19623.478036,
+      "count": 355,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 19643.139457,
+      "count": 356,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19695.775199,
+      "count": 357,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19712.423273,
+      "count": 358,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 19750.493056,
+      "count": 359,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19760.979426,
+      "count": 360,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19770.908115,
+      "count": 361,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19780.924065,
+      "count": 362,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19790.89702,
+      "count": 363,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19800.755675,
+      "count": 364,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19809.881559,
+      "count": 365,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19819.527107,
+      "count": 366,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19828.881631,
+      "count": 367,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19930.13792,
+      "count": 368,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 19983.917894,
+      "count": 369,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 20026.105185,
+      "count": 370,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20078.050311,
+      "count": 371,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20090.639394,
+      "count": 372,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 20137.42917,
+      "count": 373,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20168.671909,
+      "count": 374,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20178.240421,
+      "count": 375,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20187.600574,
+      "count": 376,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20196.872235,
+      "count": 377,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20207.88536,
+      "count": 378,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20217.13025,
+      "count": 379,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20226.692264,
+      "count": 380,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20236.040208,
+      "count": 381,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20245.23837,
+      "count": 382,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20254.393186,
+      "count": 383,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20337.753729,
+      "count": 384,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 20384.071963,
+      "count": 385,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20471.903614,
+      "count": 386,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20500.120045,
+      "count": 387,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 20528.133443,
+      "count": 388,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20584.414137,
+      "count": 389,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 20584.429961,
+      "count": 390,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20635.436018,
+      "count": 391,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20646.242595,
+      "count": 392,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20657.106858,
+      "count": 393,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20668.135205,
+      "count": 394,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20678.467236,
+      "count": 395,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20688.497627,
+      "count": 396,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20697.987203,
+      "count": 397,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20708.168318,
+      "count": 398,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20717.740106,
+      "count": 399,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20727.825929,
+      "count": 400,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20737.849881,
+      "count": 401,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20790.731121,
+      "count": 402,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 20891.125175,
+      "count": 403,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 20922.674961,
+      "count": 404,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21009.237843,
+      "count": 405,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21031.767072,
+      "count": 406,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 21073.361831,
+      "count": 407,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21086.045794,
+      "count": 408,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21095.904649,
+      "count": 409,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21104.854341,
+      "count": 410,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21115.378908,
+      "count": 411,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21124.65861,
+      "count": 412,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21134.814599,
+      "count": 413,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21144.655828,
+      "count": 414,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21154.097101,
+      "count": 415,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21163.404816,
+      "count": 416,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21172.848734,
+      "count": 417,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21182.489754,
+      "count": 418,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21192.534527,
+      "count": 419,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21251.890442,
+      "count": 420,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21388.159134,
+      "count": 421,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 21388.200656,
+      "count": 422,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21483.273093,
+      "count": 423,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21516.90494,
+      "count": 424,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 21516.916377,
+      "count": 425,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21537.755549,
+      "count": 426,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21547.693342,
+      "count": 427,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21558.783822,
+      "count": 428,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21568.706041,
+      "count": 429,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21578.228135,
+      "count": 430,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21587.675107,
+      "count": 431,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21665.6525,
+      "count": 432,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21674.86997,
+      "count": 433,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21683.517231,
+      "count": 434,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21692.244621,
+      "count": 435,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21701.214112,
+      "count": 436,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21710.284663,
+      "count": 437,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21719.166193,
+      "count": 438,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21848.166363,
+      "count": 439,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 21947.876829,
+      "count": 440,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 21947.892572,
+      "count": 441,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22020.175522,
+      "count": 442,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22083.401152,
+      "count": 443,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 22083.432268,
+      "count": 444,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22146.125865,
+      "count": 445,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22233.299447,
+      "count": 446,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 22251.647117,
+      "count": 447,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22342.251879,
+      "count": 448,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22407.523616,
+      "count": 449,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 22442.96591,
+      "count": 450,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22536.840282,
+      "count": 451,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22601.959973,
+      "count": 452,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 22633.537079,
+      "count": 453,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22730.432522,
+      "count": 454,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22793.101302,
+      "count": 455,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 22825.152565,
+      "count": 456,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22914.414988,
+      "count": 457,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 22966.823684,
+      "count": 458,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23028.594857,
+      "count": 459,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23122.797808,
+      "count": 460,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23122.818279,
+      "count": 461,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23226.125753,
+      "count": 462,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23302.128225,
+      "count": 463,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23309.946761,
+      "count": 464,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 23410.907048,
+      "count": 465,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23497.354072,
+      "count": 466,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23517.84179,
+      "count": 467,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23600.687275,
+      "count": 468,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23672.285025,
+      "count": 469,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23702.203531,
+      "count": 470,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23793.422052,
+      "count": 471,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23820.214151,
+      "count": 472,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23882.783252,
+      "count": 473,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 23982.080699,
+      "count": 474,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 23982.094589,
+      "count": 475,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24081.956751,
+      "count": 476,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24143.37656,
+      "count": 477,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 24178.07747,
+      "count": 478,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24270.918684,
+      "count": 479,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24325.384885,
+      "count": 480,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 24375.074692,
+      "count": 481,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24468.664441,
+      "count": 482,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 24468.679643,
+      "count": 483,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24555.489547,
+      "count": 484,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24627.897059,
+      "count": 485,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 24653.055424,
+      "count": 486,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24744.988656,
+      "count": 487,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24777.765229,
+      "count": 488,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 24835.36052,
+      "count": 489,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 24928.319159,
+      "count": 490,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 24928.3334,
+      "count": 491,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25030.42945,
+      "count": 492,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25098.420347,
+      "count": 493,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 25127.573192,
+      "count": 494,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25227.471368,
+      "count": 495,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25291.560534,
+      "count": 496,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 25326.409363,
+      "count": 497,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25412.116581,
+      "count": 498,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25456.143542,
+      "count": 499,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 25513.123678,
+      "count": 500,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25605.123078,
+      "count": 501,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 25605.13776,
+      "count": 502,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25705.425235,
+      "count": 503,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25779.393676,
+      "count": 504,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 25798.208212,
+      "count": 505,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25886.771844,
+      "count": 506,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 25959.582931,
+      "count": 507,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 25985.290515,
+      "count": 508,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26072.051772,
+      "count": 509,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26134.891526,
+      "count": 510,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 26173.614267,
+      "count": 511,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26271.199737,
+      "count": 512,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 26271.216382,
+      "count": 513,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26369.440424,
+      "count": 514,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26449.114595,
+      "count": 515,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 26456.420407,
+      "count": 516,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 26557.542917,
+      "count": 517,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26633.392079,
+      "count": 518,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 26655.060206,
+      "count": 519,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26735.853062,
+      "count": 520,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26801.523483,
+      "count": 521,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 26836.321587,
+      "count": 522,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26928.882063,
+      "count": 523,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 26948.510101,
+      "count": 524,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27022.006639,
+      "count": 525,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27122.303543,
+      "count": 526,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27123.571731,
+      "count": 527,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 27225.394845,
+      "count": 528,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27303.622286,
+      "count": 529,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27321.777876,
+      "count": 530,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27402.029792,
+      "count": 531,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27472.314323,
+      "count": 532,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27502.862025,
+      "count": 533,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27590.534979,
+      "count": 534,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27617.457006,
+      "count": 535,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27684.204919,
+      "count": 536,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27779.876598,
+      "count": 537,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27779.890429,
+      "count": 538,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27883.269381,
+      "count": 539,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 27960.612764,
+      "count": 540,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 27977.738239,
+      "count": 541,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28052.669538,
+      "count": 542,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28124.990388,
+      "count": 543,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 28159.550018,
+      "count": 544,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28249.303601,
+      "count": 545,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28275.285351,
+      "count": 546,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 28342.284571,
+      "count": 547,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28437.422877,
+      "count": 548,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 28437.437459,
+      "count": 549,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28549.922358,
+      "count": 550,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28627.477406,
+      "count": 551,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 28644.010879,
+      "count": 552,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28723.221794,
+      "count": 553,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28792.884424,
+      "count": 554,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 28819.103016,
+      "count": 555,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28907.238178,
+      "count": 556,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 28971.212652,
+      "count": 557,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29002.418125,
+      "count": 558,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29095.850038,
+      "count": 559,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29143.614511,
+      "count": 560,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29187.440107,
+      "count": 561,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29268.383644,
+      "count": 562,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29268.398506,
+      "count": 563,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29352.680807,
+      "count": 564,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29415.505308,
+      "count": 565,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29441.129155,
+      "count": 566,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29522.722419,
+      "count": 567,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29587.295976,
+      "count": 568,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29618.35418,
+      "count": 569,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29713.687585,
+      "count": 570,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29713.703038,
+      "count": 571,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29806.680535,
+      "count": 572,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29874.954695,
+      "count": 573,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 29893.873081,
+      "count": 574,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 29966.773925,
+      "count": 575,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30026.346702,
+      "count": 576,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30053.112029,
+      "count": 577,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30134.218389,
+      "count": 578,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30186.712439,
+      "count": 579,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30221.738744,
+      "count": 580,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30310.847025,
+      "count": 581,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30310.864281,
+      "count": 582,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30405.522331,
+      "count": 583,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30470.025303,
+      "count": 584,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30497.458515,
+      "count": 585,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30571.19894,
+      "count": 586,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30628.250531,
+      "count": 587,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30669.433849,
+      "count": 588,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30756.469843,
+      "count": 589,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30756.484404,
+      "count": 590,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30846.983898,
+      "count": 591,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 30913.983881,
+      "count": 592,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 30935.427409,
+      "count": 593,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31016.73632,
+      "count": 594,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31077.054327,
+      "count": 595,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31110.386959,
+      "count": 596,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31186.63502,
+      "count": 597,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31227.58463,
+      "count": 598,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31281.581719,
+      "count": 599,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31362.384246,
+      "count": 600,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31362.399559,
+      "count": 601,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31454.570533,
+      "count": 602,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31515.585238,
+      "count": 603,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31545.116126,
+      "count": 604,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31634.731482,
+      "count": 605,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31688.610677,
+      "count": 606,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31737.59671,
+      "count": 607,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31818.363423,
+      "count": 608,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31818.377163,
+      "count": 609,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31901.113321,
+      "count": 610,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 31961.501873,
+      "count": 611,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 31991.086385,
+      "count": 612,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32075.839748,
+      "count": 613,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32127.602779,
+      "count": 614,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 32179.390377,
+      "count": 615,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32256.576796,
+      "count": 616,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 32256.591327,
+      "count": 617,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32350.693789,
+      "count": 618,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32411.660994,
+      "count": 619,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 32438.827138,
+      "count": 620,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32522.728762,
+      "count": 621,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32571.288751,
+      "count": 622,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 32619.381613,
+      "count": 623,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32701.693128,
+      "count": 624,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 32701.710594,
+      "count": 625,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32791.708521,
+      "count": 626,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32853.300152,
+      "count": 627,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 32878.394519,
+      "count": 628,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 32974.393876,
+      "count": 629,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33020.544757,
+      "count": 630,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33071.439552,
+      "count": 631,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33154.040493,
+      "count": 632,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33154.057538,
+      "count": 633,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33240.588563,
+      "count": 634,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33298.343887,
+      "count": 635,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33333.728091,
+      "count": 636,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33427.313583,
+      "count": 637,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33427.332451,
+      "count": 638,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33516.20308,
+      "count": 639,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33580.551414,
+      "count": 640,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33599.97174,
+      "count": 641,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 33688.328143,
+      "count": 642,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33739.723324,
+      "count": 643,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33786.988855,
+      "count": 644,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33863.681345,
+      "count": 645,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 33863.695786,
+      "count": 646,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 33945.585068,
+      "count": 647,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34005.354301,
+      "count": 648,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 34033.879218,
+      "count": 649,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34115.384577,
+      "count": 650,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34166.77098,
+      "count": 651,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 34219.86379,
+      "count": 652,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34294.857079,
+      "count": 653,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 34294.87131,
+      "count": 654,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34392.169668,
+      "count": 655,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34445.880357,
+      "count": 656,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 34474.990285,
+      "count": 657,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34563.205249,
+      "count": 658,
+      "generation": 2,
+      "reason": "AllocSmall",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 34563.220031,
+      "count": 659,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34643.340176,
+      "count": 660,
+      "generation": 0,
+      "reason": "AllocSmall",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34754.574365,
+      "count": 661,
+      "generation": 2,
+      "reason": "AllocLarge",
+      "type": "BackgroundGC"
+    },
+    {
+      "at": 34756.75271,
+      "count": 662,
+      "generation": 1,
+      "reason": "AllocSmall",
+      "type": "ForegroundGC"
+    },
+    {
+      "at": 34838.593899,
+      "count": 663,
+      "generation": 2,
+      "reason": "InducedCompacting",
+      "type": "NonConcurrentGC"
+    },
+    {
+      "at": 34857.451096,
+      "count": 664,
+      "generation": 2,
+      "reason": "InducedCompacting",
+      "type": "NonConcurrentGC"
+    }
+  ]
+}

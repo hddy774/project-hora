@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "final-oracle-source-preparation",
+  "source": "231f38db6523963fe406392fa284607768989822",
+  "includedFrozenAncestors": {
+    "recoveryTtl113Laws": "de7a296cc647368dae7b6343943382438787a660",
+    "tradeBudgetPr176": "21c9d2c1eab42aa1ec5a07f591b7423fb60f7673",
+    "entryUiPr173": "9dd1b28f76d0d432cc3cb0b16f59d5e97b27c2b8"
+  },
+  "functional": {
+    "selection": "currency",
+    "passed": 9,
+    "total": 9,
+    "report": "preparation-currency-231f38d.json",
+    "sha256": "108bee7c46c9c3434e5bf6741634bec0df26a5c08a79fc9e946fc772fcb737c3",
+    "command": "/workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --disable-build-servers --property:BuildInParallel=false --property:UseSharedCompilation=false -- --filter currency --report <report.json>"
+  },
+  "existingCurrencyTestsModified": false,
+  "oldFailurePreservedAt": "../inventory-oracle-policy-169/currency-functional.json",
+  "strictRecaptureStarted": false,
+  "fixedExpectedChanged": false,
+  "pending": [
+    "mixed-entry-source-authority",
+    "sensitivity-harness-source"
+  ],
+  "costOrLongRunExecutions": 0
+}

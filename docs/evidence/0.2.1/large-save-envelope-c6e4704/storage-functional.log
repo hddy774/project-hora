@@ -1,0 +1,76 @@
+PASS INV-004/005/011/012 실제 출생·유전·단일 영혼·재전송
+PASS INV-004 손상 저장·중단 파일·백업 복원
+PASS INV-004/012 불법 부모·신원 중복 저장 거부
+PASS INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends
+PASS INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion
+PASS INV-004/017/021/024 H10 action owner: actual study and cultivation practice keep their own adopted activities
+PASS INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs
+PASS INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다
+PASS INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다
+PASS INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다
+PASS INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다
+PASS INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save
+PASS INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal
+PASS INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash
+PASS INV-004/006/017/018/021 AI 거래 예산: 마지막 방문 뒤 생계 출품을 유예하고 충분한 예산에서만 실제 거래·환전을 선택한다
+PASS INV-004/006/015/023 fortune public: actual disaster modifies adopted breakthrough risk once without quality or resource grants
+PASS INV-004/006/015/023 fortune public: real trial source changes one dated risk and preserves the existing RNG draw
+PASS INV-004/006/013/023 prepare/start/fracture·mandatory Nascent failure death
+PASS INV-004/023/024 adopted knowledge revision·actual support reservation·no book mastery
+PASS INV-004/011/015 independent root-free ten-stage martial growth·600-year cap
+PASS INV-004/006/011/015 W01 public martial: ten real stages, root-free labor, saved continuation, combat and 600-year boundary
+PASS INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지
+PASS INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다
+PASS INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수
+PASS INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다
+PASS INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다
+PASS INV-004/006/022 four-process energy·actual supply·crowding·rights
+PASS INV-004/011/023 10 realm structures·30 paths·genesis provenance
+PASS INV-004/015/023 regression·real recovery·costed route conversion·retreat boundaries
+R06_FUNCTIONAL_EVIDENCE {"schema_version":1,"kind":"seonro-r06-short-functional-strategy-comparison","passed":true,"version":"0.2.1","execution_claim":"\uC9E7\uC740 \uACF5\uAC1C \uBA85\uB839 \uAE30\uB2A5 \uBE44\uAD50\u00B7\uC2E4\uD589 \uC2DC\uAC04/\uC131\uB2A5/\uC778\uAD6C \uC131\uC7A5 \uCE21\uC815 \uC5C6\uC74C","initial_month":3,"actor":1,"body":2,"declarations":{"realm":"Qi","layer":9,"great_perfection":true,"health":50,"current_damage":500,"past_events_fabricated":false},"laws":{"birth.enabled":0,"ecology.foodUse":0,"ecology.regrowth":0,"ecology.spoilage":0,"ecology.disasterChance":0,"cultivation.entry":1,"cultivation.qi":1,"cultivation.foundation":1,"cultivation.upper":100,"cultivation.recovery":0,"cultivation.sourceCost":2,"cultivation.breakthroughRisk":300,"economy.craftDuration":1,"inventory.extractionWork":1},"actual_common_pill":{"item":2089,"producer_job":2088,"Quality":5000,"Source":"production:job:2088","consumed_inputs":[{"definition":"herb","quantity":3},{"definition":"wood","quantity":1}]},"strategies":[{"Strategy":"\uBC14\uB85C \uD615\uC131","InitialStateHash":"ab0d16c1d696b0453a40bdd2a573faf491748126d6acde0199b5b6170ea07de8","LogicalMonths":5,"QiEnergyConsumed":20000,"UnopenedQiConsumed":8,"PillConsumed":0,"PillRemaining":1,"PreparedRiskBps":900,"PreparedQuality":5243,"FinalFormationQuality":5243,"FinalDamage":0,"FinalHealth":53,"PrepareEvent":2092,"FormationEvent":2095,"RecoveryEvents":[],"StabilizationEvents":[2096,2097,2098],"ReservedPhysicalItems":[],"Phases":[{"Month":0,"Phase":"Prepared","Due":0},{"Month":1,"Phase":"Started","Due":2},{"Month":2,"Phase":"Stabilizing","Due":3},{"Month":3,"Phase":"Stabilizing","Due":4},{"Month":4,"Phase":"Stabilizing","Due":5},{"Month":5,"Phase":"Completed","Due":6}],"SavedMonth":1,"SavedStateHash":"8a6e5917c320d346bb95367314b8b2b4afa6a0bf9bf852696c4a3031506ae71f","SavedBytesSha256":"f812637f65fa681295b65f522bb7fbecac378b56ff946aec45e3c5cc14e12370","FinalStateHash":"0ec95491da70b68068ebb6c2622eca0131d92124dcb19255342816b752fd488f","RestoredContinuationMatches":true},{"Strategy":"\uD604\uC7AC \uC190\uC0C1 \uD68C\uBCF5 \uD6C4 \uD615\uC131","InitialStateHash":"ab0d16c1d696b0453a40bdd2a573faf491748126d6acde0199b5b6170ea07de8","LogicalMonths":6,"QiEnergyConsumed":25000,"UnopenedQiConsumed":10,"PillConsumed":0,"PillRemaining":1,"PreparedRiskBps":780,"PreparedQuality":5493,"FinalFormationQuality":5493,"FinalDamage":0,"FinalHealth":55,"PrepareEvent":2093,"FormationEvent":2096,"RecoveryEvents":[2091],"StabilizationEvents":[2097,2098,2099],"ReservedPhysicalItems":[],"Phases":[{"Month":1,"Phase":"Prepared","Due":1},{"Month":2,"Phase":"Started","Due":3},{"Month":3,"Phase":"Stabilizing","Due":4},{"Month":4,"Phase":"Stabilizing","Due":5},{"Month":5,"Phase":"Stabilizing","Due":6},{"Month":6,"Phase":"Completed","Due":7}],"SavedMonth":2,"SavedStateHash":"6411e61c1aaf6820f6b6e1915dd253bac0e39f84ec3dd56d60796afaea722cf6","SavedBytesSha256":"0a354f9b39072ba1dfac49500190418be8b526d90139dbe3f52533022922b451","FinalStateHash":"eb94f58471fa3e68df4204362f6000f96b230c51585683fcbf02c94c9d4197fd","RestoredContinuationMatches":true},{"Strategy":"\uD68C\uBCF5 \uD6C4 \uC2E4\uC81C \uB2E8\uC57D\uC744 \uC608\uC57D\uD574 \uD615\uC131","InitialStateHash":"ab0d16c1d696b0453a40bdd2a573faf491748126d6acde0199b5b6170ea07de8","LogicalMonths":6,"QiEnergyConsumed":25000,"UnopenedQiConsumed":10,"PillConsumed":1,"PillRemaining":0,"PreparedRiskBps":530,"PreparedQuality":5493,"FinalFormationQuality":5493,"FinalDamage":0,"FinalHealth":55,"PrepareEvent":2093,"FormationEvent":2096,"RecoveryEvents":[2091],"StabilizationEvents":[2097,2098,2099],"ReservedPhysicalItems":[2089],"Phases":[{"Month":1,"Phase":"Prepared","Due":1},{"Month":2,"Phase":"Started","Due":3},{"Month":3,"Phase":"Stabilizing","Due":4},{"Month":4,"Phase":"Stabilizing","Due":5},{"Month":5,"Phase":"Stabilizing","Due":6},{"Month":6,"Phase":"Completed","Due":7}],"SavedMonth":2,"SavedStateHash":"bc7f8296686c885ea1969da730e37deb56f440decc0f8eb52a89861f9e6e9eac","SavedBytesSha256":"f23fbb610ecff0b7296e62b7fa91535911ca1719298ae0a9b71f3f66e02c90cb","FinalStateHash":"6fcad504cbbd293f126c504afa74795cd0218ef70d2c967ccede1b00ecb62bf8","RestoredContinuationMatches":true}]}
+PASS INV-004/006/018/023 R06 short functional strategy comparison: actual months resources quality risk and saved continuation
+PASS INV-004/014/023 all 30 paths form their unique realm structure once
+PASS INV-004/013/023 every minor-stage tribulation including entry/ninth/completion
+PASS INV-004/016/017/018 public pill reservation·cancel·consume exactly once
+PASS INV-004/008/018/021 public cultivation rights·book ownership·common activity capacity
+PASS INV-004/006/013/023 public scheduled fracture·restore·same life death authority
+PASS INV-004/006/018 public cultivation·actual time/source debit/mastery/save/query purity
+PASS INV-004/006 입문 준비 조회: 토납과 감응을 분리하고 실제 준비·개시 공급과 저장을 유지한다
+PASS INV-004/006/022 EX04 functional input: actual scalar vector partial backend selection preserves full aptitude and world hash
+PASS INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil's due token in the actual month
+PASS INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply
+PASS INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding
+PASS INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs
+PASS INV-004/024 knowledge: loss of an action's physical source prevents completion without refunding spent inputs
+PASS INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights
+PASS INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay
+PASS INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs
+PASS INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected
+PASS INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke
+PASS INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs
+PASS INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history
+PASS INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery
+PASS INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain
+PASS INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together
+PASS INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book
+PASS INV-004/011/012/014 people: frozen allele inheritance, prenatal body evidence and birth-time soul assignment
+PASS INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority
+PASS INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes
+PASS INV-004/011/014/015 people public species: actual body maturity, native gestation, frozen offspring and independent birth soul
+PASS INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests
+PASS INV-004/014/015 people social public: actual historical founders, lost authority and no title restoration through soul
+PASS INV-004/014/024 people: six trace domains, awakening, integration, crossing loss and conserved split branches
+PASS INV-004/006/015 people: serializable aggregate, truthful founder adapters and source-backed learning without genome rewrite
+PASS INV-004/006/011/014 people public: frozen conception, actual birth soul and production-save continuation
+PASS INV-004/014/024 people public: eligible natural death, waiting-soul birth, real awakening and taught integration
+PASS INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals
+PASS inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity
+PASS INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존
+PASS INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부
+PASS INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행
+PASS INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존
+PASS INV-004/020 politics: domain save roundtrip, resumed preparation and deterministic pure queries
+PASS INV-004/005/006/013 윤회 공개 동시 원인: 실제 12·7의 단일 우선 선택과 활성·완성 경계·대체 설명·안정 키를 저장하고 재처리한다
+PASS INV-004/005/006/022 EX05 준비 기능: 동일 GameCodec 바이트·선택 압축 원자파일·중단 복구·원본 보존
+PASS INV-004/012/017 실제 양육 시간·식량·사회 관계·감정·판단 이력
+RESULT 74/74

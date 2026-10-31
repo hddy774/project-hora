@@ -1,0 +1,14 @@
+{
+  "population": 10000,
+  "living": 10000,
+  "elapsedSeconds": 60.3432682,
+  "targetMonths": 7200,
+  "completedMonths": 131,
+  "targetSpeed": 100,
+  "achievedSpeed": 1.8090943683203864,
+  "passed": false,
+  "fixture": "synthetic; no births, food costs, disasters or hazards; long life overrides; not founder history or Android measurement",
+  "finalHash": "8caf79f4d6228ed1e30dab12efdcceca38111ce98df2a4da5ee65e27a94f2db4",
+  "runtime": ".NET 10.0.14",
+  "cpu": 4
+}

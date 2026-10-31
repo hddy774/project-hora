@@ -1,0 +1,10 @@
+  Chronicles.Core -> /workspace/chronicles-knowledge/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll
+  Chronicles.Game -> /workspace/chronicles-knowledge/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll
+  Chronicles.Hosting -> /workspace/chronicles-knowledge/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll
+  Chronicles.Game.Tests -> /workspace/chronicles-knowledge/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:08.90

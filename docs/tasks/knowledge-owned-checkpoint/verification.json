@@ -1,0 +1,167 @@
+{
+  "kind": "knowledge-owned-checkpoint-selected-evidence",
+  "source": "db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+  "localTree": "49d6c6959ff217341fe81275ddc72014ca18feda",
+  "remoteImplementationCommit": "b7b96eb1f17787f92130ddd10fa1ce7faa05d935",
+  "remoteTreeEqualsLocalTree": true,
+  "sourceBase": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "actualFunctionalSelection": "49 distinct selected; not whole",
+  "functionalPassed": 49,
+  "functionalFailed": 0,
+  "selectedReports": [
+    {
+      "path": "checks/selected-0.json",
+      "sha256": "9f8ba20be96bf86746956f3554a1bd167325e56a665fe63000b072b7bf01de72",
+      "filter": "knowledge",
+      "total": 36,
+      "failed": 0
+    },
+    {
+      "path": "checks/selected-1.json",
+      "sha256": "97816d576b84ee2a30c3e8b748bbb02d8123dd50e1bceada929e203f06a2dcf1",
+      "filter": "AI 수행 연결",
+      "total": 5,
+      "failed": 0
+    },
+    {
+      "path": "checks/selected-2.json",
+      "sha256": "6cfe9c27dada308bfd206177eacbb76d9641d173c729736b2986495c42a28334",
+      "filter": "감응 출처 선택",
+      "total": 5,
+      "failed": 0
+    },
+    {
+      "path": "checks/selected-3.json",
+      "sha256": "941db9de64c4609d13286823858acc201073a6f0a6666374a4b30552f0a4215a",
+      "filter": "inventory owned reference:",
+      "total": 2,
+      "failed": 0
+    },
+    {
+      "path": "checks/selected-4.json",
+      "sha256": "a5ee9184769368c9cd40529376b475ed5572fab81d613f958ae68939fe57a2ee",
+      "filter": "inventory copy oracle:",
+      "total": 1,
+      "failed": 0
+    }
+  ],
+  "actualRegisteredNames": [
+    "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+    "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+    "INV-004/023/024 adopted knowledge revision·actual support reservation·no book mastery",
+    "INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding",
+    "INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다",
+    "INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs",
+    "INV-024 knowledge: experiments refute adopted claims and corrections never rewrite history",
+    "INV-015/024 knowledge: physical missing pages and book loss preserve learned memory",
+    "INV-024 knowledge bridge contract: explicit genesis transmission licence and existing comprehension baseline",
+    "INV-024 knowledge: personal misinterpretation and oral transmission do not mutate editions",
+    "INV-004/024 knowledge: loss of an action's physical source prevents completion without refunding spent inputs",
+    "INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights",
+    "INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다",
+    "INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다",
+    "INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다",
+    "INV-024 knowledge: physical ownership grants neither comprehension nor mastery",
+    "INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다",
+    "INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay",
+    "INV-006/008/024 knowledge: scoped paged queries are pure isolated and culture independent",
+    "INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs",
+    "INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected",
+    "INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke",
+    "INV-006/012/024 knowledge: parents mentors and apprentices spend both participants' time",
+    "INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs",
+    "INV-017/018/024 knowledge public world: an actual blank book carries no text until paid transcription",
+    "INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history",
+    "INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery",
+    "INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain",
+    "INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together",
+    "INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book",
+    "INV-008/009/015 people receipts public: unseen remote oath end cannot update personal agreement knowledge",
+    "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests",
+    "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+    "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity",
+    "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+    "V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching",
+    "INV-004/006/018/024 AI 수행 연결: 실제 감응 실패·회복 후 새 시도를 하며 과거 실패와 출처를 보존한다",
+    "INV-006/008/021 AI 수행 연결: 숨은 타인 재고·지식 변경은 자기 입문 선택·시간·난수를 바꾸지 않는다",
+    "INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다",
+    "INV-004/008/017/018 AI 수행 연결: 입문 후 정책 이해도까지 실제 재전수하고 다음 경지 학습·돌파를 이어간다",
+    "INV-004/006/018 AI 수행 연결: 실제 entry 전수·토납 뒤 감응하고 Qi 공법·숙련은 자동 지급하지 않는다",
+    "INV-004/006/023 감응 출처 선택: 1% 실습·전환·상위 경지 계약과 동결 출처 유지",
+    "INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다",
+    "INV-004/006/008 감응 출처 선택: 실제 전수 Qi 우선·조회 무변화·동결 저장·단일 해소 난수",
+    "INV-004/006/018 감응 출처 선택: entry 없는 실제 Qi 학습·토납 뒤 두 AI caller를 지나 준비한다",
+    "INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다",
+    "inventory owned reference: 명시 거래 성향과 비축3 경계의 실제 분할·판매·저장 결과 보존",
+    "inventory owned reference: 기존 공개 제작·보관·거래·저장·명령 재전송 결과 보존",
+    "inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등"
+  ],
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "bytes": 5120,
+      "sha256": "87aec2602e99da390b6b5cc9a3b75b44f2fe40dd9c9621b7f3e31ffa7c79f31e",
+      "embeddedInformationalVersion": "0.2.1+db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+      "verifiedEmbeddedString": true
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "bytes": 2257920,
+      "sha256": "3c18322005c702769e04e624ae489485605ec35235b1e4a77a4bb5d27666712e",
+      "embeddedInformationalVersion": "0.2.1+db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+      "verifiedEmbeddedString": true
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "bytes": 23552,
+      "sha256": "28966b5f106e0f558ed10aeb87b97eed7e517e06ae43444e5065aa3d45865be3",
+      "embeddedInformationalVersion": "0.2.1+db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+      "verifiedEmbeddedString": true
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "bytes": 1506816,
+      "sha256": "2228722c2bd721fae5d714d158deefec4530f6ebf3a2eec706bd380793fc5331",
+      "embeddedInformationalVersion": "0.2.1+db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+      "verifiedEmbeddedString": true
+    }
+  ],
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "cpu": 1,
+  "claudeReviewPerformed": false,
+  "publicContractChanged": false,
+  "performanceAcceptance": false,
+  "ledgerChanged": false,
+  "diagnosticScope": {
+    "status": "captured",
+    "captureClosedWithin180Seconds": true,
+    "preparationAndCaptureSeconds": 89.85426211357117,
+    "offlineCompletedUtc": "2026-10-31T02:16:22.837537+00:00",
+    "offlineWithinOriginalCap": true,
+    "sameN100Month30ActualSaveBytes": true,
+    "newGameRunsAfterCapture": 0,
+    "notFinalPerformanceAcceptance": true
+  },
+  "rawRetention": {
+    "index": "asset-index.json",
+    "manifest": "raw-manifest.json",
+    "durableUploadStatus": "root coordination pending; local restored archive confirmed"
+  },
+  "productSourceFingerprint": "851a822068d5c8105064ffc84f8a8d6afd424270a5953f740095d640c6db3610",
+  "baselineDfToBranchBaseProductDiffEmpty": true
+}

@@ -1,0 +1,31 @@
+{
+  "scope": "검증기 자체 시험·정적 실제 이름 매핑·기존 실패한 전체 보고서 거절이다. 현재 제품 통과가 아니다.",
+  "mapping_source_commit": "8745eb4440498f7aff3d0b70a3c09eb2004a908e",
+  "test_sources_sha256": "600f3285a48a19e3baa99b7d13de3d4943489180e5903e9c67e8121defffa078",
+  "static_map": {
+    "actual_scenarios": 238,
+    "invariants": 24,
+    "witness_bindings": 72
+  },
+  "validator_self_test": {
+    "validator_self_test_only": true,
+    "accepted_synthetic_report": 1,
+    "rejected_invalid_reports": 9,
+    "rejected_invalid_maps": 8,
+    "rejected_duplicate_json": true
+  },
+  "real_negative_report": {
+    "path": "/workspace/scratch/functional-integration-6670d29.json",
+    "declared_executed_source": "6670d2993320dbec3be8c3596d8ec962692a0762",
+    "sha256": "277dda80f18ae36eb883440f2899fa364b0cb61cad0157248244ea284f1319bc",
+    "selection": "all",
+    "total": 238,
+    "failed": 1,
+    "source_test_fingerprint_matches": true,
+    "expected_rejection": true,
+    "message": "실패한 실제 검사: [\"V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation\"]"
+  },
+  "current_full_product_pass_claimed": false,
+  "performance_executed": false,
+  "ledger_or_notion_status_changed": false
+}

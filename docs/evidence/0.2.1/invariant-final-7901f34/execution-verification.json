@@ -1,0 +1,132 @@
+{
+  "mapped_scenarios": 323,
+  "mapped_invariants": 24,
+  "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+  "scope": "실제 이름·소스·검사 범위의 연결. 정본 전체 절 또는 최신 제품 수용 판정이 아니다.",
+  "report_sha256": "1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba",
+  "declared_executed_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "source_attribution": "호출자 선언·Git 테스트 소스 대조; 실행 진위는 원본/별도 provenance로 확인",
+  "all_registered_scenarios_passed": 323,
+  "invariant_witnesses": [
+    {
+      "id": "INV-001",
+      "all_named_witnesses_passed": true,
+      "count": 8
+    },
+    {
+      "id": "INV-002",
+      "all_named_witnesses_passed": true,
+      "count": 3
+    },
+    {
+      "id": "INV-003",
+      "all_named_witnesses_passed": true,
+      "count": 4
+    },
+    {
+      "id": "INV-004",
+      "all_named_witnesses_passed": true,
+      "count": 20
+    },
+    {
+      "id": "INV-005",
+      "all_named_witnesses_passed": true,
+      "count": 17
+    },
+    {
+      "id": "INV-006",
+      "all_named_witnesses_passed": true,
+      "count": 19
+    },
+    {
+      "id": "INV-007",
+      "all_named_witnesses_passed": true,
+      "count": 4
+    },
+    {
+      "id": "INV-008",
+      "all_named_witnesses_passed": true,
+      "count": 10
+    },
+    {
+      "id": "INV-009",
+      "all_named_witnesses_passed": true,
+      "count": 6
+    },
+    {
+      "id": "INV-010",
+      "all_named_witnesses_passed": true,
+      "count": 3
+    },
+    {
+      "id": "INV-011",
+      "all_named_witnesses_passed": true,
+      "count": 4
+    },
+    {
+      "id": "INV-012",
+      "all_named_witnesses_passed": true,
+      "count": 2
+    },
+    {
+      "id": "INV-013",
+      "all_named_witnesses_passed": true,
+      "count": 4
+    },
+    {
+      "id": "INV-014",
+      "all_named_witnesses_passed": true,
+      "count": 3
+    },
+    {
+      "id": "INV-015",
+      "all_named_witnesses_passed": true,
+      "count": 4
+    },
+    {
+      "id": "INV-016",
+      "all_named_witnesses_passed": true,
+      "count": 5
+    },
+    {
+      "id": "INV-017",
+      "all_named_witnesses_passed": true,
+      "count": 11
+    },
+    {
+      "id": "INV-018",
+      "all_named_witnesses_passed": true,
+      "count": 8
+    },
+    {
+      "id": "INV-019",
+      "all_named_witnesses_passed": true,
+      "count": 3
+    },
+    {
+      "id": "INV-020",
+      "all_named_witnesses_passed": true,
+      "count": 3
+    },
+    {
+      "id": "INV-021",
+      "all_named_witnesses_passed": true,
+      "count": 5
+    },
+    {
+      "id": "INV-022",
+      "all_named_witnesses_passed": true,
+      "count": 11
+    },
+    {
+      "id": "INV-023",
+      "all_named_witnesses_passed": true,
+      "count": 7
+    },
+    {
+      "id": "INV-024",
+      "all_named_witnesses_passed": true,
+      "count": 7
+    }
+  ]
+}

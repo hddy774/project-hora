@@ -1,0 +1,13 @@
+{
+  "tasks": 111,
+  "v020_mappings": 55,
+  "invariants": 24,
+  "m1_partial_outputs": 24,
+  "max_task_depth": 28,
+  "t06_depth": 28,
+  "n01_depth": 5,
+  "direct_decision_gated_tasks": 0,
+  "projection_sha256": "1603a1bb89e0c018df0571fe29a6d22ae6f04f9cc7b0141d8ebeff4c4c893bc5",
+  "game_tests_executed": false,
+  "negative_self_tests_passed": 11
+}

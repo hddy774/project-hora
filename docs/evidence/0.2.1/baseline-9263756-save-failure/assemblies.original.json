@@ -1,0 +1,38 @@
+[
+  {
+    "assembly": "Chronicles.Core",
+    "source_info": "/workspace/seonro-final-9263756/src/Chronicles.Core/obj/Release/net10.0/Chronicles.Core.AssemblyInfo.cs",
+    "informational_version": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "dll": "/workspace/seonro-final-9263756/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll",
+    "sha256": "2bf92dca196bce3b32206ba183163ab82f609c1ab43b0d1b547490ac5cecfb98",
+    "bytes": 5120,
+    "embedded_version_matches": true
+  },
+  {
+    "assembly": "Chronicles.Game",
+    "source_info": "/workspace/seonro-final-9263756/src/Chronicles.Game/obj/Release/net10.0/Chronicles.Game.AssemblyInfo.cs",
+    "informational_version": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "dll": "/workspace/seonro-final-9263756/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll",
+    "sha256": "00592b07727563940a80cd26c4f861ebab436a7a645301b07f75371bd1f0eb99",
+    "bytes": 2255872,
+    "embedded_version_matches": true
+  },
+  {
+    "assembly": "Chronicles.Hosting",
+    "source_info": "/workspace/seonro-final-9263756/src/Chronicles.Hosting/obj/Release/net10.0/Chronicles.Hosting.AssemblyInfo.cs",
+    "informational_version": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "dll": "/workspace/seonro-final-9263756/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll",
+    "sha256": "40608a76380212edd3436c295ab60a6339e2fe1fe9f3aa6b67d4ac180b96c28a",
+    "bytes": 23552,
+    "embedded_version_matches": true
+  },
+  {
+    "assembly": "Chronicles.Game.Tests",
+    "source_info": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/obj/Release/net10.0/Chronicles.Game.Tests.AssemblyInfo.cs",
+    "informational_version": "0.2.1+9263756b1d00b8696fddecacb077f55d95141f26",
+    "dll": "/workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "sha256": "636e28f907740d89471a4a14d37cbdcff183f348ef19c890a9058f6f79ebb80f",
+    "bytes": 1477120,
+    "embedded_version_matches": true
+  }
+]

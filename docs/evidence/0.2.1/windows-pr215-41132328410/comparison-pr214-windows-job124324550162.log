@@ -1,0 +1,345 @@
+﻿2026-10-30T21:33:09.6844900Z Current runner version: '2.338.2'
+2026-10-30T21:33:09.6870468Z ##[group]Runner Image Provisioner
+2026-10-30T21:33:09.6871288Z Hosted Compute Agent
+2026-10-30T21:33:09.6871894Z Version: 20261021.618
+2026-10-30T21:33:09.6872470Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-30T21:33:09.6873141Z Build Date: 2026-10-21T00:45:21Z
+2026-10-30T21:33:09.6873814Z Worker ID: {a9323dcf-35c0-4d03-a3ea-4b9a28554a1f}
+2026-10-30T21:33:09.6874470Z Region: westus2
+2026-10-30T21:33:09.6874968Z Cloud: Azure
+2026-10-30T21:33:09.6875516Z ##[endgroup]
+2026-10-30T21:33:09.6876787Z ##[group]Operating System
+2026-10-30T21:33:09.6877528Z Microsoft Windows Server 2025
+2026-10-30T21:33:09.6879021Z 10.0.26100
+2026-10-30T21:33:09.6879731Z Datacenter
+2026-10-30T21:33:09.6880270Z ##[endgroup]
+2026-10-30T21:33:09.6880785Z ##[group]Runner Image
+2026-10-30T21:33:09.6881367Z Image: windows-2025-vs2026
+2026-10-30T21:33:09.6881961Z Version: 20261021.278.1
+2026-10-30T21:33:09.6883442Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261021.278/images/windows/Windows2025-VS2026-Readme.md
+2026-10-30T21:33:09.6885058Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261021.278
+2026-10-30T21:33:09.6886000Z ##[endgroup]
+2026-10-30T21:33:09.6887100Z ##[group]GITHUB_TOKEN Permissions
+2026-10-30T21:33:09.6888913Z Contents: read
+2026-10-30T21:33:09.6889519Z Metadata: read
+2026-10-30T21:33:09.6890040Z ##[endgroup]
+2026-10-30T21:33:09.6892020Z Secret source: Actions
+2026-10-30T21:33:09.6892866Z Cache mode: write
+2026-10-30T21:33:09.6893567Z Prepare workflow directory
+2026-10-30T21:33:09.7275221Z Prepare all required actions
+2026-10-30T21:33:09.7348311Z Getting action download info
+2026-10-30T21:33:10.0475894Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-30T21:33:10.1838262Z Download action repository 'actions/setup-dotnet@v4' (SHA:67a3573c9a986a3f9c594539f4ab511d57bb3ce9)
+2026-10-30T21:33:10.6773241Z Complete job name: 윈도우 회귀·실제 화면 검증
+2026-10-30T21:33:10.8254736Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-10-30T21:33:10.8256122Z with:
+2026-10-30T21:33:10.8256557Z   repository: hddy774/project-hora
+2026-10-30T21:33:10.8260734Z   token: ***
+2026-10-30T21:33:10.8261132Z   ssh-strict: true
+2026-10-30T21:33:10.8261527Z   ssh-user: git
+2026-10-30T21:33:10.8261940Z   persist-credentials: true
+2026-10-30T21:33:10.8262382Z   clean: true
+2026-10-30T21:33:10.8262788Z   sparse-checkout-cone-mode: true
+2026-10-30T21:33:10.8263268Z   fetch-depth: 1
+2026-10-30T21:33:10.8263654Z   fetch-tags: false
+2026-10-30T21:33:10.8264059Z   show-progress: true
+2026-10-30T21:33:10.8264467Z   lfs: false
+2026-10-30T21:33:10.8264838Z   submodules: false
+2026-10-30T21:33:10.8265247Z   set-safe-directory: true
+2026-10-30T21:33:10.8265721Z   allow-unsafe-pr-checkout: false
+2026-10-30T21:33:10.8266455Z ##[endgroup]
+2026-10-30T21:33:10.9733623Z Syncing repository: hddy774/project-hora
+2026-10-30T21:33:10.9735496Z ##[group]Getting Git version info
+2026-10-30T21:33:10.9736149Z Working directory is 'D:\a\project-hora\project-hora'
+2026-10-30T21:33:11.0795174Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-30T21:33:11.4595352Z git version 2.56.0.windows.2
+2026-10-30T21:33:11.4652726Z ##[endgroup]
+2026-10-30T21:33:11.4679191Z Temporarily overriding HOME='D:\a\_temp\e9e44f5c-7c55-4cb5-b041-8147c1d0c287' before making global git config changes
+2026-10-30T21:33:11.4681657Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-30T21:33:11.4690291Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\project-hora\project-hora
+2026-10-30T21:33:11.5334417Z Deleting the contents of 'D:\a\project-hora\project-hora'
+2026-10-30T21:33:11.5340424Z ##[group]Initializing the repository
+2026-10-30T21:33:11.5349039Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\project-hora\project-hora
+2026-10-30T21:33:11.6310668Z Initialized empty Git repository in D:/a/project-hora/project-hora/.git/
+2026-10-30T21:33:11.6359669Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/hddy774/project-hora
+2026-10-30T21:33:11.7033745Z ##[endgroup]
+2026-10-30T21:33:11.7034681Z ##[group]Disabling automatic garbage collection
+2026-10-30T21:33:11.7035647Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-30T21:33:11.7448923Z ##[endgroup]
+2026-10-30T21:33:11.7450767Z ##[group]Setting up auth
+2026-10-30T21:33:11.7462960Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-30T21:33:11.7882186Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-30T21:33:13.2827454Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-30T21:33:13.3209267Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-30T21:33:13.8537612Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-30T21:33:13.8923664Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-30T21:33:14.4328297Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-30T21:33:14.4707423Z ##[endgroup]
+2026-10-30T21:33:14.4720476Z ##[group]Fetching the repository
+2026-10-30T21:33:14.4725097Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8a2e9ebe796d5f16c15e6fcc7eb1645cc9a790a9:refs/remotes/pull/214/merge
+2026-10-30T21:33:16.1291554Z From https://github.com/hddy774/project-hora
+2026-10-30T21:33:16.1292496Z  * [new ref]         8a2e9ebe796d5f16c15e6fcc7eb1645cc9a790a9 -> pull/214/merge
+2026-10-30T21:33:16.1334258Z ##[endgroup]
+2026-10-30T21:33:16.1334790Z ##[group]Determining the checkout info
+2026-10-30T21:33:16.1337280Z ##[endgroup]
+2026-10-30T21:33:16.1352799Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-30T21:33:16.1895060Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-30T21:33:16.2283465Z ##[group]Checking out the ref
+2026-10-30T21:33:16.2292342Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/remotes/pull/214/merge
+2026-10-30T21:33:16.9274664Z Note: switching to 'refs/remotes/pull/214/merge'.
+2026-10-30T21:33:16.9275293Z 
+2026-10-30T21:33:16.9276072Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-30T21:33:16.9277171Z changes and commit them, and you can discard any commits you make in this
+2026-10-30T21:33:16.9278272Z state without impacting any branches by switching back to a branch.
+2026-10-30T21:33:16.9278917Z 
+2026-10-30T21:33:16.9279354Z If you want to create a new branch to retain commits you create, you may
+2026-10-30T21:33:16.9280366Z do so (now or later) by using -c with the switch command. Example:
+2026-10-30T21:33:16.9280900Z 
+2026-10-30T21:33:16.9281287Z   git switch -c <new-branch-name>
+2026-10-30T21:33:16.9281744Z 
+2026-10-30T21:33:16.9281951Z Or undo this operation with:
+2026-10-30T21:33:16.9282322Z 
+2026-10-30T21:33:16.9282493Z   git switch -
+2026-10-30T21:33:16.9282797Z 
+2026-10-30T21:33:16.9283263Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-30T21:33:16.9283892Z 
+2026-10-30T21:33:16.9284760Z HEAD is now at 8a2e9eb Merge 38681979c3692d0fee3d4c857f7e5813df955fe0 into b5526184aebc8152a87abc31a6d66888ed830bea
+2026-10-30T21:33:16.9360537Z ##[endgroup]
+2026-10-30T21:33:16.9759115Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-30T21:33:17.0098292Z 8a2e9ebe796d5f16c15e6fcc7eb1645cc9a790a9
+2026-10-30T21:33:17.0595783Z ##[group]Run actions/setup-dotnet@v4
+2026-10-30T21:33:17.0596234Z with:
+2026-10-30T21:33:17.0596543Z   dotnet-version: 10.0.x
+2026-10-30T21:33:17.0596867Z   cache: false
+2026-10-30T21:33:17.0597150Z ##[endgroup]
+2026-10-30T21:33:17.2364099Z (node:6844) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-30T21:33:17.2364935Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-30T21:33:17.3523071Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v4\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Runtime dotnet -Channel LTS
+2026-10-30T21:33:19.6384981Z dotnet-install: Downloaded file https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.14/dotnet-runtime-10.0.14-win-x64.zip size is 36971047 bytes.
+2026-10-30T21:33:19.6388842Z dotnet-install: Either downloaded or local package size can not be measured. One of them may be corrupted.
+2026-10-30T21:33:19.6427173Z dotnet-install: Extracting the archive.
+2026-10-30T21:33:20.8413279Z dotnet-install: Note that the script does not ensure your Windows version is supported during the installation.
+2026-10-30T21:33:20.8419890Z dotnet-install: To check the list of supported versions, go to https://learn.microsoft.com/dotnet/core/install/windows#supported-versions
+2026-10-30T21:33:20.8425867Z dotnet-install: Installed version is 10.0.14
+2026-10-30T21:33:20.8432215Z dotnet-install: Installation finished
+2026-10-30T21:33:21.0119127Z [command]"C:\Program Files\PowerShell\7\pwsh.exe" -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command & 'D:\a\_actions\actions\setup-dotnet\v4\externals\install-dotnet.ps1' -SkipNonVersionedFiles -Channel 10.0
+2026-10-30T21:33:27.5342795Z dotnet-install: Downloaded file https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-win-x64.zip size is 300745255 bytes.
+2026-10-30T21:33:27.5351077Z dotnet-install: Either downloaded or local package size can not be measured. One of them may be corrupted.
+2026-10-30T21:33:27.5382411Z dotnet-install: Extracting the archive.
+2026-10-30T21:33:48.8799293Z dotnet-install: Note that the script does not ensure your Windows version is supported during the installation.
+2026-10-30T21:33:48.8804050Z dotnet-install: To check the list of supported versions, go to https://learn.microsoft.com/dotnet/core/install/windows#supported-versions
+2026-10-30T21:33:48.8810334Z dotnet-install: Installed version is 10.0.403
+2026-10-30T21:33:48.8815992Z dotnet-install: Installation finished
+2026-10-30T21:33:48.9545870Z ##[group]Run dotnet build src/Chronicles.Desktop -c Release
+2026-10-30T21:33:48.9546430Z [36;1mdotnet build src/Chronicles.Desktop -c Release[0m
+2026-10-30T21:33:49.0041611Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-30T21:33:49.0042048Z env:
+2026-10-30T21:33:49.0042284Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-30T21:33:49.0042588Z ##[endgroup]
+2026-10-30T21:33:51.6272382Z   Determining projects to restore...
+2026-10-30T21:33:52.4320901Z   Restored D:\a\project-hora\project-hora\src\Chronicles.Game\Chronicles.Game.csproj (in 204 ms).
+2026-10-30T21:33:52.4325461Z   Restored D:\a\project-hora\project-hora\src\Chronicles.Core\Chronicles.Core.csproj (in 188 ms).
+2026-10-30T21:33:52.4327838Z   Restored D:\a\project-hora\project-hora\src\Chronicles.Hosting\Chronicles.Hosting.csproj (in 210 ms).
+2026-10-30T21:33:54.7853979Z   Restored D:\a\project-hora\project-hora\src\Chronicles.Desktop\Chronicles.Desktop.csproj (in 2.59 sec).
+2026-10-30T21:33:58.3872165Z   Chronicles.Core -> D:\a\project-hora\project-hora\src\Chronicles.Core\bin\Release\net10.0\Chronicles.Core.dll
+2026-10-30T21:34:09.8546816Z   Chronicles.Game -> D:\a\project-hora\project-hora\src\Chronicles.Game\bin\Release\net10.0\Chronicles.Game.dll
+2026-10-30T21:34:10.3901414Z   Chronicles.Hosting -> D:\a\project-hora\project-hora\src\Chronicles.Hosting\bin\Release\net10.0\Chronicles.Hosting.dll
+2026-10-30T21:34:10.9259246Z   Chronicles.Desktop -> D:\a\project-hora\project-hora\src\Chronicles.Desktop\bin\Release\net10.0-windows\Chronicles.dll
+2026-10-30T21:34:10.9558930Z 
+2026-10-30T21:34:10.9567186Z Build succeeded.
+2026-10-30T21:34:10.9568226Z     0 Warning(s)
+2026-10-30T21:34:10.9568547Z     0 Error(s)
+2026-10-30T21:34:10.9570408Z 
+2026-10-30T21:34:10.9571032Z Time Elapsed 00:00:21.13
+2026-10-30T21:34:11.4108415Z ##[group]Run ./scripts/validate-architecture.ps1
+2026-10-30T21:34:11.4109115Z [36;1m./scripts/validate-architecture.ps1[0m
+2026-10-30T21:34:11.4244416Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-30T21:34:11.4245064Z env:
+2026-10-30T21:34:11.4245404Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-30T21:34:11.4245828Z ##[endgroup]
+2026-10-30T21:34:14.3339020Z {
+2026-10-30T21:34:14.3339427Z   "schema_version": 1,
+2026-10-30T21:34:14.3339883Z   "kind": "seonro-v021-static-product-boundary",
+2026-10-30T21:34:14.3340528Z   "passed": true,
+2026-10-30T21:34:14.3340905Z   "source_commit": "8a2e9ebe796d5f16c15e6fcc7eb1645cc9a790a9",
+2026-10-30T21:34:14.3341470Z   "working_tree_dirty": false,
+2026-10-30T21:34:14.3341867Z   "projects": [
+2026-10-30T21:34:14.3342162Z     {
+2026-10-30T21:34:14.3342448Z       "module": "Core",
+2026-10-30T21:34:14.3342924Z       "project": "src/Chronicles.Core/Chronicles.Core.csproj",
+2026-10-30T21:34:14.3343644Z       "framework": "net10.0",
+2026-10-30T21:34:14.3344060Z       "references": [],
+2026-10-30T21:34:14.3344415Z       "packages": [],
+2026-10-30T21:34:14.3344758Z       "manual_csharp_files": 2
+2026-10-30T21:34:14.3345161Z     },
+2026-10-30T21:34:14.3345415Z     {
+2026-10-30T21:34:14.3345715Z       "module": "Game",
+2026-10-30T21:34:14.3346203Z       "project": "src/Chronicles.Game/Chronicles.Game.csproj",
+2026-10-30T21:34:14.3346764Z       "framework": "net10.0",
+2026-10-30T21:34:14.3347139Z       "references": [
+2026-10-30T21:34:14.3347447Z         "Core"
+2026-10-30T21:34:14.3347720Z       ],
+2026-10-30T21:34:14.3347994Z       "packages": [],
+2026-10-30T21:34:14.3348340Z       "manual_csharp_files": 95
+2026-10-30T21:34:14.3348694Z     },
+2026-10-30T21:34:14.3348939Z     {
+2026-10-30T21:34:14.3349211Z       "module": "Hosting",
+2026-10-30T21:34:14.3349736Z       "project": "src/Chronicles.Hosting/Chronicles.Hosting.csproj",
+2026-10-30T21:34:14.3350365Z       "framework": "net10.0",
+2026-10-30T21:34:14.3350751Z       "references": [
+2026-10-30T21:34:14.3351086Z         "Game"
+2026-10-30T21:34:14.3351360Z       ],
+2026-10-30T21:34:14.3351637Z       "packages": [],
+2026-10-30T21:34:14.3351997Z       "manual_csharp_files": 4
+2026-10-30T21:34:14.3352439Z     },
+2026-10-30T21:34:14.3352693Z     {
+2026-10-30T21:34:14.3352966Z       "module": "Shell",
+2026-10-30T21:34:14.3353455Z       "project": "src/Chronicles.Shell/Chronicles.Shell.csproj",
+2026-10-30T21:34:14.3354038Z       "framework": "net10.0",
+2026-10-30T21:34:14.3354421Z       "references": [
+2026-10-30T21:34:14.3354726Z         "Hosting"
+2026-10-30T21:34:14.3355008Z       ],
+2026-10-30T21:34:14.3355279Z       "packages": [],
+2026-10-30T21:34:14.3355630Z       "manual_csharp_files": 1
+2026-10-30T21:34:14.3355999Z     },
+2026-10-30T21:34:14.3356253Z     {
+2026-10-30T21:34:14.3356529Z       "module": "Android",
+2026-10-30T21:34:14.3357073Z       "project": "src/Chronicles.Android/Chronicles.Android.csproj",
+2026-10-30T21:34:14.3357743Z       "framework": "net10.0-android",
+2026-10-30T21:34:14.3358178Z       "references": [
+2026-10-30T21:34:14.3358495Z         "Hosting"
+2026-10-30T21:34:14.3359178Z       ],
+2026-10-30T21:34:14.3359476Z       "packages": [],
+2026-10-30T21:34:14.3360269Z       "manual_csharp_files": 1
+2026-10-30T21:34:14.3360668Z     },
+2026-10-30T21:34:14.3360935Z     {
+2026-10-30T21:34:14.3361634Z       "module": "Desktop",
+2026-10-30T21:34:14.3362157Z       "project": "src/Chronicles.Desktop/Chronicles.Desktop.csproj",
+2026-10-30T21:34:14.3362776Z       "framework": "net10.0-windows",
+2026-10-30T21:34:14.3363196Z       "references": [
+2026-10-30T21:34:14.3363513Z         "Hosting"
+2026-10-30T21:34:14.3363807Z       ],
+2026-10-30T21:34:14.3364068Z       "packages": [
+2026-10-30T21:34:14.3364405Z         "Microsoft.Web.WebView2"
+2026-10-30T21:34:14.3364782Z       ],
+2026-10-30T21:34:14.3365140Z       "manual_csharp_files": 2
+2026-10-30T21:34:14.3365507Z     },
+2026-10-30T21:34:14.3365759Z     {
+2026-10-30T21:34:14.3369115Z       "module": "GameTests",
+2026-10-30T21:34:14.3369922Z       "project": "tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj",
+2026-10-30T21:34:14.3370618Z       "framework": "net10.0",
+2026-10-30T21:34:14.3371008Z       "references": [
+2026-10-30T21:34:14.3371339Z         "Game",
+2026-10-30T21:34:14.3371602Z         "Hosting"
+2026-10-30T21:34:14.3371877Z       ],
+2026-10-30T21:34:14.3372134Z       "packages": [],
+2026-10-30T21:34:14.3372470Z       "manual_csharp_files": 77
+2026-10-30T21:34:14.3372825Z     }
+2026-10-30T21:34:14.3373072Z   ],
+2026-10-30T21:34:14.3373335Z   "host_closures": {
+2026-10-30T21:34:14.3373650Z     "Desktop": [
+2026-10-30T21:34:14.3373904Z       "Core",
+2026-10-30T21:34:14.3374175Z       "Desktop",
+2026-10-30T21:34:14.3374449Z       "Game",
+2026-10-30T21:34:14.3374727Z       "Hosting"
+2026-10-30T21:34:14.3374996Z     ],
+2026-10-30T21:34:14.3375253Z     "Android": [
+2026-10-30T21:34:14.3375549Z       "Android",
+2026-10-30T21:34:14.3375847Z       "Core",
+2026-10-30T21:34:14.3376121Z       "Game",
+2026-10-30T21:34:14.3376381Z       "Hosting"
+2026-10-30T21:34:14.3376648Z     ],
+2026-10-30T21:34:14.3376897Z     "Shell": [
+2026-10-30T21:34:14.3377164Z       "Core",
+2026-10-30T21:34:14.3377435Z       "Game",
+2026-10-30T21:34:14.3377700Z       "Hosting",
+2026-10-30T21:34:14.3377992Z       "Shell"
+2026-10-30T21:34:14.3378276Z     ]
+2026-10-30T21:34:14.3378522Z   },
+2026-10-30T21:34:14.3378780Z   "source_checks": [
+2026-10-30T21:34:14.3379635Z     {
+2026-10-30T21:34:14.3379917Z       "module": "Core",
+2026-10-30T21:34:14.3380271Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3380708Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3381116Z     },
+2026-10-30T21:34:14.3381367Z     {
+2026-10-30T21:34:14.3381630Z       "module": "Game",
+2026-10-30T21:34:14.3381972Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3382407Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3382820Z     },
+2026-10-30T21:34:14.3383067Z     {
+2026-10-30T21:34:14.3383389Z       "module": "Hosting",
+2026-10-30T21:34:14.3383759Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3384185Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3384575Z     },
+2026-10-30T21:34:14.3384823Z     {
+2026-10-30T21:34:14.3385100Z       "module": "Shell",
+2026-10-30T21:34:14.3385465Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3385899Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3386297Z     },
+2026-10-30T21:34:14.3386545Z     {
+2026-10-30T21:34:14.3386820Z       "module": "Android",
+2026-10-30T21:34:14.3387177Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3387596Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3387990Z     },
+2026-10-30T21:34:14.3388242Z     {
+2026-10-30T21:34:14.3388568Z       "module": "Desktop",
+2026-10-30T21:34:14.3388953Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3389401Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3389806Z     },
+2026-10-30T21:34:14.3390049Z     {
+2026-10-30T21:34:14.3390320Z       "module": "GameTests",
+2026-10-30T21:34:14.3390707Z       "source_owner_checked": true,
+2026-10-30T21:34:14.3391134Z       "no_old_authority_namespace": true
+2026-10-30T21:34:14.3392656Z     }
+2026-10-30T21:34:14.3392906Z   ],
+2026-10-30T21:34:14.3393190Z   "archive_files_verified": 158,
+2026-10-30T21:34:14.3393624Z   "replaced_prototype_files_verified": 3,
+2026-10-30T21:34:14.3394074Z   "execution_claims": {
+2026-10-30T21:34:14.3394423Z     "game_functional_tests": false,
+2026-10-30T21:34:14.3394840Z     "native_runtime": false,
+2026-10-30T21:34:14.3395177Z     "unity": false,
+2026-10-30T21:34:14.3395470Z     "performance": false
+2026-10-30T21:34:14.3395777Z   },
+2026-10-30T21:34:14.3396029Z   "limitations": [
+2026-10-30T21:34:14.3396566Z     "Text/XML source guard, not a C# semantic or evaluated MSBuild graph proof.",
+2026-10-30T21:34:14.3398403Z     "SDK-generated code and transitive framework internals require build/runtime validation.",
+2026-10-30T21:34:14.3399953Z     "net10.0 and reflection-based serializer do not establish Unity/IL2CPP compatibility."
+2026-10-30T21:34:14.3400738Z   ]
+2026-10-30T21:34:14.3400989Z }
+2026-10-30T21:34:14.5320595Z Desktop XAML resource validation: PASS
+2026-10-30T21:34:14.5337539Z XAML files: 1 / resource references: 0 / missing: 0
+2026-10-30T21:34:14.5345915Z 0.2.1 current product architecture validation: PASS
+2026-10-30T21:34:14.6273116Z ##[group]Run $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru
+2026-10-30T21:34:14.6274337Z [36;1m$process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru[0m
+2026-10-30T21:34:14.6275164Z [36;1mif (-not $process.WaitForExit(45000)) { $process.Kill(); throw 'Desktop smoke timeout' }[0m
+2026-10-30T21:34:14.6275773Z [36;1mGet-Content (Join-Path ([IO.Path]::GetTempPath()) 'seonro-smoke-result.json')[0m
+2026-10-30T21:34:14.6276290Z [36;1mif ($process.ExitCode -ne 0) { throw 'Desktop smoke failed' }[0m
+2026-10-30T21:34:14.6353115Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-30T21:34:14.6353494Z env:
+2026-10-30T21:34:14.6353697Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-30T21:34:14.6353950Z ##[endgroup]
+2026-10-30T21:34:22.5915289Z {"passed":true,"version":"0.2.1","host":"WPF WebView2","actualRenderAndBridge":true,"diagnostic":"\u0022{\\\u0022hasView\\\u0022:true,\\\u0022error\\\u0022:null,\\\u0022connection\\\u0022:\\\u0022\uC5F0\uACB0\uB428\\\u0022,\\\u0022heading\\\u0022:\\\u0022\uB9CC\uC0C1\uC758 \uD750\uB984\\\u0022,\\\u0022source\\\u0022:\\\u0022https://seonro.local/index.html\\\u0022}\u0022"}
+2026-10-30T21:34:22.6810856Z Post job cleanup.
+2026-10-30T21:34:22.8324330Z (node:6688) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-30T21:34:22.8325468Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-30T21:34:22.8674856Z Post job cleanup.
+2026-10-30T21:34:23.0821561Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-30T21:34:23.1226207Z git version 2.56.0.windows.2
+2026-10-30T21:34:23.1315703Z Temporarily overriding HOME='D:\a\_temp\e841e232-a7a0-45f4-a605-21c90e41a7af' before making global git config changes
+2026-10-30T21:34:23.1317032Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-30T21:34:23.1328867Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\project-hora\project-hora
+2026-10-30T21:34:23.1743919Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-30T21:34:23.2149671Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-30T21:34:23.8421219Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-30T21:34:23.8790763Z http.https://github.com/.extraheader
+2026-10-30T21:34:23.8839285Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-30T21:34:23.9253583Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-30T21:34:24.4916823Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-30T21:34:24.5311451Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-30T21:34:25.1543703Z Cleaning up orphan processes
+2026-10-30T21:34:25.1935984Z Terminate orphan process: pid (2396) (dotnet)
+2026-10-30T21:34:25.2136543Z Terminate orphan process: pid (6248) (dotnet)
+2026-10-30T21:34:25.2340825Z Terminate orphan process: pid (8144) (VBCSCompiler)
+2026-10-30T21:34:25.2417155Z Terminate orphan process: pid (2356) (conhost)
+2026-10-30T21:34:25.2547115Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262, actions/setup-dotnet@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,505 @@
+name: 0.2.1 검증된 앱 패키지(APK) 릴리스
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 전체 기능·정본 단계별 기준선/측정 후 예산·장기 안정성·실제 플랫폼 검증 뒤 게시합니다
+        type: boolean
+        default: false
+      verify_upgrade:
+        description: 기존 인증서로 서명된 v0.2.0도 설치하여 덮어쓰기 업데이트 뒤 저장 원본 보존을 검증합니다
+        type: boolean
+        default: true
+
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+concurrency:
+  group: v021-owner-release-main
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  review:
+    name: 전체 기능 감사
+    if: >-
+      ${{ github.ref == 'refs/heads/main' && github.repository == 'hddy774/project-hora' &&
+          github.actor == 'hddy774' && github.triggering_actor == 'hddy774' &&
+          (github.event_name == 'workflow_dispatch' ||
+           (github.event_name == 'issue_comment' && github.event.action == 'created' &&
+            github.event.issue.number == 84 && github.event.issue.state == 'closed' &&
+            github.event.issue.pull_request != null && github.event.comment.user.login == 'hddy774' &&
+            github.event.comment.body == '/선로만상록 0.2.1 릴리스')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      apk_name: ${{ steps.source.outputs.apk_name }}
+      source_commit: ${{ steps.source.outputs.source_commit }}
+      fingerprint: ${{ steps.source.outputs.product_source_fingerprint }}
+      publish: ${{ steps.source.outputs.publish }}
+      verify_upgrade: ${{ steps.source.outputs.verify_upgrade }}
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 릴리스 보호 조건 검증과 정확한 소스 기록
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/verify-v021-release.py self-test
+          python3 scripts/verify-v021-release.py source --output artifacts/source/source.json --github-output "$GITHUB_OUTPUT"
+      - name: 서명 경로 진입 전 전체 기능 감사 완료 확인
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/verify-v021-release.py gate --stage features --source artifacts/source/source.json
+      - name: 정확한 소스 기록 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/source/
+          if-no-files-found: error
+          retention-days: 14
+
+  portable:
+    name: 이식형 기능·브라우저 검증
+    needs: review
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.403'
+      - name: 기획·이식형 제품 검증
+        # Native and portable hosts package the same checked-in compatibility asset.
+        run: |
+          mkdir -p artifacts/functional
+          python3 scripts/validate-v021-plan.py --self-test
+          python3 scripts/validate-v021-product-boundary.py --self-test --report artifacts/functional/product-boundary.json
+          dotnet run --project tests/Chronicles.Game.Tests -c Release -- --report artifacts/functional/product-tests.json
+          dotnet build src/Chronicles.Shell -c Release
+      - name: 자바스크립트 실행 환경 설정(Node.js)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 배포할 오프라인 화면 자산 검증
+        run: |
+          npm ci --prefix scripts/shell-assets --ignore-scripts --no-audit --no-fund
+          node scripts/build-shell-assets.mjs --check
+      - name: 브라우저 검증 실행 환경 설치
+        run: |
+          python3 -m pip install playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+      - name: 실제 브라우저 세션 연결·플레이 검증(GameSession)
+        run: |
+          dotnet run --project src/Chronicles.Shell -c Release --no-build -- --preview > artifacts/functional/shell.log 2>&1 &
+          shell_pid=$!
+          trap 'kill "$shell_pid" 2>/dev/null || true' EXIT
+          python3 - <<'PY'
+          import time, urllib.request
+          for attempt in range(60):
+              try:
+                  urllib.request.urlopen('http://127.0.0.1:5211', timeout=1).close()
+                  break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise SystemExit('Actual shell did not start')
+          PY
+          python3 scripts/verify-v021-ui.py artifacts/functional/ui --compat --legacy-dom
+      - name: 기능·브라우저 검증 근거 업로드
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v021-functional-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/functional/
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    name: 윈도우 실제 화면 검증(WebView2)
+    needs: review
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 파이썬 실행 환경 설정(Python)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.403'
+      - name: 정확한 소스 기록 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/source
+      - name: 윈도우 데스크톱 앱 빌드
+        run: dotnet build src/Chronicles.Desktop -c Release
+      - name: 현재 제품 아키텍처 검증
+        run: ./scripts/validate-architecture.ps1
+      - name: 실제 네이티브 화면·코어 연결 검증(WebView)
+        shell: pwsh
+        run: |
+          $diagnostics = Join-Path 'artifacts/windows' 'diagnostics'
+          New-Item -ItemType Directory -Force $diagnostics | Out-Null
+          $report = Join-Path ([IO.Path]::GetTempPath()) 'seonro-smoke-result.json'
+          Remove-Item $report -Force -ErrorAction SilentlyContinue
+          function Get-WebViewVersions {
+            try {
+            $appId = '{F1E7E06B-78B5-43FE-A9FA-6A304597FAD5}'
+            foreach ($key in @("HKLM:\SOFTWARE\Microsoft\EdgeUpdate\Clients\$appId", "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\$appId", "HKCU:\SOFTWARE\Microsoft\EdgeUpdate\Clients\$appId")) {
+              $item = Get-ItemProperty -LiteralPath $key -Name pv -ErrorAction SilentlyContinue
+              if ($item.pv) { [ordered]@{ kind = 'registry'; key = $key; version = [string]$item.pv } }
+            }
+            foreach ($base in @(${env:ProgramFiles(x86)}, $env:ProgramFiles, $env:LOCALAPPDATA)) {
+              if (-not $base) { continue }
+              Get-ChildItem -Path (Join-Path $base 'Microsoft/EdgeWebView/Application/*/msedgewebview2.exe') -File -ErrorAction SilentlyContinue | ForEach-Object {
+                [ordered]@{ kind = 'installed-executable'; path = $_.FullName; file_version = $_.VersionInfo.FileVersion; product_version = $_.VersionInfo.ProductVersion }
+              }
+            }
+            } catch { [ordered]@{ kind = 'observation-error'; message = $_.Exception.Message } }
+          }
+          function Get-SmokeProcessState($target) {
+            if ($null -eq $target) { return $null }
+            try {
+              $target.Refresh()
+              $state = [ordered]@{ id = $target.Id; name = $target.ProcessName; has_exited = $target.HasExited }
+              if (-not $target.HasExited) {
+                $state.responding = $target.Responding
+                $state.window_title = $target.MainWindowTitle
+                $state.window_handle = $target.MainWindowHandle.ToInt64()
+                try {
+                  $executable = Get-Item -LiteralPath $target.Path -ErrorAction Stop
+                  $state.executable = $executable.FullName
+                  $state.file_version = $executable.VersionInfo.FileVersion
+                  $state.product_version = $executable.VersionInfo.ProductVersion
+                } catch { $state.version_observation_error = $_.Exception.Message }
+              }
+              return $state
+            } catch { return [ordered]@{ id = $target.Id; observation_error = $_.Exception.Message } }
+          }
+          $observation = [ordered]@{ started_utc = [DateTimeOffset]::UtcNow.ToString('o'); wait_ms = 60000; image = @{ ImageOS = $env:ImageOS; ImageVersion = $env:ImageVersion; RunnerOS = $env:RUNNER_OS }; os = [Runtime.InteropServices.RuntimeInformation]::OSDescription; webview_before = @(Get-WebViewVersions); timed_out = $false; exit_code = $null; collection_errors = @() }
+          $process = $null
+          try {
+            $process = Start-Process ./src/Chronicles.Desktop/bin/Release/net10.0-windows/Chronicles.exe -ArgumentList '--smoke-test' -PassThru -RedirectStandardOutput (Join-Path $diagnostics 'stdout.txt') -RedirectStandardError (Join-Path $diagnostics 'stderr.txt')
+            $observation.process_started_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            $observation.process_after_start = Get-SmokeProcessState $process
+            if (-not $process.WaitForExit(60000)) {
+              $observation.timed_out = $true
+              $observation.process_before_kill = Get-SmokeProcessState $process
+              $observation.webview_before_kill = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
+              $process.Kill()
+              throw 'Actual Windows native smoke timeout'
+            }
+            $observation.exit_code = $process.ExitCode
+            if ($process.ExitCode -ne 0 -or -not (Test-Path $report)) { throw 'Actual Windows native smoke failed' }
+            Copy-Item $report artifacts/windows/native-smoke.json
+            python scripts/verify-v021-release.py windows --source artifacts/source/source.json --raw artifacts/windows/native-smoke.json --output artifacts/windows/windows-proof.json
+            if ($LASTEXITCODE -ne 0) { throw 'Windows proof verification failed' }
+          } catch {
+            $observation.wrapper_error = $_.Exception.Message
+            throw
+          } finally {
+            $observation.ended_utc = [DateTimeOffset]::UtcNow.ToString('o')
+            $observation.process_final = Get-SmokeProcessState $process
+            $observation.webview_after = @(Get-WebViewVersions)
+            $observation.webview_processes = @(Get-Process msedgewebview2 -ErrorAction SilentlyContinue | ForEach-Object { Get-SmokeProcessState $_ })
+            $sources = @($report)
+            $startupLogs = Join-Path $env:LOCALAPPDATA 'SeonroMansangrok/logs/debug/automatic'
+            $sources += @(Get-ChildItem $startupLogs -File -Filter 'debug-auto-*.log' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTimeUtc -ge [DateTimeOffset]::Parse($observation.started_utc).UtcDateTime } | ForEach-Object FullName)
+            $observation.copied_existing_files = @()
+            foreach ($source in $sources) {
+              if (-not (Test-Path -LiteralPath $source -PathType Leaf)) { continue }
+              try {
+                $file = Get-Item -LiteralPath $source
+                Copy-Item -LiteralPath $source -Destination $diagnostics -Force
+                $observation.copied_existing_files += @{ name = $file.Name; last_write_utc = $file.LastWriteTimeUtc.ToString('o'); bytes = $file.Length; sha256 = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() }
+              } catch { $observation.collection_errors += $_.Exception.Message }
+            }
+            try { $observation | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $diagnostics 'wrapper-observation.json') -Encoding utf8 }
+            catch { Write-Warning ('진단 기록 실패: ' + $_.Exception.Message) }
+          }
+      - name: 윈도우 실제 화면 근거 업로드
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v021-windows-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/windows/
+          if-no-files-found: error
+          retention-days: 14
+
+  android_build:
+    name: 서명 전 앱 패키지 빌드(APK)
+    needs: [review, portable]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 자바 개발 도구 설정(Java)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: 개발 도구 설정(.NET)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.403'
+      - name: 안드로이드 도구 설정(Android SDK)
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: 안드로이드 빌드 대상 설치(Android SDK)
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: 안드로이드 개발 구성 설치(.NET 워크로드)
+        run: dotnet workload install android
+      - name: 정확한 소스 기록 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/source
+      - name: 정확한 서명 전 릴리스 입력 빌드
+        run: |
+          mkdir -p artifacts/unsigned
+          dotnet publish src/Chronicles.Android -c Release -f net10.0-android -m:1 -o "$RUNNER_TEMP/unsigned" -p:AndroidSdkDirectory="$ANDROID_HOME" -p:JavaSdkDirectory="$JAVA_HOME"
+          cp "$RUNNER_TEMP/unsigned/org.hora.xianxiaobserver.apk" artifacts/unsigned/unsigned.apk
+          cp artifacts/source/source.json artifacts/unsigned/source.json
+          python3 scripts/verify-v021-release.py apk --kind unsigned --apk artifacts/unsigned/unsigned.apk --source artifacts/source/source.json --output artifacts/unsigned/unsigned-proof.json
+      - name: 서명 전 앱 패키지(APK) 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-unsigned-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/unsigned/
+          if-no-files-found: error
+          retention-days: 14
+
+  sign:
+    name: 기존 인증서 서명
+    needs: [review, portable, android_build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 자바 개발 도구 설정(Java)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: 안드로이드 도구 설정(Android SDK)
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: 안드로이드 빌드 도구 설치(Android SDK)
+        run: sdkmanager 'build-tools;36.0.0'
+      - name: 서명 전 앱 패키지(APK) 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-unsigned-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/unsigned
+      - name: 기능·브라우저 검증 근거 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-functional-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/functional
+      - name: 소스·현재 실제 기능 검사·서명 전 바이트 재검증
+        id: unsigned
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/verify-v021-release.py gate --stage signing --source artifacts/unsigned/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json
+          python3 scripts/verify-v021-release.py apk --kind unsigned --apk artifacts/unsigned/unsigned.apk --source artifacts/unsigned/source.json --output artifacts/unsigned/rechecked-proof.json --github-output "$GITHUB_OUTPUT"
+      - name: 기존 자동화 게시자 신원만 사용(CI)
+        env:
+          SIGNING_BUNDLE: ${{ secrets.ANDROID_SIGNING_BUNDLE }}
+          RAW_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.RELEASE_STORE_PASSWORD || secrets.KEYSTORE_PASSWORD }}
+          RAW_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.RELEASE_KEY_ALIAS || secrets.KEY_ALIAS }}
+          RAW_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.RELEASE_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+          SOURCE_SHA: ${{ github.sha }}
+          UNSIGNED_SHA256: ${{ steps.unsigned.outputs.sha256 }}
+          APK_NAME: ${{ needs.review.outputs.apk_name }}
+        run: |
+          mkdir -p artifacts/signed
+          bash scripts/sign-retained-apk.sh artifacts/unsigned/unsigned.apk "artifacts/signed/$APK_NAME"
+      - name: 기존 인증서·내용·패키지·기기 구조·오프라인 정책 검증(ABI)
+        env:
+          APK_NAME: ${{ needs.review.outputs.apk_name }}
+        run: |
+          cp artifacts/unsigned/source.json artifacts/signed/source.json
+          cp artifacts/unsigned/unsigned-proof.json artifacts/signed/unsigned-proof.json
+          python3 scripts/verify-v021-release.py apk --kind signed --apk "artifacts/signed/$APK_NAME" --source artifacts/signed/source.json --signing-proof artifacts/signed/SIGNING-VERIFICATION.json --output artifacts/signed/APK-VERIFICATION.json
+      - name: 기존 인증서 서명 앱 패키지(APK) 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: v021-signed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/signed/
+          if-no-files-found: error
+          retention-days: 14
+
+  android_runtime:
+    name: 안드로이드 실제 실행(API ${{ matrix.api }})
+    needs: [review, sign]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [24, 35]
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 자바 개발 도구 설정(Java)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: 안드로이드 도구 설정(Android SDK)
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: 안드로이드 빌드 도구 설치(Android SDK)
+        run: sdkmanager 'build-tools;36.0.0'
+      - name: 기존 인증서 서명 앱 패키지(APK) 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-signed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/signed
+      - name: 기존 인증서로 서명된 이전 공개 앱 내려받기(APK)
+        if: ${{ needs.review.outputs.verify_upgrade == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download xianxia-observer/v0.2.0 --repo hddy774/project-hora --pattern XianxiaObserver-v0.2.0.apk --dir artifacts/previous
+      - name: 실제 하드웨어 가속 허용(KVM)
+        run: |
+          set -euxo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle --timeout=10
+          id
+          stat --format='KVM mode=%a owner=%U group=%G type=%F' /dev/kvm
+          test -r /dev/kvm -a -w /dev/kvm
+      - name: 실제 새 설치·화면 연결·기존 서명 업데이트 검증(DOM)
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: python3 scripts/v021-release-emulator.py --api ${{ matrix.api }} --apk artifacts/signed/${{ needs.review.outputs.apk_name }} --source artifacts/signed/source.json --signed-proof artifacts/signed/APK-VERIFICATION.json --output artifacts/android-${{ matrix.api }} ${{ needs.review.outputs.verify_upgrade == 'true' && '--previous artifacts/previous/XianxiaObserver-v0.2.0.apk' || '' }}
+      - name: 안드로이드 실제 실행 근거 업로드
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v021-android-${{ matrix.api }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/android-${{ matrix.api }}/
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: 검증된 앱 패키지 게시(APK)
+    needs: [review, portable, windows, sign, android_runtime]
+    if: ${{ always() && !cancelled() && needs.review.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.repository == 'hddy774/project-hora' && github.actor == 'hddy774' && github.triggering_actor == 'hddy774' && needs.review.result == 'success' && needs.portable.result == 'success' && needs.windows.result == 'success' && needs.sign.result == 'success' && needs.android_runtime.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+      pull-requests: read
+      issues: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 기존 인증서 서명 앱 패키지(APK) 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-signed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/signed
+      - name: 기능·브라우저 검증 근거 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-functional-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/functional
+      - name: 윈도우 실제 화면 근거 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-windows-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/windows
+      - name: 안드로이드 실행 근거(API 24) 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-android-24-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/android-24
+      - name: 안드로이드 실행 근거(API 35) 내려받기
+        uses: actions/download-artifact@v4
+        with:
+          name: v021-android-35-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/android-35
+      # 저장된 실제 근거만 검사합니다. 이 workflow는 성능/성장/장기 실행을 자동 시작하지 않습니다.
+      # 옛 V020-G03의 100배/60초 비교 결과는 보존하며 정본 §11/T04 필수 속도 기준으로 바꾸지 않습니다.
+      - name: 정본 단계별 기준선·후속 예산·장기 안정성과 동일 앱 플랫폼 근거 확인
+        run: python3 scripts/verify-v021-release.py gate --stage publish --source artifacts/signed/source.json --functional artifacts/functional/product-tests.json --browser artifacts/functional/ui/results.json --signed artifacts/signed/APK-VERIFICATION.json --windows artifacts/windows/windows-proof.json --android artifacts/android-24/android-proof.json --android artifacts/android-35/android-proof.json ${{ needs.review.outputs.verify_upgrade == 'true' && '--require-upgrade' || '' }}
+      - name: 게시 준비·다운로드·검증·게시·공개 바이트 재검증
+        env:
+          APK_NAME: ${{ needs.review.outputs.apk_name }}
+        run: |
+          python3 scripts/publish-v021-release.py prepare --source artifacts/signed/source.json --apk "artifacts/signed/$APK_NAME" --signed-proof artifacts/signed/APK-VERIFICATION.json --state artifacts/publication/prepared.json
+          python3 scripts/publish-v021-release.py readback --source artifacts/signed/source.json --apk "artifacts/signed/$APK_NAME" --signed-proof artifacts/signed/APK-VERIFICATION.json --state artifacts/publication/prepared.json
+          python3 scripts/publish-v021-release.py publish --source artifacts/signed/source.json --apk "artifacts/signed/$APK_NAME" --signed-proof artifacts/signed/APK-VERIFICATION.json --state artifacts/publication/prepared.json
+      - name: 게시·재다운로드 검증 근거 업로드
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: v021-publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/publication/
+          if-no-files-found: warn
+          retention-days: 14

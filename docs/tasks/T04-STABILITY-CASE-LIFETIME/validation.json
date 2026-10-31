@@ -1,0 +1,49 @@
+{
+  "baseline": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "sourceSha256": "de9a7e4b9ab7761a437ddef1f953b9014a383a9cfaa6dc0361be0f6997727cef",
+  "build": {
+    "configuration": "Release",
+    "cpuAffinity": [
+      2
+    ],
+    "sharedCompilation": false,
+    "maxNodes": 1,
+    "warnings": 0,
+    "errors": 0,
+    "exitCode": 0
+  },
+  "functional": {
+    "filter": "T04 sensitivity contract",
+    "total": 5,
+    "failed": 0,
+    "exitCode": 0,
+    "command": "/workspace/.dotnet/dotnet tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll --filter T04 sensitivity contract --report <scratch>/functional.json",
+    "explicitCpuAffinityOnThisShortInvocation": false
+  },
+  "gateSelfTest": {
+    "command": "taskset -c 2 python3 scripts/verify-v021-release.py self-test",
+    "passed": true,
+    "actualSigningPublishingPerformance": false
+  },
+  "sourceComparisonPassed": true,
+  "compiledNoInlining": true,
+  "negativeChecks": [
+    {
+      "case": "weakened-checkpoints",
+      "rejected": true,
+      "exitCode": -6
+    },
+    {
+      "case": "returned-world",
+      "rejected": true,
+      "exitCode": -6
+    }
+  ],
+  "performanceLongOrHeapComparisonsRunForThisPatch": 0,
+  "officialPlanBudgetOrCodecEdits": 0,
+  "initialPreparationErrors": {
+    "incorrectExtractionMatchedInnerLog": "initial-extraction-build-error.log",
+    "incorrectSelfTestFlag": "initial-self-test-cli-error.log",
+    "correctedBeforeFinalValidation": true
+  }
+}

@@ -1,0 +1,2746 @@
+{
+  "schema_version": 1,
+  "kind": "seonro-execution-ex01-ex02-ex04",
+  "failure": null,
+  "host": {
+    "Commit": "174e4a93f81defce44b18421629330bd280fb891",
+    "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+    "Runtime": ".NET 10.0.14",
+    "Device": "runnervm48cm3",
+    "OperatingSystem": "Ubuntu 24.04.5 LTS",
+    "Architecture": "X64",
+    "CpuCount": 4,
+    "ThermalState": "GitHub \uD638\uC2A4\uD2B8 VM\u00B7\uC2E4\uC81C \uD638\uC2A4\uD2B8 \uC5F4 \uC0C1\uD0DC \uBBF8\uCE21\uC815",
+    "PowerState": "GitHub \uD638\uC2A4\uD2B8 VM\u00B7\uC2E4\uC81C \uD638\uC2A4\uD2B8 \uC804\uB825\u00B7\uC804\uC6D0 \uC0C1\uD0DC \uBBF8\uCE21\uC815",
+    "ProcessScope": "\uB3D9\uC77C \uD504\uB85C\uC138\uC2A4\u00B7\uC55E\uC120 \uAE30\uB2A5/JIT/\uACF5\uC720 \uCE90\uC2DC \uC601\uD5A5 \uAC00\uB2A5. \uC608\uC5F4\uACFC \uAC01 \uCE21\uC815 \uC138\uACC4\uB294 \uBCC4\uB3C4 \uC785\uB825\uC5D0\uC11C \uC0C8\uB85C \uBCF5\uC6D0\uD55C\uB2E4."
+  },
+  "complete": true,
+  "requested_complete": true,
+  "requested_experiments": [
+    "EX-02"
+  ],
+  "all_owned_experiments_complete": false,
+  "total_elapsed_nanoseconds": 3333078276068,
+  "requested_populations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "repetitions": 1,
+  "finished": [
+    "EX-02:population:2:repetition:0",
+    "EX-02:population:100:repetition:0",
+    "EX-02:population:1000:repetition:0",
+    "EX-02:population:10000:repetition:0"
+  ],
+  "rows": [
+    {
+      "Experiment": "EX-02",
+      "Variant": "original-person-array",
+      "Population": 2,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "ca98e79a9d804e6fa9590c1245f4a37c742df06c47b72fa0934033d4c9964705",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 2,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "ca98e79a9d804e6fa9590c1245f4a37c742df06c47b72fa0934033d4c9964705",
+        "MeasuredOpeningHash": "ca98e79a9d804e6fa9590c1245f4a37c742df06c47b72fa0934033d4c9964705",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 65747732
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 110111265
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 59190465
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 96439200
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 46837462
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 54415225
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 62001510
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 68527540
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 60548147
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 71204817
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 60808952
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 77163279
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 73462351
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 83282318
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 6820576
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 7387480
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 7544560
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 9290208
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 7928600
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 9630008
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 9336560
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 11121968
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 10707024
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 12588056
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 12220760
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 14208656
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 13616016
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 16976344
+        }
+      ],
+      "P50Nanoseconds": 65747732,
+      "P95Nanoseconds": 110111265,
+      "P99Nanoseconds": 110111265,
+      "ProcessRetainedManagedBytes": 19037824,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "155140428ef2c17bf8dc4a9fe340672d082a0b48b773181863e2390b1cfa166a",
+          "Rng": 255951309216425373,
+          "EventDigest": "7ebd7f13fce28fcf090edcd8ce0ae6ab3f460be04989534015283dbf90307f3e",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 2,
+          "SlotDigest": "f95594a72180a1b62d802bdcc1415d4082f59a6e636e1dc53b268f170c20a8f5"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "80af794327b3e3ea0718e959f018978237a0638ddd94a915a758e51ad2238f04",
+          "Rng": 255951309216425373,
+          "EventDigest": "ccfa206b3bf34198e5427380ed5a6c353754f8acdec72f9859b5d17db63a5e5d",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1,
+          "SlotDigest": "f2e0f1f59fa3c3a5a9634a864479449fe43dd4e65d98ed3e7dad2253e5984956"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "0400cbc2eb0f44562bb8478147cecba3af01af0e64f21f57b2767f4d25e6005f",
+          "Rng": 1483668231674529035,
+          "EventDigest": "2e4ded3ecbaf28f1c8b6ecf50b8ce9ed422f7eeb94867bb4652356cd44a8a149",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "38c9a897e3ac776c82d6b61be3570f2b859b08682c0ec21db2b4610faaaca5a8",
+          "Rng": 4586936251066209506,
+          "EventDigest": "c30f7cdc8ef728f5c8c80317634893a16df4f4026de4a9fdeeca5236abbe09f5",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "7816423b775f957d2e42c31e168135dacbf7e377a5414a60c713591f2a5d826c",
+          "Rng": 5950746664871101747,
+          "EventDigest": "f0a9ff719f5137853c7cb649e7666883dba95d5db36d42a2343186457a4741ff",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "a217578f4c2ba226a178f2677a5a9e5e87f3d3c76cf99720e1fe5c0016f407df",
+          "Rng": 15809205526971690166,
+          "EventDigest": "467045ca6a79c94a6108a6284abdc46a001ff1aa226b0e651d129adc97ef7ed6",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "871e40a780308fb8b5cf750f5d799d7e8aecddd15550f824641a60dce40bc285",
+          "Rng": 4394922405535874152,
+          "EventDigest": "d718f03d3c2d29ef5a87d33cceaf7db45ad422345c982f0af73cab56500294cd",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "cdaa8a898d944868e0f41be4f9da4af9af47eb22252eb894f8710682c789c045",
+          "Rng": 14470095495765839012,
+          "EventDigest": "9caa26956b73faf450fdabb281107d0dab7f988536b5af4c2f74ed733c4b42df",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "6ae6dcebcfe8997ce3d6711d5bd0cb75595960da0b445186610f898af726dbd8",
+          "Rng": 12374944953821701238,
+          "EventDigest": "452b11a647d98e7ceeddaaf7c7eb24a46f3b824600ed57a9a898f7784b302701",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "c163c257cbeb13fd22fdf321ea77046c6f3a9f984f241f0bac7791c7d7433eaa",
+          "Rng": 9395315578852993324,
+          "EventDigest": "2ab3726045f66f2960b405f34fe8dbe42924d92a920469566b4b77f9fb39aeba",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "b04385ce6a08afba4ab1ca7011f1793085b294a3d27f605b539ae1fa3ed4b974",
+          "Rng": 3054182422880247701,
+          "EventDigest": "089ed856d2597fa5f62d2bd05c430da13498b01219f6c74c5169a11d49202db1",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "4a2f69ccfb32fabd305356b1f6feb3ff11caf5370cdad9b808e760a18d0fc15f",
+          "Rng": 612883517287540224,
+          "EventDigest": "ebd6e3b90797267ced4a80bc0bda2ea72e4e362a8034f6cc4efe834dfe51d40e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "c915ff323e6e5dc54f333b752b0b89aae47aeb12a3b9f805caedfc3baf843718",
+          "Rng": 13540405506828750618,
+          "EventDigest": "755a540b1647b4d326f5441f7d8522f7496369f86e0266008b11d54025756f4e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "f6d2c64b1af317a6e04f4440d203b2a631b6fb2a913d2bb2b680f18cec63bb3c",
+          "Rng": 9100734949284665084,
+          "EventDigest": "6be2c4dd4dc4023ac9e755d031c6e0cb56185634b0bd4cc30d28005d29710d95",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        }
+      ],
+      "OutputDigest": "f6d2c64b1af317a6e04f4440d203b2a631b6fb2a913d2bb2b680f18cec63bb3c",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 65747732,
+          "P95Nanoseconds": 65747732,
+          "P99Nanoseconds": 65747732
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 68527540,
+          "P95Nanoseconds": 110111265,
+          "P99Nanoseconds": 110111265
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 59190465,
+          "P95Nanoseconds": 59190465,
+          "P99Nanoseconds": 59190465
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "hot-columns-due-heap",
+      "Population": 2,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "ca98e79a9d804e6fa9590c1245f4a37c742df06c47b72fa0934033d4c9964705",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 2,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "ca98e79a9d804e6fa9590c1245f4a37c742df06c47b72fa0934033d4c9964705",
+        "MeasuredOpeningHash": "ca98e79a9d804e6fa9590c1245f4a37c742df06c47b72fa0934033d4c9964705",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 20220212
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 27288035
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 35775398
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 33525311
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 29634689
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 45534658
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 37889303
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 44619852
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 53683537
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 59086226
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 53664738
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 68277842
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 60070683
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 77202869
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 6775032
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 7351456
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 7501936
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 9234072
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 7872240
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 9577096
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 9240728
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 11026600
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 10591184
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 12461064
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 12069416
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 14068816
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 13426616
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 16745008
+        }
+      ],
+      "P50Nanoseconds": 44619852,
+      "P95Nanoseconds": 77202869,
+      "P99Nanoseconds": 77202869,
+      "ProcessRetainedManagedBytes": 19055792,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "155140428ef2c17bf8dc4a9fe340672d082a0b48b773181863e2390b1cfa166a",
+          "Rng": 255951309216425373,
+          "EventDigest": "7ebd7f13fce28fcf090edcd8ce0ae6ab3f460be04989534015283dbf90307f3e",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 2,
+          "SlotDigest": "f95594a72180a1b62d802bdcc1415d4082f59a6e636e1dc53b268f170c20a8f5"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "80af794327b3e3ea0718e959f018978237a0638ddd94a915a758e51ad2238f04",
+          "Rng": 255951309216425373,
+          "EventDigest": "ccfa206b3bf34198e5427380ed5a6c353754f8acdec72f9859b5d17db63a5e5d",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1,
+          "SlotDigest": "f2e0f1f59fa3c3a5a9634a864479449fe43dd4e65d98ed3e7dad2253e5984956"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "0400cbc2eb0f44562bb8478147cecba3af01af0e64f21f57b2767f4d25e6005f",
+          "Rng": 1483668231674529035,
+          "EventDigest": "2e4ded3ecbaf28f1c8b6ecf50b8ce9ed422f7eeb94867bb4652356cd44a8a149",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "38c9a897e3ac776c82d6b61be3570f2b859b08682c0ec21db2b4610faaaca5a8",
+          "Rng": 4586936251066209506,
+          "EventDigest": "c30f7cdc8ef728f5c8c80317634893a16df4f4026de4a9fdeeca5236abbe09f5",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "7816423b775f957d2e42c31e168135dacbf7e377a5414a60c713591f2a5d826c",
+          "Rng": 5950746664871101747,
+          "EventDigest": "f0a9ff719f5137853c7cb649e7666883dba95d5db36d42a2343186457a4741ff",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "a217578f4c2ba226a178f2677a5a9e5e87f3d3c76cf99720e1fe5c0016f407df",
+          "Rng": 15809205526971690166,
+          "EventDigest": "467045ca6a79c94a6108a6284abdc46a001ff1aa226b0e651d129adc97ef7ed6",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "871e40a780308fb8b5cf750f5d799d7e8aecddd15550f824641a60dce40bc285",
+          "Rng": 4394922405535874152,
+          "EventDigest": "d718f03d3c2d29ef5a87d33cceaf7db45ad422345c982f0af73cab56500294cd",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "cdaa8a898d944868e0f41be4f9da4af9af47eb22252eb894f8710682c789c045",
+          "Rng": 14470095495765839012,
+          "EventDigest": "9caa26956b73faf450fdabb281107d0dab7f988536b5af4c2f74ed733c4b42df",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "6ae6dcebcfe8997ce3d6711d5bd0cb75595960da0b445186610f898af726dbd8",
+          "Rng": 12374944953821701238,
+          "EventDigest": "452b11a647d98e7ceeddaaf7c7eb24a46f3b824600ed57a9a898f7784b302701",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "c163c257cbeb13fd22fdf321ea77046c6f3a9f984f241f0bac7791c7d7433eaa",
+          "Rng": 9395315578852993324,
+          "EventDigest": "2ab3726045f66f2960b405f34fe8dbe42924d92a920469566b4b77f9fb39aeba",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 2,
+          "SlotDigest": "b5d1773e450193c0d7e854711dbcb7054318fd601a5771999fe8eb3bdf7795a6"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "b04385ce6a08afba4ab1ca7011f1793085b294a3d27f605b539ae1fa3ed4b974",
+          "Rng": 3054182422880247701,
+          "EventDigest": "089ed856d2597fa5f62d2bd05c430da13498b01219f6c74c5169a11d49202db1",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "4a2f69ccfb32fabd305356b1f6feb3ff11caf5370cdad9b808e760a18d0fc15f",
+          "Rng": 612883517287540224,
+          "EventDigest": "ebd6e3b90797267ced4a80bc0bda2ea72e4e362a8034f6cc4efe834dfe51d40e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "c915ff323e6e5dc54f333b752b0b89aae47aeb12a3b9f805caedfc3baf843718",
+          "Rng": 13540405506828750618,
+          "EventDigest": "755a540b1647b4d326f5441f7d8522f7496369f86e0266008b11d54025756f4e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "f6d2c64b1af317a6e04f4440d203b2a631b6fb2a913d2bb2b680f18cec63bb3c",
+          "Rng": 9100734949284665084,
+          "EventDigest": "6be2c4dd4dc4023ac9e755d031c6e0cb56185634b0bd4cc30d28005d29710d95",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 3,
+          "SlotDigest": "e0e77bd3f7a802b62c9286eb06979f83ec8ee76eae32d421d7073147ea765f6c"
+        }
+      ],
+      "OutputDigest": "f6d2c64b1af317a6e04f4440d203b2a631b6fb2a913d2bb2b680f18cec63bb3c",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 20220212,
+          "P95Nanoseconds": 20220212,
+          "P99Nanoseconds": 20220212
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 45534658,
+          "P95Nanoseconds": 77202869,
+          "P99Nanoseconds": 77202869
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 35775398,
+          "P95Nanoseconds": 35775398,
+          "P99Nanoseconds": 35775398
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "original-person-array",
+      "Population": 100,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "4d8ed156c9d200aff9af305e287f15dad43c9ea86bb4722085d8e77fbe0c0799",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 100,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "4d8ed156c9d200aff9af305e287f15dad43c9ea86bb4722085d8e77fbe0c0799",
+        "MeasuredOpeningHash": "4d8ed156c9d200aff9af305e287f15dad43c9ea86bb4722085d8e77fbe0c0799",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 33588359
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 72863406
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 60072479
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 150199912
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 148023163
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 169536625
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 183494628
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 288672729
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 238983585
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 320957907
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 287691736
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 368155708
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 376624770
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 522179177
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 18063272
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 47993256
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 22898072
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 126110640
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 137851392
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 177883080
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 193696968
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 237478544
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 247441040
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 295909152
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 301489616
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 354554848
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 355437976
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 443974656
+        }
+      ],
+      "P50Nanoseconds": 183494628,
+      "P95Nanoseconds": 522179177,
+      "P99Nanoseconds": 522179177,
+      "ProcessRetainedManagedBytes": 57354912,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "09ca16e36b7b1f82ed5f3f3e38d7110a91da3ed89794f799c28d21bd390360ba",
+          "Rng": 255951309216425373,
+          "EventDigest": "8b31f289a0a9e60f02d9b8dcd161989969511e6d18d9b3d65e6fd107d6638518",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 100,
+          "SlotDigest": "f42fd38837173b55be2d3451f91572d8d9e468c22ffb10a729de1b11a6bcea1f"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "84badf39c3739d738f050b4d0a212f36ed72ca24c536259fc7560031b231bd30",
+          "Rng": 255951309216425373,
+          "EventDigest": "0d50124aae0409b297314f101cf8c2b0ccdb8e7a329855ea0bc272e8c56583bf",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 99,
+          "SlotDigest": "07e38210a75f113195f50d403a4a5c298a949236644525fbf9d2a15e4ce4dcae"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "9d8f014745897f3b7425e6f336c8b2fe475d88b02e281346e987a2a5bfb7be12",
+          "Rng": 1483668231674529035,
+          "EventDigest": "06a56930406d00e1aace9732d53e35a1978f57d0a44c42bce7fbefab4f18976f",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "c8daa3b041b0e9dd3e9276dcabc802df72a126ffb1cd0f23152d98a698240f39",
+          "Rng": 4586936251066209506,
+          "EventDigest": "63c1ad0ce88121bb45bef0fcbd84908dc691435fd6c91779b44f9e1875319067",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "e8b71eeab9b49c199a4f4332cdba5b3348f35e762d15ff3dc55020691ad1a65b",
+          "Rng": 5950746664871101747,
+          "EventDigest": "797d85d466e042592b81351cd3c3c3d8164f3a64c71c53148a7f6af855769973",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "f89ccbd7cc508f46b03d58064fe261801ef6fe27ddaef002e347613a58bf9c3e",
+          "Rng": 15809205526971690166,
+          "EventDigest": "d33c1bff3e23aedf8e11b0a647d41138ba25b23ffe2f5f67c16dbc4d665f9d13",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "3d073d59ce9c71b1198386f80a7c76b8aa4de07228386f9a4d8e27185f20fc2c",
+          "Rng": 4394922405535874152,
+          "EventDigest": "7bc5a4e058cff7ef7916f5f5fd172b73d94cbb156b932f65b9a576455d237927",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "dc8728334bdf300740173ce3065b6de39b98320a95e69850213d7fb73173c437",
+          "Rng": 14470095495765839012,
+          "EventDigest": "a72c2ca07dd9a1712f9078b153a43e09b5a877ee9e0a208fd57a2d046b7b28b0",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "39d4d05e0b09cc527241906f9e4ebea6b1fb6f370fd85b80ac32ca8a5f026b8b",
+          "Rng": 12374944953821701238,
+          "EventDigest": "b0ae2eebd7f9c9aeb69fada705ca24d539289232db7d33bff2d0ad298ff4406c",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "5f4ee6891255d17734ca3ffe1311e2cbb7c787b64ddf4f0588534752549d49de",
+          "Rng": 9395315578852993324,
+          "EventDigest": "2e97b6a02b4041f67e5fbe7d1588dc3295d9ae2f31386715703d6897ef91d4fe",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "6094712c395305f5fce9a1cb402fb2df11cae3c7e03121e42582f1fbfffcc437",
+          "Rng": 3054182422880247701,
+          "EventDigest": "8b9ef27239c3f7a9c944e3dce041694fb84c41a08f6967af44774aed6d95cfc0",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "18349ca51e0c4c95a9cd5aa1db54757e0f246715fb107b165529d4341cf54bec",
+          "Rng": 612883517287540224,
+          "EventDigest": "6bb3616d80db2bdad548e857d6538017a116afbd1445ac24160dc3f17afbe6e2",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "3b568d4067e08c426622739a808be5b07f749e43eff026b12c4f5fffe857a71b",
+          "Rng": 13540405506828750618,
+          "EventDigest": "6118e9dd3e93efe5fbc862eb31c7b7b4e411ff7f73ea992c712a7f9da520ae5f",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "b4b2c76546a1b20f2a4e20fa0b7cead513b6748bad605133d1e12ff16e9c77a8",
+          "Rng": 9100734949284665084,
+          "EventDigest": "bd2c0fcf913757edfdb959133eaed921db21bd8eeca5525e82d9447f8af3586d",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        }
+      ],
+      "OutputDigest": "b4b2c76546a1b20f2a4e20fa0b7cead513b6748bad605133d1e12ff16e9c77a8",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 33588359,
+          "P95Nanoseconds": 33588359,
+          "P99Nanoseconds": 33588359
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 238983585,
+          "P95Nanoseconds": 522179177,
+          "P99Nanoseconds": 522179177
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 60072479,
+          "P95Nanoseconds": 60072479,
+          "P99Nanoseconds": 60072479
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "hot-columns-due-heap",
+      "Population": 100,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "4d8ed156c9d200aff9af305e287f15dad43c9ea86bb4722085d8e77fbe0c0799",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 100,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "4d8ed156c9d200aff9af305e287f15dad43c9ea86bb4722085d8e77fbe0c0799",
+        "MeasuredOpeningHash": "4d8ed156c9d200aff9af305e287f15dad43c9ea86bb4722085d8e77fbe0c0799",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 57607424
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 63158167
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 73794055
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 162775746
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 117409014
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 184606060
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 177157966
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 266394936
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 260661718
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 326571104
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 309915933
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 383966637
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 355981918
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 511777864
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 18674792
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 47984184
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 23500904
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 129065856
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 140744984
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 180767896
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 196609448
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 240416952
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 250347272
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 298836264
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 304400136
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 357504496
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 358349136
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 446946176
+        }
+      ],
+      "P50Nanoseconds": 184606060,
+      "P95Nanoseconds": 511777864,
+      "P99Nanoseconds": 511777864,
+      "ProcessRetainedManagedBytes": 57455704,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "09ca16e36b7b1f82ed5f3f3e38d7110a91da3ed89794f799c28d21bd390360ba",
+          "Rng": 255951309216425373,
+          "EventDigest": "8b31f289a0a9e60f02d9b8dcd161989969511e6d18d9b3d65e6fd107d6638518",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 100,
+          "SlotDigest": "f42fd38837173b55be2d3451f91572d8d9e468c22ffb10a729de1b11a6bcea1f"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "84badf39c3739d738f050b4d0a212f36ed72ca24c536259fc7560031b231bd30",
+          "Rng": 255951309216425373,
+          "EventDigest": "0d50124aae0409b297314f101cf8c2b0ccdb8e7a329855ea0bc272e8c56583bf",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 99,
+          "SlotDigest": "07e38210a75f113195f50d403a4a5c298a949236644525fbf9d2a15e4ce4dcae"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "9d8f014745897f3b7425e6f336c8b2fe475d88b02e281346e987a2a5bfb7be12",
+          "Rng": 1483668231674529035,
+          "EventDigest": "06a56930406d00e1aace9732d53e35a1978f57d0a44c42bce7fbefab4f18976f",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "c8daa3b041b0e9dd3e9276dcabc802df72a126ffb1cd0f23152d98a698240f39",
+          "Rng": 4586936251066209506,
+          "EventDigest": "63c1ad0ce88121bb45bef0fcbd84908dc691435fd6c91779b44f9e1875319067",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "e8b71eeab9b49c199a4f4332cdba5b3348f35e762d15ff3dc55020691ad1a65b",
+          "Rng": 5950746664871101747,
+          "EventDigest": "797d85d466e042592b81351cd3c3c3d8164f3a64c71c53148a7f6af855769973",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "f89ccbd7cc508f46b03d58064fe261801ef6fe27ddaef002e347613a58bf9c3e",
+          "Rng": 15809205526971690166,
+          "EventDigest": "d33c1bff3e23aedf8e11b0a647d41138ba25b23ffe2f5f67c16dbc4d665f9d13",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "3d073d59ce9c71b1198386f80a7c76b8aa4de07228386f9a4d8e27185f20fc2c",
+          "Rng": 4394922405535874152,
+          "EventDigest": "7bc5a4e058cff7ef7916f5f5fd172b73d94cbb156b932f65b9a576455d237927",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "dc8728334bdf300740173ce3065b6de39b98320a95e69850213d7fb73173c437",
+          "Rng": 14470095495765839012,
+          "EventDigest": "a72c2ca07dd9a1712f9078b153a43e09b5a877ee9e0a208fd57a2d046b7b28b0",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "39d4d05e0b09cc527241906f9e4ebea6b1fb6f370fd85b80ac32ca8a5f026b8b",
+          "Rng": 12374944953821701238,
+          "EventDigest": "b0ae2eebd7f9c9aeb69fada705ca24d539289232db7d33bff2d0ad298ff4406c",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "5f4ee6891255d17734ca3ffe1311e2cbb7c787b64ddf4f0588534752549d49de",
+          "Rng": 9395315578852993324,
+          "EventDigest": "2e97b6a02b4041f67e5fbe7d1588dc3295d9ae2f31386715703d6897ef91d4fe",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 100,
+          "SlotDigest": "33daae01bd1e8913b3233611c68898f861b7fa874b3962d8328cbd900c64b62b"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "6094712c395305f5fce9a1cb402fb2df11cae3c7e03121e42582f1fbfffcc437",
+          "Rng": 3054182422880247701,
+          "EventDigest": "8b9ef27239c3f7a9c944e3dce041694fb84c41a08f6967af44774aed6d95cfc0",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "18349ca51e0c4c95a9cd5aa1db54757e0f246715fb107b165529d4341cf54bec",
+          "Rng": 612883517287540224,
+          "EventDigest": "6bb3616d80db2bdad548e857d6538017a116afbd1445ac24160dc3f17afbe6e2",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "3b568d4067e08c426622739a808be5b07f749e43eff026b12c4f5fffe857a71b",
+          "Rng": 13540405506828750618,
+          "EventDigest": "6118e9dd3e93efe5fbc862eb31c7b7b4e411ff7f73ea992c712a7f9da520ae5f",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "b4b2c76546a1b20f2a4e20fa0b7cead513b6748bad605133d1e12ff16e9c77a8",
+          "Rng": 9100734949284665084,
+          "EventDigest": "bd2c0fcf913757edfdb959133eaed921db21bd8eeca5525e82d9447f8af3586d",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 101,
+          "SlotDigest": "de9378fe649a73276391e3960675caa71fc42c5833bd9ed96eb1dc408d72d2f2"
+        }
+      ],
+      "OutputDigest": "b4b2c76546a1b20f2a4e20fa0b7cead513b6748bad605133d1e12ff16e9c77a8",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 57607424,
+          "P95Nanoseconds": 57607424,
+          "P99Nanoseconds": 57607424
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 260661718,
+          "P95Nanoseconds": 511777864,
+          "P99Nanoseconds": 511777864
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 73794055,
+          "P95Nanoseconds": 73794055,
+          "P99Nanoseconds": 73794055
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "original-person-array",
+      "Population": 1000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "ac24548545fabd04bc14ba4cb512f34314f35f41b13e691bae88c39ae3ce5700",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 1000,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "ac24548545fabd04bc14ba4cb512f34314f35f41b13e691bae88c39ae3ce5700",
+        "MeasuredOpeningHash": "ac24548545fabd04bc14ba4cb512f34314f35f41b13e691bae88c39ae3ce5700",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 354928144
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 500380194
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 459733399
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 1252267985
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 1305081092
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 1584206595
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 1854009089
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 2050745888
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 3079696223
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 5162654619
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 6469308950
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 7100485234
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 7699111438
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 8923732209
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 127392712
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 601793376
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 171816584
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 1479191816
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 1779113848
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 2161509104
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 2536922264
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 2916452672
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 3593960872
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 4153311992
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 4567332824
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 4980785936
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 5388901624
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 6029213680
+        }
+      ],
+      "P50Nanoseconds": 1854009089,
+      "P95Nanoseconds": 8923732209,
+      "P99Nanoseconds": 8923732209,
+      "ProcessRetainedManagedBytes": 209010832,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "efa701633f60e25c1730d5e358405184db02e7ee2aa8296e976e886ba7a10d5a",
+          "Rng": 255951309216425373,
+          "EventDigest": "312f0af99d182884071ac4dbec772e66a3a4e099886ae9395d59ea5f814bf693",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 1000,
+          "SlotDigest": "d9ef4290a71ed03aa4c92c6063cecb7709c7ace6a9f9a31421f6cb512321ee7b"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "70ee8a0f1a6f69bf98ec307546b9585ac06f64f47452bed163cfda892d3dfbd9",
+          "Rng": 255951309216425373,
+          "EventDigest": "f83f52dbd0e93f8a33c73ffc18188c6a6a2aaeb8363752bd5ffd4b24e601db3f",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 999,
+          "SlotDigest": "34c957eacb7ec8ee7c0c8716b4a5d699856c8fddc6c3000f54596b94dcfb4fdb"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "0bf3a35d52ae53919808d1ededfc19777ec48b2b7f812d9baaae5202c64613f4",
+          "Rng": 1483668231674529035,
+          "EventDigest": "c1efcf906dbaacada87074edcd2bad8a640ccd657069486bab452e19147cb835",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "c6c3040aa07b89093d5fcca4204a62a98d822931c77418a80779bc6ea6bd4248",
+          "Rng": 4586936251066209506,
+          "EventDigest": "02e980ffabc83b8ab7d19f8c9b46e4321202842cbdb2caeee037c363530fd809",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "5685ba2ee329624ca5704e7534fafe54f09619263d9d6bdac5f0415bfcdd359a",
+          "Rng": 5950746664871101747,
+          "EventDigest": "4be04060b1d78a2be0f34906af97010ef84857d26093cd25962e565e9640b777",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "76478226367f5182b28401c7659e79304b13209d3cbeb2e64db785757a3da4b2",
+          "Rng": 15809205526971690166,
+          "EventDigest": "01bde10c224fc7893db45e3a19d43e56af9754f484a6a24b71cea20d7a40a6db",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "c14af8495bc7c16d2824d735980b235d1e997ceb002cd175f6daec73e40bb388",
+          "Rng": 4394922405535874152,
+          "EventDigest": "19699e75324232c88c3213b18a7cf25d6cb921aac21e6d6bb99c52ca6c08cdea",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "3c7b51e12c084efb35156bd0e404d6155f57e8ced546ca01a08d09feb35ccb3b",
+          "Rng": 14470095495765839012,
+          "EventDigest": "b13623d022302051c571481273e52c2b0029e17ff30012d3cd0ab9c3b80672c7",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "9641f6b31f9701ad4b8b7452d4fd597c833be898717a030a399233ac0f88845a",
+          "Rng": 12374944953821701238,
+          "EventDigest": "ca69eccfaef6f532aadd8581077bf291deebaabba842add13a7ba7dad453c514",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "0e4781f8d11985397cfc3bd2a8bb30829bc7a4fb77799eb016948d098a047a91",
+          "Rng": 9395315578852993324,
+          "EventDigest": "1c15cf223474eee9b8aa600f4912e1b33388f408b88b1357a08a5310dfafce90",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "ba648cefd49e75d779e18738688f89964e3889370248d6a4e7e3399efe9136c3",
+          "Rng": 3054182422880247701,
+          "EventDigest": "977717f890e70a5dbb25a7e89ea5adc097758c3e986f74d3afb47df978a60c30",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "2c31261bcb156551e5cfe73cec3ac3de2f8dac2085475ef49efd71eb55b6682e",
+          "Rng": 612883517287540224,
+          "EventDigest": "68415d8be23397c955decf081e0d381083dae307c9bd57b53d4b3ab07926bcac",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "8ff88b016d2194f4f70c0c7de7cb65c27d670a373394133ff05f5ae57baa7f45",
+          "Rng": 13540405506828750618,
+          "EventDigest": "1541c793a42c4988dfe6f908d6c522c711969b6b03d10e0e698b6969ae132ac2",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "920b11ea12c7318cbcf441c22b29d110cf3994c95cc519dc50c877fe1b07c6dd",
+          "Rng": 9100734949284665084,
+          "EventDigest": "cacd8266044d5bd43c620ef2b05cfb1c769cbe21875d6ed537e6afb0fce5132b",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        }
+      ],
+      "OutputDigest": "920b11ea12c7318cbcf441c22b29d110cf3994c95cc519dc50c877fe1b07c6dd",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 354928144,
+          "P95Nanoseconds": 354928144,
+          "P99Nanoseconds": 354928144
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 2050745888,
+          "P95Nanoseconds": 8923732209,
+          "P99Nanoseconds": 8923732209
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 459733399,
+          "P95Nanoseconds": 459733399,
+          "P99Nanoseconds": 459733399
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "hot-columns-due-heap",
+      "Population": 1000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "ac24548545fabd04bc14ba4cb512f34314f35f41b13e691bae88c39ae3ce5700",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 1000,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "ac24548545fabd04bc14ba4cb512f34314f35f41b13e691bae88c39ae3ce5700",
+        "MeasuredOpeningHash": "ac24548545fabd04bc14ba4cb512f34314f35f41b13e691bae88c39ae3ce5700",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 342084834
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 521892528
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 464691527
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 1345554050
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 1271479162
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 1550495109
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 1848554773
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 2046237537
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 3118893385
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 5278989016
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 6423266322
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 7051772680
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 7795315151
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 8738053242
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 127391048
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 601852656
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 171812912
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 1491470560
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 1791036328
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 2173432696
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 2548849944
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 2928378232
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 3605881480
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 4165236432
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 4579271720
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 4992707192
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 5400834608
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 6041139288
+        }
+      ],
+      "P50Nanoseconds": 1848554773,
+      "P95Nanoseconds": 8738053242,
+      "P99Nanoseconds": 8738053242,
+      "ProcessRetainedManagedBytes": 209464488,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "efa701633f60e25c1730d5e358405184db02e7ee2aa8296e976e886ba7a10d5a",
+          "Rng": 255951309216425373,
+          "EventDigest": "312f0af99d182884071ac4dbec772e66a3a4e099886ae9395d59ea5f814bf693",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 1000,
+          "SlotDigest": "d9ef4290a71ed03aa4c92c6063cecb7709c7ace6a9f9a31421f6cb512321ee7b"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "70ee8a0f1a6f69bf98ec307546b9585ac06f64f47452bed163cfda892d3dfbd9",
+          "Rng": 255951309216425373,
+          "EventDigest": "f83f52dbd0e93f8a33c73ffc18188c6a6a2aaeb8363752bd5ffd4b24e601db3f",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 999,
+          "SlotDigest": "34c957eacb7ec8ee7c0c8716b4a5d699856c8fddc6c3000f54596b94dcfb4fdb"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "0bf3a35d52ae53919808d1ededfc19777ec48b2b7f812d9baaae5202c64613f4",
+          "Rng": 1483668231674529035,
+          "EventDigest": "c1efcf906dbaacada87074edcd2bad8a640ccd657069486bab452e19147cb835",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "c6c3040aa07b89093d5fcca4204a62a98d822931c77418a80779bc6ea6bd4248",
+          "Rng": 4586936251066209506,
+          "EventDigest": "02e980ffabc83b8ab7d19f8c9b46e4321202842cbdb2caeee037c363530fd809",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "5685ba2ee329624ca5704e7534fafe54f09619263d9d6bdac5f0415bfcdd359a",
+          "Rng": 5950746664871101747,
+          "EventDigest": "4be04060b1d78a2be0f34906af97010ef84857d26093cd25962e565e9640b777",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "76478226367f5182b28401c7659e79304b13209d3cbeb2e64db785757a3da4b2",
+          "Rng": 15809205526971690166,
+          "EventDigest": "01bde10c224fc7893db45e3a19d43e56af9754f484a6a24b71cea20d7a40a6db",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "c14af8495bc7c16d2824d735980b235d1e997ceb002cd175f6daec73e40bb388",
+          "Rng": 4394922405535874152,
+          "EventDigest": "19699e75324232c88c3213b18a7cf25d6cb921aac21e6d6bb99c52ca6c08cdea",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "3c7b51e12c084efb35156bd0e404d6155f57e8ced546ca01a08d09feb35ccb3b",
+          "Rng": 14470095495765839012,
+          "EventDigest": "b13623d022302051c571481273e52c2b0029e17ff30012d3cd0ab9c3b80672c7",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "9641f6b31f9701ad4b8b7452d4fd597c833be898717a030a399233ac0f88845a",
+          "Rng": 12374944953821701238,
+          "EventDigest": "ca69eccfaef6f532aadd8581077bf291deebaabba842add13a7ba7dad453c514",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "0e4781f8d11985397cfc3bd2a8bb30829bc7a4fb77799eb016948d098a047a91",
+          "Rng": 9395315578852993324,
+          "EventDigest": "1c15cf223474eee9b8aa600f4912e1b33388f408b88b1357a08a5310dfafce90",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 1000,
+          "SlotDigest": "0500582926f5dcfe59d82f95128d03ce42f549e96b8750fa22732c9825c67876"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "ba648cefd49e75d779e18738688f89964e3889370248d6a4e7e3399efe9136c3",
+          "Rng": 3054182422880247701,
+          "EventDigest": "977717f890e70a5dbb25a7e89ea5adc097758c3e986f74d3afb47df978a60c30",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "2c31261bcb156551e5cfe73cec3ac3de2f8dac2085475ef49efd71eb55b6682e",
+          "Rng": 612883517287540224,
+          "EventDigest": "68415d8be23397c955decf081e0d381083dae307c9bd57b53d4b3ab07926bcac",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "8ff88b016d2194f4f70c0c7de7cb65c27d670a373394133ff05f5ae57baa7f45",
+          "Rng": 13540405506828750618,
+          "EventDigest": "1541c793a42c4988dfe6f908d6c522c711969b6b03d10e0e698b6969ae132ac2",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "920b11ea12c7318cbcf441c22b29d110cf3994c95cc519dc50c877fe1b07c6dd",
+          "Rng": 9100734949284665084,
+          "EventDigest": "cacd8266044d5bd43c620ef2b05cfb1c769cbe21875d6ed537e6afb0fce5132b",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 1001,
+          "SlotDigest": "4c72941ebc8f9adf625dd858fc861bdac390f8b9cb80ff70ffce3ef6eb69f780"
+        }
+      ],
+      "OutputDigest": "920b11ea12c7318cbcf441c22b29d110cf3994c95cc519dc50c877fe1b07c6dd",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 342084834,
+          "P95Nanoseconds": 342084834,
+          "P99Nanoseconds": 342084834
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 2046237537,
+          "P95Nanoseconds": 8738053242,
+          "P99Nanoseconds": 8738053242
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 464691527,
+          "P95Nanoseconds": 464691527,
+          "P99Nanoseconds": 464691527
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "original-person-array",
+      "Population": 10000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "768210602555cfe31c036a4afe74d50e90d1dfca50c764d21c8d746d47691129",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 10000,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "768210602555cfe31c036a4afe74d50e90d1dfca50c764d21c8d746d47691129",
+        "MeasuredOpeningHash": "768210602555cfe31c036a4afe74d50e90d1dfca50c764d21c8d746d47691129",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 10637629839
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 22145150517
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 12565204139
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 55808177823
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 56674876032
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 51195803475
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 57352816078
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 64770980302
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 64405264585
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 66383102449
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 70156396633
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 71228409240
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 60478437811
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 61710643818
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 1217323896
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 8491548248
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 1639714880
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 31791925200
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 33064690400
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 31968112848
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 34014060000
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 36232218680
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 35617188296
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 36657690600
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 37648590952
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 38709084312
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 35254114472
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 35913594608
+        }
+      ],
+      "P50Nanoseconds": 57352816078,
+      "P95Nanoseconds": 71228409240,
+      "P99Nanoseconds": 71228409240,
+      "ProcessRetainedManagedBytes": 1558264552,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "d8a98067b5c5844ee582d6b634a6b13f4564ec50c7bffdd7c5a6cf7531acfe36",
+          "Rng": 255951309216425373,
+          "EventDigest": "a90f5e8a6b86c0de007a4870fc0ad135446f03a092e2ab06df63b6501f0ae71c",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 10000,
+          "SlotDigest": "28cae6c78a08c9636bd9fb81d87cd4693266ab9332c1c7460848b564d1ce75c6"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "bb1d0258163eadc88df976cb28d13b9f51b8261eceaeae15f4c4c626f9944fe6",
+          "Rng": 255951309216425373,
+          "EventDigest": "a8890ff4a87ace338780377ef71830c6e2a58344e99459e2bd8830edde8b3870",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 9999,
+          "SlotDigest": "5b16c74ee2cb7372ecfd7b98a9ff8342a3aa2543920e4fcab9d149a25552abf3"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "169cefe7233d6081c649a6898b1e6dbc30eebc44f46137fcea5515631f634857",
+          "Rng": 1483668231674529035,
+          "EventDigest": "7894c211e472d5b6419f19f8149adf2d3e304363d0ddc8c6c08a41652beecf0d",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "c2e7e917bb61fcef28d0c8463918400141a50e6472e99cc6cc0e15e37641efbb",
+          "Rng": 1483668231674529035,
+          "EventDigest": "8293e55cfe91eab9d649d042d72ef5a18dc5292b24359e3c717d594d9c065c4a",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "0141e334083d4a1be433e65d95889977958b148ae4dec9d2bd619bbfc43d162d",
+          "Rng": 1483668231674529035,
+          "EventDigest": "305c613eb0affb19fd374bee9016e2b93005408550dd32a3e6dab85c4b5612d9",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "b51500247374cd2b6c459354015f5dcf3f205c29a7f21e9c1da6397c3711d9f7",
+          "Rng": 1483668231674529035,
+          "EventDigest": "19f199a6501c8674776f3bf4a2ca14e8105a7cc5ba05feb32d8e9199f9409047",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "5c01e66501643265a7a7190cdc340decf371a03ec4b2d385f64cc50e2a5ed1d7",
+          "Rng": 1483668231674529035,
+          "EventDigest": "d3015d2f1e8b14babf4c92c0b82b68b6f573a9dbf593d05cf744945056454126",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "e303a23e652a50ecc12c5033505b7d99a9cfcadc1e498d8dd59c1441a5863bea",
+          "Rng": 1483668231674529035,
+          "EventDigest": "08f61e64cf1311487034ee980c151e0f79ea5a2b5d4597a05074198f760a6628",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "eb4e8d82f284a850258373c59de068a4069492d9b2e764c391d31df7263c599b",
+          "Rng": 1483668231674529035,
+          "EventDigest": "12e0d15e89adf0fc7916e3a071f3b09e0c48a17ff3c6eb64c4944da8069f6036",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "8d3ca3307f156b7d6ecf53520d89e86abaaa94b2d6c5951fe885053d35be14a5",
+          "Rng": 1483668231674529035,
+          "EventDigest": "5c8e80a2893f3a739eabba0f5e3048b731dcbf50894de1faa4ab007a19dd7d21",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "8749ba680aff902f07b61994b3828daefc3e06a6cebf33153c145f6668372d95",
+          "Rng": 8785078353787533660,
+          "EventDigest": "abeefc9b0383bd512dedf280e553bc1975f0ce875e169faa6d861154a4c4ccef",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "c46c149b4a1e63b5123be68455b529f9c5760cd01b6e571584e6630282ecabaa",
+          "Rng": 8785078353787533660,
+          "EventDigest": "080b072bc22d9e62fbbc83a869311ad10982fe91c75e68dd0a3b26b9c2b4f72e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "1c5a1b57d095ceb6404d1b93f7a3068a14fb2135550f8cd9597c2c882a106345",
+          "Rng": 8785078353787533660,
+          "EventDigest": "9bef1428d1f596e5f9d366924bff2293f41694a0b107647e9547f4e53a67f0b5",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "9bc28b5c7da9e8ae2986af26549cc41c890623be474ae54f9ac0d3d4158490af",
+          "Rng": 7359995053743816970,
+          "EventDigest": "746701a7b801c9650a503894cdb4c63a1f999bf3b809d36c6eef85efa3c7a34e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        }
+      ],
+      "OutputDigest": "9bc28b5c7da9e8ae2986af26549cc41c890623be474ae54f9ac0d3d4158490af",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 10637629839,
+          "P95Nanoseconds": 10637629839,
+          "P99Nanoseconds": 10637629839
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 60478437811,
+          "P95Nanoseconds": 71228409240,
+          "P99Nanoseconds": 71228409240
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 12565204139,
+          "P95Nanoseconds": 12565204139,
+          "P99Nanoseconds": 12565204139
+        }
+      ]
+    },
+    {
+      "Experiment": "EX-02",
+      "Variant": "hot-columns-due-heap",
+      "Population": 10000,
+      "Repetition": 0,
+      "Measurement": {
+        "ProductSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+        "FixtureHash": "768210602555cfe31c036a4afe74d50e90d1dfca50c764d21c8d746d47691129",
+        "CommandHash": "e17516e78b60f52c8f612e40d086445167b2692bb4e2dcd627b0cea1d0a24e0e",
+        "KernelVersion": "actual-world-step-and-commands-v1",
+        "BatchLength": 10000,
+        "SupportedFeatures": "single-writer;integer;current typed adapters",
+        "Runtime": ".NET 10.0.14",
+        "Device": "runnervm48cm3",
+        "WarmupOpeningHash": "768210602555cfe31c036a4afe74d50e90d1dfca50c764d21c8d746d47691129",
+        "MeasuredOpeningHash": "768210602555cfe31c036a4afe74d50e90d1dfca50c764d21c8d746d47691129",
+        "RawSamples": [
+          {
+            "Operation": 0,
+            "Nanoseconds": 10744570256
+          },
+          {
+            "Operation": 1,
+            "Nanoseconds": 22329134401
+          },
+          {
+            "Operation": 2,
+            "Nanoseconds": 12588354590
+          },
+          {
+            "Operation": 3,
+            "Nanoseconds": 54929936830
+          },
+          {
+            "Operation": 4,
+            "Nanoseconds": 56993029183
+          },
+          {
+            "Operation": 5,
+            "Nanoseconds": 52356504685
+          },
+          {
+            "Operation": 6,
+            "Nanoseconds": 55970749456
+          },
+          {
+            "Operation": 7,
+            "Nanoseconds": 62258734506
+          },
+          {
+            "Operation": 8,
+            "Nanoseconds": 64349794867
+          },
+          {
+            "Operation": 9,
+            "Nanoseconds": 66822047437
+          },
+          {
+            "Operation": 10,
+            "Nanoseconds": 70215929090
+          },
+          {
+            "Operation": 11,
+            "Nanoseconds": 72252487368
+          },
+          {
+            "Operation": 12,
+            "Nanoseconds": 60759399562
+          },
+          {
+            "Operation": 13,
+            "Nanoseconds": 62513634630
+          }
+        ],
+        "Decision": "revisit",
+        "Rationale": "\uC2E4\uC81C \uC6D0\uC2DC \uD45C\uBCF8\uACFC \uC815\uD655\uC131 \uACB0\uACFC\uB2E4. \uC790\uB3D9 \uC18D\uB3C4 \uCC44\uD0DD/\uC608\uC0B0 \uD310\uC815\uC744 \uD558\uC9C0 \uC54A\uC73C\uBA70 \uC804\uCCB4 \uBE44\uC6A9\uACFC \uC720\uC9C0\uBE44\uC758 \uBCC4\uB3C4 \uAC80\uD1A0\uAC00 \uD544\uC694\uD558\uB2E4."
+      },
+      "Allocations": [
+        {
+          "Operation": 0,
+          "CurrentThreadBytes": 1217387672
+        },
+        {
+          "Operation": 1,
+          "CurrentThreadBytes": 8492120680
+        },
+        {
+          "Operation": 2,
+          "CurrentThreadBytes": 1639777696
+        },
+        {
+          "Operation": 3,
+          "CurrentThreadBytes": 31808158824
+        },
+        {
+          "Operation": 4,
+          "CurrentThreadBytes": 33077656224
+        },
+        {
+          "Operation": 5,
+          "CurrentThreadBytes": 31981091808
+        },
+        {
+          "Operation": 6,
+          "CurrentThreadBytes": 34026998208
+        },
+        {
+          "Operation": 7,
+          "CurrentThreadBytes": 36245157824
+        },
+        {
+          "Operation": 8,
+          "CurrentThreadBytes": 35630112456
+        },
+        {
+          "Operation": 9,
+          "CurrentThreadBytes": 36670665728
+        },
+        {
+          "Operation": 10,
+          "CurrentThreadBytes": 37661678704
+        },
+        {
+          "Operation": 11,
+          "CurrentThreadBytes": 38722047080
+        },
+        {
+          "Operation": 12,
+          "CurrentThreadBytes": 35267057168
+        },
+        {
+          "Operation": 13,
+          "CurrentThreadBytes": 35926577408
+        }
+      ],
+      "P50Nanoseconds": 56993029183,
+      "P95Nanoseconds": 72252487368,
+      "P99Nanoseconds": 72252487368,
+      "ProcessRetainedManagedBytes": 1560796040,
+      "OperationLabels": [
+        "command:conceive:ex02:actual-pregnancy",
+        "advance:1",
+        "command:create:ex02:actual-arrival-after-death",
+        "advance:2",
+        "advance:3",
+        "advance:4",
+        "advance:5",
+        "advance:6",
+        "advance:7",
+        "advance:8",
+        "advance:9",
+        "advance:10",
+        "advance:11",
+        "advance:12"
+      ],
+      "Scope": "\uAC01 \uC2E4\uC81C AdvanceTo \uD55C \uB2EC \uBC0F \uACF5\uAC1C \uBA85\uB839 Execute \uC804\uCCB4. \uC5F4 \uAC31\uC2E0\u00B7\uD799 \uC7AC\uC870\uC815/\uC815\uB9AC\u00B7fingerprint\u00B7\uBC30\uCE58/\uC2A4\uCE7C\uB77C \uAC80\uC99D\u00B7\uAC8C\uC2DC\uB97C \uD3EC\uD568\uD55C\uB2E4.",
+      "Excluded": "\uCD08\uAE30 fixture/restore, \uB3C5\uB9BD \uC804\uCCB4 12\uAC1C\uC6D4 \uC608\uC5F4, \uACBD\uACC4 clone/hash/\uC0AC\uAC74\u00B7\uC2AC\uB86F digest, \uCD5C\uC885 \uBD88\uBCC0\uC2DD/\uBCF4\uACE0/GC\uB294 raw \uD45C\uBCF8 \uBC16\uC774\uB2E4. \uBCF4\uC720 \uBA54\uBAA8\uB9AC\uB294 \uACF5\uD1B5 fixture\uC640 \uC2E4\uC81C \uC138\uACC4 \uBC0F \uC791\uC740 \uACB0\uACFC\uAC00 \uB0A8\uC740 \uC804\uCCB4 \uD504\uB85C\uC138\uC2A4 \uAD00\uB9AC \uD799\uC774\uBA70 \uC138\uACC4\uBCC4 \uADC0\uC18D\uAC12\uC774 \uC544\uB2C8\uB2E4.",
+      "Boundaries": [
+        {
+          "Operation": 0,
+          "Month": 0,
+          "StateHash": "d8a98067b5c5844ee582d6b634a6b13f4564ec50c7bffdd7c5a6cf7531acfe36",
+          "Rng": 255951309216425373,
+          "EventDigest": "a90f5e8a6b86c0de007a4870fc0ad135446f03a092e2ab06df63b6501f0ae71c",
+          "Births": 0,
+          "Deaths": 0,
+          "Living": 10000,
+          "SlotDigest": "28cae6c78a08c9636bd9fb81d87cd4693266ab9332c1c7460848b564d1ce75c6"
+        },
+        {
+          "Operation": 1,
+          "Month": 1,
+          "StateHash": "bb1d0258163eadc88df976cb28d13b9f51b8261eceaeae15f4c4c626f9944fe6",
+          "Rng": 255951309216425373,
+          "EventDigest": "a8890ff4a87ace338780377ef71830c6e2a58344e99459e2bd8830edde8b3870",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 9999,
+          "SlotDigest": "5b16c74ee2cb7372ecfd7b98a9ff8342a3aa2543920e4fcab9d149a25552abf3"
+        },
+        {
+          "Operation": 2,
+          "Month": 1,
+          "StateHash": "169cefe7233d6081c649a6898b1e6dbc30eebc44f46137fcea5515631f634857",
+          "Rng": 1483668231674529035,
+          "EventDigest": "7894c211e472d5b6419f19f8149adf2d3e304363d0ddc8c6c08a41652beecf0d",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 3,
+          "Month": 2,
+          "StateHash": "c2e7e917bb61fcef28d0c8463918400141a50e6472e99cc6cc0e15e37641efbb",
+          "Rng": 1483668231674529035,
+          "EventDigest": "8293e55cfe91eab9d649d042d72ef5a18dc5292b24359e3c717d594d9c065c4a",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 4,
+          "Month": 3,
+          "StateHash": "0141e334083d4a1be433e65d95889977958b148ae4dec9d2bd619bbfc43d162d",
+          "Rng": 1483668231674529035,
+          "EventDigest": "305c613eb0affb19fd374bee9016e2b93005408550dd32a3e6dab85c4b5612d9",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 5,
+          "Month": 4,
+          "StateHash": "b51500247374cd2b6c459354015f5dcf3f205c29a7f21e9c1da6397c3711d9f7",
+          "Rng": 1483668231674529035,
+          "EventDigest": "19f199a6501c8674776f3bf4a2ca14e8105a7cc5ba05feb32d8e9199f9409047",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 6,
+          "Month": 5,
+          "StateHash": "5c01e66501643265a7a7190cdc340decf371a03ec4b2d385f64cc50e2a5ed1d7",
+          "Rng": 1483668231674529035,
+          "EventDigest": "d3015d2f1e8b14babf4c92c0b82b68b6f573a9dbf593d05cf744945056454126",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 7,
+          "Month": 6,
+          "StateHash": "e303a23e652a50ecc12c5033505b7d99a9cfcadc1e498d8dd59c1441a5863bea",
+          "Rng": 1483668231674529035,
+          "EventDigest": "08f61e64cf1311487034ee980c151e0f79ea5a2b5d4597a05074198f760a6628",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 8,
+          "Month": 7,
+          "StateHash": "eb4e8d82f284a850258373c59de068a4069492d9b2e764c391d31df7263c599b",
+          "Rng": 1483668231674529035,
+          "EventDigest": "12e0d15e89adf0fc7916e3a071f3b09e0c48a17ff3c6eb64c4944da8069f6036",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 9,
+          "Month": 8,
+          "StateHash": "8d3ca3307f156b7d6ecf53520d89e86abaaa94b2d6c5951fe885053d35be14a5",
+          "Rng": 1483668231674529035,
+          "EventDigest": "5c8e80a2893f3a739eabba0f5e3048b731dcbf50894de1faa4ab007a19dd7d21",
+          "Births": 0,
+          "Deaths": 1,
+          "Living": 10000,
+          "SlotDigest": "8969e154cf52e4cc98f6068a6f47ad63e06fbd0e0b2acec453bfb94606b325cf"
+        },
+        {
+          "Operation": 10,
+          "Month": 9,
+          "StateHash": "8749ba680aff902f07b61994b3828daefc3e06a6cebf33153c145f6668372d95",
+          "Rng": 8785078353787533660,
+          "EventDigest": "abeefc9b0383bd512dedf280e553bc1975f0ce875e169faa6d861154a4c4ccef",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        },
+        {
+          "Operation": 11,
+          "Month": 10,
+          "StateHash": "c46c149b4a1e63b5123be68455b529f9c5760cd01b6e571584e6630282ecabaa",
+          "Rng": 8785078353787533660,
+          "EventDigest": "080b072bc22d9e62fbbc83a869311ad10982fe91c75e68dd0a3b26b9c2b4f72e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        },
+        {
+          "Operation": 12,
+          "Month": 11,
+          "StateHash": "1c5a1b57d095ceb6404d1b93f7a3068a14fb2135550f8cd9597c2c882a106345",
+          "Rng": 8785078353787533660,
+          "EventDigest": "9bef1428d1f596e5f9d366924bff2293f41694a0b107647e9547f4e53a67f0b5",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        },
+        {
+          "Operation": 13,
+          "Month": 12,
+          "StateHash": "9bc28b5c7da9e8ae2986af26549cc41c890623be474ae54f9ac0d3d4158490af",
+          "Rng": 7359995053743816970,
+          "EventDigest": "746701a7b801c9650a503894cdb4c63a1f999bf3b809d36c6eef85efa3c7a34e",
+          "Births": 1,
+          "Deaths": 1,
+          "Living": 10001,
+          "SlotDigest": "5d435e726c3f40aaf929d343f5be804cd6c0b7baf07cc4ea66e261b4c17567f2"
+        }
+      ],
+      "OutputDigest": "9bc28b5c7da9e8ae2986af26549cc41c890623be474ae54f9ac0d3d4158490af",
+      "Distributions": [
+        {
+          "OperationKind": "command:conceive",
+          "Samples": 1,
+          "P50Nanoseconds": 10744570256,
+          "P95Nanoseconds": 10744570256,
+          "P99Nanoseconds": 10744570256
+        },
+        {
+          "OperationKind": "advance-one-month",
+          "Samples": 12,
+          "P50Nanoseconds": 60759399562,
+          "P95Nanoseconds": 72252487368,
+          "P99Nanoseconds": 72252487368
+        },
+        {
+          "OperationKind": "command:create",
+          "Samples": 1,
+          "P50Nanoseconds": 12588354590,
+          "P95Nanoseconds": 12588354590,
+          "P99Nanoseconds": 12588354590
+        }
+      ]
+    }
+  ],
+  "adoption": "revisit",
+  "mandatory_population_baseline_replacement": false,
+  "note": "EX02 \uBCC4\uB3C4 \uC0DD\uC0AC \uACBD\uACC4 \uCD08\uAE30\uC870\uAC74\uC740 \uAE30\uBCF8 \uC778\uAD6C \uAE30\uC900\uC120\uC744 \uB300\uCCB4\uD558\uC9C0 \uC54A\uB294\uB2E4. \uC804\uCCB4\uC2DC\uAC04\uC740 \uC18C\uC2A4\uD655\uC778/fixture/\uC608\uC5F4/GC/\uC55E\uC120 \uBCF4\uACE0\uC4F0\uAE30\uB97C \uD3EC\uD568\uD558\uBA70 \uB9C8\uC9C0\uB9C9 \uBCF4\uACE0\uC4F0\uAE30\uB9CC \uC81C\uC678\uD55C\uB2E4. \uBD80\uBD84\uADDC\uBAA8\uB294 complete\uAC00 \uC544\uB2C8\uB2E4. \uC2E4\uC81C \uD45C\uBCF8 \uC678 \uBE44\uC6A9\u00B7\uD50C\uB7AB\uD3FC\u00B7\uC804\uB7B5 \uCC44\uD0DD\uC744 \uC8FC\uC7A5\uD558\uC9C0 \uC54A\uB294\uB2E4."
+}

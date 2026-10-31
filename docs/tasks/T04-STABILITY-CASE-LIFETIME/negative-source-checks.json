@@ -1,0 +1,12 @@
+[
+  {
+    "case": "weakened-checkpoints",
+    "rejected": true,
+    "exitCode": -6
+  },
+  {
+    "case": "returned-world",
+    "rejected": true,
+    "exitCode": -6
+  }
+]

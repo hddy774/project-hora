@@ -1,0 +1,174 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+RESULT 1/1
+PERF-BEGIN 2: 실제 fixture·독립 예열 시작
+PERF-STAGE 2: warmup_fixture
+PERF-STAGE 2: warmup_restore
+PERF-STAGE 2: warmup_hash
+PERF-STAGE 2: warmup_month_1
+PERF-STAGE 2: warmup_month_2
+PERF-STAGE 2: measured_fixture
+PERF-STAGE 2: measured_restore
+PERF-STAGE 2: opening_hash
+PERF-STAGE 2: opening_heap_collection
+PERF-STAGE 2: advancing_month_1
+PERF-MONTH 2: 1/12 · 61.8ms
+PERF-STAGE 2: advancing_month_2
+PERF-MONTH 2: 2/12 · 81.9ms
+PERF-STAGE 2: advancing_month_3
+PERF-MONTH 2: 3/12 · 134.0ms
+PERF-STAGE 2: advancing_month_4
+PERF-MONTH 2: 4/12 · 127.5ms
+PERF-STAGE 2: advancing_month_5
+PERF-MONTH 2: 5/12 · 141.1ms
+PERF-STAGE 2: advancing_month_6
+PERF-MONTH 2: 6/12 · 154.8ms
+PERF-STAGE 2: advancing_month_7
+PERF-MONTH 2: 7/12 · 182.1ms
+PERF-STAGE 2: advancing_month_8
+PERF-MONTH 2: 8/12 · 203.8ms
+PERF-STAGE 2: advancing_month_9
+PERF-MONTH 2: 9/12 · 224.1ms
+PERF-STAGE 2: advancing_month_10
+PERF-MONTH 2: 10/12 · 241.5ms
+PERF-STAGE 2: advancing_month_11
+PERF-MONTH 2: 11/12 · 251.5ms
+PERF-STAGE 2: advancing_month_12
+PERF-MONTH 2: 12/12 · 263.5ms
+PERF-STAGE 2: final_heap_collection
+PERF-STAGE 2: final_checkpoint_validation
+PERF-STAGE 2: query
+PERF-STAGE 2: save_encode
+PERF-STAGE 2: load_decode
+PERF-STAGE 2: roundtrip_hash_and_cognition
+PERF 2: advance 12mo=2067.7ms, query=36.8ms, save=185.9ms
+PERF-BEGIN 100: 실제 fixture·독립 예열 시작
+PERF-STAGE 100: warmup_fixture
+PERF-STAGE 100: warmup_restore
+PERF-STAGE 100: warmup_hash
+PERF-STAGE 100: warmup_month_1
+PERF-STAGE 100: warmup_month_2
+PERF-STAGE 100: measured_fixture
+PERF-STAGE 100: measured_restore
+PERF-STAGE 100: opening_hash
+PERF-STAGE 100: opening_heap_collection
+PERF-STAGE 100: advancing_month_1
+PERF-MONTH 100: 1/12 · 99.6ms
+PERF-STAGE 100: advancing_month_2
+PERF-MONTH 100: 2/12 · 332.6ms
+PERF-STAGE 100: advancing_month_3
+PERF-MONTH 100: 3/12 · 421.2ms
+PERF-STAGE 100: advancing_month_4
+PERF-MONTH 100: 4/12 · 498.8ms
+PERF-STAGE 100: advancing_month_5
+PERF-MONTH 100: 5/12 · 702.2ms
+PERF-STAGE 100: advancing_month_6
+PERF-MONTH 100: 6/12 · 942.4ms
+PERF-STAGE 100: advancing_month_7
+PERF-MONTH 100: 7/12 · 1026.5ms
+PERF-STAGE 100: advancing_month_8
+PERF-MONTH 100: 8/12 · 1557.4ms
+PERF-STAGE 100: advancing_month_9
+PERF-MONTH 100: 9/12 · 1713.0ms
+PERF-STAGE 100: advancing_month_10
+PERF-MONTH 100: 10/12 · 1829.7ms
+PERF-STAGE 100: advancing_month_11
+PERF-MONTH 100: 11/12 · 1533.5ms
+PERF-STAGE 100: advancing_month_12
+PERF-MONTH 100: 12/12 · 2035.3ms
+PERF-STAGE 100: final_heap_collection
+PERF-STAGE 100: final_checkpoint_validation
+PERF-STAGE 100: query
+PERF-STAGE 100: save_encode
+PERF-STAGE 100: load_decode
+PERF-STAGE 100: roundtrip_hash_and_cognition
+PERF 100: advance 12mo=12692.2ms, query=48.0ms, save=1230.5ms
+PERF-BEGIN 1000: 실제 fixture·독립 예열 시작
+PERF-STAGE 1000: warmup_fixture
+PERF-STAGE 1000: warmup_restore
+PERF-STAGE 1000: warmup_hash
+PERF-STAGE 1000: warmup_month_1
+PERF-STAGE 1000: warmup_month_2
+PERF-STAGE 1000: measured_fixture
+PERF-STAGE 1000: measured_restore
+PERF-STAGE 1000: opening_hash
+PERF-STAGE 1000: opening_heap_collection
+PERF-STAGE 1000: advancing_month_1
+PERF-MONTH 1000: 1/12 · 1257.9ms
+PERF-STAGE 1000: advancing_month_2
+PERF-MONTH 1000: 2/12 · 1854.3ms
+PERF-STAGE 1000: advancing_month_3
+PERF-MONTH 1000: 3/12 · 2394.0ms
+PERF-STAGE 1000: advancing_month_4
+PERF-MONTH 1000: 4/12 · 3392.6ms
+PERF-STAGE 1000: advancing_month_5
+PERF-MONTH 1000: 5/12 · 4045.5ms
+PERF-STAGE 1000: advancing_month_6
+PERF-MONTH 1000: 6/12 · 3931.0ms
+PERF-STAGE 1000: advancing_month_7
+PERF-MONTH 1000: 7/12 · 3575.6ms
+PERF-STAGE 1000: advancing_month_8
+PERF-MONTH 1000: 8/12 · 6031.4ms
+PERF-STAGE 1000: advancing_month_9
+PERF-MONTH 1000: 9/12 · 8053.0ms
+PERF-STAGE 1000: advancing_month_10
+PERF-MONTH 1000: 10/12 · 9074.0ms
+PERF-STAGE 1000: advancing_month_11
+PERF-MONTH 1000: 11/12 · 9410.4ms
+PERF-STAGE 1000: advancing_month_12
+PERF-MONTH 1000: 12/12 · 10671.6ms
+PERF-STAGE 1000: final_heap_collection
+PERF-STAGE 1000: final_checkpoint_validation
+PERF-STAGE 1000: query
+PERF-STAGE 1000: save_encode
+PERF-STAGE 1000: load_decode
+PERF-STAGE 1000: roundtrip_hash_and_cognition
+PERF 1000: advance 12mo=63691.3ms, query=163.7ms, save=3055.5ms
+PERF-BEGIN 10000: 실제 fixture·독립 예열 시작
+PERF-STAGE 10000: warmup_fixture
+PERF-STAGE 10000: warmup_restore
+PERF-STAGE 10000: warmup_hash
+PERF-STAGE 10000: warmup_month_1
+PERF-STAGE 10000: warmup_month_2
+PERF-STAGE 10000: measured_fixture
+PERF-STAGE 10000: measured_restore
+PERF-STAGE 10000: opening_hash
+PERF-STAGE 10000: opening_heap_collection
+PERF-STAGE 10000: advancing_month_1
+PERF-MONTH 10000: 1/12 · 242025.8ms
+PERF-STAGE 10000: advancing_month_2
+PERF-MONTH 10000: 2/12 · 260712.5ms
+PERF-STAGE 10000: advancing_month_3
+PERF-MONTH 10000: 3/12 · 265511.8ms
+PERF-STAGE 10000: advancing_month_4
+PERF-MONTH 10000: 4/12 · 230333.8ms
+PERF-STAGE 10000: advancing_month_5
+PERF-MONTH 10000: 5/12 · 195674.0ms
+PERF-STAGE 10000: advancing_month_6
+PERF-MONTH 10000: 6/12 · 168182.9ms
+PERF-STAGE 10000: advancing_month_7
+PERF-MONTH 10000: 7/12 · 87455.8ms
+PERF-STAGE 10000: advancing_month_8
+PERF-MONTH 10000: 8/12 · 85325.4ms
+PERF-STAGE 10000: advancing_month_9
+PERF-MONTH 10000: 9/12 · 88866.3ms
+PERF-STAGE 10000: advancing_month_10
+PERF-MONTH 10000: 10/12 · 116212.9ms
+PERF-STAGE 10000: advancing_month_11
+PERF-MONTH 10000: 11/12 · 103311.8ms
+PERF-STAGE 10000: advancing_month_12
+PERF-MONTH 10000: 12/12 · 107052.2ms
+PERF-STAGE 10000: final_heap_collection
+PERF-STAGE 10000: final_checkpoint_validation
+PERF-STAGE 10000: query
+PERF-STAGE 10000: save_encode
+Unhandled exception. System.ArgumentException: The JSON value of length 398228383 is too large and not supported.
+   at System.Text.Json.ThrowHelper.ThrowArgumentException_ValueTooLarge(Int64 tokenLength)
+   at System.Text.Json.Serialization.Metadata.JsonPropertyInfo`1.GetMemberAndWriteJson(Object obj, WriteStack& state, Utf8JsonWriter writer)
+   at System.Text.Json.Serialization.Converters.ObjectDefaultConverter`1.OnTryWrite(Utf8JsonWriter writer, T value, JsonSerializerOptions options, WriteStack& state)
+   at System.Text.Json.Serialization.JsonConverter`1.WriteCore(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state)
+   at System.Text.Json.JsonSerializer.SerializeToUtf8Bytes[TValue](TValue value, JsonSerializerOptions options)
+   at Chronicles.Game.GameCodec.Encode(GameWorld world, Int64 sequence) in /workspace/seonro-final-9263756/src/Chronicles.Game/GameCodec.cs:line 48
+   at Chronicles.Game.GameCodec.Encode(GameWorld world) in /workspace/seonro-final-9263756/src/Chronicles.Game/GameCodec.cs:line 41
+   at PerformanceScenarios.MeasurePopulation(Int32 size, Boolean inventoryProjectionExperiment, Boolean inventoryTypedCopyExperiment, Action`2 progress, Action`1 stage) in /workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/PerformanceScenarios.cs:line 81
+   at PerformanceScenarios.Run(String path, Nullable`1 population, Boolean inventoryProjectionExperiment, Boolean inventoryTypedCopyExperiment) in /workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/PerformanceScenarios.cs:line 33
+   at Program.<Main>$(String[] args) in /workspace/seonro-final-9263756/tests/Chronicles.Game.Tests/Program.cs:line 355

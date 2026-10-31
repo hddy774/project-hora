@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "observed_utc": "2026-10-30T21:49:14Z",
+  "repository": "hddy774/project-hora",
+  "request_scope": "읽기 전용 원인분리·원문 보존. 제품/게이트/제한시간/워크플로 수정·재실행·새 네이티브 실행 없음.",
+  "run": {
+    "id": 41132328410,
+    "url": "https://github.com/hddy774/project-hora/actions/runs/41132328410",
+    "attempt": 1,
+    "event": "pull_request",
+    "head": "8a7f23f7b53e79c8bbfe583bcbf375d494851cff",
+    "status": "completed",
+    "conclusion": "failure"
+  },
+  "checkout": {
+    "actual": "360eb097cfade5c29c1a00fea4080e232d5652e9",
+    "event_head": "8a7f23f7b53e79c8bbfe583bcbf375d494851cff",
+    "actual_tree": "992f288df34e99a0009c69950b221ce512f2396f",
+    "head_tree": "992f288df34e99a0009c69950b221ce512f2396f",
+    "trees_identical": true,
+    "head_commit_changed_files": [
+      "docs/release-notes-v0.2.1.md"
+    ]
+  },
+  "product_fingerprint": {
+    "value": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+    "source": "루트가 확인한 동일 제품 지문. 이 진단에서 지문을 재계산하지 않음."
+  },
+  "jobs": [
+    {
+      "id": 124326069073,
+      "name": "이식형 제품 검증",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T21:36:44Z",
+      "completed_at": "2026-10-30T21:45:50Z",
+      "runner_name": "GitHub Actions 1000002641",
+      "failed_steps": []
+    },
+    {
+      "id": 124326069182,
+      "name": "윈도우 회귀·실제 화면 검증",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-10-30T21:36:45Z",
+      "completed_at": "2026-10-30T21:38:43Z",
+      "runner_name": "GitHub Actions 1000002639",
+      "failed_steps": [
+        {
+          "name": "데스크톱 실제 화면·코어 연결 검증",
+          "number": 7,
+          "started_at": "2026-10-30T21:37:48Z",
+          "completed_at": "2026-10-30T21:38:38Z"
+        }
+      ]
+    },
+    {
+      "id": 124326069190,
+      "name": "안드로이드 빌드·실제 실행 검증",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-30T21:36:44Z",
+      "completed_at": "2026-10-30T21:40:19Z",
+      "runner_name": "GitHub Actions 1000002640",
+      "failed_steps": []
+    }
+  ],
+  "windows": {
+    "job_id": 124326069182,
+    "build_errors": 0,
+    "smoke_wait_ms": 45000,
+    "step_started_at": "2026-10-30T21:37:48Z",
+    "failure_logged_at": "2026-10-30T21:38:37.9876931Z",
+    "outcome": "Desktop smoke timeout",
+    "process_killed_by_wrapper": true,
+    "render_diagnostic_in_log": false,
+    "windows_artifact": false,
+    "runner_image": "windows-2025-vs2026",
+    "runner_image_version": "20261030.294.1",
+    "os": "Microsoft Windows Server 2025 10.0.26100",
+    "region": "westus",
+    "sdk": "10.0.403",
+    "runtime": "10.0.14",
+    "underlying_cause": "불명"
+  },
+  "hypotheses": {
+    "observed_environment_difference": "성공 비교 2건은 20261021.278.1, 실패는 20261030.294.1 이미지. 원인으로 확정하지 않음.",
+    "not_observable": [
+      "WebView2 생성/초기화 진척",
+      "앱 시작 예외 또는 메시지 대화상자",
+      "WebView 런타임 설치 버전",
+      "네이티브 UI/연결 진단 JSON",
+      "프로세스 stdout/stderr 및 해당 시점 상태"
+    ],
+    "source_boundary": "smoke JSON은 NavigationCompleted 후 실행되며, 기존 product wrapper는 timeout throw 뒤 Get-Content에 도달하지 않는다. App 시작 실패 로그/대화상자 및 OnLoaded 대화상자 경로가 있으나 실제 발생 증거 없음."
+  },
+  "comparisons": [
+    {
+      "pr": 213,
+      "run_id": 41131121103,
+      "job_id": 124321984975,
+      "head": "42ebf359de90c3b3f00292bf6703e359b378f630",
+      "log": "comparison-pr213-windows-job124321984975.log",
+      "image_version": "20261021.278.1",
+      "region": "centralus",
+      "passed": true
+    },
+    {
+      "pr": 214,
+      "run_id": 41131877137,
+      "job_id": 124324550162,
+      "head": "38681979c3692d0fee3d4c857f7e5813df955fe0",
+      "log": "comparison-pr214-windows-job124324550162.log",
+      "image_version": "20261021.278.1",
+      "region": "westus2",
+      "passed": true
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13014775251,
+      "name": "product-evidence",
+      "size_in_bytes": 15621,
+      "digest": "sha256:293d0ec78d533bf5a75e9b243ee7148acea05d1f6cac4c1ad2ea5aaad3c11e0b",
+      "expires_at": "2026-11-02T21:45:46Z"
+    },
+    {
+      "id": 13013598084,
+      "name": "android-validation-apk",
+      "size_in_bytes": 43111772,
+      "digest": "sha256:56884bc9d9cf77769be3a0fab276cbbcaa3e75fefcb49911795b8b77e38aeacc",
+      "expires_at": "2026-11-02T21:40:09Z"
+    },
+    {
+      "id": 13013339121,
+      "name": "android-runtime-evidence",
+      "size_in_bytes": 145569,
+      "digest": "sha256:d4bf2787703a09ba2987cff389444c22d5c0b7cefe62bf075669ed1a49415655",
+      "expires_at": "2026-11-02T21:40:14Z"
+    }
+  ],
+  "retained_release_scope": "공식 보유 인증서·동일 APK의 API24/35·0.2.0 덮어쓰기 업데이트·최종 릴리스 판정과 별개.",
+  "historical_separation": {
+    "earlier_failure": {
+      "head": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+      "run": 41117917658,
+      "job": 124276843674,
+      "cause": "45초 무진단 timeout의 실제 원인 불명"
+    },
+    "earlier_success": {
+      "head": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+      "run": 41120849698,
+      "job": 124286751202
+    },
+    "same_root_cause_claimed": false
+  },
+  "changes_and_runs": {
+    "product": false,
+    "gate": false,
+    "timeout": false,
+    "workflow": false,
+    "rerun": false,
+    "new_native_execution": false
+  }
+}

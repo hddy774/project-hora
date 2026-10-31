@@ -1,0 +1,617 @@
+{
+  "total_count": 5,
+  "jobs": [
+    {
+      "id": 124414816693,
+      "run_id": 41159864831,
+      "workflow_name": "0.2.1 고정 기준선의 단일 법칙 민감도 6조건",
+      "head_branch": "codex/v021-sensitivity-order-only",
+      "run_url": "https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5uMds8AAAAc97NxtQ",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+      "url": "https://api.github.com/repos/hddy774/project-hora/actions/jobs/124414816693",
+      "html_url": "https://github.com/hddy774/project-hora/actions/runs/41159864831/job/124414816693",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-31T02:24:29Z",
+      "started_at": "2026-10-31T02:24:30Z",
+      "completed_at": "2026-10-31T02:24:37Z",
+      "name": "확정 계획과 같은 소스의 실제 기준선9개 고정",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T02:24:31Z",
+          "completed_at": "2026-10-31T02:24:32Z"
+        },
+        {
+          "name": "입력 요청과 체크아웃 밖 경로 기록",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T02:24:32Z",
+          "completed_at": "2026-10-31T02:24:32Z"
+        },
+        {
+          "name": "워크플로와 입력 문서 소스 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T02:24:32Z",
+          "completed_at": "2026-10-31T02:24:33Z"
+        },
+        {
+          "name": "원문 byte를 바꾸지 않고 portable 묶음 고정",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T02:24:33Z",
+          "completed_at": "2026-10-31T02:24:33Z"
+        },
+        {
+          "name": "같은 원문 입력을 세 작업에 전달",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T02:24:33Z",
+          "completed_at": "2026-10-31T02:24:34Z"
+        },
+        {
+          "name": "준비 실패도 요청 출처 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T02:24:34Z",
+          "completed_at": "2026-10-31T02:24:35Z"
+        },
+        {
+          "name": "Post 워크플로와 입력 문서 소스 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-31T02:24:35Z",
+          "completed_at": "2026-10-31T02:24:36Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-10-31T02:24:36Z",
+          "completed_at": "2026-10-31T02:24:36Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/hddy774/project-hora/check-runs/124414816693",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000002895,
+      "runner_name": "GitHub Actions 1000002895",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124414849502,
+      "run_id": 41159864831,
+      "workflow_name": "0.2.1 고정 기준선의 단일 법칙 민감도 6조건",
+      "head_branch": "codex/v021-sensitivity-order-only",
+      "run_url": "https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5uMds8AAAAc97Px3g",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+      "url": "https://api.github.com/repos/hddy774/project-hora/actions/jobs/124414849502",
+      "html_url": "https://github.com/hddy774/project-hora/actions/runs/41159864831/job/124414849502",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-10-31T02:24:37Z",
+      "started_at": "2026-10-31T02:24:39Z",
+      "completed_at": "2026-10-31T06:25:23Z",
+      "name": "단일 법칙 두 값 · 시드 42",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T02:24:40Z",
+          "completed_at": "2026-10-31T02:24:42Z"
+        },
+        {
+          "name": "실제 측정·입력·빌드를 체크아웃 밖에 준비",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T02:24:42Z",
+          "completed_at": "2026-10-31T02:24:42Z"
+        },
+        {
+          "name": "준비한 계획·기준선·실제9원본 먼저 받기",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T02:24:42Z",
+          "completed_at": "2026-10-31T02:24:43Z"
+        },
+        {
+          "name": "고정한 기존 측정 소스7ce 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T02:24:43Z",
+          "completed_at": "2026-10-31T02:24:45Z"
+        },
+        {
+          "name": "기준선과 같은 SDK10.0.403 설치",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T02:24:45Z",
+          "completed_at": "2026-10-31T02:24:57Z"
+        },
+        {
+          "name": "소스·실제 CPU·메모리·쿼터·디스크·런타임 기록",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T02:24:57Z",
+          "completed_at": "2026-10-31T02:24:58Z"
+        },
+        {
+          "name": "모든 출력이 체크아웃 밖인 Release 빌드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-31T02:24:58Z",
+          "completed_at": "2026-10-31T02:25:19Z"
+        },
+        {
+          "name": "측정 전 네 DLL·런타임 설정 원본 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-31T02:25:19Z",
+          "completed_at": "2026-10-31T02:25:19Z"
+        },
+        {
+          "name": "기존 CLI로 해당 시드의 두 반사실 값 관측",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 9,
+          "started_at": "2026-10-31T02:25:19Z",
+          "completed_at": "2026-10-31T06:25:19Z"
+        },
+        {
+          "name": "기존 보고서의 요청2개 완주·단일 법칙·실제 네 DLL 검증",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-10-31T06:25:19Z",
+          "completed_at": "2026-10-31T06:25:19Z"
+        },
+        {
+          "name": "실패·시간 초과에도 원시 partial와 입력·환경·해시 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-31T06:25:19Z",
+          "completed_at": "2026-10-31T06:25:19Z"
+        },
+        {
+          "name": "시드별 실제 원본·입력·실패 기록 업로드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-31T06:25:19Z",
+          "completed_at": "2026-10-31T06:25:21Z"
+        },
+        {
+          "name": "Post 기준선과 같은 SDK10.0.403 설치",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 23,
+          "started_at": "2026-10-31T06:25:21Z",
+          "completed_at": "2026-10-31T06:25:21Z"
+        },
+        {
+          "name": "Post 고정한 기존 측정 소스7ce 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-10-31T06:25:21Z",
+          "completed_at": "2026-10-31T06:25:21Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-10-31T06:25:21Z",
+          "completed_at": "2026-10-31T06:25:21Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/hddy774/project-hora/check-runs/124414849502",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000002898,
+      "runner_name": "GitHub Actions 1000002898",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124414849581,
+      "run_id": 41159864831,
+      "workflow_name": "0.2.1 고정 기준선의 단일 법칙 민감도 6조건",
+      "head_branch": "codex/v021-sensitivity-order-only",
+      "run_url": "https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5uMds8AAAAc97PyLQ",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+      "url": "https://api.github.com/repos/hddy774/project-hora/actions/jobs/124414849581",
+      "html_url": "https://github.com/hddy774/project-hora/actions/runs/41159864831/job/124414849581",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-10-31T02:24:37Z",
+      "started_at": "2026-10-31T02:24:39Z",
+      "completed_at": "2026-10-31T06:25:22Z",
+      "name": "단일 법칙 두 값 · 시드 2026",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T02:24:40Z",
+          "completed_at": "2026-10-31T02:24:42Z"
+        },
+        {
+          "name": "실제 측정·입력·빌드를 체크아웃 밖에 준비",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T02:24:42Z",
+          "completed_at": "2026-10-31T02:24:42Z"
+        },
+        {
+          "name": "준비한 계획·기준선·실제9원본 먼저 받기",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T02:24:42Z",
+          "completed_at": "2026-10-31T02:24:43Z"
+        },
+        {
+          "name": "고정한 기존 측정 소스7ce 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T02:24:43Z",
+          "completed_at": "2026-10-31T02:24:45Z"
+        },
+        {
+          "name": "기준선과 같은 SDK10.0.403 설치",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T02:24:45Z",
+          "completed_at": "2026-10-31T02:24:52Z"
+        },
+        {
+          "name": "소스·실제 CPU·메모리·쿼터·디스크·런타임 기록",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T02:24:52Z",
+          "completed_at": "2026-10-31T02:24:53Z"
+        },
+        {
+          "name": "모든 출력이 체크아웃 밖인 Release 빌드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-31T02:24:53Z",
+          "completed_at": "2026-10-31T02:25:17Z"
+        },
+        {
+          "name": "측정 전 네 DLL·런타임 설정 원본 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-31T02:25:17Z",
+          "completed_at": "2026-10-31T02:25:17Z"
+        },
+        {
+          "name": "기존 CLI로 해당 시드의 두 반사실 값 관측",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 9,
+          "started_at": "2026-10-31T02:25:17Z",
+          "completed_at": "2026-10-31T06:25:17Z"
+        },
+        {
+          "name": "기존 보고서의 요청2개 완주·단일 법칙·실제 네 DLL 검증",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-10-31T06:25:17Z",
+          "completed_at": "2026-10-31T06:25:17Z"
+        },
+        {
+          "name": "실패·시간 초과에도 원시 partial와 입력·환경·해시 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-31T06:25:17Z",
+          "completed_at": "2026-10-31T06:25:18Z"
+        },
+        {
+          "name": "시드별 실제 원본·입력·실패 기록 업로드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-31T06:25:18Z",
+          "completed_at": "2026-10-31T06:25:20Z"
+        },
+        {
+          "name": "Post 기준선과 같은 SDK10.0.403 설치",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 23,
+          "started_at": "2026-10-31T06:25:20Z",
+          "completed_at": "2026-10-31T06:25:20Z"
+        },
+        {
+          "name": "Post 고정한 기존 측정 소스7ce 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-10-31T06:25:20Z",
+          "completed_at": "2026-10-31T06:25:20Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-10-31T06:25:20Z",
+          "completed_at": "2026-10-31T06:25:20Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/hddy774/project-hora/check-runs/124414849581",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000002899,
+      "runner_name": "GitHub Actions 1000002899",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124414849655,
+      "run_id": 41159864831,
+      "workflow_name": "0.2.1 고정 기준선의 단일 법칙 민감도 6조건",
+      "head_branch": "codex/v021-sensitivity-order-only",
+      "run_url": "https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5uMds8AAAAc97Pydw",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+      "url": "https://api.github.com/repos/hddy774/project-hora/actions/jobs/124414849655",
+      "html_url": "https://github.com/hddy774/project-hora/actions/runs/41159864831/job/124414849655",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-10-31T02:24:37Z",
+      "started_at": "2026-10-31T02:24:39Z",
+      "completed_at": "2026-10-31T04:32:35Z",
+      "name": "단일 법칙 두 값 · 시드 98",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T02:24:40Z",
+          "completed_at": "2026-10-31T02:24:42Z"
+        },
+        {
+          "name": "실제 측정·입력·빌드를 체크아웃 밖에 준비",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T02:24:42Z",
+          "completed_at": "2026-10-31T02:24:42Z"
+        },
+        {
+          "name": "준비한 계획·기준선·실제9원본 먼저 받기",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T02:24:42Z",
+          "completed_at": "2026-10-31T02:24:43Z"
+        },
+        {
+          "name": "고정한 기존 측정 소스7ce 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-10-31T02:24:43Z",
+          "completed_at": "2026-10-31T02:24:44Z"
+        },
+        {
+          "name": "기준선과 같은 SDK10.0.403 설치",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T02:24:44Z",
+          "completed_at": "2026-10-31T02:24:52Z"
+        },
+        {
+          "name": "소스·실제 CPU·메모리·쿼터·디스크·런타임 기록",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T02:24:52Z",
+          "completed_at": "2026-10-31T02:24:52Z"
+        },
+        {
+          "name": "모든 출력이 체크아웃 밖인 Release 빌드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-10-31T02:24:52Z",
+          "completed_at": "2026-10-31T02:25:04Z"
+        },
+        {
+          "name": "측정 전 네 DLL·런타임 설정 원본 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-10-31T02:25:04Z",
+          "completed_at": "2026-10-31T02:25:04Z"
+        },
+        {
+          "name": "기존 CLI로 해당 시드의 두 반사실 값 관측",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-10-31T02:25:04Z",
+          "completed_at": "2026-10-31T04:32:30Z"
+        },
+        {
+          "name": "기존 보고서의 요청2개 완주·단일 법칙·실제 네 DLL 검증",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-10-31T04:32:30Z",
+          "completed_at": "2026-10-31T04:32:30Z"
+        },
+        {
+          "name": "실패·시간 초과에도 원시 partial와 입력·환경·해시 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-10-31T04:32:30Z",
+          "completed_at": "2026-10-31T04:32:30Z"
+        },
+        {
+          "name": "시드별 실제 원본·입력·실패 기록 업로드",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-10-31T04:32:30Z",
+          "completed_at": "2026-10-31T04:32:32Z"
+        },
+        {
+          "name": "Post 기준선과 같은 SDK10.0.403 설치",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-10-31T04:32:32Z",
+          "completed_at": "2026-10-31T04:32:32Z"
+        },
+        {
+          "name": "Post 고정한 기존 측정 소스7ce 체크아웃",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-10-31T04:32:32Z",
+          "completed_at": "2026-10-31T04:32:32Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-10-31T04:32:32Z",
+          "completed_at": "2026-10-31T04:32:32Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/hddy774/project-hora/check-runs/124414849655",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000002900,
+      "runner_name": "GitHub Actions 1000002900",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 124465144337,
+      "run_id": 41159864831,
+      "workflow_name": "0.2.1 고정 기준선의 단일 법칙 민감도 6조건",
+      "head_branch": "codex/v021-sensitivity-order-only",
+      "run_url": "https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU5uMds8AAAAc-rNiEQ",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+      "url": "https://api.github.com/repos/hddy774/project-hora/actions/jobs/124465144337",
+      "html_url": "https://github.com/hddy774/project-hora/actions/runs/41159864831/job/124465144337",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-10-31T06:25:23Z",
+      "started_at": "2026-10-31T06:25:26Z",
+      "completed_at": "2026-10-31T06:25:38Z",
+      "name": "원본을 바꾸지 않고 실제6개 완료 확인",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-10-31T06:25:27Z",
+          "completed_at": "2026-10-31T06:25:29Z"
+        },
+        {
+          "name": "수집 요청을 먼저 기록",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-10-31T06:25:29Z",
+          "completed_at": "2026-10-31T06:25:29Z"
+        },
+        {
+          "name": "현재 실행·시도의 세 실제 시드 원본만 수집",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-10-31T06:25:29Z",
+          "completed_at": "2026-10-31T06:25:32Z"
+        },
+        {
+          "name": "세 원본의 두 값씩6개를 확인하고 원문 유지",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-10-31T06:25:32Z",
+          "completed_at": "2026-10-31T06:25:32Z"
+        },
+        {
+          "name": "부분·실패를 포함한 수집 원문과 검증 기록 보존",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-10-31T06:25:32Z",
+          "completed_at": "2026-10-31T06:25:36Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-10-31T06:25:36Z",
+          "completed_at": "2026-10-31T06:25:36Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/hddy774/project-hora/check-runs/124465144337",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000003126,
+      "runner_name": "GitHub Actions 1000003126",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "verified": true,
+  "run_id": 41134808459,
+  "job_id": 124334521684,
+  "workflow_head": "93b28c20b50cfae58de6e2992b1320d295ef06a3",
+  "workflow_event_merge": "b159cd2c5052151bdb3f5c8618236229cedbf70e",
+  "actual_source": "35f33db919f910c9d55c42b61b76459a08688d12",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "source_clean": true,
+  "sdk": "10.0.403",
+  "runtime_10_0_14_in_installed_list": true,
+  "image": {
+    "RunnerOS": "Windows",
+    "ImageVersion": "20261021.278.1",
+    "ImageOS": "win25-vs2026"
+  },
+  "region": "eastus",
+  "native_smoke": {
+    "wait_ms": 45000,
+    "timed_out": false,
+    "exit_code": 0,
+    "wrapper_elapsed_seconds": 7.792463,
+    "passed": true,
+    "actualRenderAndBridge": true,
+    "diagnostic": {
+      "hasView": true,
+      "error": null,
+      "connection": "연결됨",
+      "heading": "만상의 흐름",
+      "source": "https://seonro.local/index.html"
+    },
+    "raw_sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975"
+  },
+  "webview_installed_executables": [
+    {
+      "kind": "installed-executable",
+      "path": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe",
+      "file_version": "155.0.4283.62",
+      "product_version": "155.0.4283.62"
+    }
+  ],
+  "webview_processes": [
+    {
+      "id": 5480,
+      "name": "msedgewebview2",
+      "has_exited": false,
+      "responding": true,
+      "window_title": "",
+      "window_handle": 0,
+      "executable": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.62\\msedgewebview2.exe",
+      "file_version": "155.0.4283.62",
+      "product_version": "155.0.4283.62"
+    },
+    {
+      "id": 6872,
+      "name": "msedgewebview2",
+      "has_exited": true
+    }
+  ],
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "artifact": {
+    "id": 13014867456,
+    "name": "v021-windows-diagnostics-41134808459-1",
+    "size_in_bytes": 2754,
+    "digest": "sha256:9fdbb6584918d2c0e99c895e7e3cb2b5e5d35fff4fa23fb6f14dc40a16661622",
+    "created_at": "2026-10-30T21:59:15Z",
+    "expires_at": "2026-11-13T21:59:14Z"
+  },
+  "files": [
+    {
+      "path": "diagnostics/seonro-smoke-result.json",
+      "bytes": 374,
+      "sha256": "ea6c8db2409358dd1f7269753582643ed81b4c4e39d8165f5607030dde11f975"
+    },
+    {
+      "path": "diagnostics/stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "diagnostics/stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "diagnostics/wrapper-observation.json",
+      "bytes": 2238,
+      "sha256": "5ec42cf0f61f268c604597b3a2e00d9b7c2cc29efdd66ac328b47ba05c4cd1f5"
+    },
+    {
+      "path": "request.json",
+      "bytes": 459,
+      "sha256": "bc840071f825a38809961d48673d674bac5afab7248fad34e681c63128352a0f"
+    },
+    {
+      "path": "runtimes.txt",
+      "bytes": 2478,
+      "sha256": "02ddd298846a379d0ba01621581c27d93b4452e682900f6e9b0fd2b0a917cb12"
+    },
+    {
+      "path": "sdk.txt",
+      "bytes": 10,
+      "sha256": "e4e6a678725873a4192c048849cd64d852983991bfcb210a40c3b80cc8fcf2eb"
+    },
+    {
+      "path": "source.json",
+      "bytes": 197,
+      "sha256": "273d8de2f5b162bfd1054093f73c79bb83cfd533592d57e75e11d23a150eecbb"
+    }
+  ],
+  "limits": [
+    "이번 실행은 이전 이미지20261021.278.1이었다. 새 이미지20261030.294.1의 실패 재현이 아니다.",
+    "94/215의 45초 timeout 실제 원인은 여전히 불명이다.",
+    "Edge 공개 목록을 WebView2 버전으로 대체하지 않았고 실제 설치 및 실행 exe155.0.4283.62를 관측했다.",
+    "추가 설치/업데이트/pin/rerun/새 앱 실행 없음.",
+    "전체 기능/성능, 공식 보유 인증서/동일 APK API24+35/0.2.0 업데이트/게시 판정과 별개다."
+  ]
+}

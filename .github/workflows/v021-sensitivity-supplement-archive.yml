@@ -1,0 +1,76 @@
+name: 0.2.1 보충 민감도 원형 영속 보관
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v021-evidence-sensitivity-41159864831
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    name: 소유자 요청의 고정6ZIP 원형 보관
+    if: >-
+      ${{ github.repository == 'hddy774/project-hora' &&
+          github.actor == 'hddy774' && github.triggering_actor == 'hddy774' &&
+          github.event_name == 'pull_request' && github.event.action == 'labeled' &&
+          github.event.sender.login == 'hddy774' &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.base.repo.full_name == github.repository &&
+          github.event.label.name == 'evidence-archive:v021-sensitivity-41159864831' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+      pull-requests: read
+    env:
+      ARCHIVE_OUTPUT: evidence-supplement-archive-output-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: 요청한 정확한 PR source 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 파이썬 실행 환경 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 가드·원문 무결성·게시 흐름 자체 검사
+        run: python3 .github/evidence/archive_sensitivity.py --self-test
+      - name: 고정 원형 검증과 별도 근거 prerelease 보관
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/evidence/archive_sensitivity.py --execute --supplemental-41159864831 --output "$ARCHIVE_OUTPUT"
+      - name: 보관 요청의 상태·작은 최종 색인 보존
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-supplement-archive-status-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.ARCHIVE_OUTPUT }}/status.json
+            ${{ env.ARCHIVE_OUTPUT }}/sensitivity-artifact-index-41159864831.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: 보관 완료·실패 범위 표시
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          path = pathlib.Path(os.environ['ARCHIVE_OUTPUT']) / 'status.json'
+          status = json.loads(path.read_text()) if path.exists() else {
+              'state': '실패', 'phase': 'self-test 또는 요청 검증', 'error': '완료 index가 없습니다'}
+          lines = ['## 민감도 원형 영속 보관', '', '상태: ' + status['state'],
+                   '단계: ' + status['phase'], '',
+                   '제품 latest/APK·정본 게이트와 별개인 근거 prerelease입니다.']
+          for key in ['release_url', 'index_url', 'index_asset_id', 'index_sha256', 'error']:
+              if key in status:
+                  lines += [key + ': ' + str(status[key])]
+          with pathlib.Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as output:
+              output.write('\n'.join(lines) + '\n')
+          PY

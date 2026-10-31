@@ -1,0 +1,30 @@
+{
+  "total": 111,
+  "completed": 109,
+  "completion_percent": 98.2,
+  "own_acceptance_count": 109,
+  "own_acceptance_percent": 98.2,
+  "counts": {
+    "done": 109,
+    "validated": 0,
+    "in_progress": 2,
+    "planned": 0,
+    "blocked": 0
+  },
+  "remaining": [
+    {
+      "id": "V021-T04",
+      "title": "단계별 성능·보정·장기 안정성",
+      "status": "in_progress"
+    },
+    {
+      "id": "V021-T06",
+      "title": "통합 릴리스·근거·버전 일치",
+      "status": "in_progress"
+    }
+  ],
+  "schema_version": 1,
+  "source_commit": "ae8353401d694cb36e76b1f76677d09add82b39d",
+  "phase": "보충 성장 원문 보관 완료, 최종 120개월 안정성 측정",
+  "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
+}

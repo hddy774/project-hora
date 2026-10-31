@@ -1,0 +1,162 @@
+{
+  "before_source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "after_source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "plan_unchanged": true,
+  "before_raw_sha256": "ba9d3ee8c3b611701f12a14152827ee546b10c69821cf28e06f8f4dda0c8e457",
+  "after_raw_sha256": "f28065b9a16969d4aa4b036f0707e376ae3ab85e8b197043262ee0ac7d64fe4c",
+  "before_case_seconds": 39.909593,
+  "after_case_seconds": 39.4222047,
+  "original_case_wall_limit_seconds": 167,
+  "original_retained_limit_bytes": 47725032,
+  "original_save_limit_bytes": 8748435,
+  "rows": [
+    {
+      "month": 0,
+      "before_retained_managed_bytes": 14550960,
+      "after_retained_managed_bytes": 14510120,
+      "same_hash": true,
+      "hash": "e4f87eb4b1096a4ef969c1d22270be9c0619d57c909a1f71affc006596946a8e",
+      "same_save_bytes": true,
+      "save_bytes": 1915470,
+      "all_other_checkpoint_fields_equal": true,
+      "compared_checkpoint_fields": [
+        "month",
+        "people",
+        "living",
+        "births",
+        "deaths",
+        "saveBytes",
+        "invariantValid",
+        "saveResumeEqual",
+        "queryUnchanged",
+        "publicCommandAccepted",
+        "hash",
+        "workload"
+      ],
+      "after_within_original_retained_limit": true
+    },
+    {
+      "month": 30,
+      "before_retained_managed_bytes": 46122224,
+      "after_retained_managed_bytes": 20956440,
+      "same_hash": true,
+      "hash": "6b3354f3bbde1501b1c7d844243c7b410da89ffc2d4023387c769f9d0d26bd1f",
+      "same_save_bytes": true,
+      "save_bytes": 3982267,
+      "all_other_checkpoint_fields_equal": true,
+      "compared_checkpoint_fields": [
+        "month",
+        "people",
+        "living",
+        "births",
+        "deaths",
+        "saveBytes",
+        "invariantValid",
+        "saveResumeEqual",
+        "queryUnchanged",
+        "publicCommandAccepted",
+        "hash",
+        "workload"
+      ],
+      "after_within_original_retained_limit": true
+    },
+    {
+      "month": 60,
+      "before_retained_managed_bytes": 96717696,
+      "after_retained_managed_bytes": 29608864,
+      "same_hash": true,
+      "hash": "1081221e4d9e66317adad92f17520b366fb581962ccf56ab0f6e76e2644ef9c6",
+      "same_save_bytes": true,
+      "save_bytes": 4336258,
+      "all_other_checkpoint_fields_equal": true,
+      "compared_checkpoint_fields": [
+        "month",
+        "people",
+        "living",
+        "births",
+        "deaths",
+        "saveBytes",
+        "invariantValid",
+        "saveResumeEqual",
+        "queryUnchanged",
+        "publicCommandAccepted",
+        "hash",
+        "workload"
+      ],
+      "after_within_original_retained_limit": true
+    },
+    {
+      "month": 90,
+      "before_retained_managed_bytes": 164093608,
+      "after_retained_managed_bytes": 46653072,
+      "same_hash": true,
+      "hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523",
+      "same_save_bytes": true,
+      "save_bytes": 4663494,
+      "all_other_checkpoint_fields_equal": true,
+      "compared_checkpoint_fields": [
+        "month",
+        "people",
+        "living",
+        "births",
+        "deaths",
+        "saveBytes",
+        "invariantValid",
+        "saveResumeEqual",
+        "queryUnchanged",
+        "publicCommandAccepted",
+        "hash",
+        "workload"
+      ],
+      "after_within_original_retained_limit": true
+    },
+    {
+      "month": 120,
+      "before_retained_managed_bytes": 147548184,
+      "after_retained_managed_bytes": 46893224,
+      "same_hash": true,
+      "hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95",
+      "same_save_bytes": true,
+      "save_bytes": 5027868,
+      "all_other_checkpoint_fields_equal": true,
+      "compared_checkpoint_fields": [
+        "month",
+        "people",
+        "living",
+        "births",
+        "deaths",
+        "saveBytes",
+        "invariantValid",
+        "saveResumeEqual",
+        "queryUnchanged",
+        "publicCommandAccepted",
+        "hash",
+        "workload"
+      ],
+      "after_within_original_retained_limit": true
+    }
+  ],
+  "all_hash_savebytes_flags_workload_laws_and_final_hash_equal": true,
+  "actual_save_files": [
+    {
+      "file": "population-2.seonro",
+      "bytes": 5027868,
+      "before_sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "after_sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "byte_identical": true
+    },
+    {
+      "file": "population-2.seonro.backup",
+      "bytes": 4663494,
+      "before_sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "after_sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "byte_identical": true
+    }
+  ],
+  "after_maximum_retained_managed_bytes": 46893224,
+  "after_all_retained_points_within_original_limit": true,
+  "whole_report_preserved_partial": true,
+  "whole_T04_pass_claim": false,
+  "limitations": "One authorized N2 diagnostic only, original full plan/harness/5 I/O/two-GC/process scope; externally stopped after N2 report. Same host SDK/runtime but before CPU0 versus after CPU3, ordered shared-host runs; elapsed is not an isolated causal speedup or final all-case acceptance."
+}

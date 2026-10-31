@@ -1,0 +1,29 @@
+2026-10-30T19:46:08.7139922Z   ref: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:08.7149334Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:10.7860375Z [command]/usr/bin/git rev-parse --verify --quiet 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5^{object}
+2026-10-30T19:46:10.7861004Z 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:10.7884754Z [command]/usr/bin/git checkout --progress --force 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:10.9267113Z Note: switching to '94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5'.
+2026-10-30T19:46:10.9273001Z HEAD is now at 94ccb5d 규모 전환 비용 진단을 보존하고 호스트 동적 프로필 최적화를 끔 (#201)
+2026-10-30T19:46:10.9348340Z 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:11.0433605Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:11.4013016Z {"schema_version": 1, "kind": "api24-debug-native-probe", "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5", "source_tree": "54548aedfa23a1a06d79fa7852bf0efb251cca18", "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e", "event_sha": "cbf09633cb2022a4125e1001978c579b54d09a64", "event_name": "pull_request", "run_id": "41117917684", "run_attempt": "1", "version": "0.2.1", "workflow_sha256": "11b78eae7ad81be07bd412dc02e7fec7a59a662ce2ded70dad5eebb6a3063267", "scope": "API24 x86_64 기본 이미지의 디버그 APK 새 설치·DOM·실제 GameSession 연결만 검증", "retained_signature_or_upgrade_claim": false, "release_publication": false}
+2026-10-30T19:46:11.4476566Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:11.8316537Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:12.9060581Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:22.6819356Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:24.1504979Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:46:47.9981097Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:48:03.8198512Z Build succeeded.
+2026-10-30T19:48:03.8199213Z     0 Error(s)
+2026-10-30T19:48:04.4269295Z {"schema_version": 1, "kind": "debug-probe-not-release-apk", "sha256": "1ffa904ada511d143caf3995c0133649cf9f8d1042e926818de0fc31225d6729", "bytes": 43165858, "package": "org.hora.xianxiaobserver", "launchable_activity": "crc649632d1cee893af2a.MainActivity", "version": "0.2.1", "minimum_sdk": 24, "target_sdk": 36, "debug_signing_only": true, "compat_asset_sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d", "assembly_versions": {"Game": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5", "Hosting": "0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5"}, "source_commit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5", "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e"}
+2026-10-30T19:48:04.4355132Z [36;1mecho 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules[0m
+2026-10-30T19:48:04.4355624Z [36;1msudo udevadm control --reload-rules[0m
+2026-10-30T19:48:04.4355927Z [36;1msudo udevadm trigger --name-match=kvm[0m
+2026-10-30T19:48:04.4356214Z [36;1mtest -r /dev/kvm -a -w /dev/kvm[0m
+2026-10-30T19:48:04.4370567Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:48:04.4466528Z KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"
+2026-10-30T19:48:04.4723185Z ##[error]Process completed with exit code 1.
+2026-10-30T19:48:04.4802442Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:48:07.7245593Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5
+2026-10-30T19:48:08.9941691Z   PROBE_SOURCE_SHA: 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5

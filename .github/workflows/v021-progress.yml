@@ -1,0 +1,31 @@
+name: 0.2.1 실시간 진행도 갱신
+on:
+  push:
+    branches: [main, codex/v0.2.1]
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+concurrency:
+  group: v021-live-progress
+  cancel-in-progress: true
+jobs:
+  progress:
+    if: github.repository == 'hddy774/project-hora'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: 정본 원장 검증
+        run: |
+          python3 scripts/validate-v021-plan.py --self-test
+          python3 scripts/update-v021-progress.py --self-test
+      - name: 전체 진행률과 현재 작업 게시
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/update-v021-progress.py --publish-github
+      - name: 실행 요약에 진행도 기록
+        run: cat docs/progress-v0.2.1.md >> "$GITHUB_STEP_SUMMARY"

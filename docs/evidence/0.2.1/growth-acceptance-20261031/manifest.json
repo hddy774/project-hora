@@ -1,0 +1,66 @@
+{
+  "kind": "z04-acceptance-evidence-manifest",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 8031,
+      "sha256": "070209967d6e08cd4dd72ac3512e641ee6be520e4f6625388f1c0002c83b870f"
+    },
+    {
+      "path": "dependency-closure.json",
+      "bytes": 2051,
+      "sha256": "0f18f0f7553183977278e7a483e25303533155756f375d1bf4f6ed1eb06c8210"
+    },
+    {
+      "path": "independent-reading.json",
+      "bytes": 8516,
+      "sha256": "fefa2ca166eed5c521468388a3f3b1abc3ffc7294be5e4165bc84bfeb6f9f57e"
+    },
+    {
+      "path": "independent-reading.md",
+      "bytes": 5089,
+      "sha256": "6486e5cc2044d120be5195a6ca5b0c3a38feaaa1274448512012d7f58f7fd80b"
+    },
+    {
+      "path": "seed-98-duplicate-verification.json",
+      "bytes": 7858,
+      "sha256": "04177f6434874e37a931d6cbb22b545c16ce1c9451d0e602ff8ab85ea8d43757"
+    },
+    {
+      "path": "source-bridge-7901-246.json",
+      "bytes": 905,
+      "sha256": "52fcc805fb18a2efde45aced367539b19d5e280c5159764eae98c1d06e030145"
+    },
+    {
+      "path": "source-review-7ce-7901/README.md",
+      "bytes": 5531,
+      "sha256": "fbdff754f4ed8c81c085410a383c2877bdb5a4bd9daf4ed9cef9c76b2ace0cfd"
+    },
+    {
+      "path": "source-review-7ce-7901/audit.json",
+      "bytes": 23696,
+      "sha256": "6cbc9a001a84643148b427d663d3887216ce4556725db6e6fedd6c842efae9c9"
+    },
+    {
+      "path": "source-review-7ce-7901/manifest.json",
+      "bytes": 424,
+      "sha256": "ac0250df670eb8935d02522c06f86c5d11eb6177e40b9e4a69726a6e4d58bb21"
+    },
+    {
+      "path": "source-review-7ce-7901/population-crosscheck.json",
+      "bytes": 2547,
+      "sha256": "38dc9b29aefd060da89f062a8ab1c23ee64945a0860b192b82e2c0d4915fcb86"
+    },
+    {
+      "path": "verdict.json",
+      "bytes": 2854,
+      "sha256": "854da79ee826da4f8d256e0923fc54b802168044e743de40e2f04cd0cc8b43c7"
+    },
+    {
+      "path": "verify-seed-98-duplicate.original.py",
+      "bytes": 10059,
+      "sha256": "b5330e4fe6ab232563c490461ece3c3cfdb9ef700d974efc9a8a44e62edd1c7f"
+    }
+  ],
+  "selfExcluded": true
+}

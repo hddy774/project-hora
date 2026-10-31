@@ -1,0 +1,15 @@
+{
+  "kind": "knowledge-owned-durable-raw-index",
+  "localArchive": "/workspace/scratch/knowledge-owned-evidence/knowledge-owned-df-db0feae-evidence.tar.gz",
+  "bytes": 22201085,
+  "sha256": "99760947b72bc183b0e5310af9671a7f93b9c7a63bdb8cb559b7ed70a4a4c64a",
+  "manifest": "raw-manifest.json",
+  "manifestSha256": "b242fdb4e6c7f8f679c74ad969532dc94806245bc36eeaf7dc1ef9691c924bfa",
+  "entries": 111,
+  "archiveFormat": "tar+gzip, gzip mtime0, tar timestamps0",
+  "restoredEveryEntrySha256Verified": true,
+  "createdUtc": "2026-10-31T02:19:40.462482+00:00",
+  "persistenceStatus": "local archive prepared; durable evidence prerelease upload owned by integration lead; not yet claimed",
+  "persistentAssetUrl": null,
+  "officialRelease": false
+}

@@ -1,0 +1,201 @@
+{
+  "tested_source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "scope": "Small source/functional/partial diagnostic originals and verification; no DLLs/generated binaries/save slot files.",
+  "files": [
+    {
+      "path": "REVIEW.md",
+      "bytes": 5896,
+      "sha256": "090b89a6d6ad10f5e38403227940bbc20beb977b2ef29b5bfa7b0b4855e3d9bd"
+    },
+    {
+      "path": "TASK.md",
+      "bytes": 2982,
+      "sha256": "e1fb7cdcddc3cebc1c1001623abcc2ac6b6f30b1dc3140be99f4f784c4239cd8"
+    },
+    {
+      "path": "api-reference.json",
+      "bytes": 738,
+      "sha256": "6bdae4b09747750e76edddda206a4e71dc950283fdb54f74b91b044510cdf192"
+    },
+    {
+      "path": "checks/culture.json",
+      "bytes": 309,
+      "sha256": "e8150f4bc94b110709b3e49a6726e920425b592e9a60f89753d8ad8240af56c1"
+    },
+    {
+      "path": "checks/culture.log",
+      "bytes": 66,
+      "sha256": "d13e6648ada0cb647c683647bd41ef0388cfbc9a2f2f0d4be0fb99ef2a2b01ad"
+    },
+    {
+      "path": "checks/envelopes.json",
+      "bytes": 1108,
+      "sha256": "c06f46f785916703ee8b73707d51e5d10088c2aadec06a28427b51305a81a423"
+    },
+    {
+      "path": "checks/envelopes.log",
+      "bytes": 432,
+      "sha256": "408a83de56624967115af25f8c2edc00ed8f47b3d41a6349305eedcc77a44d54"
+    },
+    {
+      "path": "checks/host.json",
+      "bytes": 255,
+      "sha256": "46fa434502296df674d887701263d991316ad4883574c3f18d29c0ff9d27ee7b"
+    },
+    {
+      "path": "checks/host.log",
+      "bytes": 119,
+      "sha256": "d2d238b01dcf9a722755e9eaa180d2f5ed3ca948af90324283e830b44a10650c"
+    },
+    {
+      "path": "checks/plan.json",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "checks/plan.log",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "checks/product-boundary.json",
+      "bytes": 3544,
+      "sha256": "a2f6fc4bbad31be41902408df1b7cd8617ee0aa6eb686dd69b06b33f5be76056"
+    },
+    {
+      "path": "checks/release-build.initial-failed.log",
+      "bytes": 1871,
+      "sha256": "3dcbe7f38e88d8595439642af06c9c9c6ad40c1c09fd2d75348f08e2f715f82a"
+    },
+    {
+      "path": "checks/release-build.log",
+      "bytes": 681,
+      "sha256": "382052f2b5a90567cdc3fad4395d488923a5e91b4101c8ec5461019dd67efd6b"
+    },
+    {
+      "path": "checks/release-guard.json",
+      "bytes": 195,
+      "sha256": "fcbb790be7db5548dc2e17837502fefe98f6ab3960923f7a592ca3d5bfe173ac"
+    },
+    {
+      "path": "checks/scope-comparison.json",
+      "bytes": 1445,
+      "sha256": "29a0518d8b911ff2c6dc40045091735ad1e19a4df2107bd5fa98ff9658968412"
+    },
+    {
+      "path": "checks/segments.json",
+      "bytes": 523,
+      "sha256": "a55a0877212264f10bd009c4345e21504d7d2be72b68b7ebd94090208bcd98a0"
+    },
+    {
+      "path": "checks/segments.log",
+      "bytes": 217,
+      "sha256": "7b8f7f73813ecac3a0d0673ea71515a42a11a48408120500fd6943265de5e6b3"
+    },
+    {
+      "path": "checks/selected-run.json",
+      "bytes": 3007,
+      "sha256": "df11aab056fc3ca0705fb8675da0f1bf0847993d882bb0aa185531cdb0dce669"
+    },
+    {
+      "path": "checks/threshold.json",
+      "bytes": 363,
+      "sha256": "cb1c44f57ab7cd59cc6120d0b1948ffd838fdf96eec2e01b572c366e4fdbf943"
+    },
+    {
+      "path": "checks/threshold.log",
+      "bytes": 118,
+      "sha256": "9e5b2b20d9e4d32c310362c74e668e428418be02c2c306a719c5370a2b85fa55"
+    },
+    {
+      "path": "diagnostic/before-after-comparison.json",
+      "bytes": 5314,
+      "sha256": "23560f27a92211bb9cc1085fc90735652fb026253c007f50e7f3110ae208e685"
+    },
+    {
+      "path": "diagnostic/before-game.original.log",
+      "bytes": 456,
+      "sha256": "24bfeae575649a93753825e105b6f5812b4b5b0e7ca4895f555c4cce3ae27d64"
+    },
+    {
+      "path": "diagnostic/before-run.original.json",
+      "bytes": 12772,
+      "sha256": "abe951413f9915d535fa603122b3866d896a49da38e9ed7c1953bb65549f665f"
+    },
+    {
+      "path": "diagnostic/before.original.json",
+      "bytes": 13013,
+      "sha256": "ba9d3ee8c3b611701f12a14152827ee546b10c69821cf28e06f8f4dda0c8e457"
+    },
+    {
+      "path": "diagnostic/budget.original.json",
+      "bytes": 3298,
+      "sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272"
+    },
+    {
+      "path": "diagnostic/n2-diagnostic.json",
+      "bytes": 13012,
+      "sha256": "f28065b9a16969d4aa4b036f0707e376ae3ab85e8b197043262ee0ac7d64fe4c"
+    },
+    {
+      "path": "diagnostic/n2-game.log",
+      "bytes": 456,
+      "sha256": "7f5da9c28e93e0adbf2ae80792c5391307df8a1635573a923468901eb4deb868"
+    },
+    {
+      "path": "diagnostic/n2-run.json",
+      "bytes": 1537,
+      "sha256": "58558a46c2995789093025b6f4ecf711cd0294af65a9f0e21f8c70a212ed7534"
+    },
+    {
+      "path": "diagnostic/plan.original.json",
+      "bytes": 1903,
+      "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+    },
+    {
+      "path": "diagnostic/run-n2-once.py",
+      "bytes": 3181,
+      "sha256": "7e9b3991a9eab9ebe97fca53123b8676623f8d15975d674c4086518aa5986450"
+    },
+    {
+      "path": "diagnostic/source-freeze.json",
+      "bytes": 3387,
+      "sha256": "2112ea44fbdf822757eb8a1704c89acc0c07f91998c6a6c0a43370f176000dc3"
+    },
+    {
+      "path": "original-comparison/Probe.csproj",
+      "bytes": 256,
+      "sha256": "0a493326771b6239c8ceaa628309e3a17becdc3cf20419424f053e3b23706275"
+    },
+    {
+      "path": "original-comparison/Program.cs",
+      "bytes": 5434,
+      "sha256": "bb51a9c6fa2998ae0c3cd0d1cfd2a9d4e0bb1c8e78c7daf1ece3180ac8f90c98"
+    },
+    {
+      "path": "original-comparison/build.log",
+      "bytes": 261,
+      "sha256": "7a0a9e0ca05bba9d95b22ea2a65e8912593565608146dacd7ca3bc997ccff9d2"
+    },
+    {
+      "path": "original-comparison/result.json",
+      "bytes": 4749,
+      "sha256": "2a5278071c63e06660e823c647809ca903258bc31fb2a47e08ee88a9e451a356"
+    },
+    {
+      "path": "original-comparison/run.initial-failed.log",
+      "bytes": 507,
+      "sha256": "adf278eb16d49b8893f7d94959face3f573b2d5662a6d99032e517533c8b0d22"
+    },
+    {
+      "path": "original-comparison/run.log",
+      "bytes": 79,
+      "sha256": "62d6ce3b6b5551bd9a270c4b315310e6890867960fa01ad0ac583e867346c1dd"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 3874,
+      "sha256": "83a240c61f1f16db696bc8ada0c4f466efac0f57588a2851aeff33308699fbfb"
+    }
+  ]
+}

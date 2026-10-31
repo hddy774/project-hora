@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source_commit": "0b67a049d21db2c0a4137d2d1ef103b0e2d1f8d7",
+  "command": "dotnet run --project tests/Chronicles.Game.Tests -c Release --no-build -- --filter 'V021-G03 public politics' --report ...",
+  "selection": "V021-G03 public politics",
+  "passed": 2,
+  "total": 2,
+  "report": "docs/evidence/0.2.1/retired-policy-invariant-functional.json",
+  "scope": "기존 정책 필드 세 가지의 정확한 INV-020 거부, 유효한 실제 정책 준비·시행·취소·저장 경로. 전체 최신 기능 PASS와 성능 증거는 아님.",
+  "previous_full_report": "docs/evidence/0.2.1/functional-integration-6670d29.json",
+  "previous_full_result": "237/238. 공통 불변식이 먼저 거부하는데 이전 영역 오류 문구를 기대한 검사 1건 수정."
+}

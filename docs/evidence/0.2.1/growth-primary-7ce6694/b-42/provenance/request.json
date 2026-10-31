@@ -1,0 +1,14 @@
+{
+  "SOURCE_SHA": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "SCENARIO": "b",
+  "SEED": "42",
+  "WORKFLOW_SOURCE_SHA": "4abf807fa7cb932f78f143e016ee0566a39256b7",
+  "GITHUB_EVENT_NAME": "pull_request",
+  "GITHUB_REPOSITORY": "hddy774/project-hora",
+  "GITHUB_WORKFLOW_REF": "hddy774/project-hora/.github/workflows/v021-growth-measurements.yml@refs/pull/197/merge",
+  "GITHUB_RUN_ID": "41111524034",
+  "GITHUB_RUN_ATTEMPT": "1",
+  "GITHUB_ACTOR": "hddy774",
+  "GITHUB_TRIGGERING_ACTOR": "hddy774",
+  "REPOSITORY_PRIVATE": "false"
+}

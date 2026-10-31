@@ -1,0 +1,277 @@
+{
+  "selection": "inventory",
+  "total": 54,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "passed": true,
+      "ms": 1391
+    },
+    {
+      "name": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+      "passed": true,
+      "ms": 677
+    },
+    {
+      "name": "inventory commitment reference: \uC55E \uC6D0\uCC9C \uC624\uB958\u00B7\uB4A4 \uC785\uB825 \uC624\uB958\u00B7long overflow\uC758 \uAE30\uC874 \uAC70\uBD80 \uC21C\uC11C\uB97C \uBCF4\uC874",
+      "passed": true,
+      "ms": 14
+    },
+    {
+      "name": "inventory owned reference: \uC2E4\uC81C \uC0DD\uACC4 AI\uC758 \uBD84\uD560\u00B7\uD310\uB9E4 \uD6C4\uBCF4\uC640 \uC800\uC7A5 \uACB0\uACFC \uBCF4\uC874",
+      "passed": true,
+      "ms": 1028
+    },
+    {
+      "name": "inventory owned parity: \uACF5\uAC1C \uBCF5\uC0AC \uACBD\uB85C\uC640 \uC608\uC57D\u00B7\uCC98\uB9AC\u00B7\uC804\uC6A9 \uC5F0\uACB0\u00B7\uC7AC\uC804\uC1A1 \uACB0\uACFC \uBC0F \uC9C1\uB82C\uD654 \uC77C\uCE58",
+      "passed": true,
+      "ms": 59
+    },
+    {
+      "name": "inventory owned failure: \uB450 \uBC88\uC9F8 \uCC98\uB9AC\u00B7\uD310\uB9E4 \uC2E4\uD328\uC640 \uC608\uC678\uAC00 \uC804\uCCB4 \uD6C4\uBCF4\u00B7ID\u00B7\uC7AC\uB8CC\uB97C \uD3D0\uAE30",
+      "passed": true,
+      "ms": 10
+    },
+    {
+      "name": "inventory owned lifetime: \uB2E8\uC77C \uC778\uACC4\u00B7\uBD88\uBCC0 \uACB0\uACFC\u00B7\uAE30\uC874 \uCC38\uC870 \uACA9\uB9AC\uC640 \uC18C\uBE44 \uD6C4 \uC7AC\uC0AC\uC6A9 \uAC70\uBD80",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory sync: \uACF5\uAC1C custom comparer\uC640 \uB0B4\uBD80 Ordinal \uC601\uC218\uC99D\uC758 \uB300\uC18C\uBB38\uC790 \uAD6C\uBD84\u00B7\uC7AC\uC804\uC1A1\u00B7\uCDA9\uB3CC \uBCF4\uC874",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "inventory owned rejection: ID \uCDA9\uB3CC\u00B7\uBE48 ID\u00B7\uC624\uBC84\uD50C\uB85C\uC640 \uAE30\uC874 \uC624\uB958 \uC6B0\uC120\uC21C\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 19
+    },
+    {
+      "name": "inventory owned stale: \uC6D4\u00B7\uD560\uB2F9\uC790\u00B7\uAC1C\uC815\u00B7\uC2E4\uBB3C\u00B7\uC0AC\uB78C\u00B7\uC7AC\uB8CC \uC9C0\uBB38\uACFC \uC6D0\uB798 \uC138\uACC4 \uC778\uACC4 \uACBD\uACC4",
+      "passed": true,
+      "ms": 14
+    },
+    {
+      "name": "inventory owned reference: \uAE30\uC874 \uACF5\uAC1C \uC81C\uC791\u00B7\uBCF4\uAD00\u00B7\uAC70\uB798\u00B7\uC800\uC7A5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1 \uACB0\uACFC \uBCF4\uC874",
+      "passed": true,
+      "ms": 11970
+    },
+    {
+      "name": "inventory commitment reference: \uC18C\uBE44\uB418\uC5B4 \uC5C6\uB294 \uC785\uB825\uC758 \uC608\uC57D \uC5F0\uACB0\u00B7\uB3D9\uC2DC \uC791\uC5C5\u00B7\uC704\uC870\u00B7\uCDE8\uC18C\uB97C \uBCF4\uC874",
+      "passed": true,
+      "ms": 6
+    },
+    {
+      "name": "inventory projection: 70\uAC1C schema\u00B7\uC2E4\uC81C IL reader\uC640 \uCEF4\uD30C\uC77C\uB7EC \uB78C\uB2E4\uC758 \uAE08\uC9C0 \uC77D\uAE30 \uC790\uAE30\uAC80\uCD9C",
+      "passed": true,
+      "ms": 34
+    },
+    {
+      "name": "inventory projection: \uBAA8\uB4E0 \uBBF8\uC0AC\uC6A9 \uD544\uB4DC\uC758 \uC2E4\uC81C \uBA85\uB839 \uBE44\uAC04\uC12D\uACFC \uAC1C\uC778 \uC6D0\uCC9C \uAD00\uCE21\u00B7\uBB3C\uB9AC ledger \uBCF4\uC874",
+      "passed": true,
+      "ms": 66
+    },
+    {
+      "name": "inventory projection: mutable \uCC38\uC870\u00B7\uC7AC\uC0AC\uC6A9\u00B7\uC608\uC678\u00B7\uB450 \uBC88\uC9F8 \uCC98\uB9AC \uBC0F \uC18C\uBE44 \uD6C4 \uC2E4\uD328\uC758 \uC6D0\uC790\uC131",
+      "passed": true,
+      "ms": 15
+    },
+    {
+      "name": "inventory projection: \uC2E4\uC81C \uACF5\uAC1C \uBA85\uB839\u00B7\uC0DD\uACC4 AI\uAC00 \uC2E4\uD5D8 factory\uB97C \uAC70\uCCD0 \uAE30\uC874 \uB450 \uC804\uCCB4 transcript\uC640 \uC800\uC7A5 \uC18D\uD589 \uC77C\uCE58",
+      "passed": true,
+      "ms": 6469
+    },
+    {
+      "name": "inventory projection: 15\uAC1C \uC785\uB825\uBCC4 stale\uC640 \uC804\uCCB4 Person strict \uACBD\uACC4\u00B7\uBBF8\uC0AC\uC6A9 \uBCC0\uD654 \uBCF4\uC874",
+      "passed": true,
+      "ms": 67
+    },
+    {
+      "name": "inventory public: actual array installation and upkeep never create natural energy or survive destruction",
+      "passed": true,
+      "ms": 248
+    },
+    {
+      "name": "inventory public: real armor craft equipment soul binding combat damage and repair preserve one artifact through save",
+      "passed": true,
+      "ms": 557
+    },
+    {
+      "name": "inventory public: real auction escrow and advertised snapshots settle once through the world scheduler",
+      "passed": true,
+      "ms": 1019
+    },
+    {
+      "name": "inventory public: INV-017 continuation keeps every physical reservation backed by one ledger",
+      "passed": true,
+      "ms": 53529
+    },
+    {
+      "name": "inventory public: canonical recipe practice consumes real inputs and cancellation never refunds the process",
+      "passed": true,
+      "ms": 285
+    },
+    {
+      "name": "inventory public: successful real seed water farming and agreed treatment heal an actual other patient",
+      "passed": true,
+      "ms": 381
+    },
+    {
+      "name": "inventory public: finite gathering uses scheduled time and survives exact GameCodec continuation",
+      "passed": true,
+      "ms": 345
+    },
+    {
+      "name": "inventory public: paid growth dose improves a bottlenecked canonical pulse with real Qi debit and exact save continuation",
+      "passed": true,
+      "ms": 351
+    },
+    {
+      "name": "inventory public: medicine appraisal and source exploration produce real effects and personal evidence",
+      "passed": true,
+      "ms": 303
+    },
+    {
+      "name": "inventory public: actual source loss cancels extraction and capacity growth grants no stock",
+      "passed": true,
+      "ms": 223
+    },
+    {
+      "name": "inventory public: crafted sold talisman pays actual parties and protects one real hit with no use replay",
+      "passed": true,
+      "ms": 376
+    },
+    {
+      "name": "inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin",
+      "passed": true,
+      "ms": 300
+    },
+    {
+      "name": "inventory commitment reference: \uAC19\uC740 \uC6D0\uCC9C\uC758 \uB3D9\uC2DC \uC608\uC57D\u00B7\uC9C4\uD589\u00B7\uCDE8\uC18C \uC18C\uBE44\uC640 \uD638\uCD9C \uC0AC\uC774 \uBCC0\uACBD\uC744 \uBCF4\uC874",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory sync: \uC911\uBCF5 ID\u00B7\uAD50\uCC28 namespace\u00B7\uC798\uBABB\uB41C \uD504\uB85C\uD544\u00B7\uBA54\uD0C0\uB370\uC774\uD130\uC758 \uAE30\uC874 \uCD08\uAE30 \uAC70\uBD80 \uC6B0\uC120\uC21C\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory sync: \uC2E4\uC81C \uC81C\uC791\u00B7\uAC10\uC815\u00B7\uC6B4\uC1A1\uACFC \uB9C8\uC9C0\uB9C9 \uB178\uB3D9 \uD589\u00B7\uC0AC\uB78C \uC21C\uC11C\u00B7\uBC18\uBCF5 \uBC0F \uCDE8\uC18C \uD6C4 \uC0C8 \uBC94\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "inventory validation scope: \uC774\uC804 \uC2E4\uC81C \uBA85\uB839\u00B7\uD574\uC2DC\u00B7\uAC70\uBD80 \uACB0\uACFC\uC640 \uD638\uCD9C \uC0AC\uC774 \uBCC0\uACBD\uC744 \uBCF4\uC874",
+      "passed": true,
+      "ms": 40
+    },
+    {
+      "name": "inventory: V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection",
+      "passed": true,
+      "ms": 24
+    },
+    {
+      "name": "inventory: INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: consumed final stack retains typed actual quantity location quality and origin evidence",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory: INV-017 real production inputs, stage cancellation, failure, use and save settlement",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "inventory: INV-016 ownership, custody, use, equipment and remote access remain independent",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: paid growth dose retains its consumed physical source and never grants legacy structure work",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory: known source and local offer projections never infer mutable private truth",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-017 care, teaching, production and defense share person and facility labor",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory: INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "inventory: V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: V021-I01/K03-K08 all 64 resources have executable producers and consumers",
+      "passed": true,
+      "ms": 53
+    },
+    {
+      "name": "inventory: shared recipe registry plans the exact authoritative physical input and output",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: INV-016/017 shared physical reservations preserve split provenance and exclude parallel use",
+      "passed": true,
+      "ms": 18
+    },
+    {
+      "name": "inventory: INV-016 inventory split/merge preserves hidden state, binding and provenance",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-017 production cannot bank idle time and broken arrays immediately stop contributing",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location",
+      "passed": true,
+      "ms": 1
+    }
+  ]
+}

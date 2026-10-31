@@ -1,0 +1,32 @@
+{
+  "headReviewed": "db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+  "treeReviewed": "49d6c6959ff217341fe81275ddc72014ca18feda",
+  "productLeaf": "b34a031",
+  "checkedFiles": [
+    {
+      "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "sha256": "a65770d733474205d9ce6d4e28d4ea3ee4979ae0d08c89fb5df6006fe88c5520"
+    },
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "sha256": "67e6a8d1791b18393d0a6a57094634cb61ce9efdde02185d92643eec6c44fbb6"
+    }
+  ],
+  "importantFindings": [],
+  "publicRestoreCheckpointAndDtoIsolation": "public Restore validation+clone and Checkpoint deep clone unchanged; activity arrays/physical snapshot arrays copied; other DTOs immutable scalar/string records or detached rows",
+  "worldOwnedAuthority": "readonly state identity retained; authority is sole writer of Knowledge lists and counters; internal factory only used by private KnowledgeRuntime and own tests",
+  "rebind": "candidate Execute clones world, rejected candidates are discarded; accepted replacement is detected by KnowledgeState ReferenceEquals on next runtime access; no other reference-only knowledge cache found",
+  "intermediatePhysicalVisibility": "domain transcription completion now reaches state.Knowledge before physical reservation release/item definition change, but physical reservation fingerprint/validation and crafting event callbacks do not read Knowledge in this window",
+  "sameMonthAndReplay": "activity/source/time-window algorithms and adapter SaveKnowledge call positions unchanged; Begin/Finish/Cancel update the same owned authority in place",
+  "limits": [
+    "read-only source review; no new Game/build/performance execution",
+    "author tests/oracle comparison not independently rerun",
+    "internal owned attachment requires the documented exclusive ownership rule; no external mutable world state exposure was found"
+  ],
+  "sourceProductEdits": 0,
+  "newGameOrPerformanceRuns": 0,
+  "remotePr": 240,
+  "remoteHead": "b7b96eb1f17787f92130ddd10fa1ce7faa05d935",
+  "remoteTree": "49d6c6959ff217341fe81275ddc72014ca18feda",
+  "remoteTwoProductFilesMatchReviewedSHA256": true
+}

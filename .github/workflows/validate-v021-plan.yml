@@ -1,0 +1,24 @@
+name: 0.2.1 기획 원장 검증
+on:
+  pull_request:
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/validate-v021-plan.py'
+      - '.github/workflows/validate-v021-plan.yml'
+  push:
+    branches: [main, codex/v021-claude-feedback-2026-10-30]
+    paths:
+      - 'docs/plans/**'
+      - 'scripts/validate-v021-plan.py'
+      - '.github/workflows/validate-v021-plan.yml'
+permissions:
+  contents: read
+jobs:
+  planning-ledger:
+    name: 기획 원장·검증기 확인
+    runs-on: ubuntu-latest
+    steps:
+      - name: 정확한 소스 가져오기
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: 원장과 검증기의 거부 사례 확인
+        run: python3 scripts/validate-v021-plan.py --self-test

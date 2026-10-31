@@ -1,0 +1,122 @@
+{
+  "kind": "root-final-four-population-verification-after-runtime-pgo-fix",
+  "sourceCommit": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "fingerprintCommandResult": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "worktree": "/workspace/seonro-stable-runtime",
+  "sourceWorktreeCleanAtLaunch": true,
+  "startedUtc": "2026-10-30T20:00:06.736037+00:00",
+  "supervisorPid": 136386,
+  "supervisorSession": 136386,
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/final-population-94ccb5d-preceding-functional.json",
+    "--performance",
+    "/workspace/scratch/final-population-94ccb5d.json"
+  ],
+  "requestedPopulations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "status": "completed",
+  "cohosts": "CPU1/2 exact926 growth restart1; CPU3 exact926 growth2026. Large local postprocessing/build/profile paused; small document/map validation and metadata work may occur on CPU4 within shared4CPU quota. CPU0 reserved for this functional run. CPU0 pinned one CPU, host4CPU quota; growth and AI cohost external load. No EventPipe/trace attached to this process. Thermal and power state not measured; not Android or exclusive physical-host CPU latency.",
+  "pid": 136610,
+  "exitCode": 0,
+  "endedUtc": "2026-10-30T20:18:45.454853+00:00",
+  "sourceCommitAtEnd": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+  "sourceWorktreeCleanAtEnd": true,
+  "reportSha256": "3fac5fa84d5bd240352f85f97d9c279c0159aaf6d4b63160b4b5a43f89ba17de",
+  "measurementSummary": {
+    "complete": true,
+    "completedSizes": [
+      2,
+      100,
+      1000,
+      10000
+    ],
+    "inProgress": {
+      "population": null,
+      "stage": "completed_population",
+      "completedMonths": 12,
+      "monthlySamplesMs": [
+        21476.9707,
+        61256.5888,
+        69136.1468,
+        64935.1784,
+        69060.977,
+        76700.2786,
+        83776.9715,
+        81448.592,
+        82048.1443,
+        84830.063,
+        74809.398,
+        77893.5713
+      ]
+    },
+    "totalElapsedSeconds": 1117.6024874
+  },
+  "runtimeConfiguration": {
+    "path": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+    "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+    "content": {
+      "runtimeOptions": {
+        "tfm": "net10.0",
+        "framework": {
+          "name": "Microsoft.NETCore.App",
+          "version": "10.0.0"
+        },
+        "configProperties": {
+          "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+          "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+          "System.Runtime.TieredPGO": false
+        }
+      }
+    }
+  },
+  "runtimePGOEnvironmentOverrides": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null
+  },
+  "assemblies": [
+    {
+      "path": "/workspace/seonro-stable-runtime/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "2b8c7b724650103bb3daa71c40319773e00b93c1f1b57ad120703a4551a13a72",
+      "bytes": 5120,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5\")]"
+      ]
+    },
+    {
+      "path": "/workspace/seonro-stable-runtime/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "ad2072c49849d57c8781a9f13f9d36607b4d2cda77e74d1524a95aebf76fb3c4",
+      "bytes": 2258432,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5\")]"
+      ]
+    },
+    {
+      "path": "/workspace/seonro-stable-runtime/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "2f5ddec12de41790c669bdf4f60712fbad4e66eea6d590ebb68aa5ac9c29df45",
+      "bytes": 23552,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5\")]"
+      ]
+    },
+    {
+      "path": "/workspace/seonro-stable-runtime/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "8b694e78ffd709a69a729a5c8f83eb54b2ac5373768c4c09361746d00bdd7f5d",
+      "bytes": 1500672,
+      "generatedInformationalVersionLines": [
+        "[assembly: System.Reflection.AssemblyInformationalVersionAttribute(\"0.2.1+94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5\")]"
+      ]
+    }
+  ]
+}

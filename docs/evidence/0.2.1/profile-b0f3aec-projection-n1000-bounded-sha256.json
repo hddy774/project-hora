@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "bounded-managed-profile-evidence-digests",
+  "measured_source_commit": "b0f3aec986d9b09015021499e47627b869411b83",
+  "committed_evidence": {
+    "docs/evidence/0.2.1/profile-b0f3aec-projection-n1000-bounded-diagnosis.json": "b1176f2a26e249528f59767adb6e4dcc6440c537b430e2d55eecbf0c60b829c2",
+    "docs/evidence/0.2.1/profile-b0f3aec-projection-n1000-bounded-diagnosis.txt": "01bbd99e33365de48f584b06112415bed3693efc2f6e9023d8c688048561ce1e",
+    "docs/evidence/0.2.1/profile-b0f3aec-projection-n1000-bounded-allocation-source.txt": "1213e2b11fb3be04b5b477ca8614370a0379e1848742e967532a95ee0624a721",
+    "docs/evidence/0.2.1/profile-b0f3aec-projection-n1000-bounded-provenance.json": "a8d681ee1f5a0b3c80d969c7bf3cf267f91d9fe78f800cfda6e191194a47a78a"
+  },
+  "scratch_raw_artifacts": [
+    {
+      "name": "ui-profile-b0f3aec-projection-n1000-bounded.nettrace",
+      "workspace_path": "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded.nettrace",
+      "bytes": 58654078,
+      "sha256": "e657a01dff73f95821ec9832963ddad80336b2214f70af5d571538332ed16bd5",
+      "committed": false
+    },
+    {
+      "name": "ui-profile-b0f3aec-projection-n1000-bounded.speedscope.json",
+      "workspace_path": "/workspace/scratch/ui-profile-b0f3aec-projection-n1000-bounded.speedscope.json",
+      "bytes": 80480980,
+      "sha256": "15ef756ad5a7511cb39689fc8a70054c21b3efb3ef055e7ebf52508e0924cc14",
+      "committed": false
+    }
+  ]
+}

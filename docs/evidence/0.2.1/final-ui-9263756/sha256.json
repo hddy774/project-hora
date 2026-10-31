@@ -1,0 +1,126 @@
+{
+  "README.md": {
+    "bytes": 3287,
+    "sha256": "1be1927c91370cebe048429c67558a7445ac10555197a57d32a0a58f057c7797"
+  },
+  "build.txt": {
+    "bytes": 989,
+    "sha256": "d651849967806f9ff48228fb3558e65789a4e06a82e8767311d1aeb9b2f0e509"
+  },
+  "entry-check.py": {
+    "bytes": 9128,
+    "sha256": "9a7267bd9c95541f46f81906b6076460c039a6f2425e6b97000476bf7850ee67"
+  },
+  "entry-normal-1280.json": {
+    "bytes": 4465,
+    "sha256": "166bfa8dff07dcd8d2b269eb084aa17d9331de45bb8ea25aedcb539d55e3ba4f"
+  },
+  "entry-normal-390.json": {
+    "bytes": 4454,
+    "sha256": "f4cf706099935f88386c8d545f62ec36028c0826c64557085c685a7eae82d5d4"
+  },
+  "entry-prepared-normal-1280.png": {
+    "bytes": 202742,
+    "sha256": "0d5548c4978cef5f371efdb142c5638826317d822e9635c47310c6a7ff0e2060"
+  },
+  "entry-prepared-normal-390.png": {
+    "bytes": 170430,
+    "sha256": "7f85290127390079bcf0933f6f4fab866b72d3630328fc73be70aaf4b00c9a03"
+  },
+  "entry-prepared-text200-1280.png": {
+    "bytes": 380111,
+    "sha256": "b738d25e29c16f9898b2d66cf8f0da235a34a2a52303be372c75f3c7f546acb3"
+  },
+  "entry-prepared-text200-390.png": {
+    "bytes": 344266,
+    "sha256": "beecc99ae2f0bad3b6b467d0d7b8692d5bf900a74765a50430b88850a24ada67"
+  },
+  "entry-runner.py": {
+    "bytes": 827,
+    "sha256": "a427749cede31c2eb753594a5d304120a0e00e0d2f3e7bfa4eb17058b9de18d6"
+  },
+  "entry-runner.txt": {
+    "bytes": 472,
+    "sha256": "7f0eef689389a8926bb7d96d2abed5a83fdebf456445c69932bcf5a03db16412"
+  },
+  "entry-started-normal-1280.png": {
+    "bytes": 201298,
+    "sha256": "2b874c6a53bc54abb5f30401b8f67fda3b79b50a883cbbbd3034b1f88b4ef816"
+  },
+  "entry-started-normal-390.png": {
+    "bytes": 170716,
+    "sha256": "62a11288b013d0d506eeb63b397c8a8ff6c04784297be3d2c663d6e4b187a6d5"
+  },
+  "entry-started-text200-1280.png": {
+    "bytes": 384763,
+    "sha256": "2e1c44a38acbd9bb844ccbf591bdb87b6684c2ce66ce90451caa7359f5b8abbd"
+  },
+  "entry-started-text200-390.png": {
+    "bytes": 353481,
+    "sha256": "19a153402c32fed10dbf71764d77f7c8f34b5f1eef3fb7c66a518201e50a9f74"
+  },
+  "entry-text200-1280.json": {
+    "bytes": 5103,
+    "sha256": "0caedbdbd7e5b1e4c2632cf55f505ee90c57a3f8365c04313795c70e2948844f"
+  },
+  "entry-text200-390.json": {
+    "bytes": 5097,
+    "sha256": "46c80202943faa7709ac03ae100c68a5bfb4c348461556711c116bd0be5eab58"
+  },
+  "full-normal.json": {
+    "bytes": 3099,
+    "sha256": "4cfbee0d0e8ff84847e9d2d219f2c66e3995603d0baaec56beebd5b9d0795255"
+  },
+  "full-text200.json": {
+    "bytes": 3099,
+    "sha256": "4cfbee0d0e8ff84847e9d2d219f2c66e3995603d0baaec56beebd5b9d0795255"
+  },
+  "host-proof.json": {
+    "bytes": 425,
+    "sha256": "4493cb191306cce3fc935aa0fdddb95468e373620bf910099ffc0177d00bddcd"
+  },
+  "preview-Program.cs.txt": {
+    "bytes": 1632,
+    "sha256": "cc3dd347aedd227705bfd2c7022768e5a5779b137b63583b1813740e90afc6a1"
+  },
+  "preview-project.csproj.txt": {
+    "bytes": 530,
+    "sha256": "7c04249b2b4519026351d19607483a4e3d937ec1aeaab656e2ffd083e75cd4a3"
+  },
+  "provenance.json": {
+    "bytes": 6562,
+    "sha256": "9e86baf0c5f36d545fb23e0b43d97774a6656f473c4fcebb87c80cfa5e7be82f"
+  },
+  "raw-scratch-manifest.json": {
+    "bytes": 17298,
+    "sha256": "c88cb895af021ecc5a837827f6e19bb5680f5a2598cc715b9478d07dc8fce870"
+  },
+  "smoke-normal-1280.png": {
+    "bytes": 216892,
+    "sha256": "85bc9847d80db6e43788d389e7261ccf67b0eac35a67f34b056af2dd5ae868b2"
+  },
+  "smoke-normal-390.png": {
+    "bytes": 206159,
+    "sha256": "20965abb1d89b5851789dee72896545cfd27d7bf9d988e897eacc7b885b90fc8"
+  },
+  "smoke-text200-1280.png": {
+    "bytes": 395056,
+    "sha256": "2b26af046e39ccffa484384d27b7639a620e6f65660bf1565d07eafce37be234"
+  },
+  "smoke-text200-390.png": {
+    "bytes": 386360,
+    "sha256": "6f441c6f10cc00c303702540b9b867e553f80dd8799327929bf99542209d404b"
+  },
+  "source.json": {
+    "bytes": 1166,
+    "sha256": "e480541613369fed7d90a0296c307e335e48667a17b89c84441d38e016897fe1"
+  },
+  "text200-check.py": {
+    "bytes": 6050,
+    "sha256": "b82c70509bb3c9c5679dc1b239e496a05e559736de5e7ba6119a1d220348b410"
+  },
+  "text200-fonts-console.json": {
+    "bytes": 3187,
+    "sha256": "49bed8e67e337046163262b9a5dcb3315eec207ddf1b20905df53c3a485a748f"
+  }
+}

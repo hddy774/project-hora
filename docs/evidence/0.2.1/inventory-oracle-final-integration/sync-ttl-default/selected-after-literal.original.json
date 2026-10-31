@@ -1,0 +1,12 @@
+{
+  "selection": "inventory sync: \uC2E4\uC81C \uC81C\uC791",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "inventory sync: \uC2E4\uC81C \uC81C\uC791\u00B7\uAC10\uC815\u00B7\uC6B4\uC1A1\uACFC \uB9C8\uC9C0\uB9C9 \uB178\uB3D9 \uD589\u00B7\uC0AC\uB78C \uC21C\uC11C\u00B7\uBC18\uBCF5 \uBC0F \uCDE8\uC18C \uD6C4 \uC0C8 \uBC94\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 568
+    }
+  ]
+}

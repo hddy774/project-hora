@@ -25,6 +25,7 @@
 
 1. `manifest.json`의 고정 SHA와 `run-metadata.json` 원문 SHA를 확인한다. 후자는 전달된 원래 API 응답을 개행/내용 변경 없이 보존했다.
 2. 실제 소유자 요청/현재 PR/현재 run을 확인한다. stale head, 다른 actor/attempt/event/label을 거부한다.
+   인증된 release 목록을100개 단위로 끝까지 읽어 고정 tag와 일치하는 유일한 draft/published 객체를 찾는다. 여러 객체가 같은 tag를 가리키면 쓰기 전에 중단한다. 생성/발견 뒤에는 release ID를 고정하고 모든 재조회에 `GET releases/{id}`를 사용한다. 아직 tag가 없는 draft를 published-by-tag API의404로 없다고 판단하지 않는다.
 3. 원래 run의 ID/attempt/event/source/failure와 artifact6개의 name/bytes/server digest/run을 대조한다. 원문 ZIP을 내려받아 전체 SHA256을 확인한 뒤에만 보관 release를 생성한다.
 4. 별도 draft에6ZIP을 올리고 인증된 draft 다운로드의 전체 byte SHA를 재검증한다. 기존 이름이 다르면 중단하며 기존 자산 삭제·교체 경로는 없다.
 5. prerelease로 게시하며 `make_latest=false`를 명시한다. 공개 URL을 **인증 없이** 내려받아 ZIP6개의 bytes/SHA를 다시 확인한다. redirect가 다른 호스트로 이동하면 Authorization을 제거하고 HTTPS만 허용한다.
@@ -52,6 +53,7 @@
 - 원형 metadata/bytes/SHA 불일치는 draft 생성 전에 거부한다.
 - 기존 tag/asset/index 충돌, 공개 ZIP 손상은 삭제·덮어쓰기나 complete index 생성을 허용하지 않는다.
 - draft→공개ZIP 전체검증→최종index 순서와 기존 latest/APK 불변을 mock 흐름으로 검사한다.
+- draft의 tag 조회가404인 경계는 수정 전 첫 업로드 뒤 `NoneType` 오류를 실제 재현했다. [실패 원문](checks/draft-tag-404-before.log)과 [수정 후23개 검사](checks/draft-release-self-test.log)를 분리 보존한다. 목록의 두 페이지·기존 draft 재개·published/draft 모호성·고정 ID/중복 페이지 거부도 검사한다.
 - 교차 호스트 redirect의 auth 제거와 오류 메시지의 token 미노출을 검사한다.
 - 정상 재실행/만료된 Actions 원형/부분 게시에서 immutable 사본을 재사용하는 경계를 확인한다.
 

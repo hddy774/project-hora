@@ -1,9 +1,10 @@
 {
   "baseCommit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
   "selfTests": {
-    "passed": 19,
+    "passed": 23,
     "exitCode": 0,
-    "scope": "mock context/metadata/hash/transport/draft/public/index/idempotence; no real API writes"
+    "scope": "mock context/metadata/hash/transport/draft/public/index/idempotence plus absent draft tag, paginated discovery, fixed release ID; no real API writes",
+    "log": "checks/draft-release-self-test.log"
   },
   "actualLocalOriginalZipHashesPassed": 6,
   "actualOriginalBytes": 9937563,
@@ -25,19 +26,38 @@
   "snapshotCredentialPatternScan": "no credential/private-key pattern found",
   "codeLines": {
     ".github/evidence/http_client.py": 107,
-    ".github/evidence/archive_sensitivity.py": 368,
-    ".github/evidence/test_archive.py": 368,
-    ".github/evidence/test_http_client.py": 64
+    ".github/evidence/archive_sensitivity.py": 393,
+    ".github/evidence/test_archive.py": 379,
+    ".github/evidence/test_http_client.py": 64,
+    ".github/evidence/test_release_lookup.py": 81
   },
   "logSha256": {
     "actionlint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "self-test.log": "3adb5d5b1d02ecd3b14c597f77cdda1e82e381541c2ae294f7f404037b1334c2"
+    "self-test.log": "3adb5d5b1d02ecd3b14c597f77cdda1e82e381541c2ae294f7f404037b1334c2",
+    "draft-tag-404-before.log": "3f303afcc24eafd9b209e7e86ee46096f156d3e7236c3eef8c7fd9ff70be43ec",
+    "draft-release-self-test.log": "1a66c546dbfcdc1e25f96f679e1b16217d5c6dfbab083a733551d00385ef9f1d"
   },
   "scope": {
-    "changedFiles": 11,
+    "changedFiles": 14,
     "selectedProductChanges": 0,
     "baseProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
     "newTreeProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
     "productFingerprintUnchanged": true
+  },
+  "historicalSelfTests": {
+    "sourceCommit": "8abd23247887a5479331b8fcfd518db279e8c209",
+    "passed": 19,
+    "log": "checks/self-test.log"
+  },
+  "draftReleaseRegression": {
+    "beforeArchiveSourceCommit": "8abd23247887a5479331b8fcfd518db279e8c209",
+    "beforeArchiveGitBlob": "9c7b0a3d11666be865b3a7ed50d36e1b236462ad",
+    "beforeExitCode": 1,
+    "beforeObservedFailure": "prepare_draft first upload -> by-tag draft404 -> self.release=None -> TypeError",
+    "beforeLog": "checks/draft-tag-404-before.log",
+    "afterExitCode": 0,
+    "discovery": "authenticated releases?per_page=100&page=N; full pagination, unique exact tag, no draft/published ambiguity",
+    "subsequentReads": "GET releases/{pinned release_id}; ID/tag/target/prerelease checks retained",
+    "workflowAndHttpClientChanged": false
   }
 }

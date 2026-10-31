@@ -107,6 +107,7 @@ class EvidenceArchive:
         self.output = Path(output)
         self.output.mkdir(parents=True, exist_ok=True)
         self.release, self.phase, self.status = None, "request", {}
+        self.release_id = None
         self.guard = guard or (lambda: attest_request(client, request, request["head_sha"]))
 
     def record(self, state, **values):
@@ -117,6 +118,7 @@ class EvidenceArchive:
         ensure(type(release["id"]) is int and release["id"] > 0 and
                release["tag_name"] == TAG and release["prerelease"] is True and
                release["target_commitish"] == TARGET, "근거 전용 release/tag/source가 아닙니다")
+        ensure(self.release_id is None or release["id"] == self.release_id, "확정한 근거 release ID가 바뀌었습니다")
         address = https_url(release["html_url"])
         ensure(address.hostname == "github.com" and not address.query and not address.fragment and
                urllib.parse.unquote(address.path) == "/" + REPOSITORY + "/releases/tag/" + TAG,
@@ -155,10 +157,32 @@ class EvidenceArchive:
     def verify_file(self, path, item):
         ensure(Path(path).stat().st_size == item["bytes"] and sha(path) == item["sha256"], "원형 바이트/SHA256 불일치")
 
+    def find_release(self):
+        candidate, page, seen = None, 1, set()
+        while True:
+            releases = self.client.api("releases?per_page=100&page=" + str(page))
+            ensure(type(releases) is list and len(releases) <= 100, "release 목록 형식/페이지 크기가 다릅니다")
+            for release in releases:
+                identifier = release["id"]
+                ensure(type(identifier) is int and identifier > 0 and identifier not in seen,
+                       "release 목록 ID/페이지가 중복되거나 잘못됐습니다")
+                seen.add(identifier)
+                if release["tag_name"] == TAG:
+                    ensure(candidate is None, "고정 tag에 여러 draft/published release가 있어 모호합니다")
+                    candidate = release
+            if len(releases) < 100:
+                return candidate
+            page += 1
+
     def get_release(self):
-        candidate = self.client.api("releases/tags/" + encoded(TAG), missing=True)
-        if candidate is not None:
+        if self.release_id is None:
+            candidate = self.find_release()
+            if candidate is None:
+                return None
             self.release_check(candidate)
+            self.release_id = candidate["id"]
+        candidate = self.client.api("releases/" + str(self.release_id))
+        self.release_check(candidate)
         self.release = candidate
         return self.release
 
@@ -212,6 +236,7 @@ class EvidenceArchive:
                 "name": self.manifest["archive"]["title"], "draft": True, "prerelease": True,
                 "make_latest": "false", "body": self.body("보관 중")})
             self.release_check(candidate)
+            self.release_id = candidate["id"]
             self.release = candidate
         self.release_check(self.release)
         self.tag_check()

@@ -41,6 +41,7 @@ class FakeGitHub:
     def __init__(self, manifest, originals, request):
         self.manifest, self.originals, self.request = manifest, originals, request
         self.release, self.tag = None, None
+        self.other_releases = []
         self.data, self.events = {}, []
         self.source_unavailable, self.corrupt_public = False, None
         self.official = {"id": 500, "tag_name": "v0.2.1", "assets": [{"name": "official.apk", "digest": "unchanged"}]}
@@ -57,13 +58,15 @@ class FakeGitHub:
         if method == "GET":
             return self.read(path)
         if method == "POST" and path == "releases":
-            self.tag = archive.TARGET
+            assert self.release is None, "같은 근거의 draft를 중복 생성하면 안 됩니다"
             self.release = {**value, "id": 77, "assets": [],
                             "html_url": "https://github.com/" + archive.REPOSITORY + "/releases/tag/" + archive.encoded(archive.TAG)}
             return copy.deepcopy(self.release)
         if method == "PATCH" and path == "releases/77":
             assert value["prerelease"] is True and value["make_latest"] == "false"
             self.release.update(value)
+            if not self.release["draft"]:
+                self.tag = archive.TARGET
             return copy.deepcopy(self.release)
         raise AssertionError("허용하지 않은 변경: " + method + " " + path)
 
@@ -75,7 +78,13 @@ class FakeGitHub:
         if path.startswith("git/ref/tags/"):
             return {"object": {"type": "commit", "sha": self.tag}} if self.tag else None
         if path.startswith("releases/tags/"):
+            return copy.deepcopy(self.release) if self.release and not self.release["draft"] else None
+        if path == "releases/77":
             return copy.deepcopy(self.release)
+        if path.startswith("releases?per_page=100&page="):
+            page = int(path.rsplit("=", 1)[1])
+            rows = self.other_releases + ([self.release] if self.release else [])
+            return copy.deepcopy(rows[(page - 1) * 100:page * 100])
         if path == "releases/latest":
             return copy.deepcopy(self.official)
         assert not self.source_unavailable, "완료된 보관은 만료된 Actions 원형을 요구하면 안 됩니다"
@@ -335,7 +344,8 @@ class ArchiveTests(unittest.TestCase):
 
     def test_wrong_release_cannot_receive_even_a_failure_body_patch(self):
         manifest, client, request = self.fixture()
-        client.release = {**client.official, "target_commitish": "main", "prerelease": False, "draft": False}
+        client.release = {**client.official, "tag_name": archive.TAG,
+                          "target_commitish": "main", "prerelease": False, "draft": False}
         with tempfile.TemporaryDirectory() as directory, self.assertRaises(ArchiveError):
             archive.EvidenceArchive(client, manifest, "snapshot", request, directory).execute()
         self.assertTrue(all(e[0] == "GET" for e in client.events))
@@ -365,4 +375,5 @@ class ArchiveTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    from test_release_lookup import ReleaseLookupTests
     unittest.main()

@@ -60,13 +60,14 @@ class FakeGitHub:
         if method == "POST" and path == "releases":
             assert self.release is None, "같은 근거의 draft를 중복 생성하면 안 됩니다"
             self.release = {**value, "id": 77, "assets": [],
-                            "html_url": "https://github.com/" + archive.REPOSITORY + "/releases/tag/" + archive.encoded(archive.TAG)}
+                            "html_url": "https://github.com/" + archive.REPOSITORY + "/releases/untagged-fixture-77"}
             return copy.deepcopy(self.release)
         if method == "PATCH" and path == "releases/77":
             assert value["prerelease"] is True and value["make_latest"] == "false"
             self.release.update(value)
             if not self.release["draft"]:
                 self.tag = archive.TARGET
+                self.release["html_url"] = "https://github.com/" + archive.REPOSITORY + "/releases/tag/" + archive.encoded(archive.TAG)
             return copy.deepcopy(self.release)
         raise AssertionError("허용하지 않은 변경: " + method + " " + path)
 

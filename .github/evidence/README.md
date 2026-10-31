@@ -29,6 +29,7 @@
 3. 원래 run의 ID/attempt/event/source/failure와 artifact6개의 name/bytes/server digest/run을 대조한다. 원문 ZIP을 내려받아 전체 SHA256을 확인한 뒤에만 보관 release를 생성한다.
    Actions의 `/actions/artifacts/{id}/zip` 진입은 고정 `Accept: application/json`으로 signed ZIP redirect를 받는다. release asset의 인증/공개 byte 다운로드는 기존 `application/octet-stream`을 유지한다. 어느 경로든 받은 원문 bytes/SHA 검사를 생략하지 않는다.
 4. 별도 draft에6ZIP을 올리고 인증된 draft 다운로드의 전체 byte SHA를 재검증한다. 기존 이름이 다르면 중단하며 기존 자산 삭제·교체 경로는 없다.
+   draft의 `html_url`은 같은 github.com 저장소의 안전한 `releases/` 하위 경로인지 확인한다. `untagged-*`도 허용하되 ID/tag/target/prerelease는 고정한다. 공개 상태에서는 canonical `/releases/tag/<고정TAG>` URL만 허용한다. 공개 asset URL의 기존 strict 검사는 그대로다.
 5. prerelease로 게시하며 `make_latest=false`를 명시한다. 공개 URL을 **인증 없이** 내려받아 ZIP6개의 bytes/SHA를 다시 확인한다. redirect가 다른 호스트로 이동하면 Authorization을 제거하고 HTTPS만 허용한다.
 6. 이 단계가 모두 통과한 뒤 작은 `state=complete` index를 만들고 공개 다운로드까지 검증한다. index에는 원래 manifest/run 원문, 실패/부분 결과, 영속 asset ID/URL/bytes/SHA, 최초 검증 시각/실행이 들어간다.
 7. 정상 소유자 재실행은 같은 index의 최초 trace와 bytes를 보존한다. Actions가 이미 만료됐어도 기존6ZIP이 있으면 보관 사본을 검증해 마무리한다. 공개 사본에서 ZIP이 누락됐으면 draft 검증을 건너뛰어 보수하지 않고 실패한다.
@@ -55,6 +56,7 @@
 - 기존 tag/asset/index 충돌, 공개 ZIP 손상은 삭제·덮어쓰기나 complete index 생성을 허용하지 않는다.
 - draft→공개ZIP 전체검증→최종index 순서와 기존 latest/APK 불변을 mock 흐름으로 검사한다.
 - draft의 tag 조회가404인 경계는 수정 전 첫 업로드 뒤 `NoneType` 오류를 실제 재현했다. [실패 원문](checks/draft-tag-404-before.log)과 [수정 후23개 검사](checks/draft-release-self-test.log)를 분리 보존한다. 목록의 두 페이지·기존 draft 재개·published/draft 모호성·고정 ID/중복 페이지 거부도 검사한다.
+- draft의 `untagged-*` URL은 수정 전 고정tag 공개URL 검사에서 거부됐다. [구296 source 실패](checks/draft-untagged-url-before.log)와 [수정 후27개 검사](checks/draft-url-self-test.log)를 분리 보존한다. 실제 게시 없이 draft→published canonical 전환, published wrong URL·다른repo·경로이탈 거부를 검사했다. 기존 HTTP415/24개 검사 원문은 바꾸지 않았다.
 - 교차 호스트 redirect의 auth 제거와 오류 메시지의 token 미노출을 검사한다.
 - 정상 재실행/만료된 Actions 원형/부분 게시에서 immutable 사본을 재사용하는 경계를 확인한다.
 

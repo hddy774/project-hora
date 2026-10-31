@@ -1,0 +1,20 @@
+test_untagged_draft_url_changes_to_canonical_only_after_publish (test_release_lookup.ReleaseLookupTests.test_untagged_draft_url_changes_to_canonical_only_after_publish) ... ERROR
+
+======================================================================
+ERROR: test_untagged_draft_url_changes_to_canonical_only_after_publish (test_release_lookup.ReleaseLookupTests.test_untagged_draft_url_changes_to_canonical_only_after_publish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-evidence-archive/.github/evidence/test_release_lookup.py", line 24, in test_untagged_draft_url_changes_to_canonical_only_after_publish
+    run.prepare_draft()
+  File "/workspace/seonro-evidence-archive/.github/evidence/archive_sensitivity.py", line 239, in prepare_draft
+    self.release_check(candidate)
+  File "/workspace/seonro-evidence-archive/.github/evidence/archive_sensitivity.py", line 123, in release_check
+    ensure(address.hostname == "github.com" and not address.query and not address.fragment and
+  File "/workspace/seonro-evidence-archive/.github/evidence/http_client.py", line 19, in ensure
+    raise ArchiveError(message)
+http_client.ArchiveError: 근거 release 주소가 다릅니다
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+FAILED (errors=1)

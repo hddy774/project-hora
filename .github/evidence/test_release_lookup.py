@@ -16,6 +16,50 @@ def fixture():
 
 
 class ReleaseLookupTests(unittest.TestCase):
+    def test_untagged_draft_url_changes_to_canonical_only_after_publish(self):
+        manifest, client, request = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            run = archive.EvidenceArchive(client, manifest, "snapshot", request, directory)
+            run.prepare_originals()
+            run.prepare_draft()
+            self.assertEqual(run.release_id, 77)
+            self.assertTrue(run.release["html_url"].endswith("/releases/untagged-fixture-77"))
+            self.assertTrue(run.release["draft"])
+            self.assertIsNone(client.tag)
+            run.publish_zip_archive()
+            self.assertEqual(archive.urllib.parse.unquote(run.release["html_url"]),
+                             "https://github.com/" + archive.REPOSITORY + "/releases/tag/" + archive.TAG)
+            run.final_index()
+            self.assertEqual(run.status["state"], "완료")
+
+    def test_published_untagged_url_cannot_complete_or_upload_index(self):
+        manifest, client, request = fixture()
+        read = client.read
+        def wrong_published_url(path):
+            value = read(path)
+            if path == "releases/77" and not value["draft"]:
+                value["html_url"] = "https://github.com/" + archive.REPOSITORY + "/releases/untagged-fixture-77"
+            return value
+        client.read = wrong_published_url
+        with tempfile.TemporaryDirectory() as directory, self.assertRaises(ArchiveError):
+            archive.EvidenceArchive(client, manifest, "snapshot", request, directory).execute()
+        self.assertFalse(any(a["name"] == archive.INDEX for a in client.release["assets"]))
+
+    def test_draft_url_stays_in_same_github_repository_without_path_escape(self):
+        manifest, client, request = fixture()
+        release = client.api("releases", "POST", {"tag_name": archive.TAG, "target_commitish": archive.TARGET,
+                            "prerelease": True, "draft": True})
+        paths = ["https://other.example/" + archive.REPOSITORY + "/releases/untagged-77",
+                 "https://github.com/other/repo/releases/untagged-77",
+                 "https://github.com/" + archive.REPOSITORY + "/releases/../../other",
+                 "https://github.com/" + archive.REPOSITORY + "/releases/%2e%2e/other",
+                 "https://github.com/" + archive.REPOSITORY + "/releases/untagged-77?unexpected=1"]
+        with tempfile.TemporaryDirectory() as directory:
+            run = archive.EvidenceArchive(client, manifest, "snapshot", request, directory)
+            for url in paths:
+                with self.subTest(url=url), self.assertRaises(ArchiveError):
+                    run.release_check({**release, "html_url": url})
+
     def test_draft_tag_endpoint_404_still_uploads_publishes_and_reads_same_id(self):
         manifest, client, request = fixture()
         with tempfile.TemporaryDirectory() as directory:

@@ -1,10 +1,10 @@
 {
   "baseCommit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
   "selfTests": {
-    "passed": 24,
+    "passed": 27,
     "exitCode": 0,
-    "scope": "mock guards, draft ID and pagination, metadata/hash, Actions ZIP JSON entry versus release octet bytes, redirect, public/index/idempotence; no real API writes in self-tests",
-    "log": "checks/actions-zip-media-self-test.log"
+    "scope": "mock guards, draft ID/pagination and draft URL versus canonical published URL, metadata/hash, Actions ZIP JSON versus release octet bytes, redirect, public/index/idempotence; no real API writes in self-tests",
+    "log": "checks/draft-url-self-test.log"
   },
   "actualLocalOriginalZipHashesPassed": 6,
   "actualOriginalBytes": 9937563,
@@ -25,10 +25,10 @@
   "snapshotCredentialPatternScan": "no credential/private-key pattern found",
   "codeLines": {
     ".github/evidence/http_client.py": 107,
-    ".github/evidence/archive_sensitivity.py": 394,
-    ".github/evidence/test_archive.py": 379,
+    ".github/evidence/archive_sensitivity.py": 397,
+    ".github/evidence/test_archive.py": 380,
     ".github/evidence/test_http_client.py": 92,
-    ".github/evidence/test_release_lookup.py": 81
+    ".github/evidence/test_release_lookup.py": 125
   },
   "logSha256": {
     "actionlint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -36,10 +36,12 @@
     "draft-tag-404-before.log": "3f303afcc24eafd9b209e7e86ee46096f156d3e7236c3eef8c7fd9ff70be43ec",
     "draft-release-self-test.log": "1a66c546dbfcdc1e25f96f679e1b16217d5c6dfbab083a733551d00385ef9f1d",
     "actions-zip-media-self-test.log": "0d4ddad078b164a3ff698e07fb2df0542b08a5548aee9e84f0ad59a1a6f4d0d7",
-    "actions-zip-415-before.log": "38887854e84b143f01cf29ad6ced78696ed5c2232afdbe6722d85f2c2cc208d3"
+    "actions-zip-415-before.log": "38887854e84b143f01cf29ad6ced78696ed5c2232afdbe6722d85f2c2cc208d3",
+    "draft-url-self-test.log": "8302a6eebc9c55df405ed0e448af7c3036be24788e80db1d7bafc698c1754c4d",
+    "draft-untagged-url-before.log": "d6dd6280c2f575169dacbc5ccf21e6df19499e14e96e8478cf8ac1eee07c1f65"
   },
   "scope": {
-    "changedFiles": 25,
+    "changedFiles": 27,
     "selectedProductChanges": 0,
     "baseProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
     "newTreeProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
@@ -107,5 +109,18 @@
     "run.json": "18ecff6143ae27f6f7adae7fe77fb92b306ed6d5c765033862fe544b5e8043b7",
     "artifacts.json": "147add2936e0f9b4e7f314e235a003ee3217c80efd640373cca1020f5c1deaff",
     "releases-after.json": "47155e7884c7b75c2d604d464f479da2b33c8d428371740e7b3ef16e1c98869a"
+  },
+  "draftUrlRegression": {
+    "beforeSourceCommit": "2964818e53953fec275b14aed4c2d70f5ce12a7d",
+    "beforeExitCode": 1,
+    "beforeLog": "checks/draft-untagged-url-before.log",
+    "beforeObservedFailure": "valid fixed-ID/tag/target prerelease draft with same-repository untagged html_url rejected before first upload",
+    "afterExitCode": 0,
+    "afterLog": "checks/draft-url-self-test.log",
+    "draftUrlScope": "https github.com same-repository releases path without query/fragment/dot segments/backslash",
+    "publishedUrlScope": "canonical fixed-tag URL only",
+    "fixedIdTagTargetPrereleaseUnchanged": true,
+    "publicAssetUrlGuardUnchanged": true,
+    "existingHttp415EvidenceUnchanged": true
   }
 }

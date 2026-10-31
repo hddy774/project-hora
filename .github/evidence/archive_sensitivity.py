@@ -115,13 +115,16 @@ class EvidenceArchive:
         (self.output / "status.json").write_bytes(json_bytes(self.status))
 
     def release_check(self, release):
-        ensure(type(release["id"]) is int and release["id"] > 0 and
+        ensure(type(release["id"]) is int and release["id"] > 0 and type(release["draft"]) is bool and
                release["tag_name"] == TAG and release["prerelease"] is True and
                release["target_commitish"] == TARGET, "근거 전용 release/tag/source가 아닙니다")
         ensure(self.release_id is None or release["id"] == self.release_id, "확정한 근거 release ID가 바뀌었습니다")
         address = https_url(release["html_url"])
+        path, prefix = urllib.parse.unquote(address.path), "/" + REPOSITORY + "/releases/"
+        draft_url = release["draft"] and path.startswith(prefix) and len(path) > len(prefix) and "\\" not in path
+        draft_url = draft_url and not any(part in (".", "..") for part in path.split("/"))
         ensure(address.hostname == "github.com" and not address.query and not address.fragment and
-               urllib.parse.unquote(address.path) == "/" + REPOSITORY + "/releases/tag/" + TAG,
+               (draft_url or path == prefix + "tag/" + TAG),
                "근거 release 주소가 다릅니다")
         names = [a["name"] for a in release["assets"]]
         allowed = {a["planned_asset_name"] for a in self.manifest["artifacts"]} | {INDEX}

@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "kind": "Notion native-file retention index; partial 2 of 5, not a public GitHub release asset",
+  "recorded_utc": "2026-10-31T02:31:47.965854+00:00",
+  "notion_page_url": "https://app.notion.com/p/40aacc9e617581019cdfcfc214c29885",
+  "notion_page_id": "40aacc9e-6175-8101-9cdf-cfc214c29885",
+  "title": "0.2.1 성능 진단 원문 보관",
+  "requested_parent_page_id": "408acc9e6175817ab59bd91bb9dc011d",
+  "requested_parent_observed": true,
+  "sharing": {
+    "created_under_project_parent": true,
+    "inherits_parent_access": true,
+    "sharing_settings_changed": false,
+    "public_sharing_enabled_by_this_task": false,
+    "independent_acl_audit_performed": false
+  },
+  "limits": {
+    "documented_single_part_tool_bytes": 20971520,
+    "actual_workspace_bytes": 5242880,
+    "actual_workspace_limit_source": "One HTTP400 validation_error for heap fresh: File size of 14.374 MiB exceeds the limit of 5 MiB.",
+    "same_failed_file_retried": false
+  },
+  "actual_retained_count": 2,
+  "deferred_count": 3,
+  "retained_files": [
+    {
+      "filename": "df72405-kb-month30-cpu1.nettrace.gz",
+      "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+      "file_upload_id": "40aacc9e-6175-8164-a228-00b248f30c1f",
+      "original_bytes": 33015438,
+      "original_sha256": "d1a5db8305adcd013fb00b9c9c8dee69cf6f07f9c3f768591a8d3a67d2d301ac",
+      "compressed_bytes": 4179794,
+      "compressed_sha256": "dcaf0095145037e216e830c5843755206690ad6e9d1b5df4d1f978939968fb02",
+      "restored_original_sha256": "d1a5db8305adcd013fb00b9c9c8dee69cf6f07f9c3f768591a8d3a67d2d301ac",
+      "uploaded_utc": "2026-10-31T02:25:34.005789+00:00",
+      "upload_http_status": 200,
+      "native_file_block_attached": true
+    },
+    {
+      "filename": "db0feae-kb-month30-cpu1.nettrace.gz",
+      "source_commit": "db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+      "file_upload_id": "40aacc9e-6175-819c-b6c9-00b2dfc87919",
+      "original_bytes": 17922830,
+      "original_sha256": "4e8d0e1e50ba91684576d1e177b158a3ff11fbe0036c3324056730e38db75bd3",
+      "compressed_bytes": 2679873,
+      "compressed_sha256": "96aba0a2bf296a474c619ff1052afcb08a6770f75bbbab1ee8f71071f7039687",
+      "restored_original_sha256": "4e8d0e1e50ba91684576d1e177b158a3ff11fbe0036c3324056730e38db75bd3",
+      "uploaded_utc": "2026-10-31T02:27:41.043049+00:00",
+      "upload_http_status": 200,
+      "native_file_block_attached": true
+    }
+  ],
+  "deferred_files": [
+    {
+      "filename": "df72405-heap-fresh-opening.dmp.gz",
+      "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+      "original_bytes": 199540736,
+      "original_sha256": "b28a611426440435867592ba9194b0018a41b4f4e0a5f061c92fb527de17d608",
+      "compressed_bytes": 15071888,
+      "compressed_sha256": "c64fb233982ab893f03bc6a26f4b9c4cb19a9b14f6f0797b05865b65b1ae175d",
+      "local_restore_verified": true,
+      "persisted_to_notion": false,
+      "reason": "Exceeds the actual workspace 5 MiB limit",
+      "upload_attempted": true,
+      "actual_failure": {
+        "status": "failed",
+        "http_status": 400,
+        "error_type": "HTTPError",
+        "code": "validation_error",
+        "message": "File size of 14.374 MiB exceeds the limit of 5 MiB."
+      }
+    },
+    {
+      "filename": "df72405-heap-sequential-opening.dmp.gz",
+      "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+      "original_bytes": 298004480,
+      "original_sha256": "7bc7f6354c6578370a7d90a81e64598d4faa0e3ad60c5ba5c4153e60cc9df987",
+      "compressed_bytes": 18195305,
+      "compressed_sha256": "a6789a1f66ba270205233ef10b5ef06bdaafafd4b9496a246e7d88a6b33f5ae0",
+      "local_restore_verified": true,
+      "persisted_to_notion": false,
+      "reason": "Exceeds the actual workspace 5 MiB limit",
+      "upload_attempted": false
+    },
+    {
+      "filename": "df72405-heap-post-return-fresh.dmp.gz",
+      "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+      "original_bytes": 892182528,
+      "original_sha256": "7cc608601de48c0080197423b250c97c08a967faf82898c29702bc183934adc6",
+      "compressed_bytes": 23787417,
+      "compressed_sha256": "3061b8bce8d52d9113f20ba9c678d3fdd03e95271241914effee5939c20e64e9",
+      "local_restore_verified": true,
+      "persisted_to_notion": false,
+      "reason": "Exceeds the actual workspace 5 MiB limit",
+      "upload_attempted": false,
+      "one_authorized_xz_alternative": {
+        "filename": "df72405-heap-post-return-fresh.dmp.xz",
+        "compressed_bytes": 12620872,
+        "compressed_sha256": "cfbd7c52d6fab729b81af283d7b8944c810b91dc58ab5a1503700ec25973f01a",
+        "restored_original_sha256": "7cc608601de48c0080197423b250c97c08a967faf82898c29702bc183934adc6",
+        "restore_verified": true,
+        "within_20MiB_tool_limit": true,
+        "within_5MiB_workspace_limit": false,
+        "upload_attempted": false,
+        "ended_utc": "2026-10-31T02:30:14.498059+00:00"
+      }
+    }
+  ],
+  "verification": {
+    "local_original_and_gzip_restoration_hashes_equal": true,
+    "local_upload_payload_hashes_equal_prepared_gzip": true,
+    "upload_http200_count": 2,
+    "actual_page_readback_native_file_blocks": 2,
+    "server_binary_download_sha_verified": false,
+    "server_binary_download_limitation": "include_file_urls=true returned no references/download URLs; no available binary Notion downloader. No unofficial endpoint or credential discovery attempted.",
+    "notion_file_block_references_retained_in_local_receipt": true,
+    "file_blocks_attached_promptly_after_upload": true
+  },
+  "scope": {
+    "new_game_or_performance_measurements": 0,
+    "product_or_gate_edits": false,
+    "large_binary_git_or_ci_added": false,
+    "public_release_assets_created": false,
+    "sensitivity_github_archives_duplicated": false,
+    "original_dump_trace_and_gzip_files_preserved": true,
+    "raw_data_split": false,
+    "compression_cpu": "3",
+    "cpu_compression_finished_utc": "2026-10-31T02:30:14.498059+00:00",
+    "compression_child_running": false
+  }
+}

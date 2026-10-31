@@ -1,0 +1,432 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "df7240556a260202a248e57b1f9868e372b9d995",
+    "source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "test_sources_sha256": "75e7cb849f6d113bff4c2cc4acd8cc408a0ec7907ab1b7cd8c0f0d02b3d1b21a",
+    "actual_scenarios": 321,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/CanonicalHashSink.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "단일 호출 비파일 stream의 바이트 순서·SHA·완료/실패 자원 해제와 독립 buffered oracle 대조. canonical 상태·RNG·ID·예외 계약을 지키며 저장/압축/게임 정책을 바꾸지 않는다."
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/GameCodec.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "기존 canonical serializer/Options와 Hash 출력·예외·RNG를 per-call 비파일 SHA stream에서도 보존한다. 기본 UTF8본문16MiB 초과에서 기존 binary3를 선택하며 작은 JSON2 bytes/이전 큰 JSON 읽기·논리checksum·순번·Decode/Clone 경계는 유지한다. 기능과 실제 성능/장기 수용을 구분한다."
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+        "invariants": [
+          "INV-004",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "판본/매체/기억/숙련·실제 시간/권리·소급 변경·공개 full snapshot 격리; 내부 물리 투영은 동일 Media/deep MissingChapters/Access만 독립복사하고 순서/조회시점/전체 API 유지; 내부 AttachWorldOwned는 이미 분리한 독점 세계 상태만 즉시 갱신하며 공개 Restore/Checkpoint/조회 DTO의 깊은 사본·예외/거부 경계는 보존한다."
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "개인 key index와 같은월 Save/외부 snapshot 복원·격리·권한/실제노동 보존. Settle 두 snapshot은 첫Media만/물리동기화뒤Media+Access로 같은순서의독립사본을읽으며월말지연/alias공유없음; state.Knowledge 객체 교체 시 ReferenceEquals로 내부 권위를 다시 연결한다. SaveKnowledge는 같은 즉시 반영 상태를 사용하고 외부 snapshot/후보 실패 원자성은 유지한다."
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006"
+        ],
+        "registered_scenarios": [
+          "INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약",
+          "INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존",
+          "INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약",
+          "INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존",
+          "INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [
+          "INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006",
+          "INV-024"
+        ],
+        "registered_scenarios": [
+          "INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다",
+          "INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다",
+          "INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [
+          "INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다",
+          "INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다",
+          "INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다"
+        ],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "측정/안정성 명시 진입점·source/fixture·논리 시간·보고서/중단 구분. 기능 이름 통과와 별도"
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "src/Chronicles.Game/CanonicalHashSink.cs",
+      "src/Chronicles.Game/GameCodec.cs",
+      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
+      "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs"
+    ],
+    "review_note": "새 Hash3/기본16MiB 경계1/소유지식3의 실제7Name·경계·주장·앵커를 먼저 수동 연결했다. 기존314개 행과152증인은 그대로다. canonical Hash oracle/실패·새 기본 host 저장·모듈/실제 world 소유격리를 분리하며 NoInlining은 기존 장기 사례 stack 수명 경계/같은 계획·시간·검증·IO 순서의 하네스 변경으로 검토했다. 새 실제 전체 결과는 종료0 확인 뒤 별도 원문으로만 연결하며 성능·장기·111 수용을 주장하지 않는다."
+  },
+  "initial_review_plan_before_manual_bindings": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "df7240556a260202a248e57b1f9868e372b9d995",
+    "source_commit": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "test_sources_sha256": "75e7cb849f6d113bff4c2cc4acd8cc408a0ec7907ab1b7cd8c0f0d02b3d1b21a",
+    "actual_scenarios": 321,
+    "added_names": [
+      "INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다",
+      "INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약",
+      "INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존",
+      "INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회",
+      "INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다",
+      "INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환",
+      "INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다"
+    ],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "src/Chronicles.Game/CanonicalHashSink.cs",
+        "invariants": [],
+        "registered_scenarios": [],
+        "unclassified_product_source": true,
+        "named_witnesses": [],
+        "review_focus": []
+      },
+      {
+        "path": "src/Chronicles.Game/GameCodec.cs",
+        "invariants": [
+          "INV-004",
+          "INV-005",
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "현재 상태Schema1/DomainSchema2 유지·기존 작은schema2 bytes와구버전거부·128MiB초과시binary봉투3/rawUTF8·같은논리checksum·정확길이/순번/손상거부·명령/RNG전체복원; 내부임계값검사와실제대규모성공구분"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+        "invariants": [
+          "INV-004",
+          "INV-007",
+          "INV-008",
+          "INV-009",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "판본/매체/기억/숙련·실제 시간/권리·소급 변경·공개 full snapshot 격리; 내부 물리 투영은 동일 Media/deep MissingChapters/Access만 독립복사하고 순서/조회시점/전체 API 유지"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+        "invariants": [
+          "INV-001",
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-017",
+          "INV-018",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "개인 key index와 같은월 Save/외부 snapshot 복원·격리·권한/실제노동 보존. Settle 두 snapshot은 첫Media만/물리동기화뒤Media+Access로 같은순서의독립사본을읽으며월말지연/alias공유없음"
+        ]
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
+        "invariants": [],
+        "registered_scenarios": [
+          "INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약",
+          "INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존",
+          "INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
+        "invariants": [],
+        "registered_scenarios": [
+          "INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
+        "invariants": [],
+        "registered_scenarios": [
+          "INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다",
+          "INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다",
+          "INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다"
+        ],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": []
+      },
+      {
+        "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "등록 외 helper/fixture/계측: 실제 호출·입력·명령/보고서 형식 변경을 검토. 실측 통과로 간주하지 않음.",
+          "측정/안정성 명시 진입점·source/fixture·논리 시간·보고서/중단 구분. 기능 이름 통과와 별도"
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "manual_name_binding_changes_before_helper": {
+    "added_names": [
+      "INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다",
+      "INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약",
+      "INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존",
+      "INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회",
+      "INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다",
+      "INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환",
+      "INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다"
+    ],
+    "removed_names": [],
+    "reviewed_additions": "invariant-final-5f789c8/map-additions.json",
+    "new_witness_links": 15,
+    "preserved_scenarios": 314,
+    "preserved_witness_links": 152
+  },
+  "review_details": [
+    {
+      "path": "src/Chronicles.Game/CanonicalHashSink.cs",
+      "sha256": "65a0b7dc45b79164e8a7a196cebc62ac0dd9732fcae9940537e9d74fb7fcefed",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "review_note": "호출 단위 비파일 stream→IncrementalHash의 같은 UTF8순서·완료/실패 Dispose. 저장/게임 권위 추가 없음."
+    },
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "sha256": "978fb8ac7c360753c15f1063741ca53310b3547ed38c018a5a456c80ccdf18ac",
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-006"
+      ],
+      "review_note": "Hash만 buffered byte[]→같은 Options의 stream으로 전환. 기본 JsonPayloadLimit128→16MiB; Encode의 내부 명시인자·Decode·PayloadHash·Clone·CommandHash는 그대로다. 형식 선택에 따른 큰 저장 bytes 변경과 논리 상태/Hash 보존을 구분한다."
+    },
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "sha256": "67e6a8d1791b18393d0a6a57094634cb61ce9efdde02185d92643eec6c44fbb6",
+      "invariants": [
+        "INV-004",
+        "INV-007",
+        "INV-008",
+        "INV-009",
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "review_note": "이미 독점 소유한 내부 KnowledgeState의 검증 후 attach만 clone을 생략한다. 공개 Restore/Checkpoint/조회 배열은 계속 복사하며 내부 전이는 즉시 같은 세계 상태에 반영된다."
+    },
+    {
+      "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "sha256": "a65770d733474205d9ce6d4e28d4ea3ee4979ae0d08c89fb5df6006fe88c5520",
+      "invariants": [
+        "INV-001",
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-017",
+        "INV-018",
+        "INV-024"
+      ],
+      "review_note": "KnowledgeRuntime은 현재 state.Knowledge identity에만 attach하고 객체 교체 시 재연결한다. SaveKnowledge의 반복 Checkpoint 전체 복사만 제거하며 후보/공개 외부 입력 격리를 유지한다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
+      "sha256": "30e1fcbb51a7724b018594bdb9fa23fa6b6a0aec2e25d379e74ffb87e4df5cf0",
+      "invariants": [
+        "INV-004",
+        "INV-006"
+      ],
+      "review_note": "독립 수정 전 buffered oracle·고정 df N100·Unicode/문화권/실패/부분 출력 오염·상태/RNG/ID의 등록3사례. N100 fixture는 기능 입력이며 월별 성능 실측이 아니다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
+      "sha256": "697b1181e00bc869295ff8b4ef64485eec18e7f0740cc866d8a595fed315ce51",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-022"
+      ],
+      "review_note": "실제16MiB/16MiB+1 기본 선택과 이전 JSON·원자파일의 등록1사례. 실제100명120개월 저장 크기/예산을 대신하지 않는다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
+      "sha256": "b7abf0df858ffdc57679189cf9f06491c22888b89869125b325fed13a8efab26",
+      "invariants": [
+        "INV-004",
+        "INV-005",
+        "INV-006",
+        "INV-024"
+      ],
+      "review_note": "내부 소유 모듈 격리1, 공개 world 캐시 교체/저장1, 실제 거부·재전송/물리 실패/커밋 예외1의 등록3사례. Name만으로 INV-007 관찰 검사를 추정하지 않는다."
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs",
+      "sha256": "de9a7e4b9ab7761a437ddef1f953b9014a383a9cfaa6dc0361be0f6997727cef",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-022"
+      ],
+      "review_note": "기존 사례 loop 본문을 NoInlining MeasureStabilityCase에 옮겨 이전 세계 closure/final snapshot을 다음 사례 GC 표본에서 분리한다. 원래 계획/시간 상한·체크 주기/IO·보고서 필드·실제 게임 진행은 유지한다. 아직 새 장기 통과/메모리 개선 실측으로 주장하지 않는다."
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-df72405.json",
+  "product_source_fingerprint": "a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12",
+  "fingerprint_attribution": "통합 담당자의 동결 source/지문 통지. 문서 작업의 추가 전체 지문 계산 없음.",
+  "full_product_review_coverage": {
+    "paths": [
+      "src/Chronicles.Game/CanonicalHashSink.cs",
+      "src/Chronicles.Game/GameCodec.cs",
+      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
+      "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs"
+    ],
+    "helper_default_paths": [
+      "src/Chronicles.Game/CanonicalHashSink.cs",
+      "src/Chronicles.Game/GameCodec.cs",
+      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs",
+      "tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs",
+      "tests/Chronicles.Game.Tests/PerformanceStabilityScenarios.cs"
+    ],
+    "manual_additional_paths": [],
+    "scope": "기존 helper는 일반적으로 scripts/WF를 생략한다. 이번 df→5f 실제 product_path8개를 별도 대조했고 범위 밖 추가 제품입력은0개다. helper/검사기 변경 없음."
+  },
+  "functional_evidence_status": "actual_all_321_exit0_original_preserved",
+  "scope": "실제 소스/새 검사 연결과 별도 전체321/321 원문을 함께 보존한다. 원장/readiness/예산/게임 정책/기존 증인 의미 변경 없음. 새 성능/장기/native/민감도/릴리스 수용을 주장하지 않는다.",
+  "separate_functional_report": {
+    "path": "invariant-final-5f789c8/functional.json",
+    "sha256": "f2c354e118a8a403a47d4989967abf001e6d177ddf947238eba665797841be92",
+    "executed_source": "5f789c817eb9519b696acd72410643169ff11ef2",
+    "selection": "all",
+    "total": 321,
+    "failed": 0
+  }
+}

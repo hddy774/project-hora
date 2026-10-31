@@ -1,0 +1,1099 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+    "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+    "actual_scenarios": 314,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": ".github/workflows/v021-product.yml",
+        "invariants": [
+          "INV-007",
+          "INV-008",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "정확 SDK와 실제 플랫폼 준비·원래 UI verifier/출처·진단 보존; Game 기능 합격과 native를 구분"
+        ],
+        "review_origin": "release verifier.product_path로 추가한 실제 제품입력의 수동 검토"
+      },
+      {
+        "path": "global.json",
+        "invariants": [
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 SDK10.0.403 정확 선택/rollForward disable·입력 지문과 실행 source 귀속"
+        ]
+      },
+      {
+        "path": "scripts/android_readiness.py",
+        "invariants": [
+          "INV-007",
+          "INV-008",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "단일90초 deadline·실제 foreground·명확한 외부 launcher Wait만 허용·원래 verifier와 같은 ready 관측/진단"
+        ],
+        "review_origin": "release verifier.product_path로 추가한 실제 제품입력의 수동 검토"
+      },
+      {
+        "path": "scripts/fixtures/android-quickstep.xml",
+        "invariants": [
+          "INV-007",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 보존 Quickstep/window 입력의 parser 회귀 fixture; 실제 native 실행 합격이 아님"
+        ],
+        "review_origin": "release verifier.product_path로 추가한 실제 제품입력의 수동 검토"
+      },
+      {
+        "path": "scripts/fixtures/android-window-windows-only.txt",
+        "invariants": [
+          "INV-007",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 보존 Quickstep/window 입력의 parser 회귀 fixture; 실제 native 실행 합격이 아님"
+        ],
+        "review_origin": "release verifier.product_path로 추가한 실제 제품입력의 수동 검토"
+      },
+      {
+        "path": "scripts/test-android-readiness.py",
+        "invariants": [
+          "INV-006",
+          "INV-007",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "동일 frame/deadline·미상/앱 dialog 거부·시간/명령 stub 경계의 host 단위검사"
+        ],
+        "review_origin": "release verifier.product_path로 추가한 실제 제품입력의 수동 검토"
+      },
+      {
+        "path": "scripts/update-v021-progress.py",
+        "invariants": [
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제111개 done/validated 계산과 본문 보호·자동영역 단일화; 게임 전이/readiness 승인과 분리"
+        ],
+        "review_origin": "release verifier.product_path로 추가한 실제 제품입력의 수동 검토"
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다.",
+    "coverage_note": "기존 refresh helper 기본범위15개와 별도 제품입력6개를 구분한다. helper/검증기 코드는 변경하지 않았다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      ".github/workflows/v021-product.yml",
+      "global.json",
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-quickstep.xml",
+      "scripts/fixtures/android-window-windows-only.txt",
+      "scripts/test-android-readiness.py",
+      "scripts/update-v021-progress.py",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "src/Chronicles.Game/World.PeopleSocialTraits.cs"
+    ],
+    "review_note": "실제314명·24INV·152증인의 Name/경계/claim/anchors와 전체 테스트본문은94와같다. 수행43메서드·인물43멤버의 분리는 원저자 토큰/본문·초기화보존 근거와 현재14파일SHA를 대조했다. SDK403·Android 준비/fixture·진행 자동화는 별도 목적/실행범위로 검토한다. root frozen df72405 전체314/314·exit0 원문을 새FP0cb2로 연결하며 성능/장기/native/111수용으로 확대하지 않는다."
+  },
+  "helper_default_review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5",
+    "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+    "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+    "actual_scenarios": 314,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "global.json",
+        "invariants": [
+          "INV-006"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 SDK10.0.403 정확 선택/rollForward disable·입력 지문과 실행 source 귀속"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+        "invariants": [
+          "INV-003",
+          "INV-004",
+          "INV-006",
+          "INV-007",
+          "INV-015",
+          "INV-017",
+          "INV-018",
+          "INV-023",
+          "INV-024"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "입문/Qi 실제 준비 증거의 자격·정수 형성 품질·동률·최신revision 선택, pure preflight/잠재와 동결 시도/형성·열람 재확인·일반실습/전환/상위 경계"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      },
+      {
+        "path": "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+        "invariants": [
+          "INV-004",
+          "INV-006",
+          "INV-008",
+          "INV-011",
+          "INV-012",
+          "INV-014",
+          "INV-015"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 사람·몸과 source/표현·생사/전승/기한 연결·입력 캡처"
+        ]
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "helper_default_review_acknowledgement": {
+    "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "global.json",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "src/Chronicles.Game/World.PeopleSocialTraits.cs"
+    ],
+    "review_note": "실제314명·24INV·152증인의 Name/경계/claim/anchors와 전체 테스트본문은94와같다. 수행43메서드·인물43멤버의 분리는 원저자 토큰/본문·초기화보존 근거와 현재14파일SHA를 대조했다. SDK403·Android 준비/fixture·진행 자동화는 별도 목적/실행범위로 검토한다. root frozen df72405 전체314/314·exit0 원문을 새FP0cb2로 연결하며 성능/장기/native/111수용으로 확대하지 않는다."
+  },
+  "review_details": [
+    {
+      "path": ".github/workflows/v021-product.yml",
+      "sha256": "e24b10e8d063d4c44ca0e790fedf0bbc2cc11a06ecdd9093b7e9e2ccb91e40fc",
+      "invariants": [
+        "INV-007",
+        "INV-008",
+        "INV-022"
+      ],
+      "review_note": "SDK3곳 고정과 Android 실제 launch/foreground/같은frame 원래 UI검증·deadline/진단의 연결."
+    },
+    {
+      "path": "global.json",
+      "sha256": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d",
+      "invariants": [
+        "INV-006"
+      ],
+      "review_note": "SDK10.0.403 정확 선택·rollForward disable. 기존 사용SDK와 소스 지문/실행 출처를 함께 확인한다."
+    },
+    {
+      "path": "scripts/android_readiness.py",
+      "sha256": "408d0445b1433fcc3c4e9a19a1fb7936472623219be850d899e254f206e5e1cc",
+      "invariants": [
+        "INV-007",
+        "INV-008",
+        "INV-021",
+        "INV-022"
+      ],
+      "review_note": "앱PID/resumed/focus/WebView와 원래 verifier를 같은 ready관측에서 확인. 단일90초한도·외부launcher만Wait,미상/본앱ANR거부."
+    },
+    {
+      "path": "scripts/fixtures/android-quickstep.xml",
+      "sha256": "938794d94501058d31674442756489773bf46d15b289f7a7d0fa2b62c2a9d36d",
+      "invariants": [
+        "INV-007",
+        "INV-022"
+      ],
+      "review_note": "보존된 실제 Quickstep ANR의 parser/Wait 선택 회귀 입력. native합격으로 세지 않는다."
+    },
+    {
+      "path": "scripts/fixtures/android-window-windows-only.txt",
+      "sha256": "7a9adbbb16dba4af11bf249e69da5f5d3ca8abeb3a223542aec87a708b74f718",
+      "invariants": [
+        "INV-007",
+        "INV-022"
+      ],
+      "review_note": "windows-only dump에 current focus가 없던 재현 입력. 전체window조회 계약과 구분."
+    },
+    {
+      "path": "scripts/test-android-readiness.py",
+      "sha256": "294c3abc548665306c4690c37ed589a61c04b4fb98815e304a969f70db09afb6",
+      "invariants": [
+        "INV-006",
+        "INV-007",
+        "INV-021",
+        "INV-022"
+      ],
+      "review_note": "시간/명령stub·늦은popup/stale좌표·동일frame·deadline 경계의 단위검사. 실제앱검사와 분리."
+    },
+    {
+      "path": "scripts/update-v021-progress.py",
+      "sha256": "96f43a06f97d16ae04f856a2e58864ad62e3f6ca4f2290a1d7ed3e0cd9bea98a",
+      "invariants": [
+        "INV-022"
+      ],
+      "review_note": "111개 상태의 대표완료율·남은일/블로커/다음행동,자동영역보호. 정본상태/사용자본문을 임의승격하지 않는다."
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "sha256": "9f7ca93cc2bbd9f7e21ab23f9de1e6340ac2a3d8608c422def8464f47de148c1",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "준비/시작·형성·금단파단·취소경계. 기존 source/revision·단일 판정 순서 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "sha256": "418f335adbe3e9c5506e1a593cd92073a629fb5eeeb32af6f2476d3eccd826da",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "독립 무예 단련/돌파. 기존 값·서명·본문 토큰 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "sha256": "0c850b77731558785885b5b0e718bc2f2550597ab216cf45c03457b51e9b5b3c",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "흡수/정련/순환/체화·실제공급 차감·보조 공정/병목. 무료작업/에너지 유입 없음이라는 기존계약 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "sha256": "25d05f7b4205abfc391ad3b8ca5ac98ede9a704204787a005da942f982c95926",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "Preflight·entry/Qi 실제 출처/권리/조건·정수 형성품질 선택. 기존 명명 증인의 같은경계 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "sha256": "efd1a0cc5c5df67447d4aee7dcb278c6812920488c1a679285c8e490086da2e0",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "소경지 겁난·완성/층·성장목표와 구조성장/축소. 기존 경계/순서 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "sha256": "bc922db1478bf2e90da5726f41bf00a82ec648bff6d1b150e54b265c8ad76385",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "안착/회복비용·구조손상/퇴행. 기존 actual effect/전이 순서 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "sha256": "23e263379bcdd04176fb2e7de53199bdad2f44500a8ae523b1db8a7b4e784a25",
+      "invariants": [
+        "INV-003",
+        "INV-004",
+        "INV-006",
+        "INV-007",
+        "INV-015",
+        "INV-017",
+        "INV-018",
+        "INV-023",
+        "INV-024"
+      ],
+      "review_note": "Execute·명령/입력/법칙 검증·거부/사망 델타의 진입점. 기존 메서드 토큰과 분기 순서 유지.",
+      "proof_source": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "sha256": "6b0779a0a0061ef19a598beea23f4c5ab6a80d5a1bb56387b7abd90ec6fd5809",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "공통 필드/record와 Settle/Validate 진입점. 기존 필드/초기화와 월별순서 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "sha256": "b188c64def2c2eae27dec7963944bf450e77ba7495f0cd99af1103aed68c53b5",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "육신 참여/서식지·생리 비용. 기존 전이/입력·초기화 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "sha256": "5fbbdf95bf2c071eccca373dbfc8b3ec43b8cc7f64e878bfb7f2ae47500fd3fc",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "기존 사건 처리와 실제 원인 출처 생성. 본문 원문/순서 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "sha256": "1b506e983980c90f65838064fe3ad46ae65536be89ed751e82eeccda5e072d0c",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "서약 관측·영수증/종료. 실제 당사자/기한권위 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "sha256": "38895bf1c86893f9225b7a0df53ca0d4b97d5028cc409b2db1cb3856f64e3f20",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "전달 진술·평판/개인기억 예산. 개인 정보경계 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "sha256": "0c965e44ed6c3454a181709efb1f3b49d3a094b88bf8da10ee067653fbbf7adf",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "동의 요청·권한/관측·실제 명령/완료/취소/수명. 기존 멤버 원문 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+      "sha256": "c3d84b4b2afc9f7372137baf9b77a6c12512948f9ec94773d2d5813ed2f9c12f",
+      "invariants": [
+        "INV-004",
+        "INV-006",
+        "INV-008",
+        "INV-011",
+        "INV-012",
+        "INV-014",
+        "INV-015"
+      ],
+      "review_note": "경험·칭호·선호와 실제 개인권위. 기존 token/상태전이 유지.",
+      "proof_source": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "current_file_matches_author_proof": true
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-94ccb5d.json",
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "manual_name_binding_changes_before_helper": {
+    "before_count": 314,
+    "after_count": 314,
+    "new_test_classes": 0,
+    "added_names": [],
+    "removed_names": [],
+    "witness_links_before": 152,
+    "witness_links_after": 152,
+    "test_source_fingerprint_unchanged": true
+  },
+  "separate_functional_report": {
+    "path": "invariant-final-df72405/functional.json",
+    "sha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66",
+    "executed_source": "df7240556a260202a248e57b1f9868e372b9d995",
+    "selection": "all",
+    "total": 314,
+    "failed": 0
+  },
+  "full_product_review_coverage": {
+    "classifier": "verify-v021-release.py product_path",
+    "expected": [
+      ".github/workflows/v021-product.yml",
+      "global.json",
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-quickstep.xml",
+      "scripts/fixtures/android-window-windows-only.txt",
+      "scripts/test-android-readiness.py",
+      "scripts/update-v021-progress.py",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "src/Chronicles.Game/World.PeopleSocialTraits.cs"
+    ],
+    "reviewed": [
+      ".github/workflows/v021-product.yml",
+      "global.json",
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-quickstep.xml",
+      "scripts/fixtures/android-window-windows-only.txt",
+      "scripts/test-android-readiness.py",
+      "scripts/update-v021-progress.py",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "src/Chronicles.Game/World.PeopleSocialTraits.cs"
+    ],
+    "unreviewed": [],
+    "helper_scope_and_manual_extension_disclosed": true
+  },
+  "scope": "root의실제새전체기능과정적소스/검사연결이다. 원장/readiness/성능/native/111개릴리스수용판정은별도다."
+}

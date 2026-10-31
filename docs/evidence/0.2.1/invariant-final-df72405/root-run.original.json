@@ -1,0 +1,91 @@
+{
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "sdk": "10.0.403",
+  "started_utc": "2026-10-31T01:24:59.070503+00:00",
+  "tiered_environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "runs": [
+    {
+      "name": "release-build",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "build",
+        "tests/Chronicles.Game.Tests",
+        "-c",
+        "Release",
+        "--disable-build-servers",
+        "-m:1",
+        "-p:BuildInParallel=false",
+        "-p:UseSharedCompilation=false"
+      ],
+      "exit_code": 0,
+      "seconds": 31.80155293199641,
+      "ended_utc": "2026-10-31T01:25:30.872438+00:00"
+    },
+    {
+      "name": "functional",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/workspace/.dotnet/dotnet",
+        "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+        "--report",
+        "/workspace/scratch/v021-integration-df72405/functional.json"
+      ],
+      "exit_code": 0,
+      "seconds": 529.874740358995,
+      "ended_utc": "2026-10-31T01:34:20.747566+00:00"
+    }
+  ],
+  "finished_utc": "2026-10-31T01:34:20.747956+00:00",
+  "assemblies": [
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.deps.json",
+      "sha256": "c488abfdc41c5abafc69fd6da72c3b2f4eeb7900ea94517ecf2d6a0054da7839"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04"
+    },
+    {
+      "path": "tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7"
+    }
+  ],
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "report_sha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66"
+}

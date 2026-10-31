@@ -1,0 +1,120 @@
+{
+  "kind": "original-dependency-minimal-closure",
+  "source": "692d4c9d7ba218d20e422b9a00008dbd39cec524",
+  "acceptedNewTask": "V021-Z04",
+  "beforeCounts": {
+    "done": 52,
+    "validated": 56,
+    "in_progress": 3
+  },
+  "afterCounts": {
+    "done": 109,
+    "in_progress": 2
+  },
+  "beforeLedgerSha256": "ad47595386d88fbc0ef901a4a3828d9fde93e494af31e4c5655f6bd69cf80fc1",
+  "afterLedgerSha256": "8cc0adcd36e041a1bb30c6d56988f4367f62ca90315481f5c374e6d87edf5114",
+  "promotedAlreadyValidated": 56,
+  "waves": [
+    [
+      "V021-P02"
+    ],
+    [
+      "V021-R03",
+      "V021-X02"
+    ],
+    [
+      "V021-R04",
+      "V021-K03"
+    ],
+    [
+      "V021-F02",
+      "V021-V01",
+      "V021-J02",
+      "V021-B04",
+      "V021-I03"
+    ],
+    [
+      "V021-F04",
+      "V021-R06",
+      "V021-V02",
+      "V021-K04"
+    ],
+    [
+      "V021-P03",
+      "V021-Y03"
+    ],
+    [
+      "V021-M02",
+      "V021-G01",
+      "V021-U03",
+      "V021-O02",
+      "V021-J03",
+      "V021-R07"
+    ],
+    [
+      "V021-M05",
+      "V021-K06",
+      "V021-K07",
+      "V021-E01",
+      "V021-S01",
+      "V021-G02",
+      "V021-J04",
+      "V021-L05",
+      "V021-R08"
+    ],
+    [
+      "V021-M03",
+      "V021-E02",
+      "V021-E03",
+      "V021-E04",
+      "V021-G03"
+    ],
+    [
+      "V021-E05",
+      "V021-S02",
+      "V021-U04",
+      "V021-O03",
+      "V021-L03"
+    ],
+    [
+      "V021-S03",
+      "V021-L06",
+      "V021-O04"
+    ],
+    [
+      "V021-X03",
+      "V021-U05",
+      "V021-O05"
+    ],
+    [
+      "V021-X04",
+      "V021-L07",
+      "V021-U07"
+    ],
+    [
+      "V021-D02"
+    ],
+    [
+      "V021-T01"
+    ],
+    [
+      "V021-T02"
+    ],
+    [
+      "V021-T03",
+      "V021-T05",
+      "V021-H10"
+    ]
+  ],
+  "unchangedContractFields": [
+    "id",
+    "deps",
+    "acceptance",
+    "kind"
+  ],
+  "remaining": [
+    "V021-T04",
+    "V021-T06"
+  ],
+  "rule": "기존 validated의 자체 근거를 유지하고 모든 선행이 done인 작업만 동시 파동으로 최소 고정점까지 승격. T04/T06 자동 승격 없음."
+}

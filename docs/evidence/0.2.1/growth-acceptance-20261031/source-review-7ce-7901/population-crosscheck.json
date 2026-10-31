@@ -1,0 +1,70 @@
+{
+  "source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "repositoryEvidenceCommit": "e7682962fab7205e7dd8ae37942ee0c6446cacda",
+  "populationReportPath": "docs/evidence/0.2.1/final-population-7901f34/population.json",
+  "populationReportSha256": "7fb6131cb7154566517bd4f81d0646b1cf5c5c3c8af5232bcd76bd49e8e612b7",
+  "baselineSha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "budgetSha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "assessmentAll32Passed": true,
+  "measuredMonths": 12,
+  "rows": [
+    {
+      "population": 2,
+      "initialHash": "7d8a73f70d7f2a5d5a561bc31ca1b01104ebf4c4809388cfe87536d150674b79",
+      "finalHash": "d4dae3ee7c4300159660509d19d9f33255d83bc8df3367391066613de7fa0af4",
+      "matches": {
+        "fixture": true,
+        "usedLaws": true,
+        "workload": true,
+        "serializedCognitionBytes": true,
+        "initialHash": true,
+        "finalHash": true,
+        "measuredMonths": true
+      }
+    },
+    {
+      "population": 100,
+      "initialHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+      "finalHash": "470f6d1d395873a7e2d5b14714360382b99f66dcb10b9c9a35407a6b926ea39c",
+      "matches": {
+        "fixture": true,
+        "usedLaws": true,
+        "workload": true,
+        "serializedCognitionBytes": true,
+        "initialHash": true,
+        "finalHash": true,
+        "measuredMonths": true
+      }
+    },
+    {
+      "population": 1000,
+      "initialHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+      "finalHash": "491a3903836aaa5608015c6179b2e9ea0b9b694e01b9fd0213e27adca325c2f5",
+      "matches": {
+        "fixture": true,
+        "usedLaws": true,
+        "workload": true,
+        "serializedCognitionBytes": true,
+        "initialHash": true,
+        "finalHash": true,
+        "measuredMonths": true
+      }
+    },
+    {
+      "population": 10000,
+      "initialHash": "eb7b02caf94432d40f42a063c94b0f3291cfe56746d8f69ee20a3a5617041aee",
+      "finalHash": "68e52eb8543bc480c84c188954eb60c30463b1427e73b323971a97f43f742b80",
+      "matches": {
+        "fixture": true,
+        "usedLaws": true,
+        "workload": true,
+        "serializedCognitionBytes": true,
+        "initialHash": true,
+        "finalHash": true,
+        "measuredMonths": true
+      }
+    }
+  ],
+  "baselineExecutedSource": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "scope": "existing synthetic 12-month baseline comparison; historical7ce natural6000-month outcomes remain separate"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "previous_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "old_scenarios_preserved_exactly": 323,
+  "old_invariant_titles_limits_claims_kinds_anchors_preserved_exactly": 24,
+  "old_witness_links_preserved_exactly": 171,
+  "registered_scenarios": 323,
+  "invariants": 24,
+  "named_witness_links": 171,
+  "new_game_scenarios": 0,
+  "new_named_witness_links": 0,
+  "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+  "test_sources_fingerprint_unchanged": true,
+  "manual_additional_paths": [
+    "scripts/android_readiness.py",
+    "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+    "scripts/test-android-readiness.py"
+  ],
+  "execution_status": "not_asserted",
+  "runtime_source_diff": [],
+  "old_map_json_url": "https://github.com/hddy774/project-hora/blob/9c9807604419d451a9d6da03bc534a826b6a6f43/docs/evidence/0.2.1/invariant-execution-map.json",
+  "old_map_markdown_url": "https://github.com/hddy774/project-hora/blob/9c9807604419d451a9d6da03bc534a826b6a6f43/docs/evidence/0.2.1/invariant-execution-map.md",
+  "old_map_json_sha256": "50a0f58436b84576c80e00ac254a634bc72540ded064574de6f665aa3c74f256",
+  "old_map_markdown_sha256": "63df059996bcf8d8ae3169496b7a3f4e048f9755cbcb7049f3fc7d58d5751a6e",
+  "new_runtime_executions": 0,
+  "ledger_readiness_progress_written": false
+}

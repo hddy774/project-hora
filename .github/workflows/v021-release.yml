@@ -88,7 +88,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 기획·이식형 제품 검증
         # Native and portable hosts package the same checked-in compatibility asset.
         run: |
@@ -154,7 +154,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 정확한 소스 기록 내려받기
         uses: actions/download-artifact@v4
         with:
@@ -275,7 +275,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 안드로이드 도구 설정(Android SDK)
         uses: android-actions/setup-android@v3
         with:
@@ -410,9 +410,13 @@ jobs:
         run: gh release download xianxia-observer/v0.2.0 --repo hddy774/project-hora --pattern XianxiaObserver-v0.2.0.apk --dir artifacts/previous
       - name: 실제 하드웨어 가속 허용(KVM)
         run: |
+          set -euxo pipefail
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle --timeout=10
+          id
+          stat --format='KVM mode=%a owner=%U group=%G type=%F' /dev/kvm
           test -r /dev/kvm -a -w /dev/kvm
       - name: 실제 새 설치·화면 연결·기존 서명 업데이트 검증(DOM)
         uses: reactivecircus/android-emulator-runner@v2

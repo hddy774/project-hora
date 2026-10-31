@@ -20,7 +20,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: 정본 원장 검증
-        run: python3 scripts/validate-v021-plan.py --self-test
+        run: |
+          python3 scripts/validate-v021-plan.py --self-test
+          python3 scripts/update-v021-progress.py --self-test
       - name: 전체 진행률과 현재 작업 게시
         env:
           GH_TOKEN: ${{ github.token }}

@@ -9,8 +9,8 @@ namespace Chronicles.Game;
 public static class GameCodec
 {
     private const string Magic = "SEONRO-021";
-    // Leave ample room for the legacy JSON writer's string-token/escaping limits.
-    internal const int JsonPayloadLimit = 128 * 1024 * 1024;
+    // 중간 규모부터 기존 이진 봉투를 써서 JSON 문자열의 이중 escaping과 UTF16 임시 사본을 줄인다.
+    internal const int JsonPayloadLimit = 16 * 1024 * 1024;
     private const int BinaryHeaderSize = 64;
     private static ReadOnlySpan<byte> BinaryMagic => "SEONRO-021B\0"u8;
     private sealed record Envelope(string Format, int Schema, string Hash, string Payload, long Sequence);

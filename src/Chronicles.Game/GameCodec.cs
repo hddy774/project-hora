@@ -127,9 +127,10 @@ public static class GameCodec
             var envelope = JsonSerializer.Deserialize<Envelope>(bytes, Options) ?? throw new InvalidDataException("빈 저장입니다.");
             if (envelope.Format != Magic || envelope.Schema != 2 || envelope.Sequence < 0)
                 throw new InvalidDataException("0.2.1 저장 형식이 아닙니다. 원본은 보존됩니다.");
-            var actual = Convert.ToHexStringLower(PayloadHash(Encoding.UTF8.GetBytes(envelope.Payload), envelope.Sequence));
+            var payload = Encoding.UTF8.GetBytes(envelope.Payload);
+            var actual = Convert.ToHexStringLower(PayloadHash(payload, envelope.Sequence));
             if (!string.Equals(actual, envelope.Hash, StringComparison.Ordinal)) throw new InvalidDataException("저장 체크섬이 다릅니다.");
-            return (GameWorld.Restore(JsonSerializer.Deserialize<GameState>(envelope.Payload, Options) ??
+            return (GameWorld.Restore(JsonSerializer.Deserialize<GameState>(payload.AsSpan(), Options) ??
                 throw new InvalidDataException("빈 세계입니다.")), envelope.Sequence);
         }
         catch (JsonException e) { throw new InvalidDataException("저장 JSON이 손상되었습니다.", e); }

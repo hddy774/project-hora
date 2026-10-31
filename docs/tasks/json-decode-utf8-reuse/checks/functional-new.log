@@ -1,0 +1,3 @@
+PASS INV-004/006 JSON Decode UTF8 재사용: 손상·체크섬·BOM·trailing 거부 우선순위
+PASS INV-004/006 JSON Decode UTF8 재사용: Unicode·순번·원문·RNG·공개 사본 격리
+RESULT 2/2

@@ -1,0 +1,114 @@
+{
+  "mode": "memory",
+  "Runtime": ".NET 10.0.14",
+  "ProcessorCount": 1,
+  "TieredPgoEnvironment": null,
+  "ComPlusTieredPgoEnvironment": null,
+  "RuntimeConfig": "{\n  \u0022runtimeOptions\u0022: {\n    \u0022tfm\u0022: \u0022net10.0\u0022,\n    \u0022framework\u0022: {\n      \u0022name\u0022: \u0022Microsoft.NETCore.App\u0022,\n      \u0022version\u0022: \u002210.0.0\u0022\n    },\n    \u0022configProperties\u0022: {\n      \u0022System.Reflection.Metadata.MetadataUpdater.IsSupported\u0022: false,\n      \u0022System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization\u0022: false,\n      \u0022System.Runtime.TieredPGO\u0022: false\n    }\n  }\n}",
+  "GameSource": "0.2.1\u002B7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e",
+  "CoreSource": "0.2.1\u002B7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e",
+  "Assemblies": [
+    {
+      "Name": "Chronicles.Game.dll",
+      "Bytes": 2259968,
+      "Sha256": "2582e2554033e6f172b881e7e8c1239071d85b338ddc3697eab2f3d64145ed45"
+    },
+    {
+      "Name": "Chronicles.Core.dll",
+      "Bytes": 5120,
+      "Sha256": "5ede67777295e45635242755d1e29b9c05a4cfcc4351d2c23a8caf642d38fba7"
+    },
+    {
+      "Name": "Chronicles.Hosting.dll",
+      "Bytes": 23552,
+      "Sha256": "14a71d87f6be14026ce6934d1511815f321c6c7fc1ddcf42a9a6500ea94a95c8"
+    },
+    {
+      "Name": "Chronicles.Game.Tests.dll",
+      "Bytes": 1526272,
+      "Sha256": "97c8612c202eae6696ed7e267cf2c61da3c5aecceddba21339e183e5a72b657c"
+    }
+  ],
+  "Rows": [
+    {
+      "Name": "real-N2-M90",
+      "RealMonth": 90,
+      "Sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "InputBytes": 4663494,
+      "BeforeRetainedBytes": 4849296,
+      "AfterRetainedBytes": 34114576,
+      "DeltaRetainedBytes": 29265280,
+      "DecodeThreadAllocatedBytes": 78169992,
+      "Month": 90,
+      "Hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523",
+      "LargePoolEvents": [
+        {
+          "EventName": "BufferRented",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123,
+            -1
+          ]
+        },
+        {
+          "EventName": "BufferAllocated",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123,
+            -1,
+            2
+          ]
+        },
+        {
+          "EventName": "BufferReturned",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123
+          ]
+        }
+      ],
+      "Limits": "live world and original input kept alive; EventListener \u003E=8MiB only; retained includes runtime/pools; no heap-root proof"
+    },
+    {
+      "Name": "real-N2-M120",
+      "RealMonth": 120,
+      "Sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "InputBytes": 5027868,
+      "BeforeRetainedBytes": 30598080,
+      "AfterRetainedBytes": 34727632,
+      "DeltaRetainedBytes": 4129552,
+      "DecodeThreadAllocatedBytes": 49465608,
+      "Month": 120,
+      "Hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95",
+      "LargePoolEvents": [
+        {
+          "EventName": "BufferRented",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123,
+            19
+          ]
+        },
+        {
+          "EventName": "BufferReturned",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123
+          ]
+        }
+      ],
+      "Limits": "live world and original input kept alive; EventListener \u003E=8MiB only; retained includes runtime/pools; no heap-root proof"
+    }
+  ],
+  "Scope": "bounded codec-only diagnostic; no month advance; not T04 acceptance"
+}

@@ -1,0 +1,17 @@
+{
+  "selection": "JSON Decode UTF8",
+  "total": 2,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/006 JSON Decode UTF8 \uC7AC\uC0AC\uC6A9: \uC190\uC0C1\u00B7\uCCB4\uD06C\uC12C\u00B7BOM\u00B7trailing \uAC70\uBD80 \uC6B0\uC120\uC21C\uC704",
+      "passed": true,
+      "ms": 1104
+    },
+    {
+      "name": "INV-004/006 JSON Decode UTF8 \uC7AC\uC0AC\uC6A9: Unicode\u00B7\uC21C\uBC88\u00B7\uC6D0\uBB38\u00B7RNG\u00B7\uACF5\uAC1C \uC0AC\uBCF8 \uACA9\uB9AC",
+      "passed": true,
+      "ms": 839
+    }
+  ]
+}

@@ -1,0 +1,589 @@
+{
+  "mode": "oracle",
+  "Runtime": ".NET 10.0.14",
+  "ProcessorCount": 1,
+  "TieredPgoEnvironment": null,
+  "ComPlusTieredPgoEnvironment": null,
+  "RuntimeConfig": "{\n  \u0022runtimeOptions\u0022: {\n    \u0022tfm\u0022: \u0022net10.0\u0022,\n    \u0022framework\u0022: {\n      \u0022name\u0022: \u0022Microsoft.NETCore.App\u0022,\n      \u0022version\u0022: \u002210.0.0\u0022\n    },\n    \u0022configProperties\u0022: {\n      \u0022System.Reflection.Metadata.MetadataUpdater.IsSupported\u0022: false,\n      \u0022System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization\u0022: false,\n      \u0022System.Runtime.TieredPGO\u0022: false\n    }\n  }\n}",
+  "GameSource": "0.2.1\u002B7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e",
+  "CoreSource": "0.2.1\u002B7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e",
+  "Assemblies": [
+    {
+      "Name": "Chronicles.Game.dll",
+      "Bytes": 2259968,
+      "Sha256": "2582e2554033e6f172b881e7e8c1239071d85b338ddc3697eab2f3d64145ed45"
+    },
+    {
+      "Name": "Chronicles.Core.dll",
+      "Bytes": 5120,
+      "Sha256": "5ede67777295e45635242755d1e29b9c05a4cfcc4351d2c23a8caf642d38fba7"
+    },
+    {
+      "Name": "Chronicles.Hosting.dll",
+      "Bytes": 23552,
+      "Sha256": "14a71d87f6be14026ce6934d1511815f321c6c7fc1ddcf42a9a6500ea94a95c8"
+    },
+    {
+      "Name": "Chronicles.Game.Tests.dll",
+      "Bytes": 1526272,
+      "Sha256": "97c8612c202eae6696ed7e267cf2c61da3c5aecceddba21339e183e5a72b657c"
+    }
+  ],
+  "Rows": [
+    {
+      "Name": "valid-sequence0",
+      "Sha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "Accepted": true,
+      "Sequence": 0,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-sequence7",
+      "Sha256": "de55dfb239306d24df9488e1553d5f5e7e6d943946a8b10b1571f635893bc711",
+      "Accepted": true,
+      "Sequence": 7,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "de55dfb239306d24df9488e1553d5f5e7e6d943946a8b10b1571f635893bc711",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-sequenceMax",
+      "Sha256": "928d037af0dcf49ad9bfd9a3db38e021a40375610f4f18fea3766eabc5af0a69",
+      "Accepted": true,
+      "Sequence": 9223372036854775807,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "928d037af0dcf49ad9bfd9a3db38e021a40375610f4f18fea3766eabc5af0a69",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-leadingWhitespace",
+      "Sha256": "f358134e0d4f90279c84a4307407d28e222871032bfc440dac39d6ec61d60cbb",
+      "Accepted": true,
+      "Sequence": 0,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-trailingWhitespace",
+      "Sha256": "e02ff318410b73266989188cbf9df905aae012e273a4890e60c2b5dce22ada53",
+      "Accepted": true,
+      "Sequence": 0,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-rawUnicode",
+      "Sha256": "c818c8e2195ce8ebe0d7c9dc3137f0e8fd8409b111a99ac9ac88d46abbf6fcf4",
+      "Accepted": true,
+      "Sequence": 0,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-outerTrailingWhitespace",
+      "Sha256": "bad90414e3ead6c788ab4c1be136d9f69c99781e8ed46348ce5a3d854fc9507c",
+      "Accepted": true,
+      "Sequence": 0,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "valid-duplicateEnvelopePayload",
+      "Sha256": "8f196c68044802afe5761cc58c91dfbe44b6b344255fef97c4058e4e7882429b",
+      "Accepted": true,
+      "Sequence": 0,
+      "Month": 0,
+      "Hash": "f1677001418d9df60a20e8c9141104e4a0d37cf84ac77e4905823238e5d757d6",
+      "RandomState": 8655994046719279218,
+      "EncodedSha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-format-before-checksum",
+      "Sha256": "7d2ab57da037a6679b9de5f9a591d61e7e4b6d074d99660db547b8195473d3b1",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "0.2.1 \uC800\uC7A5 \uD615\uC2DD\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC6D0\uBCF8\uC740 \uBCF4\uC874\uB429\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-schema1-before-checksum",
+      "Sha256": "185efdbaf2f3cef81ea85e1e685ac0bba1e055d19b3ef375dc9d721b28dbf5be",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "0.2.1 \uC800\uC7A5 \uD615\uC2DD\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC6D0\uBCF8\uC740 \uBCF4\uC874\uB429\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-schema3-before-checksum",
+      "Sha256": "7065509e9a77d09af2baea82470400d58e281af2382963919207a40ca4777902",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "0.2.1 \uC800\uC7A5 \uD615\uC2DD\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC6D0\uBCF8\uC740 \uBCF4\uC874\uB429\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-negativeSequence-before-checksum",
+      "Sha256": "fd4c33b98b17c081ddb31e7907854211bd7b5d61fda1966569526fb3b9e439d9",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "0.2.1 \uC800\uC7A5 \uD615\uC2DD\uC774 \uC544\uB2D9\uB2C8\uB2E4. \uC6D0\uBCF8\uC740 \uBCF4\uC874\uB429\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-checksum-before-json",
+      "Sha256": "883fd65be455bbe12eea98656aefcb11b0f4144acbee0b4ede26c3be8cb04305",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 \uCCB4\uD06C\uC12C\uC774 \uB2E4\uB985\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-uppercaseChecksum",
+      "Sha256": "1ff5390ab180c6697611d8aa545d86fc3a92f89e395e332f6b386a71ad96e48d",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 \uCCB4\uD06C\uC12C\uC774 \uB2E4\uB985\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-nullPayload",
+      "Sha256": "3257edfaecce946d7f8f2276f6c87340c7a3349a37dc86e409f9281dcce4bd8c",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5\uC758 \uC790\uB8CC \uAD6C\uC870\uAC00 \uC62C\uBC14\uB974\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.ArgumentNullException",
+          "Message": "Value cannot be null. (Parameter \u0027s\u0027)"
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-emptyPayload",
+      "Sha256": "603dd237c1edd50da322ae6be467959eb294735e9226743611675a1cc012ea83",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true. Path: $ | LineNumber: 0 | BytePositionInLine: 0."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true. LineNumber: 0 | BytePositionInLine: 0."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-truncatedPayload",
+      "Sha256": "e309d655cb984478840cf30f36e4f067f8161baf8760806820e5cdf5e5b5de86",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. Path: $ | LineNumber: 0 | BytePositionInLine: 1."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-nullState",
+      "Sha256": "0aeab3f6a6f50896706aa0d3082a9e4ea8a7dcae9809254f6b2ea12962203144",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uBE48 \uC138\uACC4\uC785\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-arrayState",
+      "Sha256": "8189081a6bf62c883a7da77a1ea18e2851abb6bf6f52669b4ff4fdaacd25432b",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The JSON value could not be converted to Chronicles.Game.GameState. Path: $ | LineNumber: 0 | BytePositionInLine: 1."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-stringState",
+      "Sha256": "62f341c3096d8b8082e38becdf9aa9c10071870cc550d31c5e9667ef85312b62",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The JSON value could not be converted to Chronicles.Game.GameState. Path: $ | LineNumber: 0 | BytePositionInLine: 7."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-innerBOM",
+      "Sha256": "7c01a96c6d56a547e6587880258948d9d702d9006231cf75cc4eec32dfe4e61a",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "\u00270xEF\u0027 is an invalid start of a value. Path: $ | LineNumber: 0 | BytePositionInLine: 0."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "\u00270xEF\u0027 is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-innerTrailingObject",
+      "Sha256": "ec5ae762e69868ad7cb0079cbe0c9c911af5c3bac949417818e1428e39464403",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "\u0027{\u0027 is invalid after a single JSON value. Expected end of data. Path: $ | LineNumber: 0 | BytePositionInLine: 1176347."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "\u0027{\u0027 is invalid after a single JSON value. Expected end of data. LineNumber: 0 | BytePositionInLine: 1176347."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-innerTrailingNul",
+      "Sha256": "32ed48a87158cfb790bf4a3a66b423d592e31a6c8bb04e2591435c75e9da500d",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "\u00270x00\u0027 is invalid after a single JSON value. Expected end of data. Path: $ | LineNumber: 0 | BytePositionInLine: 1176347."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "\u00270x00\u0027 is invalid after a single JSON value. Expected end of data. LineNumber: 0 | BytePositionInLine: 1176347."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerEmpty",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true. Path: $ | LineNumber: 0 | BytePositionInLine: 0."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true. LineNumber: 0 | BytePositionInLine: 0."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerWhitespace",
+      "Sha256": "6bdf66b5bf2a44e658bea2ee86695ab150a06e600bf67cd5cce245ad54962c61",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true. Path: $ | LineNumber: 1 | BytePositionInLine: 0."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "The input does not contain any JSON tokens. Expected the input to start with a valid JSON token, when isFinalBlock is true. LineNumber: 1 | BytePositionInLine: 0."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerNull",
+      "Sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uBE48 \uC800\uC7A5\uC785\uB2C8\uB2E4."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerTruncated",
+      "Sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. Path: $ | LineNumber: 0 | BytePositionInLine: 1."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerBOM",
+      "Sha256": "dd34bd381a063bacc5c355fdcb4347675727aae235d0594e35a1dc7ac37ca2a6",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "\u00270xEF\u0027 is an invalid start of a value. Path: $ | LineNumber: 0 | BytePositionInLine: 0."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "\u00270xEF\u0027 is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerTrailingObject",
+      "Sha256": "c4c015a593079ce9a1e48ae86ff6cb63c179910868b0165fadcc0fb36d17e8ea",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "\u0027{\u0027 is invalid after a single JSON value. Expected end of data. Path: $ | LineNumber: 0 | BytePositionInLine: 1887188."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "\u0027{\u0027 is invalid after a single JSON value. Expected end of data. LineNumber: 0 | BytePositionInLine: 1887188."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerInvalidUtf8",
+      "Sha256": "27bdff1d7d46a902dae3bf4945eaf559de972b59bafe498e48f8aeb886999faa",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "\u00270xFF\u0027 is an invalid start of a value. Path: $ | LineNumber: 0 | BytePositionInLine: 0."
+        },
+        {
+          "Type": "System.Text.Json.JsonReaderException",
+          "Message": "\u00270xFF\u0027 is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerHighSurrogate",
+      "Sha256": "9944ddbc7c2787da4552d43382c4997715560aa07bb65e921f128899c1cba67c",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The JSON value could not be converted to Chronicles.Game.GameCodec\u002BEnvelope. Path: $.Payload | LineNumber: 0 | BytePositionInLine: 67."
+        },
+        {
+          "Type": "System.InvalidOperationException",
+          "Message": "Cannot read incomplete UTF-16 JSON text as string with missing low surrogate."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-outerLowSurrogate",
+      "Sha256": "1e6595cfffe699b456ba5c72e37abdcf60e4f494ba67b4d1fd4c384f7e68a6ef",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The JSON value could not be converted to Chronicles.Game.GameCodec\u002BEnvelope. Path: $.Payload | LineNumber: 0 | BytePositionInLine: 67."
+        },
+        {
+          "Type": "System.InvalidOperationException",
+          "Message": "Cannot read invalid UTF-16 JSON text as string. Invalid surrogate value: \u00270xDC00\u0027."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-innerEscapedHighSurrogate",
+      "Sha256": "45fab3973c175cde3e7be8abbcadf5fb5cddae9a040d73d7eee707f77c993e92",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The JSON value could not be converted to Chronicles.Game.GameEvent. Path: $.Events[0].Text | LineNumber: 0 | BytePositionInLine: 1176009."
+        },
+        {
+          "Type": "System.InvalidOperationException",
+          "Message": "Cannot read incomplete UTF-16 JSON text as string with missing low surrogate."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "invalid-innerEscapedLowSurrogate",
+      "Sha256": "d8686db354bf2d2f34e5b6d4e61407843af8da0a840acf9d37f4cceb345419fe",
+      "Accepted": false,
+      "Errors": [
+        {
+          "Type": "System.IO.InvalidDataException",
+          "Message": "\uC800\uC7A5 JSON\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+        },
+        {
+          "Type": "System.Text.Json.JsonException",
+          "Message": "The JSON value could not be converted to Chronicles.Game.GameEvent. Path: $.Events[0].Text | LineNumber: 0 | BytePositionInLine: 1176009."
+        },
+        {
+          "Type": "System.InvalidOperationException",
+          "Message": "Cannot read invalid UTF-16 JSON text as string. Invalid surrogate value: \u00270xDC00\u0027."
+        }
+      ],
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "real-N2-M90",
+      "Sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "Accepted": true,
+      "Sequence": 4,
+      "Month": 90,
+      "Hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523",
+      "RandomState": 17027385071253033762,
+      "EncodedSha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "OriginalUnchanged": true
+    },
+    {
+      "Name": "real-N2-M120",
+      "Sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "Accepted": true,
+      "Sequence": 5,
+      "Month": 120,
+      "Hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95",
+      "RandomState": 13949347536074594688,
+      "EncodedSha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "OriginalUnchanged": true
+    }
+  ],
+  "Scope": "bounded codec-only diagnostic; no month advance; not T04 acceptance"
+}

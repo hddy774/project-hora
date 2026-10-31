@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/json-decode-utf8/run-comparison.py", line 24, in <module>
+    run('old660','generate','inputs/manifest.json')
+  File "/workspace/scratch/json-decode-utf8/run-comparison.py", line 18, in run
+    with open(root/(out+'.log'),'w') as log:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/scratch/json-decode-utf8/inputs/manifest.json.log'

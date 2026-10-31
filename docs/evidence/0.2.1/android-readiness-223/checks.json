@@ -6,7 +6,8 @@
     "tests": 12,
     "passed": 12,
     "exitCode": 0,
-    "nativeAndroidExecution": false
+    "nativeAndroidExecution": false,
+    "stalePrelaunchFixture": "유효한 APP_LOG 사전 표식을 저장하고 clear 뒤의 빈 로그로는 합격하지 않음"
   },
   "actionlint": {
     "version": "1.7.12",
@@ -44,7 +45,7 @@
     },
     "unit.log": {
       "bytes": 111,
-      "sha256": "8a49e99c758bd4bff913d7fffe18ff4236f3855a9259b8b0485980620cbedcd8"
+      "sha256": "4e06db7a365e0c8fd016f5c9ab631e0c80208b77ccf1c470d73854a31ef0aa22"
     }
   }
 }

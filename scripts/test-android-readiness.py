@@ -206,7 +206,7 @@ class AndroidReadinessTests(unittest.TestCase):
     def test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker(self):
         for stale in [False, True]:
             clock = Clock()
-            device = Device(clock, logs=APP_LOG.replace("만상의 흐름", "잘못된 화면"))
+            device = Device(clock, logs=APP_LOG if stale else APP_LOG.replace("만상의 흐름", "잘못된 화면"))
             device.stale_only = stale
             with self.subTest(stale=stale), tempfile.TemporaryDirectory() as directory:
                 out = Path(directory)

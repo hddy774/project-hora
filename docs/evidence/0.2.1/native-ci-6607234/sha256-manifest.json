@@ -1,0 +1,30 @@
+{
+  "source_scope": "Existing API24 run41163651576 and product run41163651635 only; native jobs succeed, portable cancelled.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 6395,
+      "sha256": "10da7f16019962794f9f584eda97de180b2fcff1840ad030baf6e639a7807dfc"
+    },
+    {
+      "path": "index.json",
+      "bytes": 17156,
+      "sha256": "747bfc8ea562ddd850f8a7ffbd3056753c808163bf8f3d5664882aa13be5dbde"
+    },
+    {
+      "path": "screenshots/api24-final.png",
+      "bytes": 150466,
+      "sha256": "6c62d1f5668a6f9fe6c37cabad978ea221b4d9afe16e4fc123b02972102484df"
+    },
+    {
+      "path": "screenshots/api35-before-quickstep-wait.png",
+      "bytes": 51549,
+      "sha256": "b32016217f7390bdbd48e27a1e94f779cef5a18379edb48e42e3b8e74932c443"
+    },
+    {
+      "path": "screenshots/api35-final.png",
+      "bytes": 158413,
+      "sha256": "69c0f2b86e0e52820c7660b3f854a85e722894c0b737b7f171d30faa501b2680"
+    }
+  ]
+}

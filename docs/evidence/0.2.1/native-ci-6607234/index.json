@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "kind": "Read-only review of two existing native CI runs; no new execution",
+  "reviewed_utc": "2026-10-31T03:34:00.323880+00:00",
+  "repository": "hddy774/project-hora",
+  "source": {
+    "requested_head": "6607234b405921cc39e9527cbea42a7667a709be",
+    "api24_actual_checkout": "6607234b405921cc39e9527cbea42a7667a709be",
+    "product_actual_checkout": "0352a5a0cd298179f613875a7bbcca9dd4632027",
+    "api24_event_sha": "0352a5a0cd298179f613875a7bbcca9dd4632027",
+    "actual_common_file_tree": "d0bc3d289210bd0bfbec015d8528e1507a34a635",
+    "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+    "source_identity_is_not_commit_identity": true,
+    "file_tree_evidence": {
+      "api24_source_json_sha256": "cdb496244c614e52cfaeff6a4d7c21c9d2414f176dc902c052a22b29e54e7995",
+      "public_product_git_commit_metadata": {
+        "sha": "0352a5a0cd298179f613875a7bbcca9dd4632027",
+        "tree_sha": "d0bc3d289210bd0bfbec015d8528e1507a34a635",
+        "parents": [
+          "cefb2021c249e83d5409a892af97b67e54066a92",
+          "6607234b405921cc39e9527cbea42a7667a709be"
+        ],
+        "source": "public GitHub Git commit metadata; no credentials"
+      },
+      "github_compare_files": [],
+      "github_compare_total_commits": 1,
+      "same_files_verified": true
+    },
+    "generated_apk_identity_not_inferred_from_equal_source_tree": true
+  },
+  "runs": [
+    {
+      "id": 41163651576,
+      "name": "0.2.1 API 24 실제 화면 조기 확인",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41163651576"
+    },
+    {
+      "id": 41163651635,
+      "name": "0.2.1 제품 검증",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "url": "https://github.com/hddy774/project-hora/actions/runs/41163651635"
+    }
+  ],
+  "api24_job": {
+    "id": 124426500739,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "product_jobs": [
+    {
+      "id": 124426460068,
+      "name": "윈도우 회귀·실제 화면 검증",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 124426460326,
+      "name": "안드로이드 빌드·실제 실행 검증",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 124426460352,
+      "name": "이식형 제품 검증",
+      "status": "completed",
+      "conclusion": "cancelled"
+    }
+  ],
+  "api24": {
+    "readiness": {
+      "passed": true,
+      "reason": "",
+      "deadline_seconds": 90,
+      "attempts": 8,
+      "launcher_wait_count": 0,
+      "elapsed_ms": 31993.682,
+      "last_snapshot": "attempt-008",
+      "final_diagnostics_share_launch_deadline": true
+    },
+    "actual_native_dom": {
+      "rendered": true,
+      "heading": "만상의 흐름",
+      "title": "선로만상록",
+      "version": "0.2.1",
+      "error": null,
+      "connection": "연결됨"
+    },
+    "dom_proof": {
+      "android_actual_install_launch_and_render": true,
+      "core_to_native_bridge": true,
+      "world_view": "만상의 흐름",
+      "version": "0.2.1",
+      "accessibility_text_export": true
+    },
+    "pid": "2678",
+    "app_resumed_activity_present": true,
+    "post_screenshot_window_current_focus": "mCurrentFocus=Window{23c054c u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity}",
+    "final_files_equal_last_snapshot": true,
+    "final_png_manually_reviewed_no_dialog_overlay": true,
+    "offline_unchanged_verifier_replay": {
+      "exit_code": 0,
+      "output": {
+        "android_actual_install_launch_and_render": true,
+        "core_to_native_bridge": true,
+        "world_view": "만상의 흐름",
+        "version": "0.2.1",
+        "accessibility_text_export": true
+      }
+    },
+    "raw_files": [
+      {
+        "relative_path": "api24/runtime/fresh/screen.png",
+        "bytes": 150466,
+        "sha256": "6c62d1f5668a6f9fe6c37cabad978ea221b4d9afe16e4fc123b02972102484df"
+      },
+      {
+        "relative_path": "api24/runtime/fresh/ui.xml",
+        "bytes": 26795,
+        "sha256": "07ccc5781d3aacdfdb7607f37b928f3e5695f3c9b5b40108b8c903310594578d"
+      },
+      {
+        "relative_path": "api24/runtime/fresh/window.txt",
+        "bytes": 16669,
+        "sha256": "f032d5046c494988e742ffbe99d210ced18bd13405a81b65d2e20492b6324185"
+      },
+      {
+        "relative_path": "api24/runtime/fresh/render-log.txt",
+        "bytes": 53526,
+        "sha256": "deaf20eda6761f43454d15d0c1f253aaeb4d6c8246882d1e3091826895237673"
+      },
+      {
+        "relative_path": "api24/runtime/fresh/readiness.json",
+        "bytes": 220,
+        "sha256": "b79febe42cc06dc0d0e8a1f216d9e2cdffd82446b15fc7c428b15ec0a033e546"
+      }
+    ],
+    "single_am_start_W_count": 1,
+    "prelaunch_logcat_clear_count": 1,
+    "local_png_path": "/workspace/scratch/native-6607234-41163651576-41163651635/api24/runtime/fresh/screen.png",
+    "device": {
+      "api": 24,
+      "android_release": "7.0",
+      "abi": "x86_64",
+      "system_webview_package": "com.android.webview",
+      "system_webview_version_before": "52.0.2743.100"
+    },
+    "producer_apk_metadata": {
+      "sha256": "6a3c055874efd7045c43efa696cb5464ced23aaf7c8f636a652ce81f380b5295",
+      "bytes": 43165858,
+      "package": "org.hora.xianxiaobserver",
+      "version": "0.2.1",
+      "minimum_sdk": 24,
+      "target_sdk": 36,
+      "debug_signing_only": true,
+      "assembly_versions": {
+        "Game": "0.2.1+6607234b405921cc39e9527cbea42a7667a709be",
+        "Hosting": "0.2.1+6607234b405921cc39e9527cbea42a7667a709be"
+      },
+      "compat_asset_sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d"
+    },
+    "raw_apk_downloaded_for_this_review": false
+  },
+  "api35": {
+    "readiness": {
+      "passed": true,
+      "reason": "",
+      "deadline_seconds": 90,
+      "attempts": 2,
+      "launcher_wait_count": 1,
+      "elapsed_ms": 11378.003,
+      "last_snapshot": "wait-after-001",
+      "final_diagnostics_share_launch_deadline": true
+    },
+    "actual_native_dom": {
+      "rendered": true,
+      "heading": "만상의 흐름",
+      "title": "선로만상록",
+      "version": "0.2.1",
+      "error": null,
+      "connection": "연결됨"
+    },
+    "dom_proof": {
+      "android_actual_install_launch_and_render": true,
+      "core_to_native_bridge": true,
+      "world_view": "만상의 흐름",
+      "version": "0.2.1",
+      "accessibility_text_export": false
+    },
+    "pid": "2289",
+    "app_resumed_activity_present": true,
+    "post_screenshot_window_current_focus": "mCurrentFocus=Window{dd5cecd u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity}",
+    "final_files_equal_last_snapshot": true,
+    "final_png_manually_reviewed_no_dialog_overlay": true,
+    "offline_unchanged_verifier_replay": {
+      "exit_code": 0,
+      "output": {
+        "android_actual_install_launch_and_render": true,
+        "core_to_native_bridge": true,
+        "world_view": "만상의 흐름",
+        "version": "0.2.1",
+        "accessibility_text_export": false
+      }
+    },
+    "raw_files": [
+      {
+        "relative_path": "api35/android-runtime/screen.png",
+        "bytes": 158413,
+        "sha256": "69c0f2b86e0e52820c7660b3f854a85e722894c0b737b7f171d30faa501b2680"
+      },
+      {
+        "relative_path": "api35/android-runtime/ui.xml",
+        "bytes": 1809,
+        "sha256": "8ded39848458c36332922b87b1e6883dfe69c84c4976c6c0a62886b811156652"
+      },
+      {
+        "relative_path": "api35/android-runtime/window.txt",
+        "bytes": 69521,
+        "sha256": "a06672537d0355a1f7ae387f0dc204065b9db9ed34be0e2511faf0f25c30b4a6"
+      },
+      {
+        "relative_path": "api35/android-runtime/render-log.txt",
+        "bytes": 108788,
+        "sha256": "44fa033711216d8eb83db71839577abdb86deef6c4803a5d1c4ae537a15ac063"
+      },
+      {
+        "relative_path": "api35/android-runtime/readiness.json",
+        "bytes": 223,
+        "sha256": "90d667662189d07592cab82d4b574b7c7656d9fca5ccfbdac1516f4fe5658079"
+      }
+    ],
+    "single_am_start_W_count": 1,
+    "prelaunch_logcat_clear_count": 1,
+    "local_png_path": "/workspace/scratch/native-6607234-41163651576-41163651635/api35/android-runtime/screen.png",
+    "actual_launcher_recovery": {
+      "count": 1,
+      "label": "Quickstep",
+      "package": "com.android.launcher3",
+      "title": "Quickstep isn't responding",
+      "resource_id": "android:id/aerr_wait",
+      "before": "attempt-001",
+      "after": "wait-after-001",
+      "tap_returncode": 0,
+      "same_app_pid_before_after": true,
+      "after_snapshot_complete": true,
+      "final_dialog_absent": true,
+      "wait_record_sha256": "792c8d250fe927f2d8ba2349dee95d932905f5c6aa6da73a13e1ed878e0f8a1c"
+    },
+    "visual_observation": "Normal system bars visible; status bar overlaps part of the top English subtitle. Korean app title and primary controls remain visible. No code change requested/performed by this evidence task.",
+    "emulator_image": {
+      "configured_api": 35,
+      "image": "system-images;android-35;default;x86_64",
+      "evidence": "actual successful job log of emulator runner/system image install; original product workflow criterion",
+      "independent_ro_build_version_sdk_read_in_this_review": false
+    },
+    "actual_webview_load": "com.android.webview 124.0.6367.219, from Android WebViewFactory runtime log",
+    "raw_apk_downloaded_for_this_review": false,
+    "raw_apk_sha256_independently_measured": false
+  },
+  "windows": {
+    "job_id": 124426460068,
+    "conclusion": "success",
+    "actual_checkout": "0352a5a0cd298179f613875a7bbcca9dd4632027",
+    "native_smoke": {
+      "passed": true,
+      "version": "0.2.1",
+      "host": "WPF WebView2",
+      "actualRenderAndBridge": true,
+      "diagnostic": {
+        "hasView": true,
+        "error": null,
+        "connection": "연결됨",
+        "heading": "만상의 흐름",
+        "source": "https://seonro.local/index.html"
+      }
+    },
+    "evidence": "Actual existing job stdout; no Windows PNG artifact in this workflow and no independent Windows visual/foreground check claimed"
+  },
+  "portable": {
+    "job_id": 124426460352,
+    "conclusion": "cancelled",
+    "cancellation_log_line": "2026-10-31T03:23:15.4867470Z ##[error]The operation was canceled.",
+    "specific_cancellation_cause": "not established",
+    "workflow_cancel_in_progress_enabled": true,
+    "concurrency_setting_not_claimed_as_this_cancellation_cause": true,
+    "downloaded_partial_artifact_files": [
+      "product-boundary.json"
+    ],
+    "complete_functional_report_present": false,
+    "full_functional_pass_claim": false
+  },
+  "artifacts": [
+    {
+      "id": 13028305656,
+      "name": "v021-api24-native-evidence-41163651576-1",
+      "size_in_bytes": 709348,
+      "digest": "sha256:f5fed85826f76f28fe2c1c4982c2ce372072aa99dfd4029d6cb6be090cc305e3",
+      "expires_at": "2026-11-14T03:19:45Z"
+    },
+    {
+      "id": 13027739800,
+      "name": "v021-api24-debug-apk-41163651576-1",
+      "size_in_bytes": 43116070,
+      "digest": "sha256:5e338fbf97b7eddb786f5a9f969606db85949f11e2b8c4c5dd57534e96a29c3f",
+      "expires_at": "2026-11-14T03:19:43Z"
+    },
+    {
+      "id": 13028108654,
+      "name": "android-validation-apk",
+      "size_in_bytes": 43114169,
+      "digest": "sha256:9e26974fbf3e8a4a493f3e6ca1aaa9619ceefdc08db80b930944465691523a2e",
+      "expires_at": "2026-11-03T03:19:51Z"
+    },
+    {
+      "id": 13027984243,
+      "name": "android-runtime-evidence",
+      "size_in_bytes": 789566,
+      "digest": "sha256:d84b7ee0130f46f39f694cb479f6b04e8da16635558111aaf1a72bdca241878b",
+      "expires_at": "2026-11-03T03:19:54Z"
+    },
+    {
+      "id": 13027419893,
+      "name": "product-evidence",
+      "size_in_bytes": 974,
+      "digest": "sha256:1f60196276ffefb312f5d4d27270ec2e9ccd4c830c2d189b6949d7fca3fb2d87",
+      "expires_at": "2026-11-03T03:23:15Z"
+    }
+  ],
+  "small_downloads": [
+    {
+      "artifact_id": 13028305656,
+      "archive_file": "api24.zip",
+      "zip_bytes": 709348,
+      "sha256": "f5fed85826f76f28fe2c1c4982c2ce372072aa99dfd4029d6cb6be090cc305e3",
+      "server_digest_matches": true,
+      "downloaded_utc": "2026-10-31T03:22:22.730465+00:00"
+    },
+    {
+      "artifact_id": 13027984243,
+      "archive_file": "api35.zip",
+      "zip_bytes": 789566,
+      "sha256": "d84b7ee0130f46f39f694cb479f6b04e8da16635558111aaf1a72bdca241878b",
+      "server_digest_matches": true,
+      "downloaded_utc": "2026-10-31T03:22:26.620577+00:00"
+    },
+    {
+      "artifact_id": 13027419893,
+      "archive_file": "portable.zip",
+      "zip_bytes": 974,
+      "sha256": "1f60196276ffefb312f5d4d27270ec2e9ccd4c830c2d189b6949d7fca3fb2d87",
+      "server_digest_matches": true,
+      "downloaded_utc": "2026-10-31T03:27:19.735379+00:00"
+    }
+  ],
+  "local_decoded_job_logs": [
+    {
+      "file": "job-0.decoded.log",
+      "bytes": 261595,
+      "sha256": "2456fa220d879daf5fed102c61ad1907908663bafb6f82e0ed99a0cdd20f4f00",
+      "representation": "Connector-decoded UTF8 log, not the original server ZIP bytes; bodies remain local only"
+    },
+    {
+      "file": "job-1.decoded.log",
+      "bytes": 216464,
+      "sha256": "ca5d2042460ecab9f77e237deb044f534d0ffb8768946a65d100745bf91ce3d6",
+      "representation": "Connector-decoded UTF8 log, not the original server ZIP bytes; bodies remain local only"
+    },
+    {
+      "file": "job-2.decoded.log",
+      "bytes": 24689,
+      "sha256": "734a1377bdb442733e967789bf6e8df534056ef354daf688f1751a3766038146",
+      "representation": "Connector-decoded UTF8 log, not the original server ZIP bytes; bodies remain local only"
+    },
+    {
+      "file": "job-portable.decoded.log",
+      "bytes": 42042,
+      "sha256": "90953881241f4fba5055cbf7e16e04a677120d8a30d5cc26ceb75f618b79ae0e",
+      "representation": "Connector-decoded UTF8 log, not the original server ZIP bytes; bodies remain local only"
+    }
+  ],
+  "criteria_source_hashes": {
+    "scripts/verify-android-ui.py": "dd87425911506bfdbce3248b5a978dfd1133188b24d32ef35ff91378741e251f",
+    "scripts/android_readiness.py": "408d0445b1433fcc3c4e9a19a1fb7936472623219be850d899e254f206e5e1cc",
+    ".github/workflows/v021-api24-probe.yml": "7ce2e38f4e332fee46990eb702ea405b13b88615d9f343086b273b6019d89a7d",
+    ".github/workflows/v021-product.yml": "e24b10e8d063d4c44ca0e790fedf0bbc2cc11a06ecdd9093b7e9e2ccb91e40fc",
+    "src/Chronicles.Shell/index.compat.html": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d"
+  },
+  "limits": {
+    "new_ci_native_game_functional_or_performance_runs": 0,
+    "product_or_gate_changes": false,
+    "manual_retry_or_cancel": false,
+    "apk_or_certificate_private_keys_read": false,
+    "separate_CI_APK_and_signing_contexts": true,
+    "same_retained_signed_APK_API24_API35_claim": false,
+    "certificate_identity_comparison": false,
+    "v020_upgrade_claim": false,
+    "final_release_claim": false,
+    "product_whole_functional_pass_claim": false,
+    "public_permanent_raw_release_asset_claim": false,
+    "raw_local_archive_root": "/workspace/scratch/native-6607234-41163651576-41163651635",
+    "retention_note": "Exactly three original small PNGs are preserved in this Git evidence folder. Complete native ZIPs, duplicate captures, APKs and decoded job logs remain local/Actions only, with the stated expiry dates. No permanent public complete-raw release asset claim.",
+    "small_original_pngs_explicitly_authorized_and_committed": 3,
+    "large_apk_zip_or_raw_log_bodies_committed": false
+  },
+  "preserved_pngs": {
+    "files": [
+      {
+        "path": "screenshots/api24-final.png",
+        "original_local_path": "/workspace/scratch/native-6607234-41163651576-41163651635/api24/runtime/fresh/screen.png",
+        "bytes": 150466,
+        "sha256": "6c62d1f5668a6f9fe6c37cabad978ea221b4d9afe16e4fc123b02972102484df",
+        "byte_identical_original": true
+      },
+      {
+        "path": "screenshots/api35-before-quickstep-wait.png",
+        "original_local_path": "/workspace/scratch/native-6607234-41163651576-41163651635/api35/android-runtime/attempt-001/screen.png",
+        "bytes": 51549,
+        "sha256": "b32016217f7390bdbd48e27a1e94f779cef5a18379edb48e42e3b8e74932c443",
+        "byte_identical_original": true
+      },
+      {
+        "path": "screenshots/api35-final.png",
+        "original_local_path": "/workspace/scratch/native-6607234-41163651576-41163651635/api35/android-runtime/screen.png",
+        "bytes": 158413,
+        "sha256": "69c0f2b86e0e52820c7660b3f854a85e722894c0b737b7f171d30faa501b2680",
+        "byte_identical_original": true
+      }
+    ],
+    "total_bytes": 360428,
+    "below_5MiB": true,
+    "authorization": "Root explicitly expanded this docs-only scope to exactly these three already-captured original PNGs.",
+    "new_capture_resize_edit_composite": false,
+    "preserved_utc": "2026-10-31T03:39:12.192249+00:00"
+  },
+  "visual_followup_issue": {
+    "number": 251,
+    "url": "https://github.com/hddy774/project-hora/issues/251",
+    "priority": "low",
+    "canonical_111_task_added": false,
+    "current_product_change": false
+  }
+}

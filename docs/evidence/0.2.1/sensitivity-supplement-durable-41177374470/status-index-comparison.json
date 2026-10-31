@@ -1,0 +1,45 @@
+{
+  "comparison": "private Actions status artifact versus independently fetched public index; not part of unauthenticated public-byte claim",
+  "archiveRun": 41177374470,
+  "attempt": 1,
+  "artifactId": 13033617071,
+  "artifactZipBytes": 4828,
+  "artifactZipSha256": "9148899c9562247ebba21bc4ade79214fc90de3551d60d308bd33470c3aff9cf",
+  "statusState": "완료",
+  "indexAssetId": 694601640,
+  "indexBytes": 24058,
+  "indexSha256": "20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd",
+  "publicIndexEqualsStatusArtifactIndexBytes": true,
+  "manifestEqualsFixedSource": true,
+  "originalRunMetadataEqualsFixedSnapshotBytes": true,
+  "indexExecution": {
+    "action": "labeled",
+    "actor": "hddy774",
+    "attempt": 1,
+    "event": "pull_request",
+    "head_sha": "46c484e3ffb4bdac69725ff789c959ef3721c475",
+    "label": "evidence-archive:v021-sensitivity-41159864831",
+    "pr": 263,
+    "repository": "hddy774/project-hora",
+    "run_id": 41177374470
+  },
+  "originalBatchResultUnchanged": {
+    "classification": "workflowFAILED;4complete+2CLI-timeout-partial",
+    "completed_horizons": 4,
+    "cli_timeout_partial": 2,
+    "reports_complete_fields_remain_false": true,
+    "requested_flag_by_seed": {
+      "42": false,
+      "98": true,
+      "2026": false
+    },
+    "completed_1500_seed42_and_2026": true,
+    "partial_900_seed42_and_2026": true,
+    "different_plan_condition_index_is_not_batch_acceptance": true,
+    "acceptance_relabeling": false
+  },
+  "sixZipManifestAndIndexIdsBytesShaAllEqual": true,
+  "scope": "보관 완료만 검증; 원래 배치 FAIL/두 계획의 유한6조건과 T04 판정은 변경하지 않음",
+  "remoteWrites": 0,
+  "otherReleasesTouched": false
+}

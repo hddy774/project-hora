@@ -1,0 +1,60 @@
+{
+  "scope": "기존 실제 공개 다운로드 증거의 문서 보존·metadata 대조; 신규 다운로드/실행/원격쓰기 없음",
+  "baseCommit": "ae8353401d694cb36e76b1f76677d09add82b39d",
+  "publicSevenWholeBytes": true,
+  "publicHttpsRequests": 14,
+  "authorizationOrCookieSent": false,
+  "temporarySignedQueryOrJwtValuesCommitted": false,
+  "sixZipBytes": 9952241,
+  "indexBytes": 24058,
+  "rawCopiedFilesExact": [
+    "public-byte-proof.json",
+    "status-index-comparison.json",
+    "status.original.json",
+    "public-index.original.json",
+    "manifest.original.json"
+  ],
+  "statusAndPublicIndexCompared": true,
+  "protectionProjectionRecomparison": {
+    "releases/latest": true,
+    "releases/429687967": true,
+    "git/ref/tags/xianxia-observer/v0.2.0": true
+  },
+  "protectedOriginalFilesUnchangedSha256": {
+    "docs/plans/v021-tasks.json": "7a311ba5c7be854f61e44bc33cbd075a6bfd7b685633c15b7fa016217b3747ee",
+    "docs/evidence/0.2.1/release-readiness.json": "5cb62781bca7329df6a5556a70b859e433fbc5d8e3d534a6e10623ade1bf2af9"
+  },
+  "remoteImmutableLinkChecks": [
+    {
+      "i": 1,
+      "bytes": 7223,
+      "sha256": "3028350fff8c16c372590119da7d9062340d88e3d1f009301f650c80b04f7553",
+      "gitBlobSha": "de6800ebcbd8a792f71e03f6d8c185bb510be681",
+      "url": "https://github.com/hddy774/project-hora/blob/bab085ff724077c3c06d250abf256b805f1777d5/docs/evidence/0.2.1/growth-sensitivity-results-41159864831/README.md"
+    },
+    {
+      "i": 2,
+      "bytes": 18953,
+      "sha256": "9ba99714464b944104e2fd86bcb594a33b95813d0e71fa33d020d3c37f5cb7a8",
+      "gitBlobSha": "ed9534d88edbbfd197648f98106b406cf7de37e9",
+      "url": "https://github.com/hddy774/project-hora/blob/bab085ff724077c3c06d250abf256b805f1777d5/docs/evidence/0.2.1/growth-sensitivity-results-41159864831/collector/job-124465144337.log"
+    }
+  ],
+  "remoteResultSource": "bab085ff724077c3c06d250abf256b805f1777d5 (PR264)",
+  "relativeSupplementLinks": "기준 ae835에는 없으며 PR264 선행 병합 후 해소; 고정 HEAD 원격 파일 존재·오류 로그 SHA 확인",
+  "progressGeneratorRuns": 1,
+  "progress": {
+    "completed": 109,
+    "total": 111,
+    "percent": 98.2,
+    "featureDone": 87,
+    "remaining": [
+      "V021-T04",
+      "V021-T06"
+    ]
+  },
+  "historicalGuideSuffixByteContentUnchanged": true,
+  "originalBatchPassSynthesized": false,
+  "newGameOrMeasurementOrWorkflowRuns": 0,
+  "officialReleaseAcceptanceChanged": false
+}

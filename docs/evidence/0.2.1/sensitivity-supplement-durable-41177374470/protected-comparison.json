@@ -1,0 +1,26 @@
+{
+  "kind": "protected-fields-independent-recomparison",
+  "representation": "before/after projections; full API snapshots are not duplicated",
+  "rootComparisonSource": {
+    "file": "/workspace/scratch/supplemental-archive-protected-comparison.json",
+    "bytes": 87,
+    "sha256": "bf5e832ebe0303e520d83b6334e245bf5d20cb3ebcc9651522e23f80fee0ab7a"
+  },
+  "rootReported": {
+    "releases/latest": true,
+    "releases/429687967": true,
+    "old_product_tag": true
+  },
+  "recomputed": {
+    "releases/latest": true,
+    "releases/429687967": true,
+    "old_product_tag": true
+  },
+  "allThreeTrue": true,
+  "comparisonFieldsDefinedIn": [
+    "protected-before.projection.json",
+    "protected-after.projection.json"
+  ],
+  "oldApkByteDownloadRepeated": false,
+  "scope": "0.2.0 latest/APK metadata/tag 및 원래6ZIP evidence release 보호필드의 동일성; 기존자산을 이 작업에서 수정하지 않음"
+}

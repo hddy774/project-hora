@@ -1,0 +1,17 @@
+{
+  "representation": "source references and selected fields, not duplicated log or collector ZIP",
+  "sourceCommit": "bab085ff724077c3c06d250abf256b805f1777d5",
+  "sourceIndexPath": "docs/evidence/0.2.1/growth-sensitivity-results-41159864831/collector/index.json",
+  "sourceIndexGitBlobSha": "337eb986b18ff641de86af69fb5bcc517256390c",
+  "sourceIndexUtf8Sha256": "144342200e456003ab25c7ea48562fb7fb47aa273e829ba24ca61919e9fb609b",
+  "collectionMembers": 90,
+  "duplicateSeedMembers": 89,
+  "uniqueCollectionMember": "provenance/request.json",
+  "errorLogPath": "docs/evidence/0.2.1/growth-sensitivity-results-41159864831/collector/job-124465144337.log",
+  "errorLogBytes": 18953,
+  "errorLogSha256": "9ba99714464b944104e2fd86bcb594a33b95813d0e71fa33d020d3c37f5cb7a8",
+  "errorLogIsSeparateRepositoryRaw": true,
+  "outcome": "failure",
+  "verifiedSixFileExists": false,
+  "newWholePlanPassSynthesized": false
+}

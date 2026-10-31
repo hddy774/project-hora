@@ -1,0 +1,239 @@
+{
+  "make_latest": false,
+  "manifest": {
+    "archive": {
+      "index_name": "sensitivity-artifact-index-41159864831.json",
+      "make_latest": false,
+      "prerelease": true,
+      "tag": "evidence/v0.2.1-sensitivity-41159864831",
+      "target_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "title": "0.2.1 보충 민감도 실행 원형 보관 (run41159864831)"
+    },
+    "artifacts": [
+      {
+        "attempt": 1,
+        "bytes": 1617563,
+        "created_at": "2026-10-31T06:25:20Z",
+        "expires_at": "2026-11-14T06:25:19Z",
+        "id": 13033147298,
+        "name": "v021-sensitivity-41159864831-1-seed-42",
+        "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13033147298/zip",
+        "planned_asset_name": "v021-sensitivity-41159864831-1-seed-42.zip",
+        "run_id": 41159864831,
+        "sha256": "9c2467c8b7e14b94fd5d1420f3fd2342f20bb4ded72b2abacd32f87a994b57c1"
+      },
+      {
+        "attempt": 1,
+        "bytes": 1625359,
+        "created_at": "2026-10-31T04:32:32Z",
+        "expires_at": "2026-11-14T04:32:30Z",
+        "id": 13030660873,
+        "name": "v021-sensitivity-41159864831-1-seed-98",
+        "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13030660873/zip",
+        "planned_asset_name": "v021-sensitivity-41159864831-1-seed-98.zip",
+        "run_id": 41159864831,
+        "sha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e"
+      },
+      {
+        "attempt": 1,
+        "bytes": 1625931,
+        "created_at": "2026-10-31T06:25:19Z",
+        "expires_at": "2026-11-14T06:25:18Z",
+        "id": 13032846688,
+        "name": "v021-sensitivity-41159864831-1-seed-2026",
+        "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13032846688/zip",
+        "planned_asset_name": "v021-sensitivity-41159864831-1-seed-2026.zip",
+        "run_id": 41159864831,
+        "sha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd"
+      },
+      {
+        "attempt": 1,
+        "bytes": 204978,
+        "created_at": "2026-10-31T02:24:34Z",
+        "expires_at": "2026-11-14T02:24:34Z",
+        "id": 13025494772,
+        "name": "v021-sensitivity-inputs-41159864831-1",
+        "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13025494772/zip",
+        "planned_asset_name": "v021-sensitivity-inputs-41159864831-1.zip",
+        "run_id": 41159864831,
+        "sha256": "503f499ff67f73639c132a4551476f1435502bff4f16300ef6965c9e3558c8fd"
+      },
+      {
+        "attempt": 1,
+        "bytes": 871,
+        "created_at": "2026-10-31T02:24:35Z",
+        "expires_at": "2026-11-14T02:24:35Z",
+        "id": 13026322503,
+        "name": "v021-sensitivity-prepare-41159864831-1",
+        "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13026322503/zip",
+        "planned_asset_name": "v021-sensitivity-prepare-41159864831-1.zip",
+        "run_id": 41159864831,
+        "sha256": "3e92f4e8a0b19f4fe1d7d4add61cafea07860f39e44aaaabf262c52c0aef60cf"
+      },
+      {
+        "attempt": 1,
+        "bytes": 4877539,
+        "created_at": "2026-10-31T06:25:35Z",
+        "expires_at": "2026-11-14T06:25:33Z",
+        "id": 13032956600,
+        "name": "v021-sensitivity-collection-41159864831-1",
+        "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13032956600/zip",
+        "planned_asset_name": "v021-sensitivity-collection-41159864831-1.zip",
+        "run_id": 41159864831,
+        "sha256": "a6ad994669f00135837aa995175b4d5e65e471aa41e805bd65fd9d9be58e2454"
+      }
+    ],
+    "collection": "v021-sensitivity-41159864831",
+    "input_provenance": {
+      "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+      "horizon_months": 6000,
+      "law_values_in_order": [
+        1500,
+        900
+      ],
+      "observation_interval_months": 120,
+      "original_plan_sha256": "2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+      "supplemental_plan_sha256": "74068850c36350beaf547665fc15aeb2da799899d47fedb9bd8f2a0568a6b653",
+      "wall_minutes": 240,
+      "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420"
+    },
+    "original_result": {
+      "acceptance_relabeling": false,
+      "classification": "workflowFAILED;4complete+2CLI-timeout-partial",
+      "cli_timeout_partial": 2,
+      "completed_1500_seed42_and_2026": true,
+      "completed_horizons": 4,
+      "different_plan_condition_index_is_not_batch_acceptance": true,
+      "partial_900_seed42_and_2026": true,
+      "reports_complete_fields_remain_false": true,
+      "requested_flag_by_seed": {
+        "2026": false,
+        "42": false,
+        "98": true
+      }
+    },
+    "repository": "hddy774/project-hora",
+    "run_metadata_snapshot": {
+      "bytes": 12673,
+      "file": "run-metadata.json",
+      "sha256": "d7dd05a843bf2d6dc73389e7ad807ba1e76606ac158eb7a6e9a7610d4b98c701"
+    },
+    "schema_version": 1,
+    "source_run": {
+      "attempt": 1,
+      "conclusion": "failure",
+      "event": "pull_request",
+      "head_sha": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+      "id": 41159864831,
+      "measured_source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+      "status": "completed",
+      "workflow_path": ".github/workflows/v021-growth-sensitivity.yml",
+      "workflow_source_commit": "836ff97e930e82af36a6f5fae6dae575c109f7d9"
+    }
+  },
+  "manifest_sha256": "6d4dba436640d3251794e1c1c401646cbbcbb6fdb3af4ba4eee0c85d177b1135",
+  "original_run_metadata_utf8": "{\"id\":41159864831,\"name\":\"0.2.1 고정 기준선의 단일 법칙 민감도 6조건\",\"node_id\":\"WFR_kwLOU5uMds8AAAAJlVGx_w\",\"head_branch\":\"codex/v021-sensitivity-order-only\",\"head_sha\":\"19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6\",\"path\":\".github/workflows/v021-growth-sensitivity.yml\",\"display_title\":\"입력: 민감도 보충 관측의 값 순서만 반전 (병합 보류)\",\"run_number\":4,\"event\":\"pull_request\",\"status\":\"completed\",\"conclusion\":\"failure\",\"workflow_id\":402253149,\"check_suite_id\":111575119251,\"check_suite_node_id\":\"CS_kwDOU5uMds8AAAAZ-mU1kw\",\"url\":\"https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831\",\"html_url\":\"https://github.com/hddy774/project-hora/actions/runs/41159864831\",\"pull_requests\":[{\"url\":\"https://api.github.com/repos/hddy774/project-hora/pulls/241\",\"id\":5093625418,\"number\":241,\"head\":{\"ref\":\"codex/v021-sensitivity-order-only\",\"sha\":\"19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6\",\"repo\":{\"id\":1402702966,\"url\":\"https://api.github.com/repos/hddy774/project-hora\",\"name\":\"project-hora\"}},\"base\":{\"ref\":\"codex/v0.2.1\",\"sha\":\"0c67248c16fbdbeab8b0a0f9214b860c77d15e53\",\"repo\":{\"id\":1402702966,\"url\":\"https://api.github.com/repos/hddy774/project-hora\",\"name\":\"project-hora\"}}}],\"created_at\":\"2026-10-31T02:24:28Z\",\"updated_at\":\"2026-10-31T06:25:39Z\",\"actor\":{\"login\":\"hddy774\",\"id\":166390685,\"node_id\":\"U_kgDOCerrnQ\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/166390685?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/hddy774\",\"html_url\":\"https://github.com/hddy774\",\"followers_url\":\"https://api.github.com/users/hddy774/followers\",\"following_url\":\"https://api.github.com/users/hddy774/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/hddy774/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/hddy774/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/hddy774/subscriptions\",\"organizations_url\":\"https://api.github.com/users/hddy774/orgs\",\"repos_url\":\"https://api.github.com/users/hddy774/repos\",\"events_url\":\"https://api.github.com/users/hddy774/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/hddy774/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"run_attempt\":1,\"referenced_workflows\":[],\"run_started_at\":\"2026-10-31T02:24:28Z\",\"triggering_actor\":{\"login\":\"hddy774\",\"id\":166390685,\"node_id\":\"U_kgDOCerrnQ\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/166390685?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/hddy774\",\"html_url\":\"https://github.com/hddy774\",\"followers_url\":\"https://api.github.com/users/hddy774/followers\",\"following_url\":\"https://api.github.com/users/hddy774/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/hddy774/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/hddy774/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/hddy774/subscriptions\",\"organizations_url\":\"https://api.github.com/users/hddy774/orgs\",\"repos_url\":\"https://api.github.com/users/hddy774/repos\",\"events_url\":\"https://api.github.com/users/hddy774/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/hddy774/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"jobs_url\":\"https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831/jobs\",\"logs_url\":\"https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831/logs\",\"check_suite_url\":\"https://api.github.com/repos/hddy774/project-hora/check-suites/111575119251\",\"artifacts_url\":\"https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831/artifacts\",\"cancel_url\":\"https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831/cancel\",\"rerun_url\":\"https://api.github.com/repos/hddy774/project-hora/actions/runs/41159864831/rerun\",\"previous_attempt_url\":null,\"workflow_url\":\"https://api.github.com/repos/hddy774/project-hora/actions/workflows/402253149\",\"head_commit\":{\"id\":\"19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6\",\"tree_id\":\"887804aa3b026f87bb9e2e1d1b7dd6966af98567\",\"message\":\"문서: 민감도 보충 관측의 두 값 순서만 반전\",\"timestamp\":\"2026-10-31T02:22:28Z\",\"author\":{\"name\":\"강하라\",\"email\":\"166390685+hddy774@users.noreply.github.com\"},\"committer\":{\"name\":\"강하라\",\"email\":\"166390685+hddy774@users.noreply.github.com\"}},\"repository\":{\"id\":1402702966,\"node_id\":\"R_kgDOU5uMdg\",\"name\":\"project-hora\",\"full_name\":\"hddy774/project-hora\",\"private\":false,\"owner\":{\"login\":\"hddy774\",\"id\":166390685,\"node_id\":\"U_kgDOCerrnQ\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/166390685?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/hddy774\",\"html_url\":\"https://github.com/hddy774\",\"followers_url\":\"https://api.github.com/users/hddy774/followers\",\"following_url\":\"https://api.github.com/users/hddy774/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/hddy774/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/hddy774/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/hddy774/subscriptions\",\"organizations_url\":\"https://api.github.com/users/hddy774/orgs\",\"repos_url\":\"https://api.github.com/users/hddy774/repos\",\"events_url\":\"https://api.github.com/users/hddy774/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/hddy774/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"html_url\":\"https://github.com/hddy774/project-hora\",\"description\":null,\"fork\":false,\"url\":\"https://api.github.com/repos/hddy774/project-hora\",\"forks_url\":\"https://api.github.com/repos/hddy774/project-hora/forks\",\"keys_url\":\"https://api.github.com/repos/hddy774/project-hora/keys{/key_id}\",\"collaborators_url\":\"https://api.github.com/repos/hddy774/project-hora/collaborators{/collaborator}\",\"teams_url\":\"https://api.github.com/repos/hddy774/project-hora/teams\",\"hooks_url\":\"https://api.github.com/repos/hddy774/project-hora/hooks\",\"issue_events_url\":\"https://api.github.com/repos/hddy774/project-hora/issues/events{/number}\",\"events_url\":\"https://api.github.com/repos/hddy774/project-hora/events\",\"assignees_url\":\"https://api.github.com/repos/hddy774/project-hora/assignees{/user}\",\"branches_url\":\"https://api.github.com/repos/hddy774/project-hora/branches{/branch}\",\"tags_url\":\"https://api.github.com/repos/hddy774/project-hora/tags\",\"blobs_url\":\"https://api.github.com/repos/hddy774/project-hora/git/blobs{/sha}\",\"git_tags_url\":\"https://api.github.com/repos/hddy774/project-hora/git/tags{/sha}\",\"git_refs_url\":\"https://api.github.com/repos/hddy774/project-hora/git/refs{/sha}\",\"trees_url\":\"https://api.github.com/repos/hddy774/project-hora/git/trees{/sha}\",\"statuses_url\":\"https://api.github.com/repos/hddy774/project-hora/statuses/{sha}\",\"languages_url\":\"https://api.github.com/repos/hddy774/project-hora/languages\",\"stargazers_url\":\"https://api.github.com/repos/hddy774/project-hora/stargazers\",\"contributors_url\":\"https://api.github.com/repos/hddy774/project-hora/contributors\",\"subscribers_url\":\"https://api.github.com/repos/hddy774/project-hora/subscribers\",\"subscription_url\":\"https://api.github.com/repos/hddy774/project-hora/subscription\",\"commits_url\":\"https://api.github.com/repos/hddy774/project-hora/commits{/sha}\",\"git_commits_url\":\"https://api.github.com/repos/hddy774/project-hora/git/commits{/sha}\",\"comments_url\":\"https://api.github.com/repos/hddy774/project-hora/comments{/number}\",\"issue_comment_url\":\"https://api.github.com/repos/hddy774/project-hora/issues/comments{/number}\",\"contents_url\":\"https://api.github.com/repos/hddy774/project-hora/contents/{+path}\",\"compare_url\":\"https://api.github.com/repos/hddy774/project-hora/compare/{base}...{head}\",\"merges_url\":\"https://api.github.com/repos/hddy774/project-hora/merges\",\"archive_url\":\"https://api.github.com/repos/hddy774/project-hora/{archive_format}{/ref}\",\"downloads_url\":\"https://api.github.com/repos/hddy774/project-hora/downloads\",\"issues_url\":\"https://api.github.com/repos/hddy774/project-hora/issues{/number}\",\"pulls_url\":\"https://api.github.com/repos/hddy774/project-hora/pulls{/number}\",\"milestones_url\":\"https://api.github.com/repos/hddy774/project-hora/milestones{/number}\",\"notifications_url\":\"https://api.github.com/repos/hddy774/project-hora/notifications{?since,all,participating}\",\"labels_url\":\"https://api.github.com/repos/hddy774/project-hora/labels{/name}\",\"releases_url\":\"https://api.github.com/repos/hddy774/project-hora/releases{/id}\",\"deployments_url\":\"https://api.github.com/repos/hddy774/project-hora/deployments\"},\"head_repository\":{\"id\":1402702966,\"node_id\":\"R_kgDOU5uMdg\",\"name\":\"project-hora\",\"full_name\":\"hddy774/project-hora\",\"private\":false,\"owner\":{\"login\":\"hddy774\",\"id\":166390685,\"node_id\":\"U_kgDOCerrnQ\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/166390685?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/hddy774\",\"html_url\":\"https://github.com/hddy774\",\"followers_url\":\"https://api.github.com/users/hddy774/followers\",\"following_url\":\"https://api.github.com/users/hddy774/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/hddy774/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/hddy774/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/hddy774/subscriptions\",\"organizations_url\":\"https://api.github.com/users/hddy774/orgs\",\"repos_url\":\"https://api.github.com/users/hddy774/repos\",\"events_url\":\"https://api.github.com/users/hddy774/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/hddy774/received_events\",\"type\":\"User\",\"user_view_type\":\"public\",\"site_admin\":false},\"html_url\":\"https://github.com/hddy774/project-hora\",\"description\":null,\"fork\":false,\"url\":\"https://api.github.com/repos/hddy774/project-hora\",\"forks_url\":\"https://api.github.com/repos/hddy774/project-hora/forks\",\"keys_url\":\"https://api.github.com/repos/hddy774/project-hora/keys{/key_id}\",\"collaborators_url\":\"https://api.github.com/repos/hddy774/project-hora/collaborators{/collaborator}\",\"teams_url\":\"https://api.github.com/repos/hddy774/project-hora/teams\",\"hooks_url\":\"https://api.github.com/repos/hddy774/project-hora/hooks\",\"issue_events_url\":\"https://api.github.com/repos/hddy774/project-hora/issues/events{/number}\",\"events_url\":\"https://api.github.com/repos/hddy774/project-hora/events\",\"assignees_url\":\"https://api.github.com/repos/hddy774/project-hora/assignees{/user}\",\"branches_url\":\"https://api.github.com/repos/hddy774/project-hora/branches{/branch}\",\"tags_url\":\"https://api.github.com/repos/hddy774/project-hora/tags\",\"blobs_url\":\"https://api.github.com/repos/hddy774/project-hora/git/blobs{/sha}\",\"git_tags_url\":\"https://api.github.com/repos/hddy774/project-hora/git/tags{/sha}\",\"git_refs_url\":\"https://api.github.com/repos/hddy774/project-hora/git/refs{/sha}\",\"trees_url\":\"https://api.github.com/repos/hddy774/project-hora/git/trees{/sha}\",\"statuses_url\":\"https://api.github.com/repos/hddy774/project-hora/statuses/{sha}\",\"languages_url\":\"https://api.github.com/repos/hddy774/project-hora/languages\",\"stargazers_url\":\"https://api.github.com/repos/hddy774/project-hora/stargazers\",\"contributors_url\":\"https://api.github.com/repos/hddy774/project-hora/contributors\",\"subscribers_url\":\"https://api.github.com/repos/hddy774/project-hora/subscribers\",\"subscription_url\":\"https://api.github.com/repos/hddy774/project-hora/subscription\",\"commits_url\":\"https://api.github.com/repos/hddy774/project-hora/commits{/sha}\",\"git_commits_url\":\"https://api.github.com/repos/hddy774/project-hora/git/commits{/sha}\",\"comments_url\":\"https://api.github.com/repos/hddy774/project-hora/comments{/number}\",\"issue_comment_url\":\"https://api.github.com/repos/hddy774/project-hora/issues/comments{/number}\",\"contents_url\":\"https://api.github.com/repos/hddy774/project-hora/contents/{+path}\",\"compare_url\":\"https://api.github.com/repos/hddy774/project-hora/compare/{base}...{head}\",\"merges_url\":\"https://api.github.com/repos/hddy774/project-hora/merges\",\"archive_url\":\"https://api.github.com/repos/hddy774/project-hora/{archive_format}{/ref}\",\"downloads_url\":\"https://api.github.com/repos/hddy774/project-hora/downloads\",\"issues_url\":\"https://api.github.com/repos/hddy774/project-hora/issues{/number}\",\"pulls_url\":\"https://api.github.com/repos/hddy774/project-hora/pulls{/number}\",\"milestones_url\":\"https://api.github.com/repos/hddy774/project-hora/milestones{/number}\",\"notifications_url\":\"https://api.github.com/repos/hddy774/project-hora/notifications{?since,all,participating}\",\"labels_url\":\"https://api.github.com/repos/hddy774/project-hora/labels{/name}\",\"releases_url\":\"https://api.github.com/repos/hddy774/project-hora/releases{/id}\",\"deployments_url\":\"https://api.github.com/repos/hddy774/project-hora/deployments\"}}",
+  "prerelease": true,
+  "release_id": 429767706,
+  "release_metadata": {
+    "author": {
+      "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+      "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+      "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+      "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+      "gravatar_id": "",
+      "html_url": "https://github.com/apps/github-actions",
+      "id": 41898282,
+      "login": "github-actions[bot]",
+      "node_id": "MDM6Qm90NDE4OTgyODI=",
+      "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+      "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+      "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+      "site_admin": false,
+      "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+      "type": "Bot",
+      "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+      "user_view_type": "public"
+    },
+    "created_at": "2026-10-30T18:52:50Z",
+    "published_at": "2026-10-31T06:37:49Z"
+  },
+  "repository": "hddy774/project-hora",
+  "schema_version": 1,
+  "state": "complete",
+  "tag": "evidence/v0.2.1-sensitivity-41159864831",
+  "target_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "verification": {
+    "execution": {
+      "action": "labeled",
+      "actor": "hddy774",
+      "attempt": 1,
+      "event": "pull_request",
+      "head_sha": "46c484e3ffb4bdac69725ff789c959ef3721c475",
+      "label": "evidence-archive:v021-sensitivity-41159864831",
+      "pr": 263,
+      "repository": "hddy774/project-hora",
+      "run_id": 41177374470
+    },
+    "verified_at": "2026-10-31T06:37:50.948834+00:00"
+  },
+  "zip_assets": [
+    {
+      "bytes": 1617563,
+      "id": 694601192,
+      "name": "v021-sensitivity-41159864831-1-seed-42.zip",
+      "public_bytes_verified": true,
+      "sha256": "9c2467c8b7e14b94fd5d1420f3fd2342f20bb4ded72b2abacd32f87a994b57c1",
+      "source_artifact_id": 13033147298,
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-42.zip"
+    },
+    {
+      "bytes": 1625359,
+      "id": 694601250,
+      "name": "v021-sensitivity-41159864831-1-seed-98.zip",
+      "public_bytes_verified": true,
+      "sha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e",
+      "source_artifact_id": 13030660873,
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-98.zip"
+    },
+    {
+      "bytes": 1625931,
+      "id": 694601297,
+      "name": "v021-sensitivity-41159864831-1-seed-2026.zip",
+      "public_bytes_verified": true,
+      "sha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+      "source_artifact_id": 13032846688,
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-2026.zip"
+    },
+    {
+      "bytes": 204978,
+      "id": 694601347,
+      "name": "v021-sensitivity-inputs-41159864831-1.zip",
+      "public_bytes_verified": true,
+      "sha256": "503f499ff67f73639c132a4551476f1435502bff4f16300ef6965c9e3558c8fd",
+      "source_artifact_id": 13025494772,
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-inputs-41159864831-1.zip"
+    },
+    {
+      "bytes": 871,
+      "id": 694601399,
+      "name": "v021-sensitivity-prepare-41159864831-1.zip",
+      "public_bytes_verified": true,
+      "sha256": "3e92f4e8a0b19f4fe1d7d4add61cafea07860f39e44aaaabf262c52c0aef60cf",
+      "source_artifact_id": 13026322503,
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-prepare-41159864831-1.zip"
+    },
+    {
+      "bytes": 4877539,
+      "id": 694601490,
+      "name": "v021-sensitivity-collection-41159864831-1.zip",
+      "public_bytes_verified": true,
+      "sha256": "a6ad994669f00135837aa995175b4d5e65e471aa41e805bd65fd9d9be58e2454",
+      "source_artifact_id": 13032956600,
+      "url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-collection-41159864831-1.zip"
+    }
+  ]
+}

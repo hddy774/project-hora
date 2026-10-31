@@ -1,0 +1,20 @@
+{
+  "index_asset_id": 694601640,
+  "index_bytes": 24058,
+  "index_sha256": "20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd",
+  "index_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/sensitivity-artifact-index-41159864831.json",
+  "phase": "final-index",
+  "release_url": "https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-sensitivity-41159864831",
+  "request": {
+    "action": "labeled",
+    "actor": "hddy774",
+    "attempt": 1,
+    "event": "pull_request",
+    "head_sha": "46c484e3ffb4bdac69725ff789c959ef3721c475",
+    "label": "evidence-archive:v021-sensitivity-41159864831",
+    "pr": 263,
+    "repository": "hddy774/project-hora",
+    "run_id": 41177374470
+  },
+  "state": "완료"
+}

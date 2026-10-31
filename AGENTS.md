@@ -1,4 +1,27 @@
-# 개발 규칙
+# 선로만상록 개발·AI 협업 규칙
+
+작업 전 현재 사용자 지시, 이 파일, 할당된 `docs/tasks/` 명세와 관련 정본을 읽는다.
+공통 기준은 [개발 절차](docs/standards/development-process.md),
+[코드 규칙](docs/standards/coding-conventions.md),
+[GitHub 규칙](docs/standards/github-workflow.md)이며 Claude의 역할은 [CLAUDE.md](CLAUDE.md)에 있다.
+명세·코드·검증 출처가 다르면 실제 소스와 결과를 대조해 기록한다.
+
+## 역할과 이미 승인된 실행 범위
+
+- Claude는 기획·자기완결 작업 명세·리뷰를 맡고 Codex는 구현·테스트·PR·리뷰 반영·릴리스를 맡는다.
+  실제 작성자와 리뷰 수행 여부를 남기며 역할 배정만으로 Claude가 검토했다고 표시하지 않는다.
+- 사용자의 기존 0.2.1 전체 개발·병합·최신 릴리스/APK 게시 승인은 유지된다.
+  새 Claude 응답이나 `status:ready` 라벨을 기다리는 절차를 추가하지 않는다.
+- 일상적인 구현 선택은 근거를 적고 진행한다. 실제 정책 충돌은 기존 사용자 결정과 정본에서 해결하고,
+  독립적으로 진행할 수 있는 작업은 계속한다. 잠정값 보정은 사용자가 위임한 범위를 따른다.
+- 병렬 작업은 별도 worktree와 파일 소유 범위로 나눈다. 공유 파일·통합·실측 일정은 통합 담당자와 조율한다.
+  사용자 승인과 내부 작업 배정은 구분한다.
+- [작업 템플릿](docs/tasks/_template.md)의 범위·권위/정보 경계·수용 기준·검증 명령을 채워 작은 PR로 완결한다.
+  [리뷰 체크리스트](docs/standards/review-checklist.md)로 정확성·보존·저장/재전송·가독성을 확인한다.
+- 이번 검토의 [PR84 피드백 수신](docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md),
+  [버전별 리뷰 안내](docs/reviews/v0.2.1-review-guide.md),
+  [리뷰 구조 명세](docs/tasks/V021-REVIEW-STRUCTURE.md)를 연결한다.
+  기존 개정5 검토의1/1 수신 원문/횟수는 그대로 유지한다.
 
 ## 제품 경계
 
@@ -51,8 +74,17 @@ Game.Tests -> Game + Hosting
 
 ## 변경과 검증
 
+- SDK는 루트 `global.json`의 **10.0.403**, `rollForward=disable`을 사용한다.
+  `dotnet --version`이 다르면 정확한 SDK 설치를 확인하며 파일을 낮은 버전으로 바꿔 우회하지 않는다.
 - `VERSION`이 애플리케이션 버전의 유일한 원본이다.
 - 이번 통합 목표 VERSION은 사용자 지정 0.2.1이다. 서브 PR마다 patch를 올리지 않는다.
 - 기능 단위로 테스트한 뒤 작은 커밋을 만들고 원격 개발 브랜치에 푸시한다.
 - 생성물과 `bin/obj/artifacts`는 커밋하지 않는다.
 - 릴리스 전에는 Release 빌드, 전체 테스트, 10,000명 성능 검증과 패키지 실행 확인을 수행한다.
+- 제품 기능 러너는 `dotnet run --project tests/Chronicles.Game.Tests -c Release`다.
+  `-- --filter '<실제 등록 Name의 부분 문자열>'`는 선택 검사이며 전체 합격으로 쓰지 않는다.
+- `.editorconfig`는 읽기 쉬운 새 코드·변경 코드의 서식 기준이다. raw·생성물·legacy를 일괄 포맷하지 않는다.
+  분석기·경고를 끄거나 실패 검사·원문을 지워 통과시키지 않는다.
+- 기존 증거의 본문·SHA·이력과 게이트 JSON 경로를 유지한다. 새 큰 원문은
+  [증거 보관 규칙](docs/standards/evidence-retention.md)에 따라 내구성 있는 자산과 작은 색인으로 보관한다.
+  Actions의 14일 아티팩트만 영구 출처로 남기지 않는다.

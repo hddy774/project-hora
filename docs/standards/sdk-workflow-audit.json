@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "kind": "SDK 설치 workflow 설정의 소유별 대조",
+  "observed_source_commit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "global_sdk_version": "10.0.403",
+  "roll_forward": "disable",
+  "installed_sdk_probe": [
+    "10.0.403 [/workspace/.dotnet/sdk]"
+  ],
+  "installers": [
+    {
+      "workflow": ".github/workflows/v021-api24-probe.yml",
+      "job": "api24",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-execution-measurements.yml",
+      "job": "measure",
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true,
+      "owner_for_mismatch": null
+    },
+    {
+      "workflow": ".github/workflows/v021-growth-measurements.yml",
+      "job": "growth",
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true,
+      "owner_for_mismatch": null
+    },
+    {
+      "workflow": ".github/workflows/v021-growth-sensitivity.yml",
+      "job": "sensitivity",
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true,
+      "owner_for_mismatch": null
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "job": "portable",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "job": "windows-regression",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "job": "android",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "job": "portable",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "root"
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "job": "windows",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "root"
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "job": "android_build",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "root"
+    },
+    {
+      "workflow": ".github/workflows/v021-stability-measurements.yml",
+      "job": "stability",
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true,
+      "owner_for_mismatch": null
+    },
+    {
+      "workflow": ".github/workflows/v021-windows-diagnostics.yml",
+      "job": "windows",
+      "configured_version": "10.0.403",
+      "matches_exact_10_0_403": true,
+      "owner_for_mismatch": null
+    }
+  ],
+  "original_mismatches": [
+    {
+      "workflow": ".github/workflows/v021-api24-probe.yml",
+      "job": "api24",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "job": "portable",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "job": "windows-regression",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-product.yml",
+      "job": "android",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "Android/product 담당"
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "job": "portable",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "root"
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "job": "windows",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "root"
+    },
+    {
+      "workflow": ".github/workflows/v021-release.yml",
+      "job": "android_build",
+      "configured_version": "10.0.x",
+      "matches_exact_10_0_403": false,
+      "owner_for_mismatch": "root"
+    }
+  ],
+  "workflow_files_edited_by_this_task": [],
+  "scope": "404767의 관측 스냅샷. release3곳은root, product3/API24 1곳은별도담당이수정한다. 합류후현재값은검증기록에별도로남긴다. 고정7ce/4fe실측job원문 source/SDK를바꾸지않는다."
+}

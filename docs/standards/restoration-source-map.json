@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "kind": "main 공통 개발체계 맞춤 복원 출처",
+  "repository": "hddy774/project-hora",
+  "main_source_commit": "cefb2021c249e83d5409a892af97b67e54066a92",
+  "development_base_commit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "issue": "https://github.com/hddy774/project-hora/issues/222",
+  "source_readback": "GitHub 연결도구가 main의cefb2021 commit을 확인했고 해당 Git blob 본문을 읽어 맞춤 작성했다.",
+  "mappings": [
+    {
+      "original_path": "AGENTS.md",
+      "original_sha256": "70d65aa6463e13d2042b5477b187db97d0a93e15f612e3adac4857a1a99bc25c",
+      "original_git_blob": "7bf274cf2106aa1eb69d6453357d0eb12ef2b480",
+      "target_paths": [
+        "AGENTS.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "읽기 순서·범위/작업·검증 규칙을 계승하고 실제 Chronicles·사용자 전체 승인과 현재 소유 협업을 유지한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "CLAUDE.md",
+      "original_sha256": "2e9706af20e675b0d775d5e860194591ec00b61dda8556c544b6050729c67ba9",
+      "original_git_blob": "7eeda08d97f4175174f1170b5aeca86bee9483ae",
+      "target_paths": [
+        "CLAUDE.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "Claude 기획/명세/리뷰 역할을 연결하고 실제 검토 여부·기존1/1/새피드백 수신을 구분한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": ".editorconfig",
+      "original_sha256": "35e92569732f15399603c81e17c2ae50f49a7034e07100e4944f7d2b3a2e16b2",
+      "original_git_blob": "64af63db889147185cddd02bfff0eeef5598e9fc",
+      "target_paths": [
+        ".editorconfig"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "가독성·Allman·using/명명 기준을 복원하고 현재 C# 언어 설정에 맞춘다. CS1591 전면 강제/진단 비활성화/legacy 광역 포맷을 도입하지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "global.json",
+      "original_sha256": "d2b7fc96b08712b6d52e27fd4271d3561f38801aa0845edb2c997b99b29f60c5",
+      "original_git_blob": "d0ea0f4fba537276834b8d6c60d4957bcd3c0a18",
+      "target_paths": [
+        "global.json"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "main의8.0.427/latestPatch 대신 현행 설치10.0.403 정확 버전/rollForward=disable을 사용한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": ".github/pull_request_template.md",
+      "original_sha256": "04421450c8830c803dc1e9fde0706c603d97f32894a3d829ddb88a44556c43f3",
+      "original_git_blob": "39f119dbd3b02abfecb18a24a8d30b60d5dedc17",
+      "target_paths": [
+        ".github/pull_request_template.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "목표·명세·계약·수용/재현 입력을 계승하고 현재 기능 러너/소스 근거·공정성·저장 경계로 맞춘다. 승인 라벨 대기는 제거한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": ".github/ISSUE_TEMPLATE/task.md",
+      "original_sha256": "b58f0e5507ecf36bdb5f7e7940b8e453c11518e1a9c82d56ad8a9d2d843715d4",
+      "original_git_blob": "d78cd193c1cd3c97ffd268e3fd4e4b0fb9a4bf6b",
+      "target_paths": [
+        ".github/ISSUE_TEMPLATE/task.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "목표·명세·계약·수용/재현 입력을 계승하고 현재 기능 러너/소스 근거·공정성·저장 경계로 맞춘다. 승인 라벨 대기는 제거한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": ".github/ISSUE_TEMPLATE/feature.md",
+      "original_sha256": "17381e0c93785b82ea459bfa2d7f03d4e49b1324cd5e3d47820f077945656a2f",
+      "original_git_blob": "1dd0b753db7cd8979d1344982524bfa0c1d76066",
+      "target_paths": [
+        ".github/ISSUE_TEMPLATE/feature.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "목표·명세·계약·수용/재현 입력을 계승하고 현재 기능 러너/소스 근거·공정성·저장 경계로 맞춘다. 승인 라벨 대기는 제거한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": ".github/ISSUE_TEMPLATE/bug.md",
+      "original_sha256": "b7d936620f328f88e4f3e8e8125245ba4bf595cf2b87e653435cf230c0320492",
+      "original_git_blob": "4994b621c7dbf3d0f07f3754b2452896c054fc9d",
+      "target_paths": [
+        ".github/ISSUE_TEMPLATE/bug.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "목표·명세·계약·수용/재현 입력을 계승하고 현재 기능 러너/소스 근거·공정성·저장 경계로 맞춘다. 승인 라벨 대기는 제거한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/standards/coding-conventions.md",
+      "original_sha256": "801c0dbf94eb87ad68580f77f1a1acec19f754e6028ca2df1f58b6a2ec49fc61",
+      "original_git_blob": "88ee0055b10f0204a486de63ee8cda173045e30d",
+      "target_paths": [
+        "docs/standards/coding-conventions.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "의도/주석·책임·정수 단위·결정론·오류 처리·리뷰를 계승한다. Hora/C#9·NUnit·clone 금지·다른 제품의수치/게이트는 채택하지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/standards/development-process.md",
+      "original_sha256": "7171a6d4dd1ecf8ec622bcb8ead82c63c5b9cceb95c5e0845e0869815ccd4f5b",
+      "original_git_blob": "fa896f26ea0036c2f525f72f7bbb291b759e35a7",
+      "target_paths": [
+        "docs/standards/development-process.md",
+        "docs/tasks/_template.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "역할·명세형식·작은PR·수용기준/검증/결정 기록을 복원한다. 외부응답/새 ready 승인 장벽과 가상CI job은 만들지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/standards/github-workflow.md",
+      "original_sha256": "4696504ac421b1cccc11a6cabc8dd2587ae4b4c5836dbc20858597017aed2ce9",
+      "original_git_blob": "edbcefcd26a4baebf0377a068a05cdea3571f8c6",
+      "target_paths": [
+        "docs/standards/github-workflow.md",
+        "docs/standards/review-checklist.md",
+        "docs/standards/evidence-retention.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "이슈/브랜치/PR/리뷰·비밀보호를 계승한다. 현재 메인PR84/통합브랜치·지속소스보관·14일 만료/영속자산·제품APK1개 계약으로 맞춘다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/redesign/01-feedback.md",
+      "original_sha256": "cc68e7d7019cf9cb7dd03378fec8dc8fe71070c6dbb0019462bcb6eb86e27191",
+      "original_git_blob": "f1a765797abf93769fe434589dfd0313f697fc8b",
+      "target_paths": [
+        "docs/redesign/01-feedback.md",
+        "docs/redesign/README.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "공통 피드백의 문서/코드 가독성·작은PR·역할/규칙·추적 취지만 계승한다. 경제게임 수치·축소/코호트/검증 생략 제안은 복원하지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/redesign/02-game-design.md",
+      "original_sha256": "1223fc281655ca0e9bad30aab6640727d0aadff1109d7b710e494cb085adbe88",
+      "original_git_blob": "d49bfe203c957384130d97d38647f16359263da0",
+      "target_paths": [
+        "docs/redesign/02-development-baseline.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "공통 설계 탐색/불변식 취지만 현행 실제 구조의 안내로 맞춘다. 해당 경제게임 기획 원문은 제품에서 제외한다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/tasks/README.md",
+      "original_sha256": "5e649e036d636088ca35590066224fab1019d99f820cc1d8ceb806293e177b74",
+      "original_git_blob": "08b45d24b8b6e384520ec765c9fdb421f875b842",
+      "target_paths": [
+        "docs/tasks/README.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "작업/기반 명세 탐색을 복원한다. 새로운 완료원장이나111개 분모·정책을 만들지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/tasks/M0-01-solution-scaffold.md",
+      "original_sha256": "62413fd94283da3d6f961c6fe7fb6c66406e8dd3242e6a978e5ec78aaf5c4acd",
+      "original_git_blob": "9f17a60809643fa3f8c16d5c4b1064abbe519543",
+      "target_paths": [
+        "docs/tasks/M0-01-solution-scaffold.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "배경/범위/계약/경계/수용 형식을 현행 기존 Chronicles 기반에 적용한다. 옛 placeholder/Money(USD)/PCG/월파이프라인/CI 구현을 가져오지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/tasks/M0-02-money-quantity.md",
+      "original_sha256": "e9a582e72a0f787fd97565bc2218bf284b9703e8467e3fa0d2ea111896980edb",
+      "original_git_blob": "0d004948d3d8fe05563c76376f28ac8d8266fa5c",
+      "target_paths": [
+        "docs/tasks/M0-02-money-quantity.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "배경/범위/계약/경계/수용 형식을 현행 기존 Chronicles 기반에 적용한다. 옛 placeholder/Money(USD)/PCG/월파이프라인/CI 구현을 가져오지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/tasks/M0-03-ids-random.md",
+      "original_sha256": "afd768cdf10de712c640576b67ae3b97804b8d823553a0bd8021a46ebc82cbd1",
+      "original_git_blob": "062de8b320a274bed784830566369355642c32eb",
+      "target_paths": [
+        "docs/tasks/M0-03-ids-random.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "배경/범위/계약/경계/수용 형식을 현행 기존 Chronicles 기반에 적용한다. 옛 placeholder/Money(USD)/PCG/월파이프라인/CI 구현을 가져오지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/tasks/M0-04-month-pipeline.md",
+      "original_sha256": "4d93da0baebf5fb4c7f9637f2c82cfe335905579f5ba06ff0a33441d5d570693",
+      "original_git_blob": "bbde6f829f36362aabfbd7a564c7d9a68f7226a0",
+      "target_paths": [
+        "docs/tasks/M0-04-month-pipeline.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "배경/범위/계약/경계/수용 형식을 현행 기존 Chronicles 기반에 적용한다. 옛 placeholder/Money(USD)/PCG/월파이프라인/CI 구현을 가져오지 않는다.",
+      "verbatim_copy": false
+    },
+    {
+      "original_path": "docs/tasks/M0-05-ci.md",
+      "original_sha256": "d979fc709f866e145f203889649576cf5ffefb6f49a7c332dffc5a79125ee3bd",
+      "original_git_blob": "f7f08fc2b49154da1124f0d381d8b13f6c86b294",
+      "target_paths": [
+        "docs/tasks/M0-05-ci.md"
+      ],
+      "treatment": "현재 선로만상록 계약으로 맞춤 복원",
+      "reason": "배경/범위/계약/경계/수용 형식을 현행 기존 Chronicles 기반에 적용한다. 옛 placeholder/Money(USD)/PCG/월파이프라인/CI 구현을 가져오지 않는다.",
+      "verbatim_copy": false
+    }
+  ],
+  "new_files_without_main_counterpart": [
+    ".gitattributes",
+    "docs/standards/README.md",
+    "docs/standards/restoration-source-map.json",
+    "docs/standards/evidence-index.json",
+    "docs/standards/sdk-workflow-audit.json",
+    "docs/standards/development-system-validation.json",
+    "docs/tasks/DEV-222-development-system.md"
+  ],
+  "not_restored": [
+    "games/monthly-economy/ 및 그 제품 전용 기획/소스",
+    "src/Hora.*·tools/Hora.Tools·경제게임 워크플로",
+    "예전 .NET8/C#9/NUnit/형식·성능 job 가정",
+    "사용자 기존 승인과 충돌하는 ready 라벨 대기/AI병합·릴리스 일괄금지"
+  ],
+  "legacy_preserved": "선로만상록 관련 legacy/ 전체",
+  "prior_feedback": {
+    "path": "docs/plans/reviews/v021-claude-review-2026-10-30.md",
+    "receipt": "1/1 원형 유지",
+    "sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598"
+  },
+  "new_feedback_root_owned_paths": [
+    "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md",
+    "docs/reviews/v0.2.1-review-guide.md",
+    "docs/tasks/V021-REVIEW-STRUCTURE.md"
+  ],
+  "product_fingerprint_impact": "global.json 신규 추가는 제품 입력 변경. 기존FP528 실행 원문은 과거 소스에 보존하며 새 설정 최종 검증은 별도다."
+}

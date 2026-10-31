@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "kind": "공통체계 복원의 실제 로컬 정확성·형식 확인",
+  "recorded_at_utc": "2026-10-31T00:46:27.536559+00:00",
+  "base_source_commit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "tested_worktree_clean": false,
+  "tested_input_scope": "404767 기준의 제품소스/검사 그대로 + 이 작업의 global.json/.editorconfig 및 문서/템플릿. 변경 중 작업트리의 국소 검증이며 새 frozen source 전체합격이 아니다.",
+  "sdk": {
+    "actual_sdk": "10.0.403",
+    "installed_sdk": "10.0.403 [/workspace/.dotnet/sdk]",
+    "pin": {
+      "sdk": {
+        "version": "10.0.403",
+        "rollForward": "disable",
+        "allowPrerelease": false
+      }
+    },
+    "positive_exit_code": 0,
+    "uninstalled_version_probe": "10.0.402",
+    "negative_exit_code": 155,
+    "did_not_roll_forward_to_installed_403": true,
+    "negative_excerpt": "The command could not be loaded, possibly because:\n  * You intended to execute a .NET application:\n      The application '--version' does not exist or is not a managed .dll or .exe.\n  * You intended to execute a .NET SDK command:\n      A compatible .NET SDK was not found.\n\nRequested SDK version: 10.0.402\nglobal.json file: /tmp/seonro-sdk-pin-0l81w7zs/global.json\n\nInstalled SDKs:\n\nInstall the [10.0.402] .NET SDK or update [/tmp/seonro-sdk-pin-0l81w7zs/global.json] to match an installed SDK.\n\nLearn about SDK resolution:\nhttps://aka.ms/dotnet/sdk-not-found\n10.0.403 [/workspace/.dotnet/sdk]\n",
+    "temporary_fixture_removed": true
+  },
+  "config_sha256": {
+    "global.json": "bd2f7421218da3954279a68a63015aeabda5b7122ec8b47a2f7585b7e284a98d",
+    ".editorconfig": "6c12f0c88d61a4153c4e75dade2fae0e74095ef90800f369400c2339f0c860d5",
+    ".gitattributes": "995e771dda4b4dde7f34059934a3078703e9dbc1a1baee88cdfc44f9b407d43d"
+  },
+  "build": {
+    "command": "taskset -c 0 /workspace/.dotnet/dotnet build tests/Chronicles.Game.Tests -c Release -p:UseSharedCompilation=false -p:BuildInParallel=false -m:1",
+    "exit_code": 0,
+    "warnings": 0,
+    "errors": 0,
+    "log": "validation/release-build.log"
+  },
+  "functional": {
+    "command": "taskset -c 0 /workspace/.dotnet/dotnet run --project tests/Chronicles.Game.Tests -c Release --no-build -- --filter 'INV-001/002/011' --report /workspace/scratch/development-system-222/functional.json",
+    "selection": "INV-001/002/011",
+    "total": 1,
+    "failed": 0,
+    "actual_names": [
+      "INV-001/002/011 정확한 창세·안정 신원·100지점"
+    ],
+    "raw": "validation/functional.original.json",
+    "full_functional_suite_claim": false
+  },
+  "format": {
+    "command": "taskset -c 0 /workspace/.dotnet/dotnet format whitespace src/Chronicles.Core/Chronicles.Core.csproj --verify-no-changes --no-restore --include /workspace/seonro-development-system/src/Chronicles.Core/DeterministicRandom.cs --verbosity normal",
+    "exit_code": 0,
+    "selected_source_files": [
+      "src/Chronicles.Core/DeterministicRandom.cs"
+    ],
+    "files_modified": 0,
+    "log": "validation/core-format.log",
+    "all_repository_format_claim": false
+  },
+  "static_checks": {
+    "markdown_files": 23,
+    "local_links_checked": 76,
+    "missing_links_owned_by_root_only": [
+      {
+        "from": "AGENTS.md",
+        "to": "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md"
+      },
+      {
+        "from": "AGENTS.md",
+        "to": "docs/reviews/v0.2.1-review-guide.md"
+      },
+      {
+        "from": "AGENTS.md",
+        "to": "docs/tasks/V021-REVIEW-STRUCTURE.md"
+      },
+      {
+        "from": "CLAUDE.md",
+        "to": "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md"
+      },
+      {
+        "from": "CLAUDE.md",
+        "to": "docs/reviews/v0.2.1-review-guide.md"
+      },
+      {
+        "from": "CLAUDE.md",
+        "to": "docs/tasks/V021-REVIEW-STRUCTURE.md"
+      },
+      {
+        "from": "docs/redesign/01-feedback.md",
+        "to": "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md"
+      },
+      {
+        "from": "docs/redesign/01-feedback.md",
+        "to": "docs/reviews/v0.2.1-review-guide.md"
+      },
+      {
+        "from": "docs/redesign/01-feedback.md",
+        "to": "docs/tasks/V021-REVIEW-STRUCTURE.md"
+      },
+      {
+        "from": "docs/tasks/DEV-222-development-system.md",
+        "to": "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md"
+      },
+      {
+        "from": "docs/tasks/DEV-222-development-system.md",
+        "to": "docs/tasks/V021-REVIEW-STRUCTURE.md"
+      },
+      {
+        "from": "docs/tasks/README.md",
+        "to": "docs/tasks/V021-REVIEW-STRUCTURE.md"
+      }
+    ],
+    "issue_front_matter": [
+      {
+        "path": ".github/ISSUE_TEMPLATE/bug.md",
+        "parsed": true
+      },
+      {
+        "path": ".github/ISSUE_TEMPLATE/feature.md",
+        "parsed": true
+      },
+      {
+        "path": ".github/ISSUE_TEMPLATE/task.md",
+        "parsed": true
+      }
+    ],
+    "json_valid": true,
+    "editorconfig_parsed": true,
+    "brace_and_single_line_settings_correct": true,
+    "analyzer_suppression_added": false,
+    "git_attributes": "docs/evidence/0.2.1/release-readiness.json: linguist-generated: true",
+    "broad_formatting_performed": false
+  },
+  "root_owned_links_pending_at_base": [
+    "docs/plans/reviews/v021-claude-pr84-review-2026-10-31.md",
+    "docs/reviews/v0.2.1-review-guide.md",
+    "docs/tasks/V021-REVIEW-STRUCTURE.md"
+  ],
+  "original_feedback_preserved": {
+    "receipt": "1/1",
+    "path": "docs/plans/reviews/v021-claude-review-2026-10-30.md",
+    "sha256": "470bb05dc6b7a195c5f8ac7b6998b8a1d184967d8131f803f7acf131618e0598"
+  },
+  "existing_evidence_legacy_product_tests_workflows_changed": false,
+  "new_game_test_cases": 0,
+  "new_performance_growth_soak_or_profile_runs": 0,
+  "previous_528_evidence_promoted_to_new_config": false,
+  "final_product_fingerprint": null,
+  "final_validation_owner": "통합 담당의 새 source/제품 지문 최종검증",
+  "files": [
+    {
+      "path": "validation/core-format.log",
+      "bytes": 145,
+      "sha256": "2655028f8b0484c4bb043c8863924e6f0470939d9766a4d07390293cc87b0662"
+    },
+    {
+      "path": "validation/functional.original.json",
+      "bytes": 252,
+      "sha256": "6d508dc1f7d8fe3db4a6d95daad14b236ef09612e806ceb518b1dbab187721d8"
+    },
+    {
+      "path": "validation/functional.original.log",
+      "bytes": 75,
+      "sha256": "a7f955b9231a740cf92e641bf856c5fa5341b8569877d88170d26e0ba0198b96"
+    },
+    {
+      "path": "validation/release-build.log",
+      "bytes": 1048,
+      "sha256": "0970de78c99775818cf187c9d4d15825a1970a78257eefe6ec604fa01cd5eb54"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # 클로드 1회 피드백 반영 원장
 
+> 이 문서는 2026-10-30 개정5 기획 피드백의 당시 판정이다. 사용자 확정 뒤의 현재 정책은 [구현 정본 대응](v021-canon-map.md), 추가 PR #84 코드 리뷰는 [별도 수신 기록](reviews/v021-claude-pr84-review-2026-10-31.md)을 따른다.
+
 수신: 2026-10-30, 사용자 전달, **1/1**. [원문·고정 커밋](https://github.com/hddy774/Chronicles-of-Myriad-Immortal-Paths/blob/f0f2ba39b67e3fe8fa034a38dde8d23d1a3711d0/docs/plans/reviews/v021-claude-review-2026-10-30.md). 원문은 개정5의 내부 정합성 검토이며 코드·정본 링크·외부 기술 자료·게임 실행/성능 검증 결과가 아니다. 이 문서는 개정6의 판정 기록으로 원문을 바꾸지 않는다.
 
 | ID | 판정 | 반영/미반영·남은 결정 |

@@ -40,7 +40,12 @@ public static class GameCodec
         }
         return copy;
     }
-    public static string Hash(GameState value) => Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(value, Options)));
+    public static string Hash(GameState value)
+    {
+        using var sink = new CanonicalHashSink();
+        JsonSerializer.Serialize(sink, value, Options);
+        return sink.CompleteHash();
+    }
     internal static string CommandHash(GameCommand value) => Convert.ToHexStringLower(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(value, Options)));
 
     public static byte[] Encode(GameWorld world) => Encode(world, 0);

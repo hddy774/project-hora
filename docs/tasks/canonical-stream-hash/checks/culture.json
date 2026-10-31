@@ -1,0 +1,12 @@
+{
+  "selection": "\uC800\uC7A5 \uC655\uBCF5\u00B7\uD638\uC2A4\uD2B8 \uBB38\uD654\uAD8C \uB3C5\uB9BD",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-006 \uC800\uC7A5 \uC655\uBCF5\u00B7\uD638\uC2A4\uD2B8 \uBB38\uD654\uAD8C \uB3C5\uB9BD",
+      "passed": true,
+      "ms": 1131
+    }
+  ]
+}

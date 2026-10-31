@@ -1,0 +1,650 @@
+{
+  "source": "df7240556a260202a248e57b1f9868e372b9d995",
+  "complete": true,
+  "fixedDeadlineUtc": "2026-10-31T01:46:02+00:00",
+  "fixtures": [
+    {
+      "population": 100,
+      "month": 0,
+      "description": {
+        "kind": "explicit synthetic initial population; not founder history, growth evidence or a device measurement",
+        "seed": 42,
+        "population": 100,
+        "founders": 2,
+        "syntheticEntrants": 98,
+        "placement": "the original two founders remain at place 0; entrant ordinal n starts at n % 100",
+        "entrants": "adult human bodies at the current maturity boundary; alternating gestator/donor; all six foundations and five roots 5000; fourteen personality inputs 50",
+        "lifespanMonths": 1200000,
+        "assets": "entrants receive zero items, equipment, currency, treasury or property; the original two founders retain their actual genesis assets",
+        "cultivation": "entrants start at Qi layer 1 on path.1.0 using explicit current-structure metadata; zero work, acquired-root growth, mastery or claimed past breakthrough events",
+        "knowledge": "explicit initial chapter 1 memory: entry comprehension 100 and path.1.0 comprehension 30, transmission licensed; zero practical mastery, books or recipe knowledge",
+        "authority": "no synthetic ancestry, household, sect, political office, partner, guardian or past-life traces",
+        "scheduling": "all entrants are alive and initially unscheduled; ordinary observation, AI choices, labor, finite sources and cultivation seats remain active",
+        "timing": "fixture construction, restore and validation excluded from monthly measurements; the 12-month run uses a separate fresh warmup build with an identical opening hash",
+        "lawOverrides": {
+          "birth.enabled": 0,
+          "ecology.foodUse": 0,
+          "ecology.disasterChance": 0,
+          "ecology.sourceCapacity": 1000000,
+          "ecology.regrowth": 10000,
+          "life.qi": 120000,
+          "life.foundation": 120000,
+          "life.core": 120000,
+          "hazard.structureDamage": 0,
+          "hazard.bondDamage": 0,
+          "hazard.sealChance": 0,
+          "hazard.portalChance": 0,
+          "hazard.trialDamage": 0,
+          "cultivation.breakthroughRisk": 0
+        }
+      },
+      "openingHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+      "randomState": 255951309216425373,
+      "canonicalBytes": 2544545,
+      "quotedPayloadTokenBytes": 3987573,
+      "escapeAddedBytes": 1443026,
+      "defaultEnvelopeBytes": 3987705,
+      "defaultEnvelopeToPayloadRatio": 1.5671583721254685,
+      "forcedBinaryEnvelopeBytes": 2544609,
+      "rawQuotes": 279064,
+      "rawBackslashes": 47706,
+      "nonAsciiBytes": 0,
+      "defaultEnvelopeKind": "JSON schema2",
+      "forcedBinaryUsesExistingInternalLimitSeam": true,
+      "oracleStreamBytesExactlyEqual": true
+    },
+    {
+      "population": 1000,
+      "month": 0,
+      "description": {
+        "kind": "explicit synthetic initial population; not founder history, growth evidence or a device measurement",
+        "seed": 42,
+        "population": 1000,
+        "founders": 2,
+        "syntheticEntrants": 998,
+        "placement": "the original two founders remain at place 0; entrant ordinal n starts at n % 100",
+        "entrants": "adult human bodies at the current maturity boundary; alternating gestator/donor; all six foundations and five roots 5000; fourteen personality inputs 50",
+        "lifespanMonths": 1200000,
+        "assets": "entrants receive zero items, equipment, currency, treasury or property; the original two founders retain their actual genesis assets",
+        "cultivation": "entrants start at Qi layer 1 on path.1.0 using explicit current-structure metadata; zero work, acquired-root growth, mastery or claimed past breakthrough events",
+        "knowledge": "explicit initial chapter 1 memory: entry comprehension 100 and path.1.0 comprehension 30, transmission licensed; zero practical mastery, books or recipe knowledge",
+        "authority": "no synthetic ancestry, household, sect, political office, partner, guardian or past-life traces",
+        "scheduling": "all entrants are alive and initially unscheduled; ordinary observation, AI choices, labor, finite sources and cultivation seats remain active",
+        "timing": "fixture construction, restore and validation excluded from monthly measurements; the 12-month run uses a separate fresh warmup build with an identical opening hash",
+        "lawOverrides": {
+          "birth.enabled": 0,
+          "ecology.foodUse": 0,
+          "ecology.disasterChance": 0,
+          "ecology.sourceCapacity": 1000000,
+          "ecology.regrowth": 10000,
+          "life.qi": 120000,
+          "life.foundation": 120000,
+          "life.core": 120000,
+          "hazard.structureDamage": 0,
+          "hazard.bondDamage": 0,
+          "hazard.sealChance": 0,
+          "hazard.portalChance": 0,
+          "hazard.trialDamage": 0,
+          "cultivation.breakthroughRisk": 0
+        }
+      },
+      "openingHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+      "randomState": 255951309216425373,
+      "canonicalBytes": 14868179,
+      "quotedPayloadTokenBytes": 23035107,
+      "escapeAddedBytes": 8166926,
+      "defaultEnvelopeBytes": 23035239,
+      "defaultEnvelopeToPayloadRatio": 1.5492979335263586,
+      "forcedBinaryEnvelopeBytes": 14868243,
+      "rawQuotes": 1596664,
+      "rawBackslashes": 183606,
+      "nonAsciiBytes": 0,
+      "defaultEnvelopeKind": "JSON schema2",
+      "forcedBinaryUsesExistingInternalLimitSeam": true,
+      "oracleStreamBytesExactlyEqual": true
+    }
+  ],
+  "metrics": [
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "SerializeCanonicalUtf8",
+      "sample": 1,
+      "elapsedMs": 12.7755,
+      "allocatedThreadBytes": 2604920,
+      "allocatedProcessBytes": 2604920
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "SerializeCanonicalUtf8",
+      "sample": 2,
+      "elapsedMs": 12.2847,
+      "allocatedThreadBytes": 2604920,
+      "allocatedProcessBytes": 2604920
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "SerializeCanonicalUtf8",
+      "sample": 3,
+      "elapsedMs": 12.1491,
+      "allocatedThreadBytes": 2604920,
+      "allocatedProcessBytes": 2604920
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Hash",
+      "sample": 1,
+      "elapsedMs": 14.0579,
+      "allocatedThreadBytes": 2605128,
+      "allocatedProcessBytes": 2605128
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Hash",
+      "sample": 2,
+      "elapsedMs": 13.3635,
+      "allocatedThreadBytes": 2605128,
+      "allocatedProcessBytes": 2605128
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Hash",
+      "sample": 3,
+      "elapsedMs": 13.3696,
+      "allocatedThreadBytes": 2605128,
+      "allocatedProcessBytes": 2605128
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "sample": 1,
+      "elapsedMs": 1.6477,
+      "allocatedThreadBytes": 208,
+      "allocatedProcessBytes": 208
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "sample": 2,
+      "elapsedMs": 1.4556,
+      "allocatedThreadBytes": 208,
+      "allocatedProcessBytes": 208
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "sample": 3,
+      "elapsedMs": 1.4122,
+      "allocatedThreadBytes": 208,
+      "allocatedProcessBytes": 208
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "sample": 1,
+      "elapsedMs": 13.5454,
+      "allocatedThreadBytes": 61064,
+      "allocatedProcessBytes": 61064
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "sample": 2,
+      "elapsedMs": 13.2141,
+      "allocatedThreadBytes": 60840,
+      "allocatedProcessBytes": 60840
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "sample": 3,
+      "elapsedMs": 12.8236,
+      "allocatedThreadBytes": 60840,
+      "allocatedProcessBytes": 60840
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Clone",
+      "sample": 1,
+      "elapsedMs": 43.1106,
+      "allocatedThreadBytes": 8525928,
+      "allocatedProcessBytes": 8525928
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Clone",
+      "sample": 2,
+      "elapsedMs": 41.4079,
+      "allocatedThreadBytes": 8525928,
+      "allocatedProcessBytes": 8525928
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Clone",
+      "sample": 3,
+      "elapsedMs": 47.0669,
+      "allocatedThreadBytes": 8525928,
+      "allocatedProcessBytes": 8525928
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "sample": 1,
+      "elapsedMs": 28.0737,
+      "allocatedThreadBytes": 5828520,
+      "allocatedProcessBytes": 5828520
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "sample": 2,
+      "elapsedMs": 27.9078,
+      "allocatedThreadBytes": 5828520,
+      "allocatedProcessBytes": 5828520
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "sample": 3,
+      "elapsedMs": 34.6121,
+      "allocatedThreadBytes": 5828520,
+      "allocatedProcessBytes": 5828520
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "Invariants.Validate",
+      "sample": 1,
+      "elapsedMs": 28.3115,
+      "allocatedThreadBytes": 9322920,
+      "allocatedProcessBytes": 9322920
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "Invariants.Validate",
+      "sample": 2,
+      "elapsedMs": 29.4881,
+      "allocatedThreadBytes": 9320096,
+      "allocatedProcessBytes": 9320096
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Encode_default",
+      "sample": 1,
+      "elapsedMs": 101.9404,
+      "allocatedThreadBytes": 29542496,
+      "allocatedProcessBytes": 29542496
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Encode_default",
+      "sample": 2,
+      "elapsedMs": 117.6798,
+      "allocatedThreadBytes": 29541736,
+      "allocatedProcessBytes": 29541736
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Encode_forced_binary_existing_seam",
+      "sample": 1,
+      "elapsedMs": 88.1887,
+      "allocatedThreadBytes": 23010080,
+      "allocatedProcessBytes": 23010080
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Encode_forced_binary_existing_seam",
+      "sample": 2,
+      "elapsedMs": 85.6803,
+      "allocatedThreadBytes": 23010080,
+      "allocatedProcessBytes": 23010080
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Decode_default",
+      "sample": 1,
+      "elapsedMs": 118.1374,
+      "allocatedThreadBytes": 31358520,
+      "allocatedProcessBytes": 31358520
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameCodec.Decode_default",
+      "sample": 2,
+      "elapsedMs": 125.057,
+      "allocatedThreadBytes": 31359272,
+      "allocatedProcessBytes": 31359272
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameSaveStore.SaveAtomic_new",
+      "sample": 1,
+      "elapsedMs": 227.7206,
+      "allocatedThreadBytes": 64896312,
+      "allocatedProcessBytes": 64900344
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameSaveStore.SaveAtomic_overwrite",
+      "sample": 1,
+      "elapsedMs": 468.6595,
+      "allocatedThreadBytes": 135585240,
+      "allocatedProcessBytes": 135585240
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "GameSaveStore.Load_primary_and_backup",
+      "sample": 1,
+      "elapsedMs": 258.3634,
+      "allocatedThreadBytes": 70704640,
+      "allocatedProcessBytes": 70708672
+    },
+    {
+      "stage": "measured",
+      "population": 100,
+      "operation": "WriteThroughFlush_existing_encoded_bytes_attribution_only",
+      "sample": 1,
+      "elapsedMs": 2.4576,
+      "allocatedThreadBytes": 232,
+      "allocatedProcessBytes": 232
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "SerializeCanonicalUtf8",
+      "sample": 1,
+      "elapsedMs": 36.2434,
+      "allocatedThreadBytes": 15447000,
+      "allocatedProcessBytes": 15447000
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "SerializeCanonicalUtf8",
+      "sample": 2,
+      "elapsedMs": 35.1592,
+      "allocatedThreadBytes": 15447000,
+      "allocatedProcessBytes": 15447000
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "SerializeCanonicalUtf8",
+      "sample": 3,
+      "elapsedMs": 36.8549,
+      "allocatedThreadBytes": 15447000,
+      "allocatedProcessBytes": 15447000
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Hash",
+      "sample": 1,
+      "elapsedMs": 43.9589,
+      "allocatedThreadBytes": 15447208,
+      "allocatedProcessBytes": 15447208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Hash",
+      "sample": 2,
+      "elapsedMs": 45.6181,
+      "allocatedThreadBytes": 15447208,
+      "allocatedProcessBytes": 15447208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Hash",
+      "sample": 3,
+      "elapsedMs": 53.4676,
+      "allocatedThreadBytes": 15447208,
+      "allocatedProcessBytes": 15447208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "sample": 1,
+      "elapsedMs": 8.6203,
+      "allocatedThreadBytes": 208,
+      "allocatedProcessBytes": 208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "sample": 2,
+      "elapsedMs": 8.9297,
+      "allocatedThreadBytes": 208,
+      "allocatedProcessBytes": 208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "sample": 3,
+      "elapsedMs": 8.4659,
+      "allocatedThreadBytes": 208,
+      "allocatedProcessBytes": 208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "sample": 1,
+      "elapsedMs": 44.2874,
+      "allocatedThreadBytes": 580688,
+      "allocatedProcessBytes": 580688
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "sample": 2,
+      "elapsedMs": 40.7436,
+      "allocatedThreadBytes": 580464,
+      "allocatedProcessBytes": 580464
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "sample": 3,
+      "elapsedMs": 42.6253,
+      "allocatedThreadBytes": 580464,
+      "allocatedProcessBytes": 580464
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Clone",
+      "sample": 1,
+      "elapsedMs": 177.4813,
+      "allocatedThreadBytes": 53855560,
+      "allocatedProcessBytes": 53855560
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Clone",
+      "sample": 2,
+      "elapsedMs": 227.3569,
+      "allocatedThreadBytes": 53855656,
+      "allocatedProcessBytes": 53860024
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Clone",
+      "sample": 3,
+      "elapsedMs": 197.8579,
+      "allocatedThreadBytes": 53855560,
+      "allocatedProcessBytes": 53855560
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "sample": 1,
+      "elapsedMs": 124.8967,
+      "allocatedThreadBytes": 37704072,
+      "allocatedProcessBytes": 37704072
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "sample": 2,
+      "elapsedMs": 163.5513,
+      "allocatedThreadBytes": 37704120,
+      "allocatedProcessBytes": 37708488
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "sample": 3,
+      "elapsedMs": 119.6749,
+      "allocatedThreadBytes": 37704072,
+      "allocatedProcessBytes": 37704072
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "Invariants.Validate",
+      "sample": 1,
+      "elapsedMs": 240.2443,
+      "allocatedThreadBytes": 73791576,
+      "allocatedProcessBytes": 73795944
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "Invariants.Validate",
+      "sample": 2,
+      "elapsedMs": 201.377,
+      "allocatedThreadBytes": 73790720,
+      "allocatedProcessBytes": 73790720
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Encode_default",
+      "sample": 1,
+      "elapsedMs": 456.0004,
+      "allocatedThreadBytes": 195977360,
+      "allocatedProcessBytes": 195977360
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Encode_default",
+      "sample": 2,
+      "elapsedMs": 609.3074,
+      "allocatedThreadBytes": 195978184,
+      "allocatedProcessBytes": 195982552
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Encode_forced_binary_existing_seam",
+      "sample": 1,
+      "elapsedMs": 463.3918,
+      "allocatedThreadBytes": 158073776,
+      "allocatedProcessBytes": 158073800
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Encode_forced_binary_existing_seam",
+      "sample": 2,
+      "elapsedMs": 433.1396,
+      "allocatedThreadBytes": 158074560,
+      "allocatedProcessBytes": 158078928
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Decode_default",
+      "sample": 1,
+      "elapsedMs": 564.3778,
+      "allocatedThreadBytes": 210190832,
+      "allocatedProcessBytes": 210195200
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameCodec.Decode_default",
+      "sample": 2,
+      "elapsedMs": 699.3302,
+      "allocatedThreadBytes": 210192816,
+      "allocatedProcessBytes": 210197136
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameSaveStore.SaveAtomic_new",
+      "sample": 1,
+      "elapsedMs": 1118.4068,
+      "allocatedThreadBytes": 429200488,
+      "allocatedProcessBytes": 429204856
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameSaveStore.SaveAtomic_overwrite",
+      "sample": 1,
+      "elapsedMs": 2309.7967,
+      "allocatedThreadBytes": 894923496,
+      "allocatedProcessBytes": 894932208
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "GameSaveStore.Load_primary_and_backup",
+      "sample": 1,
+      "elapsedMs": 1031.4169,
+      "allocatedThreadBytes": 465970912,
+      "allocatedProcessBytes": 465979528
+    },
+    {
+      "stage": "measured",
+      "population": 1000,
+      "operation": "WriteThroughFlush_existing_encoded_bytes_attribution_only",
+      "sample": 1,
+      "elapsedMs": 5.3658,
+      "allocatedThreadBytes": 232,
+      "allocatedProcessBytes": 232
+    }
+  ],
+  "limitations": "Month0 synthetic populations, ordered cold/warm mixed samples, shared 4CPU host, CPU3 only, no 12-month advancement or final performance gates; buffer reuse probe is attribution, not a valid replacement for changing states"
+}

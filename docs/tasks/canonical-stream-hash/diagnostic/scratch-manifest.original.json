@@ -1,0 +1,51 @@
+{
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "files": [
+    {
+      "path": "CodecDiagnostic.csproj",
+      "bytes": 818,
+      "sha256": "c7ac1b9a8e0073977caa887ef92db94ebe1ba638d1dbf264349d2192f07cb484"
+    },
+    {
+      "path": "Program.cs",
+      "bytes": 11584,
+      "sha256": "57db82d1e2acd764547aca4a1f6e3ae4e223f99b34ce9590fb81a19ff03b5cf9"
+    },
+    {
+      "path": "build.log",
+      "bytes": 308,
+      "sha256": "cf8756df2c5860231772d132627807b26f6b8b380883e34616882c5b39e3a5d9"
+    },
+    {
+      "path": "supervisor.json",
+      "bytes": 566,
+      "sha256": "ede1deeb8c6928bb11af9355c21b09ffaca42f54a6c9beb3975ef01b9a10f65f"
+    },
+    {
+      "path": "run.log",
+      "bytes": 25844,
+      "sha256": "9c63542f729ce154f5279a869b3493fe6717382802bf5fdf5c081d6e6d910197"
+    },
+    {
+      "path": "run1/events.ndjson",
+      "bytes": 25844,
+      "sha256": "9c63542f729ce154f5279a869b3493fe6717382802bf5fdf5c081d6e6d910197"
+    },
+    {
+      "path": "run1/result.json",
+      "bytes": 20595,
+      "sha256": "f98380608d7159cc234d9a9c22b181db8cc469465c6850cb7fc521963eff35ee"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 18434,
+      "sha256": "5244faf3e1434c66eb72d35e3995b339f3c5f981bac0a1bbdc41b6145fd77cbe"
+    },
+    {
+      "path": "summary.txt",
+      "bytes": 2590,
+      "sha256": "58e11cbcafa2a7e8f15e057e452e81f35401c9fea6a8cb303058ab6280562217"
+    }
+  ]
+}

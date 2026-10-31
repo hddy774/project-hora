@@ -1,0 +1,56 @@
+{
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "scope": "Historical bounded CPU3 Month0 diagnostic. Byte-identical selected scratch files; not a measurement of the patched product.",
+  "files": [
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/summary.json",
+      "retained_path": "summary.original.json",
+      "bytes": 18434,
+      "sha256": "5244faf3e1434c66eb72d35e3995b339f3c5f981bac0a1bbdc41b6145fd77cbe"
+    },
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/summary.txt",
+      "retained_path": "summary.original.txt",
+      "bytes": 2590,
+      "sha256": "58e11cbcafa2a7e8f15e057e452e81f35401c9fea6a8cb303058ab6280562217"
+    },
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/run1/result.json",
+      "retained_path": "result.original.json",
+      "bytes": 20595,
+      "sha256": "f98380608d7159cc234d9a9c22b181db8cc469465c6850cb7fc521963eff35ee"
+    },
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/supervisor.json",
+      "retained_path": "supervisor.original.json",
+      "bytes": 566,
+      "sha256": "ede1deeb8c6928bb11af9355c21b09ffaca42f54a6c9beb3975ef01b9a10f65f"
+    },
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/Program.cs",
+      "retained_path": "harness.original.cs",
+      "bytes": 11584,
+      "sha256": "57db82d1e2acd764547aca4a1f6e3ae4e223f99b34ce9590fb81a19ff03b5cf9"
+    },
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/CodecDiagnostic.csproj",
+      "retained_path": "harness.original.csproj",
+      "bytes": 818,
+      "sha256": "c7ac1b9a8e0073977caa887ef92db94ebe1ba638d1dbf264349d2192f07cb484"
+    },
+    {
+      "original_path": "/workspace/scratch/codec-diagnostic-df72405/manifest.json",
+      "retained_path": "scratch-manifest.original.json",
+      "bytes": 1520,
+      "sha256": "26dfe831fe06dc68cee7aa0c62d96d5ae29d57722f7a93e089b89d506975d0e7"
+    }
+  ],
+  "not_retained_here": [
+    "build.log",
+    "run.log",
+    "run1/events.ndjson",
+    "generated bin/obj and save slot binaries"
+  ],
+  "note": "The original scratch manifest remains unchanged and lists the full scratch collection; this index identifies only the files actually retained in Git."
+}

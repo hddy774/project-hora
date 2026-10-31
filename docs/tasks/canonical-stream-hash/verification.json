@@ -1,0 +1,81 @@
+{
+  "base_commit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "tested_clean_source_commit": "5723b19032c210fe69e457dbf7ffb19000195c6d",
+  "tested_source_tree": "11082f4fdd321d205a6e6cf411cb8cc95625ca9e",
+  "product_files_unchanged_after_tests": true,
+  "release_build": {
+    "command": [
+      "taskset",
+      "-c",
+      "3",
+      "/workspace/.dotnet/dotnet",
+      "build",
+      "tests/Chronicles.Game.Tests",
+      "-c",
+      "Release",
+      "--disable-build-servers",
+      "-m:1",
+      "-p:BuildInParallel=false",
+      "-p:UseSharedCompilation=false"
+    ],
+    "exit_code": 0,
+    "warnings": 0,
+    "errors": 0,
+    "elapsed_seconds_from_build_log": 31.97,
+    "log": "checks/release-build.log"
+  },
+  "selected_functional": {
+    "total": 10,
+    "failed": 0,
+    "reports": [
+      {
+        "selection": "canonical streaming hash:",
+        "total": 3,
+        "failed": 0
+      },
+      {
+        "selection": "대용량 저장:",
+        "total": 4,
+        "failed": 0
+      },
+      {
+        "selection": "host recovery:",
+        "total": 1,
+        "failed": 0
+      },
+      {
+        "selection": "저장 왕복·호스트 문화권 독립",
+        "total": 1,
+        "failed": 0
+      },
+      {
+        "selection": "INV-006/007/004 시간 분할·조회/저장 무영향",
+        "total": 1,
+        "failed": 0
+      }
+    ],
+    "actual_commands_and_assemblies": "checks/functional-run.json"
+  },
+  "sdk": "10.0.403",
+  "installed_runtimes": [
+    "Microsoft.AspNetCore.App 10.0.14 [/workspace/.dotnet/shared/Microsoft.AspNetCore.App]",
+    "Microsoft.NETCore.App 10.0.14 [/workspace/.dotnet/shared/Microsoft.NETCore.App]"
+  ],
+  "static_checks": {
+    "product_boundary_and_negative_selftest": "checks/product-boundary.json",
+    "plan_and_negative_selftest": "checks/plan.json",
+    "release_guard_negative_selftest": "checks/release-guard.json",
+    "diff_whitespace": "passed before source commit and after evidence additions"
+  },
+  "mapping_followup": {
+    "shared_map_edited": false,
+    "needed_after_integration": "Add the three new exact compiled Names below to INV-004 and INV-006 then bind the final whole-suite report using the existing map workflow. Existing Names were not changed.",
+    "new_registered_names": [
+      "INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약",
+      "INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회",
+      "INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존"
+    ]
+  },
+  "scope": "selected functional and static checks only; whole suite, new performance, growth, native and release execution not performed",
+  "source_attribution": "Checks built and ran clean local source commit shown above. Later task/evidence-only commits do not change product files. The remote GitData commit may have different metadata; publication must independently compare remote tree/file bytes before claiming source equivalence."
+}

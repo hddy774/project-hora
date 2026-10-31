@@ -1,0 +1,16 @@
+{
+  "base_commit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "tested_source_commit": "5723b19032c210fe69e457dbf7ffb19000195c6d",
+  "changed_product_files": [
+    "src/Chronicles.Game/CanonicalHashSink.cs",
+    "src/Chronicles.Game/GameCodec.cs",
+    "tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs"
+  ],
+  "GameCodec_only_Hash_body_changed": true,
+  "all_other_GameCodec_bytes_preserved_after_replacing_only_Hash": true,
+  "GameCodec_baseline_sha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1",
+  "GameCodec_restored_sha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1",
+  "GameSaveStore_byte_identical": true,
+  "GameSaveStore_sha256": "06f48cfd001d702645f194cd5a8a662f532624ea2ceeac624b825a07fd2fb8d3",
+  "no_shared_scripts_manifests_gates_or_ledger_edited": true
+}

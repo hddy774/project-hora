@@ -1,0 +1,110 @@
+{
+  "kind": "actual-final-four-population-measurement",
+  "status": "completed",
+  "source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "source_worktree_clean_before": true,
+  "started_utc": "2026-10-31T04:41:47.337614+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "exec",
+    "--fx-version",
+    "10.0.14",
+    "/workspace/seonro-integration-2464337/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/v021-final-population-2464337/preceding-functional.json",
+    "--performance",
+    "/workspace/scratch/v021-final-population-2464337/population.json"
+  ],
+  "full_functional_source": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "full_functional_total": 323,
+  "full_functional_report_sha256": "053535d3f2f4269a4404dbc21b44297dbf71664972a41fe9f2297733fe0793e2",
+  "tiered_environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "sdk": "10.0.403",
+  "runtime_configuration": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "runtime_configuration_sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+  "baseline_sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "host_scope": "동일 Linux 호스트 CPU0 한 개 affinity, 공유 4CPU quota. 다른 로컬 대형 빌드·측정·프로파일 없음. 문서·메타데이터 작업은 허용. 열·전원 상태 미측정. EventPipe/trace 미부착. 장기 안정성은 별도 GitHub VM에서 측정.",
+  "assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "bytes": 5120,
+      "sha256": "0fba58d3ea873aa24f2ad90c988b36b14152b0f68a6d3a63a06d6173b19bc7a9",
+      "informational_version_literals": [
+        "0.2.1+2464337ec577b2894eb87468c2c72916b1d6b8bf"
+      ],
+      "scope": "실제 DLL raw literal source 보조 대조; 전체 attribute constructor binding 검사는 별도"
+    },
+    {
+      "name": "Chronicles.Game",
+      "bytes": 2259968,
+      "sha256": "26c9a1cd0b735dcc40c9d09344ad3e1b7e21d6ed68a0c223d607a4cc60a595b0",
+      "informational_version_literals": [
+        "0.2.1+2464337ec577b2894eb87468c2c72916b1d6b8bf"
+      ],
+      "scope": "실제 DLL raw literal source 보조 대조; 전체 attribute constructor binding 검사는 별도"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "bytes": 23552,
+      "sha256": "712ce595ed45a12725b650d801aa73acae6757d511cb3b4a6ca40ba69c0f0601",
+      "informational_version_literals": [
+        "0.2.1+2464337ec577b2894eb87468c2c72916b1d6b8bf"
+      ],
+      "scope": "실제 DLL raw literal source 보조 대조; 전체 attribute constructor binding 검사는 별도"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "bytes": 1521152,
+      "sha256": "ba0dab6d4d70dc0e26aaaf83897d116073e9865e8dc36d7ab2bf868c12572129",
+      "informational_version_literals": [
+        "0.2.1+2464337ec577b2894eb87468c2c72916b1d6b8bf"
+      ],
+      "scope": "실제 DLL raw literal source 보조 대조; 전체 attribute constructor binding 검사는 별도"
+    }
+  ],
+  "pid": 173271,
+  "actual_runtime_mapped_files": [
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Collections.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Console.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Linq.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Memory.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Private.CoreLib.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.InteropServices.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Runtime.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/System.Text.Json.dll",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libSystem.Native.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libclrjit.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libcoreclr.so",
+    "/workspace/.dotnet/shared/Microsoft.NETCore.App/10.0.14/libhostpolicy.so"
+  ],
+  "exit_code": 0,
+  "ended_utc": "2026-10-31T04:55:30.658153+00:00",
+  "seconds": 823.2081344670005,
+  "source_worktree_clean_after": true,
+  "report_sha256": "acebfee1068992a73e9ceb590f68c518909cb31c581fca59edfb929f92542696"
+}

@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Globalization;
+using System.Buffers;
 using System.Buffers.Binary;
 
 namespace Chronicles.Game;
@@ -62,7 +63,7 @@ public static class GameCodec
         var payload = JsonSerializer.SerializeToUtf8Bytes(snapshot, Options);
         var hash = PayloadHash(payload, sequence);
         if (payload.Length <= jsonPayloadLimit)
-            return JsonSerializer.SerializeToUtf8Bytes(new Envelope(Magic, 2, Convert.ToHexStringLower(hash), Encoding.UTF8.GetString(payload), sequence), Options);
+            return EncodeJsonEnvelope(payload, Convert.ToHexStringLower(hash), sequence);
         if (payload.Length > Array.MaxLength - BinaryHeaderSize)
             throw new InvalidDataException("저장 본문이 지원하는 바이트 배열 크기를 넘었습니다.");
         // 12-byte magic, LE int32 version, LE int64 sequence/length, 32-byte logical SHA256, raw canonical JSON.
@@ -74,6 +75,38 @@ public static class GameCodec
         hash.CopyTo(bytes, 32);
         payload.CopyTo(bytes, BinaryHeaderSize);
         return bytes;
+    }
+
+    // schema2 문자열의 원래 escape를 유지하면서 전체 UTF16 사본 대신 작은 UTF8 조각을 쓴다.
+    private static byte[] EncodeJsonEnvelope(ReadOnlySpan<byte> payload, string hash, long sequence)
+    {
+        var output = new ArrayBufferWriter<byte>();
+        using var writer = new Utf8JsonWriter(output, new JsonWriterOptions
+        {
+            Encoder = Options.Encoder,
+            Indented = Options.WriteIndented,
+            MaxDepth = Options.MaxDepth
+        });
+        writer.WriteStartObject();
+        writer.WriteString("Format", Magic);
+        writer.WriteNumber("Schema", 2);
+        writer.WriteString("Hash", hash);
+        writer.WritePropertyName("Payload");
+
+        const int segmentBytes = 16 * 1024;
+        int offset = 0;
+        do
+        {
+            int count = Math.Min(segmentBytes, payload.Length - offset);
+            writer.WriteStringValueSegment(payload.Slice(offset, count), offset + count == payload.Length);
+            offset += count;
+        }
+        while (offset < payload.Length);
+
+        writer.WriteNumber("Sequence", sequence);
+        writer.WriteEndObject();
+        writer.Flush();
+        return output.WrittenSpan.ToArray();
     }
 
     private static byte[] PayloadHash(ReadOnlySpan<byte> payload, long sequence)

@@ -1,0 +1,43 @@
+{
+  "baseCommit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "selfTests": {
+    "passed": 18,
+    "exitCode": 0,
+    "scope": "mock context/metadata/hash/transport/draft/public/index/idempotence; no real API writes"
+  },
+  "actualLocalOriginalZipHashesPassed": 6,
+  "actualOriginalBytes": 9937563,
+  "actualOriginalRunAndArtifactMetadataOfflineCheck": "passed",
+  "pythonAst": "passed",
+  "yaml": "passed",
+  "actionlint": {
+    "version": "1.7.12",
+    "exitCode": 0,
+    "outputBytes": 0
+  },
+  "workflowTrigger": "owner-only pull_request.labeled exact dedicated label",
+  "tokenSource": "actual execute step GH_TOKEN=${{ github.token }} only",
+  "gameOrMeasurementExecutions": 0,
+  "actualArchiveReleaseCalls": 0,
+  "executionLabelAttached": false,
+  "existingProductGateOrReadinessChanges": false,
+  "sourceFingerprintSelectionChanged": false,
+  "snapshotCredentialPatternScan": "no credential/private-key pattern found",
+  "codeLines": {
+    ".github/evidence/http_client.py": 103,
+    ".github/evidence/archive_sensitivity.py": 368,
+    ".github/evidence/test_archive.py": 368,
+    ".github/evidence/test_http_client.py": 55
+  },
+  "logSha256": {
+    "actionlint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "self-test.log": "300cc27b940fb2369851742628b6597cf1ed5af1c5b9b5c9d26755a60f03211a"
+  },
+  "scope": {
+    "changedFiles": 11,
+    "selectedProductChanges": 0,
+    "baseProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+    "newTreeProductFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+    "productFingerprintUnchanged": true
+  }
+}

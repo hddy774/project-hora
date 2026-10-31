@@ -1,0 +1,49 @@
+{
+  "scope": "historical_failed_control_only",
+  "eligible_for_final_T04": false,
+  "run_id": 41113650904,
+  "job_id": 124262168261,
+  "artifact_id": 13021868705,
+  "artifact_bytes": 1308159,
+  "artifact_sha256": "f3f7891885faf568452b474a0677f07209c45c96024006a20f147188db988233",
+  "result_sha256": "25545738ad7daf632e08963440d3deba349aa8a17f5ce2722ff2cef152f8f393",
+  "complete_local_zip": "/workspace/scratch/stability-control-41113650904/artifact.zip",
+  "downloaded_artifact_manifest_verified_files": 28,
+  "dll_files_omitted_from_git_only": [
+    {
+      "path": "assemblies/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "587ff526e0342adcaec23214fa3f6f7a98f01e560d55b7136e9264f8e592a096",
+      "retained_in_complete_local_zip": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "2a18624e7e1dfc47ec0d2356ee4c19bcc9910b9ac64748b9ba5b4fed201f2d42",
+      "retained_in_complete_local_zip": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "13d533a54e60d91885e1008220cbd94b68fb0aab969c745ab7667827b1b9332f",
+      "retained_in_complete_local_zip": true
+    },
+    {
+      "path": "assemblies/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "d838eeda328f23b4a32f6a5f9a8b2cb1bc419e4dec583584d175b3578b963112",
+      "retained_in_complete_local_zip": true
+    }
+  ],
+  "raw_text_files_byte_identical": true,
+  "job_log_equal_to_connector_decoded_text": true,
+  "api_json_scope": "decoded structured payload serialized; not an HTTP-byte archive",
+  "save_bodies_uploaded": false,
+  "independent_local_save_replay": false,
+  "no_new_measurement": true,
+  "no_source_changes": true,
+  "no_budget_or_readiness_or_ledger_changes": true,
+  "future_source_changes": "global.json403 restore, Android CI work and no-behavior Game file split are planned; old528/control evidence remains historical",
+  "assessment_budget_scope": "Separately copied adopted budget7365 for read-only assessment; not claimed to have been in the original workflow ZIP",
+  "assessment_budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272"
+}

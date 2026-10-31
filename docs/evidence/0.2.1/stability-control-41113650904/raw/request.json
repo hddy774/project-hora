@@ -1,0 +1,14 @@
+{
+  "SOURCE_SHA": "8433dd26b6a8380d32f9b5d7093f88f1e8eb43a6",
+  "WORKFLOW_SOURCE_SHA": "cdaadec5ff609df583658e9db5ff781b9308463d",
+  "GITHUB_EVENT_NAME": "pull_request",
+  "GITHUB_REPOSITORY": "hddy774/project-hora",
+  "GITHUB_WORKFLOW_REF": "hddy774/project-hora/.github/workflows/v021-stability-measurements.yml@refs/pull/199/merge",
+  "GITHUB_RUN_ID": "41113650904",
+  "GITHUB_RUN_ATTEMPT": "1",
+  "GITHUB_ACTOR": "hddy774",
+  "GITHUB_TRIGGERING_ACTOR": "hddy774",
+  "REPOSITORY_PRIVATE": "false",
+  "PLAN_PATH": "docs/evidence/0.2.1/final-performance/stability-plan.json",
+  "BASELINE_PATH": "docs/evidence/0.2.1/final-performance/baseline.json"
+}

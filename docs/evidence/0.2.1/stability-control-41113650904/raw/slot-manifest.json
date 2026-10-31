@@ -1,0 +1,100 @@
+{
+  "collected_utc": "2026-10-31T00:20:19.341386+00:00",
+  "slot_files": [
+    {
+      "path": "result-saves/population-100.seonro",
+      "bytes": 63783092,
+      "sha256": "1ac6a803a8610ddde47929fafa6966caf408248c748e88f564bece0011b471a3"
+    },
+    {
+      "path": "result-saves/population-100.seonro.backup",
+      "bytes": 54293925,
+      "sha256": "d883757b73a8b97f660526b368aa629175e9995764b4951558b01cea8451ea6d"
+    },
+    {
+      "path": "result-saves/population-1000.seonro",
+      "bytes": 188361600,
+      "sha256": "821967fde016e12f9361db35aae484d6d2ead84a6b27b529122ac3254d098e99"
+    },
+    {
+      "path": "result-saves/population-1000.seonro.backup",
+      "bytes": 141722209,
+      "sha256": "f58958d444a00d5a056b261cbf43e225ee9b2da9a0e482e71a87bc96c7146841"
+    },
+    {
+      "path": "result-saves/population-10000.seonro",
+      "bytes": 710527774,
+      "sha256": "1a01079d698ea889fbdfa89006f869352e6a55d64f174bd1ebd34049bbffe43c"
+    },
+    {
+      "path": "result-saves/population-10000.seonro.backup",
+      "bytes": 668150785,
+      "sha256": "8a7c74a32c6554dd960320fa790e0340142d65e49177bea3faf87522111ad57e"
+    },
+    {
+      "path": "result-saves/population-2.seonro",
+      "bytes": 5027868,
+      "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6"
+    },
+    {
+      "path": "result-saves/population-2.seonro.backup",
+      "bytes": 4663494,
+      "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13"
+    }
+  ],
+  "slot_errors": [],
+  "original_checkpoint_console_lines": [
+    "STABILITY population=2 month=0/120 living=2 elapsed=0.91s",
+    "STABILITY population=2 month=30/120 living=2 elapsed=7.36s",
+    "STABILITY population=2 month=60/120 living=2 elapsed=12.46s",
+    "STABILITY population=2 month=90/120 living=2 elapsed=17.64s",
+    "STABILITY population=2 month=120/120 living=2 elapsed=22.84s",
+    "STABILITY population=100 month=0/120 living=100 elapsed=0.57s",
+    "STABILITY population=100 month=30/120 living=100 elapsed=20.50s",
+    "STABILITY population=100 month=60/120 living=100 elapsed=85.76s",
+    "STABILITY population=100 month=90/120 living=100 elapsed=197.38s",
+    "STABILITY population=100 month=112/120 living=100 elapsed=333.64s",
+    "STABILITY population=1000 month=0/120 living=1000 elapsed=3.74s",
+    "STABILITY population=1000 month=30/120 living=1000 elapsed=486.64s",
+    "STABILITY population=1000 month=56/120 living=1000 elapsed=1695.15s",
+    "STABILITY population=10000 month=0/120 living=10000 elapsed=65.43s",
+    "STABILITY population=10000 month=30/120 living=10000 elapsed=2506.03s",
+    "STABILITY population=10000 month=60/120 living=10000 elapsed=6481.90s",
+    "STABILITY population=10000 month=90/120 living=10000 elapsed=11752.26s",
+    "STABILITY population=10000 month=110/120 living=10000 elapsed=16220.45s"
+  ],
+  "report_states": {
+    "pre.json": {},
+    "result.json": {
+      "status": "failed",
+      "complete": false,
+      "passed": false,
+      "runningPopulation": null,
+      "finishedCases": [
+        2,
+        100,
+        1000,
+        10000
+      ],
+      "executionFailure": null
+    },
+    "measurement-process.json": {
+      "status": "process-ended",
+      "process_exit_code": 0,
+      "tee_exit_code": 0,
+      "outer_wall_cap_or_kill": false
+    }
+  },
+  "git_status_exit_code": 0,
+  "git_status": "",
+  "final_disk_bytes": {
+    "total": 154894188544,
+    "used": 65564934144,
+    "free": 89312477184
+  },
+  "manifest_elapsed_seconds": 2.539355909000733,
+  "save_file_upload": false,
+  "actual_harness_file_io_or_resume_skipped": false,
+  "scope": "큰slot 파일은 삭제/변경하지 않고 최종SHA/크기만 업로드한다. raw진행 보고서·로그는 수정하지 않는다.",
+  "limits": "330분cap은partial/실패 그대로다. runner소실/강제job종료에는 마지막업로드를 보장하지 못한다. slot hash는 종료뒤 별도비용이다."
+}

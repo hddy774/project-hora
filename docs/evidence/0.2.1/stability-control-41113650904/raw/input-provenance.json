@@ -1,0 +1,52 @@
+{
+  "source_commit": "8433dd26b6a8380d32f9b5d7093f88f1e8eb43a6",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "plan_path": "docs/evidence/0.2.1/final-performance/stability-plan.json",
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "normalized_plan": {
+    "schemaVersion": 1,
+    "policyId": "v021-revision6-section11-T04",
+    "baselineReportSha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+    "rationale": "네 규모가 실제 완료한 c6 기준선 뒤 120개월(10년)의 합성 생존 AI 작업을 네 초기 인구 규모에서 각각 수행한다. 이는12개월 단기 표본의10배 기간이고 월별 처리/망각/유한 원천/수행 경합을 지속한다. 6개월마다 불변식,0/30/60/90/120개월마다 실제 파일 원자저장·재개·조회 무영향·공개명령을 검사해5개 저장 경계를 갖는다. 합성 fixture의 출산/식량/위험 명시 override는 원형 그대로이며 두 시조의 자연 성장·출산/사망은 별도500년9조건 및EX02 실험으로 검사한다. 인물을 죽이거나 Wait/Idle로 잠그지 않는다. 각case 시간 상한은 실제12개월 advance의20배(기간10배×작업 변화 여유2배)+5회 저장/읽기/조회 비용의3배+fixture/GC/검증 여유120초를 올림한다. 장기 메모리/저장 상한은 예산 파일을 따른다. GitHub VM은 별도환경이며 Android/500년 합성 안정성/옛100배속 목표 달성으로 확대하지 않는다.",
+    "cases": [
+      {
+        "population": 2,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 167
+      },
+      {
+        "population": 100,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 309
+      },
+      {
+        "population": 1000,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 1575
+      },
+      {
+        "population": 10000,
+        "horizonMonths": 120,
+        "checkpointEveryMonths": 30,
+        "validateEveryMonths": 6,
+        "wallTimeLimitSeconds": 15098
+      }
+    ]
+  },
+  "baseline_path": "docs/evidence/0.2.1/final-performance/baseline.json",
+  "baseline_sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "baseline_source": "c6e470458ecefe055d98f89120f08c40c0c0660d",
+  "baseline_product_source_fingerprint": "dcc95b5cb52a0d3b8e6b66975b736a685f4a82250508a2434d29563bd7b9cfc0",
+  "full_functional_source": "af91fb0600a7c3603eac4fd7429ec2dd54bc1e3a",
+  "full_functional_report_sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87",
+  "full_functional_scenarios": 314,
+  "test_sources_sha256": "9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117",
+  "validation_completed": true,
+  "scope": "기존 전체 원문과 같은 제품/검사 지문을 대조하며 이번 job은 선택 창세1개만 실행한다."
+}

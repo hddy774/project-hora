@@ -309,7 +309,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "f3627aa4db4282a8aebb572bffe2048261e0756a",
+  "source_commit": "1cf01ac342448262410d6c725026869ec80c90eb",
   "phase": "API24 시작 대기 보완·새 동결 소스 검증",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

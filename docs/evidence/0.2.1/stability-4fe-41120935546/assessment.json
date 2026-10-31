@@ -1,0 +1,193 @@
+{
+  "kind": "historical-stability-failure-assessment",
+  "passed": false,
+  "eligible_for_current_or_future_final_gate": false,
+  "role": "pre-refactor historical configured-PGO-false variant; no final qualification",
+  "run": 41120935546,
+  "job": 124286966029,
+  "source_commit": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+  "product_source_fingerprint": "528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e",
+  "archive_sha256": "88a22d118d6824815b5836241a2097d76dea95fe07b82442731e307f966c9b80",
+  "result_sha256": "99c684a45c3134bf7527a911e0f277209077cdd758ac937307eeb8db27721f01",
+  "job_log_sha256": "87d47a3dbc0a481dac30f406982adb669860eba284aaf6fee695171c1786f295",
+  "workflow_source_commit": "4ab393cfca5667b5763c7ad226656df1b77ff30c",
+  "actual_first_python_failure_line": 14,
+  "actual_first_python_failure_predicate": "report['complete'] is True and report['passed'] is True and report['status']=='completed'",
+  "actual_first_python_failure_values": {
+    "complete": false,
+    "passed": false,
+    "status": "failed"
+  },
+  "raw_finished_cases": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "raw_execution_failure": null,
+  "process_exit_code": 0,
+  "outer_wall_cap_or_kill": false,
+  "process_started_utc": "2026-10-30T20:09:23.462014+00:00",
+  "process_ended_utc": "2026-10-31T01:10:02.150245+00:00",
+  "artifact_manifest_files_verified": 28,
+  "four_dll_sha_source_release_matches": true,
+  "observed_real_file_roundtrips": 18,
+  "all_observed_checkpoint_flags_true": true,
+  "slot_files_metadata_count": 8,
+  "slot_bodies_downloaded_or_independently_replayed": false,
+  "budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "rows": [
+    {
+      "population": 2,
+      "completed_months": 120,
+      "target_months": 120,
+      "elapsed_seconds": 40.8349703,
+      "wall_limit_seconds": 167,
+      "horizon_reached": true,
+      "within_case_wall": true,
+      "raw_case_passed": true,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        60,
+        90,
+        120
+      ],
+      "boundary_calls": 30,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 164513968,
+      "retained_managed_limit_bytes": 47725032,
+      "within_retained_managed_limit": false,
+      "max_save_bytes": 5027868,
+      "save_limit_bytes": 8748435,
+      "within_save_limit": true,
+      "memory_exceeding_checkpoints": [
+        {
+          "month": 60,
+          "actual": 97082048
+        },
+        {
+          "month": 90,
+          "actual": 164513968
+        },
+        {
+          "month": 120,
+          "actual": 114483728
+        }
+      ],
+      "save_exceeding_checkpoints": []
+    },
+    {
+      "population": 100,
+      "completed_months": 115,
+      "target_months": 120,
+      "elapsed_seconds": 329.3917866,
+      "wall_limit_seconds": 309,
+      "horizon_reached": false,
+      "within_case_wall": false,
+      "raw_case_passed": false,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        60,
+        90,
+        115
+      ],
+      "boundary_calls": 29,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 201584576,
+      "retained_managed_limit_bytes": 262419240,
+      "within_retained_managed_limit": true,
+      "max_save_bytes": 65047350,
+      "save_limit_bytes": 45658311,
+      "within_save_limit": false,
+      "memory_exceeding_checkpoints": [],
+      "save_exceeding_checkpoints": [
+        {
+          "month": 90,
+          "actual": 54293925
+        },
+        {
+          "month": 115,
+          "actual": 65047350
+        }
+      ]
+    },
+    {
+      "population": 1000,
+      "completed_months": 59,
+      "target_months": 120,
+      "elapsed_seconds": 1650.9524218,
+      "wall_limit_seconds": 1575,
+      "horizon_reached": false,
+      "within_case_wall": false,
+      "raw_case_passed": false,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        59
+      ],
+      "boundary_calls": 15,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 1235174752,
+      "retained_managed_limit_bytes": 995045448,
+      "within_retained_managed_limit": false,
+      "max_save_bytes": 193378160,
+      "save_limit_bytes": 241598442,
+      "within_save_limit": true,
+      "memory_exceeding_checkpoints": [
+        {
+          "month": 0,
+          "actual": 1235174752
+        }
+      ],
+      "save_exceeding_checkpoints": []
+    },
+    {
+      "population": 10000,
+      "completed_months": 120,
+      "target_months": 120,
+      "elapsed_seconds": 16005.4014313,
+      "wall_limit_seconds": 15098,
+      "horizon_reached": true,
+      "within_case_wall": false,
+      "raw_case_passed": false,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        60,
+        90,
+        120
+      ],
+      "boundary_calls": 30,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 2747000768,
+      "retained_managed_limit_bytes": 2192400000,
+      "within_retained_managed_limit": false,
+      "max_save_bytes": 730975582,
+      "save_limit_bytes": 1194685341,
+      "within_save_limit": true,
+      "memory_exceeding_checkpoints": [
+        {
+          "month": 30,
+          "actual": 2747000768
+        }
+      ],
+      "save_exceeding_checkpoints": []
+    }
+  ],
+  "limits": [
+    "18 observed actual file I/O rounds are not 4 complete 120-month cases.",
+    "Sampled retained managed bytes are not process peak RAM.",
+    "Only observer View purity and accepted observe command are long-run query/command checks.",
+    "No budget/cap/readiness/ledger mutation; no new measurement."
+  ],
+  "runtimeconfig_TieredPGO": false,
+  "runtime_environment_overrides": "not collected",
+  "whole_process_max_rss_kib": 14044976
+}

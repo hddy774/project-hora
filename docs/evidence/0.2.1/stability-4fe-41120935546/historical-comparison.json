@@ -1,0 +1,147 @@
+{
+  "kind": "historical-common-checkpoint-comparison",
+  "old_source_commit": "8433dd26b6a8380d32f9b5d7093f88f1e8eb43a6",
+  "new_source_commit": "4fe1fe4b95dcdef6cf8cb9e315fd99684f2bc135",
+  "common_boundaries": 15,
+  "all_common_state_hashes_equal": true,
+  "all_common_workloads_equal": true,
+  "all_common_save_sizes_equal": true,
+  "pairs": [
+    {
+      "population": 2,
+      "month": 0,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "e4f87eb4b1096a4ef969c1d22270be9c0619d57c909a1f71affc006596946a8e",
+      "configured_pgo_false_hash": "e4f87eb4b1096a4ef969c1d22270be9c0619d57c909a1f71affc006596946a8e"
+    },
+    {
+      "population": 2,
+      "month": 30,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "6b3354f3bbde1501b1c7d844243c7b410da89ffc2d4023387c769f9d0d26bd1f",
+      "configured_pgo_false_hash": "6b3354f3bbde1501b1c7d844243c7b410da89ffc2d4023387c769f9d0d26bd1f"
+    },
+    {
+      "population": 2,
+      "month": 60,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "1081221e4d9e66317adad92f17520b366fb581962ccf56ab0f6e76e2644ef9c6",
+      "configured_pgo_false_hash": "1081221e4d9e66317adad92f17520b366fb581962ccf56ab0f6e76e2644ef9c6"
+    },
+    {
+      "population": 2,
+      "month": 90,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523",
+      "configured_pgo_false_hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523"
+    },
+    {
+      "population": 2,
+      "month": 120,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95",
+      "configured_pgo_false_hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95"
+    },
+    {
+      "population": 100,
+      "month": 0,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "60be94ee2d222947b2f020ef94e9e2710c7db00a89dfd7dbdfead9ad65cf9d5d",
+      "configured_pgo_false_hash": "60be94ee2d222947b2f020ef94e9e2710c7db00a89dfd7dbdfead9ad65cf9d5d"
+    },
+    {
+      "population": 100,
+      "month": 30,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "5586cd41f36bfc6d1b851e82b805a1430625b0a4043b08922d3e44e096856245",
+      "configured_pgo_false_hash": "5586cd41f36bfc6d1b851e82b805a1430625b0a4043b08922d3e44e096856245"
+    },
+    {
+      "population": 100,
+      "month": 60,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "2e3d15e5f94f22443b108f73b34b4c5be4d6475f9e015975fd7f464c7ae3b0c7",
+      "configured_pgo_false_hash": "2e3d15e5f94f22443b108f73b34b4c5be4d6475f9e015975fd7f464c7ae3b0c7"
+    },
+    {
+      "population": 100,
+      "month": 90,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "36101afe1108caad5e891227bf513c22c4ad24c4f0db4d4c20a1315767f71867",
+      "configured_pgo_false_hash": "36101afe1108caad5e891227bf513c22c4ad24c4f0db4d4c20a1315767f71867"
+    },
+    {
+      "population": 1000,
+      "month": 0,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "8ffff98da4011819fd4478b238d478db0f47abc9d9bc4a3655dd2dce83b91e8a",
+      "configured_pgo_false_hash": "8ffff98da4011819fd4478b238d478db0f47abc9d9bc4a3655dd2dce83b91e8a"
+    },
+    {
+      "population": 1000,
+      "month": 30,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "8007dd2944986e480e8f9d08bf69ae4dce0b5bcbc9e4d1f01ba90440533cf605",
+      "configured_pgo_false_hash": "8007dd2944986e480e8f9d08bf69ae4dce0b5bcbc9e4d1f01ba90440533cf605"
+    },
+    {
+      "population": 10000,
+      "month": 0,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "39002528515eedb8ee6583f5164994f669a3b54e977247ab89c0ebfeaa8e0cdc",
+      "configured_pgo_false_hash": "39002528515eedb8ee6583f5164994f669a3b54e977247ab89c0ebfeaa8e0cdc"
+    },
+    {
+      "population": 10000,
+      "month": 30,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "97310ab627c3b84af8320d753153597050ff5bb1320cab41889c0083505f832c",
+      "configured_pgo_false_hash": "97310ab627c3b84af8320d753153597050ff5bb1320cab41889c0083505f832c"
+    },
+    {
+      "population": 10000,
+      "month": 60,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "7c0189765a86fe48dbdcfad219bc0f5503f68771db519cdc073e9583e479b50d",
+      "configured_pgo_false_hash": "7c0189765a86fe48dbdcfad219bc0f5503f68771db519cdc073e9583e479b50d"
+    },
+    {
+      "population": 10000,
+      "month": 90,
+      "state_hash_equal": true,
+      "save_size_equal": true,
+      "workload_equal": true,
+      "control_hash": "a09ab17c0d890cf73d24d41d9ea9f44eac43fdb16a65b9bd197bcb31b0c1077c",
+      "configured_pgo_false_hash": "a09ab17c0d890cf73d24d41d9ea9f44eac43fdb16a65b9bd197bcb31b0c1077c"
+    }
+  ],
+  "scope": "Only shared observed months, not full 120-month equality for incomplete cases. Different endpoints/VMs/unknown thermal and PGO environment overrides prohibit causal speedup claims. Neither source qualifies the future refactor final gate."
+}

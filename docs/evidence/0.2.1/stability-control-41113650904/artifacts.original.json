@@ -1,0 +1,23 @@
+{
+  "artifacts": [
+    {
+      "id": 13021868705,
+      "name": "stability-8433dd26b6a8380d32f9b5d7093f88f1e8eb43a6-41113650904-1",
+      "size_in_bytes": 1308159,
+      "url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13021868705",
+      "archive_download_url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13021868705/zip",
+      "expired": false,
+      "created_at": "2026-10-31T00:20:21Z",
+      "expires_at": "2026-11-14T00:20:19Z",
+      "updated_at": "2026-10-31T00:20:21Z",
+      "digest": "sha256:f3f7891885faf568452b474a0677f07209c45c96024006a20f147188db988233",
+      "workflow_run": {
+        "id": 41113650904,
+        "repository_id": 1402702966,
+        "head_repository_id": 1402702966,
+        "head_branch": "codex/v021-stability-workflow",
+        "head_sha": "8433dd26b6a8380d32f9b5d7093f88f1e8eb43a6"
+      }
+    }
+  ]
+}

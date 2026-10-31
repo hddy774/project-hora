@@ -1,0 +1,50 @@
+{
+  "scope": "historical_failed_4fe_only",
+  "eligible_for_final_T04": false,
+  "run_id": 41120935546,
+  "job_id": 124286966029,
+  "artifact_id": 13024151431,
+  "artifact_bytes": 1308262,
+  "artifact_sha256": "88a22d118d6824815b5836241a2097d76dea95fe07b82442731e307f966c9b80",
+  "result_sha256": "99c684a45c3134bf7527a911e0f277209077cdd758ac937307eeb8db27721f01",
+  "complete_local_zip": "/workspace/scratch/stability-4fe-41120935546/artifact.zip",
+  "downloaded_artifact_manifest_verified_files": 28,
+  "dll_files_omitted_from_git_only": [
+    {
+      "path": "assemblies/Chronicles.Core.dll",
+      "bytes": 5120,
+      "sha256": "0c60072674f8d01215b2dde68f05ac8c0f0316dd0350d99f80ce0f63fbf9a3e7",
+      "retained_in_complete_local_zip": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.Tests.dll",
+      "bytes": 1500672,
+      "sha256": "74be68cd2363126c66018b8a78a1733cfc11ca1fce4b4ca0a4b77a6ec118b98e",
+      "retained_in_complete_local_zip": true
+    },
+    {
+      "path": "assemblies/Chronicles.Game.dll",
+      "bytes": 2258432,
+      "sha256": "e35eac6484d3df6c23ed6d33abc952b408530e87fb13b739f5cf5c7d91d91bee",
+      "retained_in_complete_local_zip": true
+    },
+    {
+      "path": "assemblies/Chronicles.Hosting.dll",
+      "bytes": 23552,
+      "sha256": "f8e78462d6cc13d3b07d24e2e91a3628b12fa8c650a2f19996362da82c5d9b4c",
+      "retained_in_complete_local_zip": true
+    }
+  ],
+  "raw_text_files_byte_identical": true,
+  "job_log_equal_to_connector_decoded_text": true,
+  "api_json_scope": "decoded structured payload serialized; not an HTTP-byte archive",
+  "save_bodies_uploaded": false,
+  "independent_local_save_replay": false,
+  "runtimeconfig_TieredPGO": false,
+  "runtime_environment_overrides": "not collected",
+  "assessment_budget_scope": "Separately copied budget7365 for assessment; not in the original ZIP",
+  "no_new_measurement": true,
+  "no_source_changes": true,
+  "no_budget_or_readiness_or_ledger_changes": true,
+  "future_source_changes": "403/AndroidCI/no-behavior Game split; neither historical run qualifies future final gate"
+}

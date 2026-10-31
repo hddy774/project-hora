@@ -1,0 +1,24 @@
+PASS INV-001/002/011 정확한 창세·안정 신원·100지점
+RESULT 1/1
+STABILITY population=2 month=0/120 living=2 elapsed=0.91s
+STABILITY population=2 month=30/120 living=2 elapsed=7.36s
+STABILITY population=2 month=60/120 living=2 elapsed=12.46s
+STABILITY population=2 month=90/120 living=2 elapsed=17.64s
+STABILITY population=2 month=120/120 living=2 elapsed=22.84s
+STABILITY CASE population=2 month=120/120 living=2 elapsed=22.84s result=completed
+STABILITY population=100 month=0/120 living=100 elapsed=0.57s
+STABILITY population=100 month=30/120 living=100 elapsed=20.50s
+STABILITY population=100 month=60/120 living=100 elapsed=85.76s
+STABILITY population=100 month=90/120 living=100 elapsed=197.38s
+STABILITY population=100 month=112/120 living=100 elapsed=333.64s
+STABILITY CASE population=100 month=112/120 living=100 elapsed=333.64s result=failed
+STABILITY population=1000 month=0/120 living=1000 elapsed=3.74s
+STABILITY population=1000 month=30/120 living=1000 elapsed=486.64s
+STABILITY population=1000 month=56/120 living=1000 elapsed=1695.15s
+STABILITY CASE population=1000 month=56/120 living=1000 elapsed=1695.15s result=failed
+STABILITY population=10000 month=0/120 living=10000 elapsed=65.43s
+STABILITY population=10000 month=30/120 living=10000 elapsed=2506.03s
+STABILITY population=10000 month=60/120 living=10000 elapsed=6481.90s
+STABILITY population=10000 month=90/120 living=10000 elapsed=11752.26s
+STABILITY population=10000 month=110/120 living=10000 elapsed=16220.45s
+STABILITY CASE population=10000 month=110/120 living=10000 elapsed=16220.45s result=failed

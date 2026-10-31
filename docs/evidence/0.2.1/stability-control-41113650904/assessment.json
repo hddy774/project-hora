@@ -1,0 +1,191 @@
+{
+  "kind": "historical-stability-failure-assessment",
+  "passed": false,
+  "eligible_for_current_or_future_final_gate": false,
+  "role": "pre-refactor historical control; planned global.json/AndroidCI/no-behavior Game-file refactor changes fingerprint",
+  "run": 41113650904,
+  "job": 124262168261,
+  "source_commit": "8433dd26b6a8380d32f9b5d7093f88f1e8eb43a6",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "archive_sha256": "f3f7891885faf568452b474a0677f07209c45c96024006a20f147188db988233",
+  "result_sha256": "25545738ad7daf632e08963440d3deba349aa8a17f5ce2722ff2cef152f8f393",
+  "job_log_sha256": "2b01477df290e5510f532d52b0dcd5ef832c14477ba9f58e12e543b707e3359a",
+  "workflow_source_commit": "cdaadec5ff609df583658e9db5ff781b9308463d",
+  "actual_first_python_failure_line": 14,
+  "actual_first_python_failure_predicate": "report['complete'] is True and report['passed'] is True and report['status']=='completed'",
+  "actual_first_python_failure_values": {
+    "complete": false,
+    "passed": false,
+    "status": "failed"
+  },
+  "raw_finished_cases": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "raw_execution_failure": null,
+  "process_exit_code": 0,
+  "outer_wall_cap_or_kill": false,
+  "process_started_utc": "2026-10-30T19:15:29.431424+00:00",
+  "process_ended_utc": "2026-10-31T00:20:16.281704+00:00",
+  "artifact_manifest_files_verified": 28,
+  "four_dll_sha_source_release_matches": true,
+  "old_runtimeconfig_pgo_property": "absent; effective environment override uncollected",
+  "observed_real_file_roundtrips": 18,
+  "all_observed_checkpoint_flags_true": true,
+  "slot_files_metadata_count": 8,
+  "slot_bodies_downloaded_or_independently_replayed": false,
+  "budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "rows": [
+    {
+      "population": 2,
+      "completed_months": 120,
+      "target_months": 120,
+      "elapsed_seconds": 22.8360972,
+      "wall_limit_seconds": 167,
+      "horizon_reached": true,
+      "within_case_wall": true,
+      "raw_case_passed": true,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        60,
+        90,
+        120
+      ],
+      "boundary_calls": 30,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 166029656,
+      "retained_managed_limit_bytes": 47725032,
+      "within_retained_managed_limit": false,
+      "max_save_bytes": 5027868,
+      "save_limit_bytes": 8748435,
+      "within_save_limit": true,
+      "memory_exceeding_checkpoints": [
+        {
+          "month": 60,
+          "actual": 98281192
+        },
+        {
+          "month": 90,
+          "actual": 165713192
+        },
+        {
+          "month": 120,
+          "actual": 166029656
+        }
+      ],
+      "save_exceeding_checkpoints": []
+    },
+    {
+      "population": 100,
+      "completed_months": 112,
+      "target_months": 120,
+      "elapsed_seconds": 333.6395904,
+      "wall_limit_seconds": 309,
+      "horizon_reached": false,
+      "within_case_wall": false,
+      "raw_case_passed": false,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        60,
+        90,
+        112
+      ],
+      "boundary_calls": 28,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 202108824,
+      "retained_managed_limit_bytes": 262419240,
+      "within_retained_managed_limit": true,
+      "max_save_bytes": 63783092,
+      "save_limit_bytes": 45658311,
+      "within_save_limit": false,
+      "memory_exceeding_checkpoints": [],
+      "save_exceeding_checkpoints": [
+        {
+          "month": 90,
+          "actual": 54293925
+        },
+        {
+          "month": 112,
+          "actual": 63783092
+        }
+      ]
+    },
+    {
+      "population": 1000,
+      "completed_months": 56,
+      "target_months": 120,
+      "elapsed_seconds": 1695.154233,
+      "wall_limit_seconds": 1575,
+      "horizon_reached": false,
+      "within_case_wall": false,
+      "raw_case_passed": false,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        56
+      ],
+      "boundary_calls": 15,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 1234119392,
+      "retained_managed_limit_bytes": 995045448,
+      "within_retained_managed_limit": false,
+      "max_save_bytes": 188361600,
+      "save_limit_bytes": 241598442,
+      "within_save_limit": true,
+      "memory_exceeding_checkpoints": [
+        {
+          "month": 0,
+          "actual": 1234119392
+        }
+      ],
+      "save_exceeding_checkpoints": []
+    },
+    {
+      "population": 10000,
+      "completed_months": 110,
+      "target_months": 120,
+      "elapsed_seconds": 16220.4500175,
+      "wall_limit_seconds": 15098,
+      "horizon_reached": false,
+      "within_case_wall": false,
+      "raw_case_passed": false,
+      "failure": null,
+      "checkpoint_months": [
+        0,
+        30,
+        60,
+        90,
+        110
+      ],
+      "boundary_calls": 28,
+      "all_observed_checkpoint_flags_true": true,
+      "max_retained_managed_bytes": 2744902600,
+      "retained_managed_limit_bytes": 2192400000,
+      "within_retained_managed_limit": false,
+      "max_save_bytes": 710527774,
+      "save_limit_bytes": 1194685341,
+      "within_save_limit": true,
+      "memory_exceeding_checkpoints": [
+        {
+          "month": 30,
+          "actual": 2744902600
+        }
+      ],
+      "save_exceeding_checkpoints": []
+    }
+  ],
+  "limits": [
+    "18 observed actual file I/O rounds are not 4 complete 120-month cases.",
+    "Sampled retained managed bytes are not process peak RAM.",
+    "Only observer View purity and accepted observe command are long-run query/command checks.",
+    "No budget/cap/readiness/ledger mutation; no new measurement."
+  ]
+}

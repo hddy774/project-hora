@@ -1,0 +1,142 @@
+[
+  {
+    "path": "assemblies/Chronicles.Core.dll",
+    "bytes": 5120,
+    "sha256": "587ff526e0342adcaec23214fa3f6f7a98f01e560d55b7136e9264f8e592a096"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.Tests.deps.json",
+    "bytes": 1634,
+    "sha256": "c488abfdc41c5abafc69fd6da72c3b2f4eeb7900ea94517ecf2d6a0054da7839"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.Tests.dll",
+    "bytes": 1500672,
+    "sha256": "2a18624e7e1dfc47ec0d2356ee4c19bcc9910b9ac64748b9ba5b4fed201f2d42"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.Tests.runtimeconfig.json",
+    "bytes": 330,
+    "sha256": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f"
+  },
+  {
+    "path": "assemblies/Chronicles.Game.dll",
+    "bytes": 2258432,
+    "sha256": "13d533a54e60d91885e1008220cbd94b68fb0aab969c745ab7667827b1b9332f"
+  },
+  {
+    "path": "assemblies/Chronicles.Hosting.dll",
+    "bytes": 23552,
+    "sha256": "d838eeda328f23b4a32f6a5f9a8b2cb1bc419e4dec583584d175b3578b963112"
+  },
+  {
+    "path": "assembly-evidence.json",
+    "bytes": 1412,
+    "sha256": "2ce77f4ce51b5b67c230630abefb16f617f15313b4d3960f112a7db930d9f9c7"
+  },
+  {
+    "path": "assembly-inspector.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "build.log",
+    "bytes": 1116,
+    "sha256": "772fa7c417651a4a4162a4dc8dd287653090533f35c9e7fb720abec39ed21b83"
+  },
+  {
+    "path": "dotnet-info.txt",
+    "bytes": 1627,
+    "sha256": "dbd47d21ab8d768cbaea85f8c3d02407b1b7134bce58c6b3bd474ee737b7868a"
+  },
+  {
+    "path": "dotnet-runtimes.txt",
+    "bytes": 220,
+    "sha256": "0e2db0eadddcf6081e4fbd00c3cf88ff103b7aa537ce41782884e84512a1a47f"
+  },
+  {
+    "path": "environment.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "git-after-build.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "input-provenance.json",
+    "bytes": 3126,
+    "sha256": "18ac879e745902e71971d2ba19d60795593da0f8b521653e44d21522e075de2f"
+  },
+  {
+    "path": "inputs/baseline.json",
+    "bytes": 39836,
+    "sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484"
+  },
+  {
+    "path": "inputs/full-functional.original.json",
+    "bytes": 62846,
+    "sha256": "6bb3de5ccb787eeee7a71f86295ce17c9eaa2a630cbef206f95e04beaf312e87"
+  },
+  {
+    "path": "inputs/full-source-review.original.json",
+    "bytes": 4516,
+    "sha256": "2575bbdc6d473b13dfecfd57a7201660957b78f8cfb82f4d90e6c83e41960a41"
+  },
+  {
+    "path": "inputs/stability-plan.json",
+    "bytes": 1903,
+    "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+  },
+  {
+    "path": "measurement-process.json",
+    "bytes": 1008,
+    "sha256": "177ebff906d9c3b8d14bfb1681dda6e9262497caea8db13310a4c28c228445ca"
+  },
+  {
+    "path": "measurement.log",
+    "bytes": 1589,
+    "sha256": "045503b7a4ecbfd164234cf8b5ca7c794b946d8e4689cbc49cc09d31419fcf8f"
+  },
+  {
+    "path": "pre.json",
+    "bytes": 253,
+    "sha256": "32fd943a78044157bbdbe579f2326aa297154e944779972e981380af60722d05"
+  },
+  {
+    "path": "preflight.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "process-resource.txt",
+    "bytes": 1197,
+    "sha256": "317f300ee19b12ab24b08f7685bbc049762869f7dcaf78adddf60ee45b81aece"
+  },
+  {
+    "path": "request.json",
+    "bytes": 652,
+    "sha256": "287f1765129d80ca1f7d1c63d56fcf0d80c82866dc1bb11c57013d5484987a2b"
+  },
+  {
+    "path": "result.json",
+    "bytes": 46690,
+    "sha256": "25545738ad7daf632e08963440d3deba349aa8a17f5ce2722ff2cef152f8f393"
+  },
+  {
+    "path": "slot-manifest.json",
+    "bytes": 3937,
+    "sha256": "ca60cdf145c6ab1f60984402743692a63494fe5be88432bce6e9bc55975ab0a8"
+  },
+  {
+    "path": "source-environment.json",
+    "bytes": 5129,
+    "sha256": "aea1bdc1c8a10d4e65466a7618f09cd78e87106eab60dc8d768679fdabafe99b"
+  },
+  {
+    "path": "verification.log",
+    "bytes": 89,
+    "sha256": "a9ac2d01f73684097a907ecfdf15649987af7bc9ba8a734bd5144212a4c92775"
+  }
+]

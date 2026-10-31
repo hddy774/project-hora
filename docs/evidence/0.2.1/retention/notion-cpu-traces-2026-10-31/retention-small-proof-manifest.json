@@ -1,0 +1,50 @@
+{
+  "files": [
+    {
+      "filename": "notion-retention-index.json",
+      "bytes": 6033,
+      "sha256": "22a6ad984fcc4503e39d5d366da58222db40e6effe5481b6b0ddab540812a7ed"
+    },
+    {
+      "filename": "notion-attachment-evidence.json",
+      "bytes": 2031,
+      "sha256": "4352b026b57027719d3ca6cb8759e467e1c6dc1238e05bcbe38f8f2a51280e95"
+    },
+    {
+      "filename": "upload-result-0.json",
+      "bytes": 622,
+      "sha256": "5ba28b8858bdab0bbb42db583b7a3f095a5c07e40ffefd219790b08b71a35ae4"
+    },
+    {
+      "filename": "upload-result-1.json",
+      "bytes": 622,
+      "sha256": "daef7c4c29e0c7a2d93b833a5c6a767739c0a7b25bbf3d0cccbcfe9aa3a4077c"
+    },
+    {
+      "filename": "upload-result-2.json",
+      "bytes": 174,
+      "sha256": "b9f634dc372043eff5e78649bfd2d2fc4af6b69dccc98e4092a7dec874e8b8c0"
+    },
+    {
+      "filename": "manifest.json",
+      "bytes": 6042,
+      "sha256": "1b050baa8f2be9f761e3a8ef05bf32f25a55beeb11d5b313b7f744ceb1ba30c1"
+    },
+    {
+      "filename": "xz-preparation.json",
+      "bytes": 1241,
+      "sha256": "b76d9843d8fabc5d63e1a6f3a4fa35caf3de2983a42059c698dbac4c67c0130b"
+    },
+    {
+      "filename": "prepare.py",
+      "bytes": 4133,
+      "sha256": "94604d067dacfe71ce83bd851220e524b1f999fc76829f3eea50f764a788ba0e"
+    },
+    {
+      "filename": "prepare_xz_once.py",
+      "bytes": 2235,
+      "sha256": "0377f818e94853fe943bf52efc221ac0c4907bebd5e7d42a9233546cc27c6477"
+    }
+  ],
+  "includes_upload_urls_headers_or_credentials": false
+}

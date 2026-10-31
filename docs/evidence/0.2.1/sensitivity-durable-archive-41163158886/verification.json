@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "scope": "R03 기존 민감도 원형6ZIP 영속 보관의 실제 완료 검증",
+  "authority": "공개 index asset694202127이 보관 완료 권위이며 이 폴더는 고정 시점 검증 사본이다",
+  "documentationBase": {
+    "commit": "661700ca0a0cd935757b39352723775c1430b6c8",
+    "productFingerprintBefore": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+    "productInputChanges": 0,
+    "productFingerprintAfter": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+    "productFingerprintUnchanged": true
+  },
+  "archiveExecution": {
+    "runId": 41163158886,
+    "attempt": 1,
+    "event": "pull_request",
+    "action": "labeled",
+    "actor": "hddy774",
+    "triggeringActor": "hddy774",
+    "sourceCommit": "89e1046fd6b8f9ee8ce787a4186f0a2677eb07e9",
+    "productFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+    "jobId": 124424942567,
+    "conclusion": "success",
+    "completedObservationUtc": "2026-10-31T03:10:44Z",
+    "guardSelfTests": 27
+  },
+  "originalDataset": {
+    "sourceRun": {
+      "id": 41131479924,
+      "attempt": 1,
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "42ebf359de90c3b3f00292bf6703e359b378f630",
+      "workflow_path": ".github/workflows/v021-growth-sensitivity.yml",
+      "workflow_source_commit": "4938381715964009d5b689f56de30aa226ad9395",
+      "measured_source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+      "measured_source_tree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+      "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304"
+    },
+    "result": {
+      "classification": "workflowFAILED;4complete+2CLI-timeout-partial",
+      "completed_horizons": 4,
+      "cli_timeout_partial": 2,
+      "reports_complete_fields_remain_false": true,
+      "requested_flag_by_seed": {
+        "98": true,
+        "42": false,
+        "2026": false
+      },
+      "acceptance_relabeling": false
+    },
+    "zipCount": 6,
+    "zipBytes": 9937563,
+    "originalManifestSha256": "1d52331871c2683f167249a7925d5fb9a3556aa62a9f990e612fc84f392d0252",
+    "originalStatusRelabeled": false,
+    "newSensitivityRun41159864831Included": false
+  },
+  "publication": {
+    "releaseId": 429687967,
+    "url": "https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-20261031",
+    "tag": "evidence/v0.2.1-20261031",
+    "targetCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+    "draft": false,
+    "prerelease": true,
+    "makeLatestRequest": false,
+    "makeLatestEvidence": "고정 source/index의 요청값 및 기존 latest가 실제 유지된 결과; GET release의 별도 응답 필드로 주장하지 않는다",
+    "indexAssetId": 694202127,
+    "indexUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/sensitivity-artifact-index-20261031.json",
+    "indexBytes": 22726,
+    "indexSha256": "0a16fedf7185e2223befe8f69626380cfc16cfc32068a44c4cdd94d229fcccea",
+    "verifiedAtUtc": "2026-10-31T03:10:35.488375+00:00"
+  },
+  "independentPublicBytes": {
+    "passed": 7,
+    "expected": 7,
+    "authorizationSent": false,
+    "allHttp200": true,
+    "zipBytesEqualOriginalManifest": true,
+    "indexBytesEqualActionsStatusCopy": true,
+    "record": "public-byte-verification.json"
+  },
+  "statusArtifact": {
+    "id": 13027898251,
+    "name": "evidence-archive-status-41163158886-1",
+    "size_in_bytes": 4419,
+    "url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13027898251",
+    "archive_download_url": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13027898251/zip",
+    "expired": false,
+    "created_at": "2026-10-31T03:10:40Z",
+    "expires_at": "2026-11-14T03:10:39Z",
+    "updated_at": "2026-10-31T03:10:40Z",
+    "digest": "sha256:d9c3c67be96c66552e99138b9d4fc56d7c9db03e24f0ba36374fac622f2d0cde",
+    "workflow_run": {
+      "id": 41163158886,
+      "repository_id": 1402702966,
+      "head_repository_id": 1402702966,
+      "head_branch": "codex/r03-evidence-archive",
+      "head_sha": "89e1046fd6b8f9ee8ce787a4186f0a2677eb07e9"
+    }
+  },
+  "latestPreservation": {
+    "releaseId": 428209007,
+    "tag": "xianxia-observer/v0.2.0",
+    "assetId": 689402166,
+    "assetBytes": 43505222,
+    "assetSha256": "b381a400514ea311117bb2b28d15c68baffc00d4ea71a689c9140a69867bf2df",
+    "beforeSnapshot": ".github/evidence/checks/archive-41161342049/latest-after.json",
+    "releaseFieldsCompared": [
+      "id",
+      "tag_name",
+      "target_commitish",
+      "draft",
+      "prerelease",
+      "body",
+      "published_at"
+    ],
+    "assetFieldsCompared": [
+      "id",
+      "name",
+      "size",
+      "digest",
+      "state",
+      "browser_download_url",
+      "created_at",
+      "updated_at"
+    ],
+    "protectedFieldsEqual": true,
+    "previousTagCommit": "09e8c693e3ebb52d2495bffb1a48364eb9396dce",
+    "oldApkIndependentlyDownloadedInThisCheck": false
+  },
+  "preservedPriorFailure": {
+    "runId": 41161342049,
+    "sourceCommit": "a8709c0de824c3071d97ecb6cd9a86ab73641b13",
+    "phase": "original-download",
+    "httpStatus": 415,
+    "evidence": ".github/evidence/checks/archive-41161342049/",
+    "modified": false
+  },
+  "readOnlyObserver": {
+    "sourcePr242HeadChanged": false,
+    "labelsChanged": 0,
+    "workflowReruns": 0,
+    "releaseWrites": 0,
+    "gameOrPerformanceOrGrowthExecutions": 0,
+    "claudeReviewClaimed": false
+  },
+  "limits": [
+    "원형의 전체 실패·4개 조건 창 완주/2개 시간 상한 부분 종료 및 complete=false/requested 값을 보존한다. 목표달성·보정성공으로 바꾸지 않는다.",
+    "측정7ce/FP4e228, 보관helper89e/FP0cb2, 문서기준6617/FPc91c를 구분한다.",
+    "정식 v0.2.1 서명 APK/API24·35/업그레이드/최신 공개나 현재 통합 전체323·최종성능 합격의 증거로 확대하지 않는다.",
+    "기존 APK 불변은 실제 API의 보호필드·서버 digest·tagref 대조이며 이 점검에서 이전 APK를 다시 내려받지는 않았다."
+  ],
+  "snapshotSha256": {
+    "artifacts.json": "076cd34ecf4d5de30d95d5394abd1a4c38596b48cccb3cf39daeebf817f2107f",
+    "job-log.json": "988ca603cbc48a3f864c6efe40da5b221b95bd9eac84c3dd9a87d7097106da45",
+    "jobs.json": "716479e6b80344cf0f9037363826557b36571902cda30dc0cac392f59bc14143",
+    "latest-after.json": "753e51fde3355e24e20ab027e5d8936decb300354dece868a399a3b31ccc3041",
+    "previous-release-tag.json": "d298b97809939f1dfaca0f0a43134a058ab2ffe469845e91008b8a60ed105ded",
+    "public-byte-verification.json": "a580651647e2d392e790e9556f986d70491072ce9a8e0f52d99a04c284e2850b",
+    "public-index.snapshot.json": "0a16fedf7185e2223befe8f69626380cfc16cfc32068a44c4cdd94d229fcccea",
+    "release.json": "a3cfc04a669414f3d3ba19aef877b28be74c0d5488b522770e99f9f5c0d73e32",
+    "run.json": "85f59b3f4c5eb797860a7bb7027b7827fdef204cf35010c7facfc8fb9223f253",
+    "status.json": "d49aa30040023aa645fa0c22709a664f39f4fea8f61bfee3377ea67c57f93615",
+    "tag.json": "09a9beadb5f3334fc404dd9929ccff17c2c65f7ee416247856fc2ec885bcab07"
+  }
+}

@@ -410,9 +410,13 @@ jobs:
         run: gh release download xianxia-observer/v0.2.0 --repo hddy774/project-hora --pattern XianxiaObserver-v0.2.0.apk --dir artifacts/previous
       - name: 실제 하드웨어 가속 허용(KVM)
         run: |
+          set -euxo pipefail
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          sudo udevadm settle --timeout=10
+          id
+          stat --format='KVM mode=%a owner=%U group=%G type=%F' /dev/kvm
           test -r /dev/kvm -a -w /dev/kvm
       - name: 실제 새 설치·화면 연결·기존 서명 업데이트 검증(DOM)
         uses: reactivecircus/android-emulator-runner@v2

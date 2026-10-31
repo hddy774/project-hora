@@ -61,8 +61,8 @@ def render_summary(summary, phase, commit):
     next_action = phase.get("next_action", phase["next_phase"])
     lines = [START,
              f'**전체 {summary["completion_percent"]:.1f}% ({summary["completed"]}/{summary["total"]}개 완료)** · 남은 항목: {remaining}',
-             f'**막힌 것:** {blocker}',
-             f'**다음 행동:** {next_action}', "",
+             '', f'**막힌 것:** {blocker}',
+             '', f'**다음 행동:** {next_action}', "",
              f'[상세 진행도](https://github.com/{REPOSITORY}/blob/codex/v0.2.1/docs/progress-v0.2.1.md) · '
              f'[리뷰 안내](https://github.com/{REPOSITORY}/blob/codex/v0.2.1/docs/reviews/v0.2.1-review-guide.md) · '
              f'[기준 소스 {commit[:8]}](https://github.com/{REPOSITORY}/commit/{commit})', END]

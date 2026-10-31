@@ -309,7 +309,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "source_commit": "59f00dc2bd95f5abdce9652e1d771ff34d541cc0",
   "phase": "PR #84 피드백 반영과 코드 리뷰 구조 개편",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

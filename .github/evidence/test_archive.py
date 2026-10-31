@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """가짜 GitHub/byte 자료로 실제 보관 흐름을 검사한다. 실제 네트워크·게임·게시 호출은 없다."""
 import copy
+from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import urllib.parse
 
 import archive_sensitivity as archive
@@ -13,10 +15,10 @@ from http_client import ArchiveError
 from test_http_client import HttpClientTests
 
 
-def event_fixture():
+def event_fixture(batch=archive.ORIGINAL_BATCH):
     repository = {"full_name": archive.REPOSITORY, "owner": {"login": archive.OWNER}}
     event = {"action": "labeled", "number": 900, "repository": repository,
-             "sender": {"login": archive.OWNER}, "label": {"name": archive.LABEL},
+             "sender": {"login": archive.OWNER}, "label": {"name": batch.label},
              "pull_request": {"number": 900, "head": {"sha": "1" * 40, "repo": repository},
                               "base": {"repo": repository}}}
     environment = {"GITHUB_ACTIONS": "true", "GITHUB_EVENT_NAME": "pull_request",
@@ -38,7 +40,8 @@ def dataset_fixture():
 
 
 class FakeGitHub:
-    def __init__(self, manifest, originals, request):
+    def __init__(self, manifest, originals, request, batch=archive.ORIGINAL_BATCH):
+        self.batch = batch
         self.manifest, self.originals, self.request = manifest, originals, request
         self.release, self.tag = None, None
         self.other_releases = []
@@ -46,9 +49,9 @@ class FakeGitHub:
         self.source_unavailable, self.corrupt_public = False, None
         self.official = {"id": 500, "tag_name": "v0.2.1", "assets": [{"name": "official.apk", "digest": "unchanged"}]}
         self.live = {"head": {"sha": request["head_sha"], "repo": {"full_name": archive.REPOSITORY}},
-                     "base": {"repo": {"full_name": archive.REPOSITORY}}, "labels": [{"name": archive.LABEL}]}
+                     "base": {"repo": {"full_name": archive.REPOSITORY}}, "labels": [{"name": self.batch.label}]}
         self.run = {"id": request["run_id"], "run_attempt": request["attempt"], "event": "pull_request",
-                    "status": "in_progress", "head_sha": request["head_sha"], "path": archive.WORKFLOW,
+                    "status": "in_progress", "head_sha": request["head_sha"], "path": self.batch.workflow,
                     "repository": {"full_name": archive.REPOSITORY}, "head_repository": {"full_name": archive.REPOSITORY},
                     "actor": {"login": archive.OWNER}, "triggering_actor": {"login": archive.OWNER},
                     "pull_requests": [{"number": request["pr"]}]}
@@ -66,8 +69,8 @@ class FakeGitHub:
             assert value["prerelease"] is True and value["make_latest"] == "false"
             self.release.update(value)
             if not self.release["draft"]:
-                self.tag = archive.TARGET
-                self.release["html_url"] = "https://github.com/" + archive.REPOSITORY + "/releases/tag/" + archive.encoded(archive.TAG)
+                self.tag = self.batch.target
+                self.release["html_url"] = "https://github.com/" + archive.REPOSITORY + "/releases/tag/" + archive.encoded(self.batch.tag)
             return copy.deepcopy(self.release)
         raise AssertionError("허용하지 않은 변경: " + method + " " + path)
 
@@ -108,7 +111,7 @@ class FakeGitHub:
         asset = {"id": identifier, "name": name, "size": len(payload), "state": "uploaded",
                  "digest": "sha256:" + hashlib.sha256(payload).hexdigest(),
                  "browser_download_url": "https://github.com/" + archive.REPOSITORY + "/releases/download/" +
-                    archive.encoded(archive.TAG) + "/" + archive.encoded(name)}
+                    archive.encoded(self.batch.tag) + "/" + archive.encoded(name)}
         self.release["assets"].append(asset)
         self.data[identifier] = payload
         self.events.append(("UPLOAD", name, None))
@@ -370,6 +373,195 @@ class ArchiveTests(unittest.TestCase):
             with self.assertRaises(ArchiveError):
                 archive.EvidenceArchive(client, manifest, "snapshot", request, directory).execute()
             self.assertEqual(client.data, before)
+
+
+
+def supplemental_dataset_fixture(directory, mutate=None):
+    """실제 새 ID를 추측하지 않는 mock6ZIP. SHA는 실제 fixture bytes에서 계산한다."""
+    manifest, _ = archive.load_manifest()
+    batch = replace(archive.SUPPLEMENTAL_BATCH, manifest=Path(directory) / "manifest.json",
+                    artifact_ids=(70042, 13030660873, 72026, 13025494772, 13026322503, 73000))
+    manifest["archive"].update(tag=batch.tag, index_name=batch.index)
+    manifest["source_run"].update(id=batch.run_id, head_sha="19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6")
+    manifest["artifacts"] = []
+    originals = {}
+    for identifier, name in zip(batch.artifact_ids, batch.artifact_names):
+        data = b"PK\x03\x04mock-only-" + name.encode()
+        originals[identifier] = data
+        manifest["artifacts"].append({"id": identifier, "name": name, "bytes": len(data),
+            "sha256": hashlib.sha256(data).hexdigest(), "planned_asset_name": name + ".zip"})
+    if mutate:
+        mutate(manifest)
+    source = manifest["source_run"]
+    snapshot = archive.json_bytes({actual: source[key] for actual, key in (
+        ("id", "id"), ("run_attempt", "attempt"), ("event", "event"), ("status", "status"),
+        ("conclusion", "conclusion"), ("head_sha", "head_sha"), ("path", "workflow_path"))})
+    Path(directory, "run-metadata.json").write_bytes(snapshot)
+    manifest["run_metadata_snapshot"] = {"file": "run-metadata.json", "bytes": len(snapshot),
+                                          "sha256": hashlib.sha256(snapshot).hexdigest()}
+    raw = archive.json_bytes(manifest)
+    batch.manifest.write_bytes(raw)
+    batch = replace(batch, manifest_sha256=hashlib.sha256(raw).hexdigest())
+    return batch, manifest, snapshot.decode(), originals
+
+
+class SupplementalArchiveTests(unittest.TestCase):
+    def client(self, batch, manifest, originals):
+        environment, event = event_fixture(batch)
+        request = archive.request_context(environment, event, batch)
+        return FakeGitHub(manifest, originals, request, batch), request
+
+    def test_original_is_always_default_and_supplement_is_explicit_and_unready(self):
+        self.assertIs(archive.selected_batch(), archive.ORIGINAL_BATCH)
+        self.assertIs(archive.selected_batch(True), archive.SUPPLEMENTAL_BATCH)
+        self.assertEqual(archive.load_manifest()[0]["archive"]["tag"], archive.TAG)
+        self.assertNotEqual(archive.ORIGINAL_BATCH.label, archive.SUPPLEMENTAL_BATCH.label)
+        self.assertNotEqual(archive.ORIGINAL_BATCH.workflow, archive.SUPPLEMENTAL_BATCH.workflow)
+        self.assertNotEqual(archive.ORIGINAL_BATCH.tag, archive.SUPPLEMENTAL_BATCH.tag)
+        self.assertNotEqual(archive.ORIGINAL_BATCH.index, archive.SUPPLEMENTAL_BATCH.index)
+        unready_batch = replace(archive.SUPPLEMENTAL_BATCH, manifest_sha256=None)
+        with self.assertRaises(ArchiveError):
+            archive.load_manifest(batch=unready_batch)
+        with tempfile.TemporaryDirectory() as directory, patch.object(archive, "GitHubClient") as constructor:
+            with patch("sys.argv", ["archive", "--execute", "--supplemental-41159864831", "--output", directory]), \
+                    patch.object(archive, "selected_batch", return_value=unready_batch) as selection:
+                with self.assertRaises(ArchiveError):
+                    archive.main()
+                selection.assert_called_once_with(True)
+            constructor.assert_not_called()
+            self.assertEqual(json.loads(Path(directory, "status.json").read_text())["phase"], "request-validation")
+
+    def test_arbitrary_manifest_url_tag_run_cli_is_not_available(self):
+        for option in ["--manifest", "--url", "--tag", "--run"]:
+            with self.subTest(option=option), patch("sys.stderr"), patch.object(archive, "GitHubClient") as client:
+                with patch("sys.argv", ["archive", "--execute", "--output", "unused", option, "other"]):
+                    with self.assertRaises(SystemExit) as rejected:
+                        archive.main()
+                self.assertEqual(rejected.exception.code, 2)
+                client.assert_not_called()
+
+    def test_complete_six_fixture_has_pinned_bytes_and_final_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            batch, manifest, snapshot, _ = supplemental_dataset_fixture(directory)
+            self.assertEqual(archive.load_manifest(batch=batch), (manifest, snapshot))
+            Path(directory, "run-metadata.json").write_text(snapshot + " ")
+            with self.assertRaises(ArchiveError):
+                archive.load_manifest(batch=batch)
+
+    def test_missing_ids_bytes_hashes_count_and_old_batch_are_rejected(self):
+        mutations = {
+            "missing-id": lambda m: m["artifacts"][0].update(id=None),
+            "missing-bytes": lambda m: m["artifacts"][0].update(bytes=None),
+            "missing-sha": lambda m: m["artifacts"][0].update(sha256=None),
+            "missing-item": lambda m: m["artifacts"].pop(),
+            "extra-item": lambda m: m["artifacts"].append(copy.deepcopy(m["artifacts"][0])),
+            "old-id": lambda m: m["artifacts"][0].update(id=13023894081),
+            "other-name": lambda m: m["artifacts"][0].update(name="other-run-seed-42"),
+            "old-tag": lambda m: m["archive"].update(tag=archive.TAG),
+            "old-index": lambda m: m["archive"].update(index_name=archive.INDEX),
+            "old-run": lambda m: m["source_run"].update(id=41131479924),
+            "other-head": lambda m: m["source_run"].update(head_sha="f" * 40),
+            "other-workflow": lambda m: m["source_run"].update(workflow_path=".github/workflows/other.yml"),
+            "other-measured-source": lambda m: m["source_run"].update(measured_source_commit="f" * 40),
+            "running": lambda m: m["source_run"].update(status="in_progress"),
+            "unknown-result": lambda m: m["source_run"].update(conclusion=None),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                batch, _, _, _ = supplemental_dataset_fixture(directory, mutate)
+                with self.assertRaises(ArchiveError):
+                    archive.load_manifest(batch=batch)
+        with tempfile.TemporaryDirectory() as directory:
+            batch, _, _, _ = supplemental_dataset_fixture(directory)
+            with self.assertRaises(ArchiveError):
+                archive.load_manifest(batch=replace(batch, artifact_ids=(None, *batch.artifact_ids[1:])))
+
+    def test_old_label_and_wrong_workflow_or_changed_pr_cannot_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            batch, manifest, _, originals = supplemental_dataset_fixture(directory)
+            environment, event = event_fixture()
+            with self.assertRaises(ArchiveError):
+                archive.request_context(environment, event, batch)
+            for field in ["workflow", "pr", "label", "actor"]:
+                client, request = self.client(batch, manifest, originals)
+                if field == "workflow":
+                    client.run["path"] = archive.WORKFLOW
+                elif field == "pr":
+                    client.live["head"]["sha"] = "f" * 40
+                elif field == "label":
+                    client.live["labels"] = [{"name": archive.LABEL}]
+                else:
+                    client.run["actor"]["login"] = "other"
+                with self.subTest(field=field), self.assertRaises(ArchiveError):
+                    archive.attest_request(client, request, request["head_sha"], batch)
+                self.assertTrue(all(e[0] == "GET" for e in client.events))
+
+    def test_new_six_flow_preserves_old_six_and_product_latest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            batch, manifest, snapshot, originals = supplemental_dataset_fixture(directory)
+            client, request = self.client(batch, manifest, originals)
+            old_manifest, _ = archive.load_manifest()
+            old_archive = {"id": 800, "tag_name": archive.TAG, "assets": [
+                {"name": a["planned_asset_name"], "digest": "sha256:" + a["sha256"]}
+                for a in old_manifest["artifacts"]] + [{"name": archive.INDEX, "digest": "old-index-unchanged"}]}
+            client.other_releases = [old_archive]
+            previous, official = copy.deepcopy(old_archive), copy.deepcopy(client.official)
+            run = archive.EvidenceArchive(client, manifest, snapshot, request, directory, batch=batch)
+            run.execute()
+            self.assertEqual(run.status["state"], "완료")
+            self.assertEqual(len(client.release["assets"]), 7)
+            self.assertEqual(client.other_releases, [previous])
+            self.assertEqual(client.official, official)
+            index = json.loads(Path(directory, batch.index).read_text())
+            self.assertEqual(len(index["zip_assets"]), 6)
+            self.assertEqual(index["manifest"]["source_run"]["conclusion"], "failure")
+            self.assertEqual(index["original_run_metadata_utf8"], snapshot)
+            self.assertFalse(any(e[0] in ("POST", "PATCH") and e[1] == "releases/800" for e in client.events))
+            before = copy.deepcopy(client.data)
+            client.source_unavailable = True
+            archive.EvidenceArchive(client, manifest, snapshot, request, directory, batch=batch).execute()
+            self.assertEqual(client.data, before)
+            self.assertEqual(len([e for e in client.events if e[0] == "UPLOAD"]), 7)
+
+    def test_wrong_metadata_and_original_bytes_stop_before_draft(self):
+        for changed in ["conclusion", "original-bytes"]:
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory:
+                batch, manifest, snapshot, originals = supplemental_dataset_fixture(directory)
+                client, request = self.client(batch, manifest, originals)
+                if changed == "original-bytes":
+                    identifier = batch.artifact_ids[0]
+                    client.originals[identifier] = b"!" + client.originals[identifier][1:]
+                else:
+                    previous = client.read
+                    def changed_read(path):
+                        value = previous(path)
+                        if path == "actions/runs/" + str(batch.run_id):
+                            value["conclusion"] = "success"
+                        return value
+                    client.read = changed_read
+                with self.assertRaises(ArchiveError):
+                    archive.EvidenceArchive(client, manifest, snapshot, request, directory, batch=batch).execute()
+                self.assertFalse(any(e[0] in ("POST", "PATCH", "UPLOAD") for e in client.events))
+
+    def test_public_corruption_or_latest_selection_cannot_complete(self):
+        for changed in ["public-bytes", "latest"]:
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as directory:
+                batch, manifest, snapshot, originals = supplemental_dataset_fixture(directory)
+                client, request = self.client(batch, manifest, originals)
+                if changed == "public-bytes":
+                    client.corrupt_public = manifest["artifacts"][0]["planned_asset_name"]
+                else:
+                    previous = client.upload
+                    def selected_latest(release_id, name, path):
+                        result = previous(release_id, name, path)
+                        client.official["id"] = 77
+                        return result
+                    client.upload = selected_latest
+                run = archive.EvidenceArchive(client, manifest, snapshot, request, directory, batch=batch)
+                with self.assertRaises(ArchiveError):
+                    run.execute()
+                self.assertEqual(run.status["state"], "실패")
+                self.assertFalse(any(a["name"] == batch.index for a in client.release["assets"]))
 
 
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""소유자가 명시한 라벨 요청으로 고정된 원형6ZIP만 별도 prerelease에 영속 보관한다."""
+"""소유자 라벨로 기본 원형6ZIP 또는 명시적 보충6ZIP을 별도 prerelease에 보관한다."""
 import argparse
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -24,6 +25,54 @@ INDEX = "sensitivity-artifact-index-20261031.json"
 TARGET = "7ce66943b539420c9dc1e3fa8a611daae58020ff"
 
 
+@dataclass(frozen=True)
+class ArchiveBatch:
+    """CLI가 선택하는 두 고정 배치. 임의 경로/태그/run 입력은 받지 않는다."""
+    label: str
+    workflow: str
+    manifest: Path
+    manifest_sha256: str | None
+    tag: str
+    index: str
+    target: str
+    artifact_count: int
+    result_note: str
+    run_id: int | None = None
+    source_head: str | None = None
+    source_workflow: str | None = None
+    artifact_names: tuple[str, ...] = ()
+    artifact_ids: tuple[int | None, ...] = ()
+
+
+ORIGINAL_BATCH = ArchiveBatch(
+    LABEL, WORKFLOW, MANIFEST, MANIFEST_SHA256, TAG, INDEX, TARGET, 6,
+    "원래 실행은 실패(failure)이며 4개 조건 완주·2개 조건은 명령 실행 시간 상한(CLI timeout)으로 부분 종료했습니다. 원문/complete=false 값을 보존합니다.")
+SUPPLEMENTAL_BATCH = ArchiveBatch(
+    "evidence-archive:v021-sensitivity-41159864831",
+    ".github/workflows/v021-sensitivity-supplement-archive.yml",
+    Path(__file__).with_name("sensitivity-41159864831") / "manifest.json",
+    "6d4dba436640d3251794e1c1c401646cbbcbb6fdb3af4ba4eee0c85d177b1135",
+    "evidence/v0.2.1-sensitivity-41159864831",
+    "sensitivity-artifact-index-41159864831.json", TARGET, 6,
+    "보충 실행은 실패(failure)이며 4개 조건 완주·2개 조건(900×42/2026)은240분 상한(CLI exit124)으로 부분 종료했습니다. "
+    "1500×42/2026의6000개월 완주와 원문 complete=false·요청 완료 플래그를 그대로 보존합니다. "
+    "서로 다른 계획의 고유6조건 색인이나 보관 완료를 이 배치/계획 합격으로 바꾸지 않습니다.",
+    run_id=41159864831,
+    source_head="19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+    source_workflow=".github/workflows/v021-growth-sensitivity.yml",
+    artifact_names=("v021-sensitivity-41159864831-1-seed-42",
+                    "v021-sensitivity-41159864831-1-seed-98",
+                    "v021-sensitivity-41159864831-1-seed-2026",
+                    "v021-sensitivity-inputs-41159864831-1",
+                    "v021-sensitivity-prepare-41159864831-1",
+                    "v021-sensitivity-collection-41159864831-1"),
+    artifact_ids=(13033147298, 13030660873, 13032846688, 13025494772, 13026322503, 13032956600))
+
+
+def selected_batch(supplemental=False):
+    return SUPPLEMENTAL_BATCH if supplemental else ORIGINAL_BATCH
+
+
 def encoded(value):
     return urllib.parse.quote(str(value), safe="")
 
@@ -36,31 +85,59 @@ def json_bytes(value):
     return (json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode()
 
 
-def load_manifest(path=MANIFEST):
-    raw = Path(path).read_bytes()
-    ensure(hashlib.sha256(raw).hexdigest() == MANIFEST_SHA256, "고정 manifest 해시가 다릅니다")
+def load_manifest(path=None, batch=ORIGINAL_BATCH):
+    ensure(isinstance(batch.manifest_sha256, str) and
+           re.fullmatch(r"[0-9a-f]{64}", batch.manifest_sha256),
+           "고정 배치의 원형/최종 메타데이터가 아직 확정되지 않았습니다")
+    if batch.artifact_ids:
+        ensure(len(batch.artifact_ids) == batch.artifact_count and
+               len(batch.artifact_names) == batch.artifact_count and
+               len(set(batch.artifact_ids)) == batch.artifact_count and
+               all(type(identifier) is int and identifier > 0 for identifier in batch.artifact_ids),
+               "고정 배치의 원형 ID가 아직 확정되지 않았습니다")
+    path = batch.manifest if path is None else Path(path)
+    raw = path.read_bytes()
+    ensure(hashlib.sha256(raw).hexdigest() == batch.manifest_sha256, "고정 manifest 해시가 다릅니다")
     manifest = json.loads(raw)
     archive = manifest["archive"]
-    ensure(manifest["repository"] == REPOSITORY and archive["tag"] == TAG and archive["index_name"] == INDEX,
-           "근거 전용 목적지가 아닙니다")
-    ensure(archive["target_commit"] == TARGET and archive["prerelease"] is True and archive["make_latest"] is False,
-           "근거 보관 정책이 다릅니다")
+    ensure(manifest["repository"] == REPOSITORY and archive["tag"] == batch.tag and
+           archive["index_name"] == batch.index, "근거 전용 목적지가 아닙니다")
+    ensure(archive["target_commit"] == batch.target and archive["prerelease"] is True and
+           archive["make_latest"] is False, "근거 보관 정책이 다릅니다")
     items = manifest["artifacts"]
-    ensure(len(items) == 6 and len({a["id"] for a in items}) == 6, "원형6개 ID가 필요합니다")
-    ensure(len({a["planned_asset_name"] for a in items}) == 6, "자산 이름이 중복됐습니다")
+    ensure(len(items) == batch.artifact_count and len({a["id"] for a in items}) == batch.artifact_count,
+           "고정 원형 개수/ID가 다릅니다")
+    ensure(len({a["planned_asset_name"] for a in items}) == batch.artifact_count, "자산 이름이 중복됐습니다")
     for item in items:
         ensure(type(item["id"]) is int and item["id"] > 0 and type(item["bytes"]) is int and item["bytes"] > 0,
                "원형 ID/바이트가 잘못됐습니다")
-        ensure(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*\.zip", item["planned_asset_name"]), "고정 ZIP 이름이 아닙니다")
-        ensure(re.fullmatch(r"[0-9a-f]{64}", item["sha256"]), "원형 SHA256이 잘못됐습니다")
+        ensure(isinstance(item["planned_asset_name"], str) and
+               re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*\.zip", item["planned_asset_name"]), "고정 ZIP 이름이 아닙니다")
+        ensure(isinstance(item["sha256"], str) and re.fullmatch(r"[0-9a-f]{64}", item["sha256"]),
+               "원형 SHA256이 잘못됐습니다")
     snapshot = manifest["run_metadata_snapshot"]
-    source = Path(path).with_name(snapshot["file"]).read_bytes()
+    source = path.with_name(snapshot["file"]).read_bytes()
     ensure(len(source) == snapshot["bytes"] and hashlib.sha256(source).hexdigest() == snapshot["sha256"],
            "원래 run 메타데이터가 달라졌습니다")
+    if batch.run_id is not None:
+        expected = set(zip(batch.artifact_ids, batch.artifact_names))
+        ensure({(item["id"], item["name"]) for item in items} == expected and
+               all(item["planned_asset_name"] == item["name"] + ".zip" for item in items),
+               "보충 배치의 고정6개 ID/이름이 다릅니다")
+        run, frozen = manifest["source_run"], json.loads(source)
+        ensure(run["id"] == batch.run_id and run["attempt"] == 1 and run["status"] == "completed" and
+               isinstance(run["conclusion"], str) and bool(run["conclusion"]), "보충 run 최종 상태가 미확정입니다")
+        ensure(run["head_sha"] == batch.source_head and run["event"] == "pull_request" and
+               run["workflow_path"] == batch.source_workflow and run["measured_source_commit"] == batch.target,
+               "보충 run의 고정 head/workflow/실측 source가 다릅니다")
+        for actual, key in (("id", "id"), ("run_attempt", "attempt"), ("event", "event"),
+                            ("status", "status"), ("conclusion", "conclusion"), ("head_sha", "head_sha"),
+                            ("path", "workflow_path")):
+            ensure(frozen[actual] == run[key], "최종 run snapshot과 manifest가 다릅니다: " + actual)
     return manifest, source.decode("utf-8")
 
 
-def request_context(environment, event):
+def request_context(environment, event, batch=ORIGINAL_BATCH):
     ensure(environment.get("GITHUB_ACTIONS") == "true", "실제 Actions 요청만 허용합니다")
     ensure(environment.get("GITHUB_EVENT_NAME") == "pull_request" and event.get("action") == "labeled",
            "실제 pull_request labeled 이벤트가 아닙니다")
@@ -69,7 +146,7 @@ def request_context(environment, event):
     for identity in (environment.get("GITHUB_ACTOR"), environment.get("GITHUB_TRIGGERING_ACTOR"),
                      event.get("sender", {}).get("login"), event["repository"]["owner"]["login"]):
         ensure(identity == OWNER, "소유자 요청/재실행만 허용합니다")
-    ensure(event.get("label", {}).get("name") == LABEL, "정확한 전용 보관 라벨이 아닙니다")
+    ensure(event.get("label", {}).get("name") == batch.label, "정확한 전용 보관 라벨이 아닙니다")
     pull = event["pull_request"]
     ensure(pull["head"]["repo"]["full_name"] == REPOSITORY and pull["base"]["repo"]["full_name"] == REPOSITORY,
            "같은 저장소의 PR만 허용합니다")
@@ -78,20 +155,21 @@ def request_context(environment, event):
     attempt = int(environment["GITHUB_RUN_ATTEMPT"])
     ensure(type(pull["number"]) is int and pull["number"] > 0 and event["number"] == pull["number"] and
            run_id > 0 and attempt > 0, "PR/run/attempt ID가 잘못됐습니다")
-    return {"event": "pull_request", "action": "labeled", "label": LABEL, "actor": OWNER,
+    return {"event": "pull_request", "action": "labeled", "label": batch.label, "actor": OWNER,
             "repository": REPOSITORY, "pr": pull["number"], "head_sha": pull["head"]["sha"],
             "run_id": run_id, "attempt": attempt}
 
 
-def attest_request(client, request, checkout):
+def attest_request(client, request, checkout, batch=ORIGINAL_BATCH):
+    ensure(request["label"] == batch.label, "요청이 다른 고정 배치의 라벨입니다")
     ensure(checkout == request["head_sha"], "실제 checkout과 라벨 요청 source가 다릅니다")
     live = client.api("pulls/" + str(request["pr"]))
     ensure(live["head"]["sha"] == checkout and live["head"]["repo"]["full_name"] == REPOSITORY and
            live["base"]["repo"]["full_name"] == REPOSITORY, "PR source/저장소가 바뀌었습니다")
-    ensure(any(label["name"] == LABEL for label in live["labels"]), "명시된 보관 라벨이 없어졌습니다")
+    ensure(any(label["name"] == batch.label for label in live["labels"]), "명시된 보관 라벨이 없어졌습니다")
     run = client.api("actions/runs/" + str(request["run_id"]))
     ensure(run["id"] == request["run_id"] and run["run_attempt"] == request["attempt"] and
-           run["event"] == "pull_request" and run["head_sha"] == checkout and run["path"] == WORKFLOW and
+           run["event"] == "pull_request" and run["head_sha"] == checkout and run["path"] == batch.workflow and
            run["status"] == "in_progress",
            "실제 run/event/attempt/source가 다릅니다")
     ensure(any(pull["number"] == request["pr"] for pull in run["pull_requests"]), "실제 run의 PR이 다릅니다")
@@ -102,13 +180,14 @@ def attest_request(client, request, checkout):
 
 
 class EvidenceArchive:
-    def __init__(self, client, manifest, snapshot, request, output, guard=None):
+    def __init__(self, client, manifest, snapshot, request, output, guard=None, batch=ORIGINAL_BATCH):
+        self.batch = batch
         self.client, self.manifest, self.snapshot, self.request = client, manifest, snapshot, request
         self.output = Path(output)
         self.output.mkdir(parents=True, exist_ok=True)
         self.release, self.phase, self.status = None, "request", {}
         self.release_id = None
-        self.guard = guard or (lambda: attest_request(client, request, request["head_sha"]))
+        self.guard = guard or (lambda: attest_request(client, request, request["head_sha"], batch))
 
     def record(self, state, **values):
         self.status = {**self.status, "state": state, "phase": self.phase, "request": self.request, **values}
@@ -116,29 +195,29 @@ class EvidenceArchive:
 
     def release_check(self, release):
         ensure(type(release["id"]) is int and release["id"] > 0 and type(release["draft"]) is bool and
-               release["tag_name"] == TAG and release["prerelease"] is True and
-               release["target_commitish"] == TARGET, "근거 전용 release/tag/source가 아닙니다")
+               release["tag_name"] == self.batch.tag and release["prerelease"] is True and
+               release["target_commitish"] == self.batch.target, "근거 전용 release/tag/source가 아닙니다")
         ensure(self.release_id is None or release["id"] == self.release_id, "확정한 근거 release ID가 바뀌었습니다")
         address = https_url(release["html_url"])
         path, prefix = urllib.parse.unquote(address.path), "/" + REPOSITORY + "/releases/"
         draft_url = release["draft"] and path.startswith(prefix) and len(path) > len(prefix) and "\\" not in path
         draft_url = draft_url and not any(part in (".", "..") for part in path.split("/"))
         ensure(address.hostname == "github.com" and not address.query and not address.fragment and
-               (draft_url or path == prefix + "tag/" + TAG),
+               (draft_url or path == prefix + "tag/" + self.batch.tag),
                "근거 release 주소가 다릅니다")
         names = [a["name"] for a in release["assets"]]
-        allowed = {a["planned_asset_name"] for a in self.manifest["artifacts"]} | {INDEX}
+        allowed = {a["planned_asset_name"] for a in self.manifest["artifacts"]} | {self.batch.index}
         ensure(len(names) == len(set(names)) and set(names) <= allowed, "기존 자산 이름이 중복되거나 허용 범위 밖입니다")
 
     def tag_check(self):
-        ref = self.client.api("git/ref/tags/" + encoded(TAG), missing=True)
+        ref = self.client.api("git/ref/tags/" + encoded(self.batch.tag), missing=True)
         if ref is not None:
             obj = ref["object"]
             for _ in range(8):
                 if obj["type"] != "tag":
                     break
                 obj = self.client.api("git/tags/" + obj["sha"])["object"]
-            ensure(obj["type"] == "commit" and obj["sha"] == TARGET, "기존 보관 tag가 다른 source입니다")
+            ensure(obj["type"] == "commit" and obj["sha"] == self.batch.target, "기존 보관 tag가 다른 source입니다")
 
     def metadata_check(self):
         source = self.manifest["source_run"]
@@ -170,7 +249,7 @@ class EvidenceArchive:
                 ensure(type(identifier) is int and identifier > 0 and identifier not in seen,
                        "release 목록 ID/페이지가 중복되거나 잘못됐습니다")
                 seen.add(identifier)
-                if release["tag_name"] == TAG:
+                if release["tag_name"] == self.batch.tag:
                     ensure(candidate is None, "고정 tag에 여러 draft/published release가 있어 모호합니다")
                     candidate = release
             if len(releases) < 100:
@@ -208,7 +287,7 @@ class EvidenceArchive:
             parsed = https_url(url)
             ensure(parsed.hostname == "github.com" and not parsed.query and not parsed.fragment and
                    urllib.parse.unquote(parsed.path) ==
-                   "/" + REPOSITORY + "/releases/download/" + TAG + "/" + item["planned_asset_name"],
+                   "/" + REPOSITORY + "/releases/download/" + self.batch.tag + "/" + item["planned_asset_name"],
                    "공개 asset 주소가 근거 release와 다릅니다")
         self.client.download(url, path, item["bytes"], public=public)
         self.verify_file(path, item)
@@ -225,10 +304,10 @@ class EvidenceArchive:
             self.verify_file(path, item)
 
     def body(self, state):
-        return ("## 민감도 원형 근거 보관\n\n상태: " + state + "\n\n"
-                "원래 실행은 실패(failure)이며 4개 조건 완주·2개 조건은 명령 실행 시간 상한(CLI timeout)으로 부분 종료했습니다. 원문/complete=false 값을 보존합니다.\n"
+        return ("## 민감도 원형 근거 보관\n\n상태: " + state + "\n\n" +
+                self.batch.result_note + "\n"
                 "제품 v0.2.1 최신 릴리스/APK와 별개인 사전 릴리스(prerelease)이며 합격/보정 효과로 재라벨하지 않습니다.\n\n"
-                "고정 manifest SHA256: `" + MANIFEST_SHA256 + "`\n\n"
+                "고정 manifest SHA256: `" + self.batch.manifest_sha256 + "`\n\n"
                 "현재 보관 요청: https://github.com/" + REPOSITORY + "/actions/runs/" + str(self.request["run_id"]))
 
     def prepare_draft(self):
@@ -236,7 +315,7 @@ class EvidenceArchive:
         self.record("보관 중")
         self.guard()
         if self.release is None:
-            candidate = self.client.api("releases", "POST", {"tag_name": TAG, "target_commitish": TARGET,
+            candidate = self.client.api("releases", "POST", {"tag_name": self.batch.tag, "target_commitish": self.batch.target,
                 "name": self.manifest["archive"]["title"], "draft": True, "prerelease": True,
                 "make_latest": "false", "body": self.body("보관 중")})
             self.release_check(candidate)
@@ -274,10 +353,10 @@ class EvidenceArchive:
         ensure(latest is None or latest["id"] != self.release["id"], "근거가 제품 latest가 되었습니다")
 
     def index_core(self):
-        return {"schema_version": 1, "state": "complete", "repository": REPOSITORY, "tag": TAG,
-                "release_id": self.release["id"], "target_commit": TARGET, "prerelease": True, "make_latest": False,
+        return {"schema_version": 1, "state": "complete", "repository": REPOSITORY, "tag": self.batch.tag,
+                "release_id": self.release["id"], "target_commit": self.batch.target, "prerelease": True, "make_latest": False,
                 "release_metadata": {key: self.release.get(key) for key in ("created_at", "published_at", "author")},
-                "manifest_sha256": MANIFEST_SHA256, "manifest": self.manifest,
+                "manifest_sha256": self.batch.manifest_sha256, "manifest": self.manifest,
                 "original_run_metadata_utf8": self.snapshot,
                 "zip_assets": [{"source_artifact_id": item["id"], "name": item["planned_asset_name"],
                     "id": self.assets()[item["planned_asset_name"]]["id"], "bytes": item["bytes"],
@@ -288,31 +367,31 @@ class EvidenceArchive:
         self.phase = "final-index"
         self.record("보관 중")
         core = self.index_core()
-        existing = self.assets().get(INDEX)
+        existing = self.assets().get(self.batch.index)
         trace = {"verified_at": datetime.now(timezone.utc).isoformat(), "execution": self.request}
         if existing:
             ensure(type(existing["size"]) is int and 0 < existing["size"] <= 131072 and
                    re.fullmatch(r"sha256:[0-9a-f]{64}", existing.get("digest") or ""),
                    "기존 index 크기/서버 해시가 잘못됐습니다")
-            item = {"planned_asset_name": INDEX, "bytes": existing["size"], "sha256": existing["digest"].removeprefix("sha256:")}
+            item = {"planned_asset_name": self.batch.index, "bytes": existing["size"], "sha256": existing["digest"].removeprefix("sha256:")}
             raw = self.download_asset(existing, item, public=True).read_bytes()
             previous = json.loads(raw)
             trace = previous["verification"]
             ensure({k: v for k, v in previous.items() if k != "verification"} == core,
                    "같은 이름의 기존 index가 다른 원문을 가리킵니다")
             ensure(trace["execution"]["actor"] == OWNER and trace["execution"]["repository"] == REPOSITORY and
-                   trace["execution"]["label"] == LABEL, "기존 index의 최초 요청이 보관 정책과 다릅니다")
+                   trace["execution"]["label"] == self.batch.label, "기존 index의 최초 요청이 보관 정책과 다릅니다")
             ensure(datetime.fromisoformat(trace["verified_at"]).tzinfo is not None, "기존 검증 시각이 잘못됐습니다")
             ensure(raw == json_bytes({**core, "verification": trace}), "기존 index 바이트가 정본 직렬화와 다릅니다")
         data = json_bytes({**core, "verification": trace})
-        path = self.output / INDEX
+        path = self.output / self.batch.index
         path.write_bytes(data)
         if existing is None:
             self.guard()
-            self.client.upload(self.release["id"], INDEX, path)
+            self.client.upload(self.release["id"], self.batch.index, path)
             self.get_release()
-        item = {"planned_asset_name": INDEX, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
-        self.download_asset(self.assets()[INDEX], item, public=True)
+        item = {"planned_asset_name": self.batch.index, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+        self.download_asset(self.assets()[self.batch.index], item, public=True)
         self.guard()
         self.client.api("releases/" + str(self.release["id"]), "PATCH",
                         {"prerelease": True, "make_latest": "false", "body": self.body("완료")})
@@ -320,8 +399,8 @@ class EvidenceArchive:
         latest = self.client.api("releases/latest", missing=True)
         ensure(not self.release["draft"] and (latest is None or latest["id"] != self.release["id"]),
                "최종 prerelease/latest 상태가 다릅니다")
-        self.record("완료", release_url=self.release["html_url"], index_url=self.assets()[INDEX]["browser_download_url"],
-                    index_asset_id=self.assets()[INDEX]["id"], index_bytes=len(data), index_sha256=item["sha256"])
+        self.record("완료", release_url=self.release["html_url"], index_url=self.assets()[self.batch.index]["browser_download_url"],
+                    index_asset_id=self.assets()[self.batch.index]["id"], index_bytes=len(data), index_sha256=item["sha256"])
 
     def execute(self):
         self.record("보관 중")
@@ -344,7 +423,7 @@ class EvidenceArchive:
         except (ArchiveError, KeyError, ValueError, OSError, TypeError) as error:
             self.record("실패", error=str(error))
             # 미완료 보관만 실패로 표시한다. 기존 완료 index/자산은 수정하거나 지우지 않는다.
-            if self.release and INDEX not in self.assets():
+            if self.release and self.batch.index not in self.assets():
                 try:
                     self.guard()
                     self.client.api("releases/" + str(self.release["id"]), "PATCH",
@@ -367,20 +446,23 @@ def main():
     modes.add_argument("--self-test", action="store_true")
     modes.add_argument("--execute", action="store_true")
     parser.add_argument("--output")
+    parser.add_argument("--supplemental-41159864831", action="store_true",
+                        help="확정된 보충 run41159864831의 고정6ZIP만 선택")
     args = parser.parse_args()
     if args.self_test:
         return subprocess.call([sys.executable, str(Path(__file__).with_name("test_archive.py"))])
+    batch = selected_batch(args.supplemental_41159864831)
     ensure(args.output, "보관 상태 출력 경로가 필요합니다")
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
     try:
-        manifest, snapshot = load_manifest()
+        manifest, snapshot = load_manifest(batch=batch)
         event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
-        request = request_context(os.environ, event)
+        request = request_context(os.environ, event, batch)
         client = GitHubClient(os.environ.get("GH_TOKEN"))
-        guard = lambda: attest_request(client, request, current_checkout())
+        guard = lambda: attest_request(client, request, current_checkout(), batch)
         guard()
-        EvidenceArchive(client, manifest, snapshot, request, output, guard).execute()
+        EvidenceArchive(client, manifest, snapshot, request, output, guard, batch).execute()
     except (ArchiveError, KeyError, ValueError, OSError, TypeError) as error:
         if not (output / "status.json").exists():
             (output / "status.json").write_bytes(json_bytes({"state": "실패", "phase": "request-validation",

@@ -1,0 +1,16 @@
+{
+  "purpose": "N2 JSON Decode checksum UTF8 reuse, bounded diagnostic only",
+  "approved_base": "356c1cf",
+  "cpu": 1,
+  "sdk": "10.0.403",
+  "runtime": "10.0.14",
+  "tiered_pgo": false,
+  "old_source": "6607234b405921cc39e9527cbea42a7667a709be",
+  "oracle": {"processes_per_variant": 1, "same_generated_inputs": true, "exact_outcome_and_reencoded_bytes": true},
+  "memory": {"processes_per_variant": 1, "real_slots_in_order": [90,120], "decodes_per_slot": 1, "array_pool_events": true, "full_gc_before_and_after_decode": true},
+  "wall_limit_per_process_seconds": 120,
+  "new_world_months": 0,
+  "retries_for_better_results": 0,
+  "formal_t04_acceptance": false,
+  "unchanged": ["original inputs", "caps", "stability harness", "public Restore and Checkpoint", "Clone", "Encode", "binary Decode"]
+}

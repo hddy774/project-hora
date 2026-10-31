@@ -1,0 +1,44 @@
+[
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "1",
+      "/workspace/.dotnet/dotnet",
+      "/workspace/scratch/json-decode-utf8/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+      "--filter",
+      "schema2 UTF8 segments:",
+      "--report",
+      "/workspace/scratch/json-decode-utf8/functional-segments.json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "1",
+      "/workspace/.dotnet/dotnet",
+      "/workspace/scratch/json-decode-utf8/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+      "--filter",
+      "저장 봉투 기본 경계",
+      "--report",
+      "/workspace/scratch/json-decode-utf8/functional-threshold.json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "taskset",
+      "-c",
+      "1",
+      "/workspace/.dotnet/dotnet",
+      "/workspace/scratch/json-decode-utf8/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+      "--filter",
+      "운송 저장:",
+      "--report",
+      "/workspace/scratch/json-decode-utf8/functional-transport.json"
+    ],
+    "exit_code": 0
+  }
+]

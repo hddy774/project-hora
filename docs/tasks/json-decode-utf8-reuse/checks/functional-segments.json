@@ -1,0 +1,17 @@
+{
+  "selection": "schema2 UTF8 segments:",
+  "total": 2,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/006 schema2 UTF8 segments: \uBE48 \uAC12\u00B716KiB \uACBD\uACC4\uC758 UTF8 \uBB38\uC790\uC640 escape \uC5F0\uC18D\uC131",
+      "passed": true,
+      "ms": 43
+    },
+    {
+      "name": "INV-004/006 schema2 UTF8 segments: \uC2E4\uC81C \uC138\uACC4\u00B7Unicode\u00B7\uBB38\uD654\uAD8C\u00B7\uC21C\uBC88\uC758 \uAE30\uC874 \uC804\uCCB4 \uBC14\uC774\uD2B8",
+      "passed": true,
+      "ms": 4143
+    }
+  ]
+}

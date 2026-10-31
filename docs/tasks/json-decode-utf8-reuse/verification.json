@@ -1,0 +1,109 @@
+{
+  "scope": "선택 기능 + 별도 초기 프로세스의 codec-only 유한 대조",
+  "author_and_self_reviewer": "Codex knowledge agent",
+  "base_commit": "356c1cf6baf38b87477a63eee6f25c29f5baf2ce",
+  "executed_candidate_source": "7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e",
+  "old_source": "6607234b405921cc39e9527cbea42a7667a709be",
+  "old_game_core_source_delta_from_base": [],
+  "sdk": "10.0.403",
+  "runtime": ".NET 10.0.14",
+  "cpu_affinity": [
+    1
+  ],
+  "runtime_processor_count": 1,
+  "tiered_pgo_runtimeconfig": false,
+  "dotnet_tiered_pgo_environment": null,
+  "complus_tiered_pgo_environment": null,
+  "build": {
+    "warnings": 0,
+    "errors": 0,
+    "raw": "checks/build.log"
+  },
+  "selected_functional": {
+    "total": 10,
+    "failed": 0,
+    "new": 2,
+    "existing": 8,
+    "whole_suite": false,
+    "reports": [
+      "functional-large-save.json",
+      "functional-new.json",
+      "functional-segments.json",
+      "functional-threshold.json",
+      "functional-transport.json"
+    ]
+  },
+  "independent_oracle": {
+    "scope": "separate-process exact outcome oracle",
+    "count": 36,
+    "rows_equal": true,
+    "differences": [],
+    "old_source": "0.2.1+6607234b405921cc39e9527cbea42a7667a709be",
+    "candidate_source": "0.2.1+7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e"
+  },
+  "memory_observation": [
+    {
+      "name": "real-N2-M90",
+      "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "state_hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523",
+      "old_retained_bytes": 50837416,
+      "candidate_retained_bytes": 34114576,
+      "old_thread_allocated_bytes": 94940136,
+      "candidate_thread_allocated_bytes": 78169992,
+      "old_16mib_rents": 1,
+      "candidate_16mib_rents": 0
+    },
+    {
+      "name": "real-N2-M120",
+      "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "state_hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95",
+      "old_retained_bytes": 51459072,
+      "candidate_retained_bytes": 34727632,
+      "old_thread_allocated_bytes": 49466256,
+      "candidate_thread_allocated_bytes": 49465608,
+      "old_16mib_rents": 1,
+      "candidate_16mib_rents": 0
+    }
+  ],
+  "new_world_months_in_probe": 0,
+  "formal_t04_acceptance": false,
+  "original_inputs_unchanged": true,
+  "prelaunch_failure": {
+    "raw": "checks/comparison-launch-failure.log",
+    "game_process_started": false,
+    "reason": "작업 wrapper의 로그 부모 폴더가 없었다. 폴더 생성만 고친 뒤 최초 Game 대조/관측을 실행했다."
+  },
+  "preserved_contracts": [
+    "공개 Restore/Checkpoint deepcopy",
+    "검증 순서와 예외 체인",
+    "정상 세계·RNG·순번·재저장 바이트",
+    "Clone·Encode·Hash·binary Decode",
+    "원래 cap·기간·하네스·입력·정책"
+  ],
+  "limits": [
+    "실제 N2 원문은 로컬 원본을 읽었고 c91 slot manifest의 SHA/크기와 일치했다. 큰 원본 본문은 이 PR에 복제하지 않았다.",
+    "CPU1 고정의 별도 초기 프로세스·EventListener/full GC 관측이다. 장기 실행·다른 인구·벽시간·전체 할당 예산의 합격으로 확대하지 않는다.",
+    "ArrayPool 사건을 관측했지만 현재 장기 실행 실패 지점의 SOS gcroot를 수집한 것은 아니다.",
+    "현행 전체 기능과 최종 성능·native는 통합 담당자의 새 동결 소스 검사 대상이다."
+  ],
+  "mapping_followup": {
+    "new_compiled_names": [
+      "INV-004/006 JSON Decode UTF8 재사용: 손상·체크섬·BOM·trailing 거부 우선순위",
+      "INV-004/006 JSON Decode UTF8 재사용: Unicode·순번·원문·RNG·공개 사본 격리"
+    ],
+    "invariants": [
+      "INV-004",
+      "INV-006"
+    ],
+    "boundary": "공개 codec 복원·사본 경계, 순번에는 기존 internal 봉투 seam 사용; 새 명령/월별 AI/host/native 증거 아님",
+    "shared_map_edited": false
+  },
+  "publication_equivalence": {
+    "executed_implementation_commit": "7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e",
+    "executed_implementation_tree": "b049bfa3d09f601c681fbd954b3c6e4bb20128d8",
+    "remote_implementation_commit": "5b0c1d5c730f16e061d7696d83847adcfe1d5f75",
+    "remote_implementation_tree": "b049bfa3d09f601c681fbd954b3c6e4bb20128d8",
+    "exact_tree_equal": true,
+    "reason": "GitHub 연결 도구로 게시하며 commit 작성 메타데이터가 달라졌다. 실제 실행 PE의 소스 SHA는 그대로 보존한다."
+  }
+}

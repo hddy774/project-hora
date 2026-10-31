@@ -1,0 +1,163 @@
+{
+  "mode": "memory",
+  "Runtime": ".NET 10.0.14",
+  "ProcessorCount": 1,
+  "TieredPgoEnvironment": null,
+  "ComPlusTieredPgoEnvironment": null,
+  "RuntimeConfig": "{\n  \u0022runtimeOptions\u0022: {\n    \u0022tfm\u0022: \u0022net10.0\u0022,\n    \u0022framework\u0022: {\n      \u0022name\u0022: \u0022Microsoft.NETCore.App\u0022,\n      \u0022version\u0022: \u002210.0.0\u0022\n    },\n    \u0022configProperties\u0022: {\n      \u0022System.Reflection.Metadata.MetadataUpdater.IsSupported\u0022: false,\n      \u0022System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization\u0022: false,\n      \u0022System.Runtime.TieredPGO\u0022: false\n    }\n  }\n}",
+  "GameSource": "0.2.1\u002B6607234b405921cc39e9527cbea42a7667a709be",
+  "CoreSource": "0.2.1\u002B6607234b405921cc39e9527cbea42a7667a709be",
+  "Assemblies": [
+    {
+      "Name": "Chronicles.Game.dll",
+      "Bytes": 2259968,
+      "Sha256": "e6ae82e31f71a38531e6930f3a29b44b24b83b8abab1cac8d452b2df9668b0d5"
+    },
+    {
+      "Name": "Chronicles.Core.dll",
+      "Bytes": 5120,
+      "Sha256": "ff384fa92d98a8088a9ff6e8b9cec0c5c109296932f619dd2306c3c69c1fd4f4"
+    },
+    {
+      "Name": "Chronicles.Hosting.dll",
+      "Bytes": 23552,
+      "Sha256": "7b0d75589c38cf0e027d0c6bbad156d5a4a950b23d459b42f03f5bcc30216019"
+    },
+    {
+      "Name": "Chronicles.Game.Tests.dll",
+      "Bytes": 1521152,
+      "Sha256": "a86df6e3ae67682f02653ded4bc49d7aaa04174675881c2b29d1dfa8e437d0e7"
+    }
+  ],
+  "Rows": [
+    {
+      "Name": "real-N2-M90",
+      "RealMonth": 90,
+      "Sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+      "InputBytes": 4663494,
+      "BeforeRetainedBytes": 4849264,
+      "AfterRetainedBytes": 50837416,
+      "DeltaRetainedBytes": 45988152,
+      "DecodeThreadAllocatedBytes": 94940136,
+      "Month": 90,
+      "Hash": "39a899925b23fcc9f5d5275324835e7b42b98189d7aca84c0d3385fa6f173523",
+      "LargePoolEvents": [
+        {
+          "EventName": "BufferRented",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123,
+            -1
+          ]
+        },
+        {
+          "EventName": "BufferAllocated",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123,
+            -1,
+            2
+          ]
+        },
+        {
+          "EventName": "BufferReturned",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123
+          ]
+        },
+        {
+          "EventName": "BufferRented",
+          "Size": 16777216,
+          "Payload": [
+            8622890,
+            16777216,
+            53036123,
+            -1
+          ]
+        },
+        {
+          "EventName": "BufferAllocated",
+          "Size": 16777216,
+          "Payload": [
+            8622890,
+            16777216,
+            53036123,
+            -1,
+            2
+          ]
+        },
+        {
+          "EventName": "BufferReturned",
+          "Size": 16777216,
+          "Payload": [
+            8622890,
+            16777216,
+            53036123
+          ]
+        }
+      ],
+      "Limits": "live world and original input kept alive; EventListener \u003E=8MiB only; retained includes runtime/pools; no heap-root proof"
+    },
+    {
+      "Name": "real-N2-M120",
+      "RealMonth": 120,
+      "Sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+      "InputBytes": 5027868,
+      "BeforeRetainedBytes": 47329168,
+      "AfterRetainedBytes": 51459072,
+      "DeltaRetainedBytes": 4129904,
+      "DecodeThreadAllocatedBytes": 49466256,
+      "Month": 120,
+      "Hash": "66298802f72200f2bbeeea82e713688ad4fea3f7dc331e2f403b953cd987da95",
+      "LargePoolEvents": [
+        {
+          "EventName": "BufferRented",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123,
+            19
+          ]
+        },
+        {
+          "EventName": "BufferReturned",
+          "Size": 8388608,
+          "Payload": [
+            50632145,
+            8388608,
+            53036123
+          ]
+        },
+        {
+          "EventName": "BufferRented",
+          "Size": 16777216,
+          "Payload": [
+            8622890,
+            16777216,
+            53036123,
+            20
+          ]
+        },
+        {
+          "EventName": "BufferReturned",
+          "Size": 16777216,
+          "Payload": [
+            8622890,
+            16777216,
+            53036123
+          ]
+        }
+      ],
+      "Limits": "live world and original input kept alive; EventListener \u003E=8MiB only; retained includes runtime/pools; no heap-root proof"
+    }
+  ],
+  "Scope": "bounded codec-only diagnostic; no month advance; not T04 acceptance"
+}

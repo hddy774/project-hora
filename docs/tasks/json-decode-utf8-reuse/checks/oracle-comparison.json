@@ -1,0 +1,8 @@
+{
+  "scope": "separate-process exact outcome oracle",
+  "count": 36,
+  "rows_equal": true,
+  "differences": [],
+  "old_source": "0.2.1+6607234b405921cc39e9527cbea42a7667a709be",
+  "candidate_source": "0.2.1+7a7d82b1bc8cdc2e06825014b181d0e5fc5ddb2e"
+}

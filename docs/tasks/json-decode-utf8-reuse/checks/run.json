@@ -1,0 +1,96 @@
+{
+  "started_utc": "2026-10-31T07:49:20.594646+00:00",
+  "cpu": 1,
+  "wall_limit_per_process_seconds": 120,
+  "processes": [
+    {
+      "label": "old660",
+      "mode": "generate",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/scratch/json-decode-utf8/old660/DecodeProbe.dll",
+        "generate",
+        "/workspace/scratch/json-decode-utf8/inputs",
+        "/workspace/scratch/json-decode-utf8/inputs/manifest.json"
+      ],
+      "started_utc": "2026-10-31T07:49:20.599840+00:00",
+      "ended_utc": "2026-10-31T07:49:21.816877+00:00",
+      "exit_code": 0
+    },
+    {
+      "label": "old660",
+      "mode": "oracle",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/scratch/json-decode-utf8/old660/DecodeProbe.dll",
+        "oracle",
+        "/workspace/scratch/json-decode-utf8/inputs",
+        "/workspace/scratch/json-decode-utf8/old660-oracle.json"
+      ],
+      "started_utc": "2026-10-31T07:49:21.817174+00:00",
+      "ended_utc": "2026-10-31T07:49:28.196892+00:00",
+      "exit_code": 0
+    },
+    {
+      "label": "candidate",
+      "mode": "oracle",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/scratch/json-decode-utf8/candidate/DecodeProbe.dll",
+        "oracle",
+        "/workspace/scratch/json-decode-utf8/inputs",
+        "/workspace/scratch/json-decode-utf8/candidate-oracle.json"
+      ],
+      "started_utc": "2026-10-31T07:49:28.197222+00:00",
+      "ended_utc": "2026-10-31T07:49:33.476918+00:00",
+      "exit_code": 0
+    },
+    {
+      "label": "old660",
+      "mode": "memory",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/scratch/json-decode-utf8/old660/DecodeProbe.dll",
+        "memory",
+        "/workspace/scratch/json-decode-utf8/inputs",
+        "/workspace/scratch/json-decode-utf8/old660-memory.json"
+      ],
+      "started_utc": "2026-10-31T07:49:33.477804+00:00",
+      "ended_utc": "2026-10-31T07:49:35.147033+00:00",
+      "exit_code": 0
+    },
+    {
+      "label": "candidate",
+      "mode": "memory",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/workspace/.dotnet/dotnet",
+        "/workspace/scratch/json-decode-utf8/candidate/DecodeProbe.dll",
+        "memory",
+        "/workspace/scratch/json-decode-utf8/inputs",
+        "/workspace/scratch/json-decode-utf8/candidate-memory.json"
+      ],
+      "started_utc": "2026-10-31T07:49:35.147427+00:00",
+      "ended_utc": "2026-10-31T07:49:36.717245+00:00",
+      "exit_code": 0
+    }
+  ],
+  "formal_t04_acceptance": false,
+  "new_world_months": 0,
+  "ended_utc": "2026-10-31T07:49:36.717604+00:00",
+  "oracle_rows_equal": true
+}

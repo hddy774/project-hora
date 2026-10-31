@@ -1,0 +1,218 @@
+[
+  {
+    "Name": "valid-sequence0",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-sequence0.json",
+    "Sha256": "9a2ca38b8c3568427fd0d31264b47bd45b0017846db2b708b7cc49beeac19ea1",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-sequence7",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-sequence7.json",
+    "Sha256": "de55dfb239306d24df9488e1553d5f5e7e6d943946a8b10b1571f635893bc711",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-sequenceMax",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-sequenceMax.json",
+    "Sha256": "928d037af0dcf49ad9bfd9a3db38e021a40375610f4f18fea3766eabc5af0a69",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-leadingWhitespace",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-leadingWhitespace.json",
+    "Sha256": "f358134e0d4f90279c84a4307407d28e222871032bfc440dac39d6ec61d60cbb",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-trailingWhitespace",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-trailingWhitespace.json",
+    "Sha256": "e02ff318410b73266989188cbf9df905aae012e273a4890e60c2b5dce22ada53",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-rawUnicode",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-rawUnicode.json",
+    "Sha256": "c818c8e2195ce8ebe0d7c9dc3137f0e8fd8409b111a99ac9ac88d46abbf6fcf4",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-outerTrailingWhitespace",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-outerTrailingWhitespace.json",
+    "Sha256": "bad90414e3ead6c788ab4c1be136d9f69c99781e8ed46348ce5a3d854fc9507c",
+    "RealMonth": null
+  },
+  {
+    "Name": "valid-duplicateEnvelopePayload",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/valid-duplicateEnvelopePayload.json",
+    "Sha256": "8f196c68044802afe5761cc58c91dfbe44b6b344255fef97c4058e4e7882429b",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-format-before-checksum",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-format-before-checksum.json",
+    "Sha256": "7d2ab57da037a6679b9de5f9a591d61e7e4b6d074d99660db547b8195473d3b1",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-schema1-before-checksum",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-schema1-before-checksum.json",
+    "Sha256": "185efdbaf2f3cef81ea85e1e685ac0bba1e055d19b3ef375dc9d721b28dbf5be",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-schema3-before-checksum",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-schema3-before-checksum.json",
+    "Sha256": "7065509e9a77d09af2baea82470400d58e281af2382963919207a40ca4777902",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-negativeSequence-before-checksum",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-negativeSequence-before-checksum.json",
+    "Sha256": "fd4c33b98b17c081ddb31e7907854211bd7b5d61fda1966569526fb3b9e439d9",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-checksum-before-json",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-checksum-before-json.json",
+    "Sha256": "883fd65be455bbe12eea98656aefcb11b0f4144acbee0b4ede26c3be8cb04305",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-uppercaseChecksum",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-uppercaseChecksum.json",
+    "Sha256": "1ff5390ab180c6697611d8aa545d86fc3a92f89e395e332f6b386a71ad96e48d",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-nullPayload",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-nullPayload.json",
+    "Sha256": "3257edfaecce946d7f8f2276f6c87340c7a3349a37dc86e409f9281dcce4bd8c",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-emptyPayload",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-emptyPayload.json",
+    "Sha256": "603dd237c1edd50da322ae6be467959eb294735e9226743611675a1cc012ea83",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-truncatedPayload",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-truncatedPayload.json",
+    "Sha256": "e309d655cb984478840cf30f36e4f067f8161baf8760806820e5cdf5e5b5de86",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-nullState",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-nullState.json",
+    "Sha256": "0aeab3f6a6f50896706aa0d3082a9e4ea8a7dcae9809254f6b2ea12962203144",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-arrayState",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-arrayState.json",
+    "Sha256": "8189081a6bf62c883a7da77a1ea18e2851abb6bf6f52669b4ff4fdaacd25432b",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-stringState",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-stringState.json",
+    "Sha256": "62f341c3096d8b8082e38becdf9aa9c10071870cc550d31c5e9667ef85312b62",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-innerBOM",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-innerBOM.json",
+    "Sha256": "7c01a96c6d56a547e6587880258948d9d702d9006231cf75cc4eec32dfe4e61a",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-innerTrailingObject",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-innerTrailingObject.json",
+    "Sha256": "ec5ae762e69868ad7cb0079cbe0c9c911af5c3bac949417818e1428e39464403",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-innerTrailingNul",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-innerTrailingNul.json",
+    "Sha256": "32ed48a87158cfb790bf4a3a66b423d592e31a6c8bb04e2591435c75e9da500d",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerEmpty",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerEmpty.json",
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerWhitespace",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerWhitespace.json",
+    "Sha256": "6bdf66b5bf2a44e658bea2ee86695ab150a06e600bf67cd5cce245ad54962c61",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerNull",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerNull.json",
+    "Sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerTruncated",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerTruncated.json",
+    "Sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerBOM",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerBOM.json",
+    "Sha256": "dd34bd381a063bacc5c355fdcb4347675727aae235d0594e35a1dc7ac37ca2a6",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerTrailingObject",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerTrailingObject.json",
+    "Sha256": "c4c015a593079ce9a1e48ae86ff6cb63c179910868b0165fadcc0fb36d17e8ea",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerInvalidUtf8",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerInvalidUtf8.json",
+    "Sha256": "27bdff1d7d46a902dae3bf4945eaf559de972b59bafe498e48f8aeb886999faa",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerHighSurrogate",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerHighSurrogate.json",
+    "Sha256": "9944ddbc7c2787da4552d43382c4997715560aa07bb65e921f128899c1cba67c",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-outerLowSurrogate",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-outerLowSurrogate.json",
+    "Sha256": "1e6595cfffe699b456ba5c72e37abdcf60e4f494ba67b4d1fd4c384f7e68a6ef",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-innerEscapedHighSurrogate",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-innerEscapedHighSurrogate.json",
+    "Sha256": "45fab3973c175cde3e7be8abbcadf5fb5cddae9a040d73d7eee707f77c993e92",
+    "RealMonth": null
+  },
+  {
+    "Name": "invalid-innerEscapedLowSurrogate",
+    "Path": "/workspace/scratch/json-decode-utf8/inputs/invalid-innerEscapedLowSurrogate.json",
+    "Sha256": "d8686db354bf2d2f34e5b6d4e61407843af8da0a840acf9d37f4cceb345419fe",
+    "RealMonth": null
+  },
+  {
+    "Name": "real-N2-M90",
+    "Path": "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/diagnostic-partial-saves/population-2.seonro.backup",
+    "Sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13",
+    "RealMonth": 90
+  },
+  {
+    "Name": "real-N2-M120",
+    "Path": "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/diagnostic-partial-saves/population-2.seonro",
+    "Sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6",
+    "RealMonth": 120
+  }
+]

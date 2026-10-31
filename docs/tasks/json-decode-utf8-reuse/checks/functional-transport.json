@@ -1,0 +1,12 @@
+{
+  "selection": "\uC6B4\uC1A1 \uC800\uC7A5:",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/017 \uC6B4\uC1A1 \uC800\uC7A5: \uC2E4\uC81C JSON2\u00B7\uC774\uC9C43 \uD30C\uC77C \uC655\uBCF5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1\u00B7\uBC30\uC1A1 \uC644\uB8CC\u00B7\uBD09\uC1C4 \uC2E4\uD328",
+      "passed": true,
+      "ms": 5271
+    }
+  ]
+}

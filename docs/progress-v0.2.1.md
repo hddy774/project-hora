@@ -15,10 +15,11 @@
 | 예정 | 0 |
 | 차단 | 0 |
 
-**현재 단계:** 최종 단기 성능 32개 통과·120개월 안정성 실측
+**현재 단계:** API24 시작 대기 보완·새 동결 소스 검증
 
 - 클로드 PR84 피드백을 반영한 Android 검사·작업 체계 복원·SDK 고정·기능별 코드 분리·리뷰 안내를 통합했습니다. 기존 합격 기준과 원문은 보존했습니다.
 - 새 통합 소스 7901f34에서 전체 기능 323/323개·실패 0·종료 0을 확인했습니다. Release 빌드 경고·오류 0, 실제 runtime 10.0.14, 네 DLL의 소스와 깨끗한 작업 트리를 대조했습니다. 보고서 SHA256은 1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba입니다.
+- API24 시작 대기 timeout을 최종 화면 준비와 구분하는 #253의 scripts 입력 변경으로 새 제품 지문이 생깁니다. 위 7901f34의 전체 323/323·같은 제품 지문의 32/32 성공은 과거 소스 근거로 보존하며, 새 동결 소스의 실제 API24 준비·전체 기능·32지표·120개월 수용은 별도 검증이 필요합니다.
 - 실제 프로파일과 실패 원문을 근거로 스트림 해시(PR237), 기본 저장 임계값(PR236), 장기 케이스 프레임(PR239), 세계 소유 지식 상태(PR240), schema2 UTF8 세그먼트 쓰기(PR244)를 작은 PR로 통합했습니다. 상태 해시·기존 저장 바이트·호환성을 확인했습니다.
 - 같은 제품 지문의 네 인구 규모·32개 단기 지표를 CPU0 한 개 affinity에서 측정하여 기존 절대·회귀 상한 32/32 통과와 종료 0을 확인했습니다. 보고서 SHA256은 7fb6131cb7154566517bd4f81d0646b1cf5c5c3c8af5232bcd76bd49e8e612b7입니다. 별도 GitHub VM의 120개월 실행 41163711116(소스 6607234b405921cc39e9527cbea42a7667a709be·같은 제품 지문 c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1)은 원래 입력과 기존 전체 323개 원문 사전 대조를 통과했고 현재 실측 중입니다. 시간·메모리·저장 예산은 바꾸지 않습니다.
 - 2명·120개월의 제한된 진단에서 보유 관리힙 최대 46,893,224바이트를 관찰했습니다. 이는 해당 진단의 상한 이내 결과이며 네 인구 전체의 T04 합격을 뜻하지 않습니다. 이전 메모리 초과 진단도 보존했습니다.
@@ -30,5 +31,5 @@
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [e7682962](https://github.com/hddy774/project-hora/commit/e7682962fab7205e7dd8ae37942ee0c6446cacda) · [작업 원장](https://github.com/hddy774/project-hora/blob/e7682962fab7205e7dd8ae37942ee0c6446cacda/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [2464337e](https://github.com/hddy774/project-hora/commit/2464337ec577b2894eb87468c2c72916b1d6b8bf) · [작업 원장](https://github.com/hddy774/project-hora/blob/2464337ec577b2894eb87468c2c72916b1d6b8bf/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

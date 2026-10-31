@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "docs/tasks/android-launch-pending/REVIEW.md",
+      "bytes": 2681,
+      "sha256": "8d3ad76f16e2bb6b60357427fc15e965558b4dbe750c0ad9d3e94267ef050cca"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/TASK.md",
+      "bytes": 4529,
+      "sha256": "21f27c14d44d7b4240f2272bfa379c8b01569b62595ebd3a8187a2275b897e81"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/baseline-tests.log",
+      "bytes": 2533,
+      "sha256": "faf0ab615aa122f2962663cbfc9ed9617924ceb46fd60108607b42b93db83f7f"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/baseline.json",
+      "bytes": 1551,
+      "sha256": "d0e39e03566e93edac6987617417f806a134c5ce653f0fb6a7c55fc96246da3c"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/plan-self-test.json",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/plan.json",
+      "bytes": 310,
+      "sha256": "eba421959b6b40423dc5675f47c2ef82d5a1f29f33bde1a8881edfe17d15bb80"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/progress-generation.log",
+      "bytes": 125,
+      "sha256": "e896134768799384854dd4968fa5d76894678a4ff069a8d94eb008a8549c4fc5"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/progress-self-test.json",
+      "bytes": 65,
+      "sha256": "f8919d7e88dda059f4331ffbb04af6e687363900ce43b8cc10b2b709854effb6"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/scope-comparison.json",
+      "bytes": 1527,
+      "sha256": "99e9c26fbeb291c2ecf0b44b3c60f35cf399caeacaca32516bb485cadd2b43be"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/checks/tests.log",
+      "bytes": 4145,
+      "sha256": "f611323e0bcf9e9d43a2c032a7d28f24b4b929f51ed0f42385a2de65e388c08f"
+    },
+    {
+      "path": "docs/tasks/android-launch-pending/verification.json",
+      "bytes": 2655,
+      "sha256": "abac3338a717be49a0ca852df5d1bd4a3e2115b73d11b60f3ee844c62374bf7a"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/README.md",
+      "bytes": 2627,
+      "sha256": "944f47fa9d67fdebe142257c060291e3bd76c142db15034beb226d75cb40da96"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/failure/commands.original.json",
+      "bytes": 2806,
+      "sha256": "bd83e99fd6eba64afa898013850e0f36289ce9603a98ae68b4d038c6f09a3178"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/failure/failure-traceback.excerpt.txt",
+      "bytes": 1637,
+      "sha256": "e44e912ff54c4aa6ef796190c968f0742920cd6ac8f24cb80b6934ad756e5f2a"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/failure/readiness.original.json",
+      "bytes": 245,
+      "sha256": "6952c7061fc239d5835c6b642c72eb4e08c6ba6b9c0632857a0abf3c9c810c77"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/failure/source.original.json",
+      "bytes": 733,
+      "sha256": "3dd267a753992d68934df6ec76ee7faf2ca9279a529f8c393702e6f7f4ef11ce"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/failure/ui.original.xml",
+      "bytes": 78,
+      "sha256": "413e52f19c3474dc62fb7ad0f7743ebb1c889f14c5bb4721349e79c28b04b8a8"
+    },
+    {
+      "path": "docs/evidence/0.2.1/android-launch-pending/failure-index.json",
+      "bytes": 5603,
+      "sha256": "c66c0741e1bce0725064104c1c78cdc9c944d251f3cfb445ed3f0f951ea61c2b"
+    }
+  ]
+}

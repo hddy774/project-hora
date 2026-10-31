@@ -28,14 +28,16 @@ def require(condition, message):
 
 
 def check_launch(returncode, output, activity):
-    require(returncode == 0 and re.search(r"(?m)^Status:\s*ok\s*$", output) and
+    statuses = re.findall(r"(?m)^Status:([^\r\n]*)\r?$", output)
+    require(returncode == 0 and len(statuses) == 1 and statuses[0].strip() in ("ok", "timeout") and
             not re.search(r"Error|Exception", output, re.IGNORECASE), "Android launch did not succeed")
-    found = re.search(r"(?m)^Activity:\s*(\S+)\s*$", output)
+    found = re.findall(r"(?m)^Activity:([^\r\n]*)\r?$", output)
     expected = PACKAGE + "/" + (PACKAGE + activity if activity.startswith(".") else activity)
-    actual = found[1] if found else ""
+    actual = found[0].strip() if len(found) == 1 else ""
     if actual.startswith(PACKAGE + "/."):
         actual = PACKAGE + "/" + PACKAGE + actual.split("/", 1)[1]
     require(actual == expected, "Android launch did not report the requested app activity")
+    return statuses[0].strip()
 
 
 def inspect_dialog(xml, windows, logs):
@@ -164,6 +166,7 @@ def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=
     require(re.fullmatch(r"[A-Za-z0-9_.$]+", activity or ""), "Launch activity is invalid")
     reader = Reader(out, timeout, runner, clock)
     passed, reason, attempts = False, "", 0
+    launch = None
     try:
         # Preserve the previous log before clearing stale render markers for this one launch.
         reader.command(reader.out, "prelaunch-logcat.txt", ["adb", "logcat", "-d", "-v", "tag"])
@@ -172,7 +175,14 @@ def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=
             require(code == 0 and re.search(r"(?m)^Success\s*$", installed), "Actual APK installation failed")
         require(reader.command(reader.out, "clear-logcat.txt", ["adb", "logcat", "-c"])[0] == 0, "Could not clear stale Android render log")
         code, launched, _ = reader.command(reader.out, "launch.txt", ["adb", "shell", "am", "start", "-W", "-n", PACKAGE + "/" + activity], 45)
-        check_launch(code, launched + (reader.out / "launch.txt.stderr.txt").read_text(encoding="utf-8", errors="replace"), activity)
+        launch = {"adb_returncode": code, "subprocess_timed_out": reader.commands[-1]["timed_out"],
+                  "raw_status_lines": [line for line in launched.splitlines() if line.startswith("Status:")],
+                  "state": "rejected", "android_status": None}
+        launch_stderr = (reader.out / "launch.txt.stderr.txt").read_text(encoding="utf-8", errors="replace")
+        status = check_launch(code, launched + "\n" + launch_stderr, activity)
+        # Android 시작 대기는 앱 준비보다 먼저 끝날 수 있다. 두 status 모두 준비 증거가 아니며,
+        # 같은 reader/deadline에서 아래의 기존 전경·DOM 검사를 통과해야 한다.
+        launch.update(android_status=status, state="wait_incomplete" if status == "timeout" else "wait_complete")
         pending = None
         while reader.remaining() > 0:
             attempts += 1
@@ -226,6 +236,7 @@ def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=
             reader.snapshot("final")
         reader.publish_diagnostics()
         (reader.out / "readiness.json").write_text(json.dumps({"passed": passed, "reason": reason,
+            "launch": launch,
             "deadline_seconds": timeout, "attempts": attempts, "launcher_wait_count": len(reader.waits),
             "elapsed_ms": round((clock() - reader.started) * 1000, 3),
             "last_snapshot": str(reader.latest["path"].relative_to(reader.out)) if reader.latest else None,

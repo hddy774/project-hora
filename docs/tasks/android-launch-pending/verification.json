@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-31T04:24:46.424533+00:00",
+  "issue": 253,
+  "frozen_execution_source": "1cf01ac342448262410d6c725026869ec80c90eb",
+  "frozen_execution_tree": "94c7223cf6bfdbc2c18b2929a4c67c90730c20ef",
+  "local_draft_source": "4f2cf36dd90ae3e707633c46879ec572486be91a",
+  "local_draft_tree_equals_remote_execution_tree": true,
+  "base_source": "f3627aa4db4282a8aebb572bffe2048261e0756a",
+  "base_product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "product_source_fingerprint": "72e6af0f7e89c0bbe0714efe0f8662e4faf3a84c2ff04a57fafb44288a854b5d",
+  "tracked_checkout_clean_before_frozen_tests": true,
+  "python": "3.12.14",
+  "cpu_affinity": 3,
+  "checks": {
+    "original_suite": {
+      "source": "f3627aa4db4282a8aebb572bffe2048261e0756a",
+      "count": 15,
+      "exit_code": 0,
+      "log": "checks/baseline-tests.log"
+    },
+    "frozen_suite": {
+      "source": "1cf01ac342448262410d6c725026869ec80c90eb",
+      "count": 24,
+      "exit_code": 0,
+      "command": "taskset -c 3 python3 scripts/test-android-readiness.py -v",
+      "log": "checks/tests.log"
+    },
+    "AST_scope": "checks/scope-comparison.json",
+    "plan": "checks/plan.json",
+    "plan_self_test": "checks/plan-self-test.json",
+    "progress_self_test": "checks/progress-self-test.json",
+    "progress_counts": {
+      "done": 52,
+      "validated": 56,
+      "in_progress": 3,
+      "planned": 0,
+      "blocked": 0
+    },
+    "progress_completion_percent": 46.8,
+    "original_readiness_loop_and_reader_unchanged": true,
+    "source_Game_tests_workflows_original_DOM_verifier_ledger_unchanged": true
+  },
+  "files": [
+    {
+      "path": "scripts/android_readiness.py",
+      "bytes": 16157,
+      "sha256": "65f24794ab16a918d980d3465b6dea54cd202cff69653fff313d99fcd140596d"
+    },
+    {
+      "path": "scripts/test-android-readiness.py",
+      "bytes": 27100,
+      "sha256": "449fac407d386cb1713e7fa077b9857d100c48bf7936ee1d802b2c59077567c4"
+    },
+    {
+      "path": "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "bytes": 196,
+      "sha256": "61a550a7508702ab6e2dcdf4a07a82b343d77a664289199fb04b887be417cd87"
+    }
+  ],
+  "scope": {
+    "adb_and_followup_screens_simulated": true,
+    "original_DOM_verifier_invoked_as_real_subprocess": true,
+    "raw_actual_launch_stdout_preserved": true,
+    "new_device_Game_performance_growth_longterm_manual_CI_runs": 0,
+    "original_failure_relabelled": false,
+    "retained_certificate_same_APK_upgrade_claim": false,
+    "new_fingerprint_full323_32metrics_120months_native_acceptance": "root integration required"
+  }
+}

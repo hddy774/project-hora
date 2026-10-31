@@ -15,6 +15,7 @@ ACTIVITY = "crc649632d1cee893af2a.MainActivity"
 VERSION = (native.ROOT / "VERSION").read_text().strip()
 QUICKSTEP = Path(__file__).with_name("fixtures").joinpath("android-quickstep.xml").read_text()
 WINDOWS_ONLY = Path(__file__).with_name("fixtures").joinpath("android-window-windows-only.txt").read_text()
+LAUNCH_TIMEOUT = Path(__file__).with_name("fixtures").joinpath("android-launch-timeout-api24-41165712717.txt").read_bytes()
 APP_UI = '<hierarchy><node package="org.hora.xianxiaobserver" class="android.webkit.WebView" text="만상의 흐름" /></hierarchy>'
 APP_LOG = 'I/SeonroRender: ' + json.dumps({"rendered": True, "heading": "만상의 흐름", "title": "선로만상록",
     "version": VERSION, "error": None, "connection": "연결됨"}, ensure_ascii=False) + '\n'
@@ -94,6 +95,27 @@ class Device:
             raise AssertionError("Unexpected executable: " + repr(args))
 
 
+class PendingLaunchDevice(Device):
+    """Actual launch stdout, then simulated readiness; this is not a device replay."""
+    def __init__(self, clock, *, ready_after=None, launch_code=0, launch_output=LAUNCH_TIMEOUT,
+                 launch_stderr=b"", launch_seconds=10.682253):
+        super().__init__(clock, xml="<hierarchy />", logs="", window="mCurrentFocus=null")
+        self.ready_after = ready_after
+        self.launch_code, self.launch_output = launch_code, launch_output
+        self.launch_stderr, self.launch_seconds = launch_stderr, launch_seconds
+
+    def run(self, args, **kwargs):
+        if args[1:4] == ["shell", "am", "start"]:
+            super().run(args, **kwargs)
+            if self.launch_seconds > kwargs["timeout"]:
+                raise AssertionError("Fixture launch duration exceeds its subprocess budget")
+            self.clock.sleep(self.launch_seconds)
+            return subprocess.CompletedProcess(args, self.launch_code, self.launch_output, self.launch_stderr)
+        if self.ready_after is not None and self.clock.now() >= self.ready_after:
+            self.xml, self.logs, self.window = APP_UI, APP_LOG, WINDOW
+        return super().run(args, **kwargs)
+
+
 class AndroidReadinessTests(unittest.TestCase):
     def execute(self, device, out, timeout=3, **kwargs):
         return native.await_ready(ACTIVITY, VERSION, out, timeout=timeout,
@@ -128,7 +150,7 @@ class AndroidReadinessTests(unittest.TestCase):
     def test_launch_status_and_requested_activity_are_both_required(self):
         good = "Status: ok\nActivity: " + native.PACKAGE + "/" + ACTIVITY + "\n"
         native.check_launch(0, good, ACTIVITY)
-        for code, text in [(1, good), (0, good.replace("ok", "timeout")),
+        for code, text in [(1, good), (0, good.replace("ok", "unknown")),
                            (0, good.replace(native.PACKAGE, "com.android.launcher3")), (0, good + "Error type 3"),
                            (0, good + "java.lang.SecurityException")]:
             with self.subTest(code=code, text=text), self.assertRaises(native.ReadinessError):
@@ -270,6 +292,206 @@ class AndroidReadinessTests(unittest.TestCase):
             self.assertTrue(any(c["timed_out"] for c in json.loads((out / "commands.json").read_text())))
             self.assertIn("partial dump", (out / "attempt-001/uiautomator.txt").read_text())
             self.assertTrue((out / "render-log.txt").exists())
+
+    def test_android_launch_timeout_waits_for_delayed_real_verifier(self):
+        clock = Clock()
+        device = PendingLaunchDevice(clock, ready_after=13.682253)
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            self.assertTrue(self.execute(device, out, timeout=90)["passed"])
+            readiness = json.loads((out / "readiness.json").read_text())
+            self.assertEqual((out / "launch.txt").read_bytes(), LAUNCH_TIMEOUT)
+            self.assertEqual(readiness["launch"], {
+                "adb_returncode": 0, "subprocess_timed_out": False,
+                "raw_status_lines": ["Status: timeout"],
+                "state": "wait_incomplete", "android_status": "timeout"})
+            self.assertTrue(readiness["passed"])
+            self.assertGreater(readiness["attempts"], 1)
+            self.assertAlmostEqual(clock.now(), 13.682253)
+            self.assertEqual(device.launches, 1)
+            self.assertEqual(device.checker_results, [0])
+            self.assertTrue(json.loads((out / "dom-proof.json").read_text())["core_to_native_bridge"])
+            self.assertTrue(all(call["time"] < 90 for call in device.calls))
+
+    def test_android_launch_timeout_never_ready_uses_original_90_second_deadline(self):
+        clock = Clock()
+        device = PendingLaunchDevice(clock)
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "readiness deadline"):
+                self.execute(device, out, timeout=90)
+            readiness = json.loads((out / "readiness.json").read_text())
+            self.assertEqual(clock.now(), 90)
+            self.assertEqual(readiness["elapsed_ms"], 90000)
+            self.assertEqual(readiness["deadline_seconds"], 90)
+            self.assertFalse(readiness["passed"])
+            self.assertEqual(readiness["launch"]["state"], "wait_incomplete")
+            self.assertEqual(device.launches, 1)
+            self.assertEqual(device.checker_results, [])
+            self.assertFalse((out / "dom-proof.json").exists())
+            self.assertTrue(all(call["time"] < 90 for call in device.calls))
+            self.assertEqual((out / "launch.txt").read_bytes(), LAUNCH_TIMEOUT)
+
+    def test_install_log_capture_and_launch_share_original_90_second_deadline(self):
+        clock = Clock()
+        device = PendingLaunchDevice(clock)
+        original = device.run
+
+        def consume_startup_budget(args, **kwargs):
+            if args[1:3] == ["logcat", "-d"] and not device.cleared:
+                clock.sleep(4)
+            elif args[1:2] == ["install"]:
+                clock.sleep(40)
+            elif args[1:3] == ["logcat", "-c"]:
+                clock.sleep(2)
+            return original(args, **kwargs)
+
+        device.run = consume_startup_budget
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "readiness deadline"):
+                self.execute(device, out, timeout=90, install_apk="fixture.apk")
+            self.assertEqual(clock.now(), 90)
+            self.assertEqual(device.launches, 1)
+            commands = json.loads((out / "commands.json").read_text())
+            launch = next(c for c in commands if c["path"] == "launch.txt")
+            self.assertEqual(launch["elapsed_ms"], 56682.253)
+            launch_call = next(c for c in device.calls if c["args"][1:4] == ["shell", "am", "start"])
+            self.assertEqual(launch_call["timeout"], 44)
+            self.assertTrue(all(call["time"] < 90 for call in device.calls))
+            self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+
+    def test_android_launch_timeout_rejects_nonzero_other_activity_errors_and_unknown_status(self):
+        bad = [
+            {"launch_code": 1},
+            {"launch_output": LAUNCH_TIMEOUT.replace(ACTIVITY.encode(), b"com.android.launcher3.Launcher")},
+            {"launch_output": LAUNCH_TIMEOUT.replace(b"timeout", b"unknown")},
+            {"launch_stderr": b"Error type 3\n"},
+            {"launch_stderr": b"java.lang.SecurityException\n"},
+        ]
+        for change in bad:
+            device = PendingLaunchDevice(Clock(), **change)
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaisesRegex(native.ReadinessError, "launch"):
+                    self.execute(device, out, timeout=90)
+                readiness = json.loads((out / "readiness.json").read_text())
+                self.assertFalse(readiness["passed"])
+                self.assertEqual(readiness["attempts"], 0)
+                self.assertEqual(readiness["launch"]["state"], "rejected")
+                self.assertEqual(device.launches, 1)
+                self.assertEqual(device.checker_results, [])
+
+    def test_subprocess_launch_timeout_is_terminal_with_partial_android_timeout_output(self):
+        clock = Clock()
+        device = Device(clock)
+        original = device.run
+
+        def timeout_launch(args, **kwargs):
+            result = original(args, **kwargs)
+            if args[1:4] == ["shell", "am", "start"]:
+                clock.sleep(kwargs["timeout"])
+                raise subprocess.TimeoutExpired(args, kwargs["timeout"], output=LAUNCH_TIMEOUT, stderr=b"adb partial\n")
+            return result
+
+        device.run = timeout_launch
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "launch"):
+                self.execute(device, out, timeout=90)
+            readiness = json.loads((out / "readiness.json").read_text())
+            self.assertEqual(clock.now(), 45)
+            self.assertFalse(readiness["passed"])
+            self.assertEqual(readiness["attempts"], 0)
+            self.assertTrue(readiness["launch"]["subprocess_timed_out"])
+            self.assertIsNone(readiness["launch"]["adb_returncode"])
+            self.assertEqual(readiness["launch"]["state"], "rejected")
+            self.assertEqual((out / "launch.txt").read_bytes(), LAUNCH_TIMEOUT)
+            self.assertEqual((out / "launch.txt.stderr.txt").read_bytes(), b"adb partial\n")
+            self.assertEqual(device.launches, 1)
+            self.assertEqual(device.checker_results, [])
+
+    def test_os_launch_failure_is_terminal_and_preserves_stderr(self):
+        device = Device(Clock())
+        original = device.run
+
+        def broken_adb(args, **kwargs):
+            result = original(args, **kwargs)
+            if args[1:4] == ["shell", "am", "start"]:
+                raise OSError("fixture adb unavailable")
+            return result
+
+        device.run = broken_adb
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            with self.assertRaisesRegex(native.ReadinessError, "launch"):
+                self.execute(device, out, timeout=90)
+            readiness = json.loads((out / "readiness.json").read_text())
+            self.assertEqual(readiness["attempts"], 0)
+            self.assertEqual(readiness["launch"]["state"], "rejected")
+            self.assertFalse(readiness["launch"]["subprocess_timed_out"])
+            self.assertIsNone(readiness["launch"]["adb_returncode"])
+            self.assertIn("fixture adb unavailable", (out / "launch.txt.stderr.txt").read_text())
+            self.assertEqual(device.launches, 1)
+            self.assertEqual(device.checker_results, [])
+
+    def test_pending_launch_keeps_foreground_dom_crash_and_anr_requirements(self):
+        frames = [
+            (APP_UI, APP_LOG, "mCurrentFocus=null"),
+            (APP_UI.replace("android.webkit.WebView", "android.view.View"), APP_LOG, WINDOW),
+            (APP_UI, APP_LOG.replace("만상의 흐름", "잘못된 화면"), WINDOW),
+            (APP_UI, APP_LOG + "AndroidRuntime: FATAL EXCEPTION: main\n", WINDOW),
+            (APP_UI, APP_LOG + "ActivityManager: ANR in " + native.PACKAGE + "\n", WINDOW),
+            (QUICKSTEP.replace("Quickstep", "Settings"), APP_LOG, WINDOW),
+        ]
+        for xml, logs, window in frames:
+            device = PendingLaunchDevice(Clock())
+            device.xml, device.logs, device.window = xml, logs, window
+            with self.subTest(xml=xml, logs=logs, window=window), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaises(native.ReadinessError):
+                    self.execute(device, out, timeout=12)
+                self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+                self.assertFalse((out / "dom-proof.json").exists())
+                self.assertEqual(device.launches, 1)
+                self.assertEqual(device.taps, [])
+
+    def test_launch_parser_requires_one_known_status_and_one_exact_activity(self):
+        good = LAUNCH_TIMEOUT.decode()
+        for changed in [good.replace("Status: timeout\n", ""), good.replace("timeout", "Timeout"),
+                        good + "Status: ok\n", good + "Status:\n", good + "Status: unknown extra\n",
+                        good.replace("Activity: ", "Other: "), good + "Activity:\n",
+                        good + "Activity: invalid activity\n",
+                        good + "Activity: " + native.PACKAGE + "/" + ACTIVITY + "\n"]:
+            with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
+                native.check_launch(0, changed, ACTIVITY)
+        for status in ["ok", "timeout"]:
+            self.assertEqual(native.check_launch(0, good.replace("timeout", status), ACTIVITY), status)
+            abbreviated = good.replace("timeout", status).replace(ACTIVITY, ".MainActivity")
+            self.assertEqual(native.check_launch(0, abbreviated, ".MainActivity"), status)
+
+    def test_pending_launch_cannot_pass_without_pid_or_complete_screenshot(self):
+        for missing in ["pid", "screenshot"]:
+            device = PendingLaunchDevice(Clock(), ready_after=10.682253)
+            original = device.run
+
+            def missing_proof(args, **kwargs):
+                result = original(args, **kwargs)
+                if missing == "pid" and args[1:3] == ["shell", "pidof"]:
+                    return subprocess.CompletedProcess(args, 0, b"", b"")
+                if missing == "screenshot" and args[1:3] == ["exec-out", "screencap"]:
+                    return subprocess.CompletedProcess(args, 1, b"", b"capture failed")
+                return result
+
+            device.run = missing_proof
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as directory:
+                out = Path(directory)
+                with self.assertRaisesRegex(native.ReadinessError, "readiness deadline"):
+                    self.execute(device, out, timeout=12)
+                self.assertFalse(json.loads((out / "readiness.json").read_text())["passed"])
+                self.assertFalse((out / "dom-proof.json").exists())
+                self.assertEqual(device.checker_results, [])
+                self.assertEqual(device.launches, 1)
 
 
 if __name__ == "__main__":

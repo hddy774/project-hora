@@ -1,0 +1,10 @@
+{
+  "passed": false,
+  "reason": "Android launch did not succeed",
+  "deadline_seconds": 90,
+  "attempts": 0,
+  "launcher_wait_count": 0,
+  "elapsed_ms": 12319.533,
+  "last_snapshot": "final",
+  "final_diagnostics_share_launch_deadline": true
+}

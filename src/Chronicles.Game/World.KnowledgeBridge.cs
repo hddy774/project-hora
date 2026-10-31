@@ -23,7 +23,9 @@ public sealed partial class GameWorld
     {
         if (knowledgeAuthority is null || !ReferenceEquals(knowledgeSnapshot, state.Knowledge))
         {
-            knowledgeAuthority = KnowledgeAuthority.Restore(state.Knowledge);
+            // Create/Restore와 Execute 후보가 이미 분리한 세계 소유 상태에만 연결한다.
+            // Execute 채택 등으로 객체가 바뀌면 이전 세계의 인덱스를 재사용하지 않는다.
+            knowledgeAuthority = KnowledgeAuthority.AttachWorldOwned(state.Knowledge);
             knowledgeSnapshot = state.Knowledge;
         }
         return knowledgeAuthority;
@@ -31,8 +33,10 @@ public sealed partial class GameWorld
 
     private void SaveKnowledge()
     {
-        state.Knowledge = KnowledgeRuntime().Checkpoint();
-        knowledgeSnapshot = state.Knowledge;
+        // 전이는 이미 세계 소유 상태에 반영됐다. 기존 종료 경계와 캐시 확인은 유지하되
+        // 매 실습마다 전체 이력의 record/배열을 다시 복사하지 않는다.
+        // 세계 밖의 Checkpoint/Restore는 계속 별도 깊은 사본을 사용한다.
+        _ = KnowledgeRuntime();
     }
 
     private void InitializeKnowledge()

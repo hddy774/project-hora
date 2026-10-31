@@ -1,34 +1,32 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `5f789c817eb9519b696acd72410643169ff11ef2`
+매핑 소스: `7901f344462ebc1f98d7105efd79ab0aa058b8fe`
 
-테스트 소스 지문: `75e7cb849f6d113bff4c2cc4acd8cc408a0ec7907ab1b7cd8c0f0d02b3d1b21a`
+테스트 소스 지문: `a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b`
 <!-- actual-map-metadata:end -->
 
-현재 등록 **321개(feature283 + Program38)**, **24INV·167개 증인**의 실제 이름·범위를 연결한다.
-기존 df314개 행과152증인의 주장/경계/앵커는 보존하고 새7개·15연결을 수동 추가했다.
-맵의 실행 상태는 계속 `not_asserted`다. 정본 제안 검사 상태·원장·readiness·예산을 변경하지 않는다.
+현재 등록 **323개(feature285 + Program38)**, **24INV·171개 증인**의 실제 이름·범위를 연결한다.
+기존5f321개 행과167증인의 주장/경계/앵커를 보존하고 새2개·4연결을 수동 추가했다.
+맵 실행 상태는 계속 `not_asserted`다. 제안 검사 상태·원장·readiness·예산을 변경하지 않는다.
 
-## 5f789c8 소스 검토
+## 7901f34 소스 검토
 
-제품 지문은 통합 담당자가 동결한 `a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12`다.
-[SourceReview](invariant-execution-source-review-5f789c8.json)는 df→5f 실제8제품경로의
-canonical Hash stream·기본16MiB 저장 선택·세계 소유 지식·NoInlining 장기 하네스와 새7개 검사를 구분한다.
-기존 helper의 scripts/WF 생략 한계는 실제 제품입력 분류와 따로 대조했고 이번 추가 경로는0개다.
-[새 연결](invariant-final-5f789c8/map-additions.json)과
-[보존 대조](invariant-final-5f789c8/preservation-checks.json)에 수동 검토를 남겼다.
+제품 지문은 root가 동결한 `c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1`다.
+[SourceReview](invariant-execution-source-review-7901f34.json)는 실제2제품경로의 schema2 UTF8 조각
+작성과 새2개 검사를 다룬다. 기존 helper의 scripts/WF 생략 한계는 별도 제품입력 분류와 대조했고 추가 경로0개다.
+[새 연결](invariant-final-7901f34/map-additions.json)과
+[보존 대조](invariant-final-7901f34/preservation-checks.json)에 실제 경계·주장·앵커를 기록했다.
 
-실제 동결 소스의 전체 **321/321·실패0·종료0**을 [원문](invariant-final-5f789c8/functional.json)·[실행 기록](invariant-final-5f789c8/root-run.original.json)·[출처](invariant-final-5f789c8/provenance.json)에 연결했다.
-원문 SHA256은 `f2c354e118a8a403a47d4989967abf001e6d177ddf947238eba665797841be92`다. 기존 검사기의 결과는 [정적 대조](invariant-final-5f789c8/execution-verification.json)에 둔다.
-Hash3은 모듈 oracle이며 실제 저장재개로 부르지 않고, 기본 경계1은 실제 임시파일 host,
-소유 지식3은 모듈 격리1/실제 명령·codec·후보 실패2로 구분한다.
-KnowledgeAtomicity 이름의 INV-007 표기만으로 관찰/View 검사를 추정하지 않는다.
+실제 동결 소스의 전체 **323/323·실패0·종료0**을 [원문](invariant-final-7901f34/functional.json)·[실행 기록](invariant-final-7901f34/root-run.original.json)·[출처](invariant-final-7901f34/provenance.json)에 연결했다.
+원문 SHA256은 `1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba`다. 기존 검사기의 결과는 [정적 대조](invariant-final-7901f34/execution-verification.json)에 둔다.
+실제 GameWorld/공통 codec의 이전 bytes 비교1과 private writer 모듈 비교1을 구분하며,
+두 사례를 공개 행동 명령·월 진행·실제 파일·성능 실측으로 확대하지 않는다.
 
-[이전 df314 원문](invariant-final-df72405/README.md)과
-[SourceReview](invariant-execution-source-review-df72405.json)는 원래 source/지문으로 보존한다.
-이전 표의 [고정JSON](https://github.com/hddy774/project-hora/blob/6859eb0cf0ed21d0c7315aced247ffe244162724/docs/evidence/0.2.1/invariant-execution-map.json)·[고정Markdown](https://github.com/hddy774/project-hora/blob/6859eb0cf0ed21d0c7315aced247ffe244162724/docs/evidence/0.2.1/invariant-execution-map.md)도 유지한다.
-과거 기능·성능·장기 실패/부분·native·성장/민감도 자료를 새 소스의 통과로 재라벨하지 않는다.
+[이전5f 전체321](invariant-final-5f789c8/README.md)과
+[SourceReview](invariant-execution-source-review-5f789c8.json)는 당시 source/지문으로 보존한다.
+당시 표의 [고정JSON](https://github.com/hddy774/project-hora/blob/0d60b5e24c2e764e9a633132a5a7e8d3a45ae55a/docs/evidence/0.2.1/invariant-execution-map.json)·[고정Markdown](https://github.com/hddy774/project-hora/blob/0d60b5e24c2e764e9a633132a5a7e8d3a45ae55a/docs/evidence/0.2.1/invariant-execution-map.md)과 SHA도 유지한다.
+과거 기능·성능·장기 실패/부분·native·성장/민감도 원문을 새 소스의 통과로 재라벨하지 않는다.
 
 ## 실제 검사 증인
 
@@ -94,6 +92,8 @@ KnowledgeAtomicity 이름의 INV-007 표기만으로 관찰/View 검사를 추�
 | [INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L6) | `module` / 정상 결과, 거절/부정 | 모듈 AttachWorldOwned에서 실제 학습 시작/완료가 독점 소유 상태에 즉시 반영되고 busy를 거절한다. 공개 Checkpoint/Restore 입력의 작품·판본·행동·증거 배열/기억과 조회 배열을 분리하고 잘못된 schema를 입력 불변으로 거절한다. 실제 GameWorld/파일 저장 검사는 아니다. |
 | [INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L63) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 possess/study와1개월 완료 뒤 공통 GameCodec 왕복·Checkpoint/Restore 입력을 분리한다. 외부 배열/기억 변조가 전파되지 않고 후보 교체·복원 뒤 두 번째 실제 학습/2개월 완료의 전체 Hash와 두 완료 기록이 같다. 장기 캐시 안정성 전체를 증명하지 않는다. |
 | [INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L98) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 study의 같은 ID 재전송·busy/충돌 거부가 전체 상태를 바꾸지 않는다. 타 영혼 결속 paper의 실제 물리 예약 거절 뒤 복원본과 다음 학습/진행을 대조하고, Revision 상한의 커밋 불변식 예외에서도 원래 지식/ID/RNG를 유지한다. Name의 INV-007 표기와 별개로 View/관찰 유무는 실행하지 않아 INV-007 증인으로 추가하지 않는다. |
+| [INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트](../../../tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs#L9) | `public_world` / 정상 결과, 저장/재개, 재현성 | 실제 GameWorld의 사건 텍스트만 바꾼 fixture에서 두 문화권·Unicode/lone surrogate·빈 값/긴 문자열과 순번0/7/long.MaxValue의 기본 schema2 전체 bytes를 독립 기존 encoder와 대조한다. 공통 Decode 뒤 순번/Hash/RNG와 원본을 유지한다. 공개 행동 명령·월 진행·실제 파일/성능 검사는 아니다. |
+| [INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성](../../../tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs#L55) | `module` / 정상 결과, 재현성 | private schema2 writer를 reflection delegate로 호출하는 모듈 검사다. 빈 payload·16KiB 전후 길이와 경계에 걸친 유효 UTF8 문자/escape, 순번0/상한을 독립 이전 serializer의 전체 bytes와 대조하고 property 순서를 확인한다. 임의 UTF8 본문이며 실제 GameWorld·공통 Decode/파일·월 진행 검사는 아니다. |
 
 범위: 열거한 도메인/호스트 저장·손상·중단 복구를 검사한다. 실제 OS 강제 종료·Android 재실행 증거는 별도 플랫폼 검증이다.
 
@@ -142,6 +142,8 @@ KnowledgeAtomicity 이름의 INV-007 표기만으로 관찰/View 검사를 추�
 | [INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L84) | `module` / 정상 결과, 거절/부정, 조회 순수성, 재현성 | Hash(null)의 고정 JSON null SHA와 빈 상태 oracle를 대조한다. 고의 열거 실패의 예외 type/message와 RNG를 유지하고 실패 뒤 새 Hash에 부분 출력이 남지 않음을 확인한다. 공통 codec 저장/재개나 OS 중단 검사는 아니다. |
 | [INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환](../../../tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs#L7) | `host` / 정상 결과, 저장/재개, 재현성 | 사건 텍스트만 늘린 작은 실제 세계 fixture의 canonical 본문16MiB/16MiB+1에서 기본 JSON2/이진3 선택을 확인한다. 기존 JSON bytes·새 경계보다 큰 이전 JSON 읽기·순번/Hash/RNG·실제 기본 SaveAtomic/Load와 임시파일 정리를 검사한다. 대규모/120개월 예산 통과 근거는 아니다. |
 | [INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L63) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 possess/study와1개월 완료 뒤 공통 GameCodec 왕복·Checkpoint/Restore 입력을 분리한다. 외부 배열/기억 변조가 전파되지 않고 후보 교체·복원 뒤 두 번째 실제 학습/2개월 완료의 전체 Hash와 두 완료 기록이 같다. 장기 캐시 안정성 전체를 증명하지 않는다. |
+| [INV-004/006 schema2 UTF8 segments: 실제 세계·Unicode·문화권·순번의 기존 전체 바이트](../../../tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs#L9) | `public_world` / 정상 결과, 저장/재개, 재현성 | 실제 GameWorld의 사건 텍스트만 바꾼 fixture에서 두 문화권·Unicode/lone surrogate·빈 값/긴 문자열과 순번0/7/long.MaxValue의 기본 schema2 전체 bytes를 독립 기존 encoder와 대조한다. 공통 Decode 뒤 순번/Hash/RNG와 원본을 유지한다. 공개 행동 명령·월 진행·실제 파일/성능 검사는 아니다. |
+| [INV-004/006 schema2 UTF8 segments: 빈 값·16KiB 경계의 UTF8 문자와 escape 연속성](../../../tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs#L55) | `module` / 정상 결과, 재현성 | private schema2 writer를 reflection delegate로 호출하는 모듈 검사다. 빈 payload·16KiB 전후 길이와 경계에 걸친 유효 UTF8 문자/escape, 순번0/상한을 독립 이전 serializer의 전체 bytes와 대조하고 property 순서를 확인한다. 임의 UTF8 본문이며 실제 GameWorld·공통 Decode/파일·월 진행 검사는 아니다. |
 
 범위: 현재 C# 원본/실제 hot columns·기한 큐·scalar/Vector 경계의 작은 명령·월별·저장·문화권 재현이다. 실제 등록의 기능 비교와 최종 규모별 시간/할당 실측을 구분하며 병렬 worker·Unity·네이티브 실행으로 확대하지 않는다.
 

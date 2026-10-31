@@ -1,0 +1,4 @@
+PASS INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약
+PASS INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회
+PASS INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존
+RESULT 3/3

@@ -1,0 +1,27 @@
+{
+  "selection": "\uB300\uC6A9\uB7C9 \uC800\uC7A5:",
+  "total": 4,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: \uC2E4\uC81C \uC6D0\uC790\uD30C\uC77C \uD63C\uD569\uD615\uC2DD\u00B7pending \uC6B0\uC120\uC21C\uBC88\u00B7backup\u00B7\uC190\uC0C1 \uC6D0\uBB38 \uBCF4\uC874",
+      "passed": true,
+      "ms": 2976
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: prefix\u00B7\uBC84\uC804\u00B7\uAE38\uC774\u00B7\uC21C\uBC88\u00B7\uCCB4\uD06C\uC12C\u00B7\uC798\uB9BC\u00B7\uD6C4\uD589 \uC790\uB8CC \uC5C4\uBC00 \uAC70\uBD80",
+      "passed": true,
+      "ms": 62
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: UTF8 \uC591\uD615\uC2DD\u00B7\uACBD\uACC4\u00B7\uC21C\uBC88\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1\u00B7RNG \uC800\uC7A5 \uC18D\uD589",
+      "passed": true,
+      "ms": 1074
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: \uAE30\uC874 schema2 \uBC14\uC774\uD2B8\u00B7\uACE0\uC815 \uC6D0\uBCF8\u00B7\uAD6C\uBC84\uC804 \uC815\uCC45 \uBCF4\uC874",
+      "passed": true,
+      "ms": 481
+    }
+  ]
+}

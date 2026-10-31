@@ -1,0 +1,146 @@
+{
+  "tested_source_commit": "5723b19032c210fe69e457dbf7ffb19000195c6d",
+  "scope": "Task, selected functional/static outputs, and explicitly selected byte-identical historical diagnostic originals. No generated DLL/save binaries.",
+  "files": [
+    {
+      "path": "REVIEW.md",
+      "bytes": 4863,
+      "sha256": "0a58f0f18e8db02ba1d1a0b62361fbc8b80d666b19e1e933d4aa84f259c0943e"
+    },
+    {
+      "path": "TASK.md",
+      "bytes": 3379,
+      "sha256": "2eaa32997fd7b3c6360cf7a4b94cae18bc0f5a09a8c4ee49d328fd7336b11828"
+    },
+    {
+      "path": "checks/canonical.json",
+      "bytes": 723,
+      "sha256": "e66bfc25efe1eeb893a3714c8011f6a5c684ced110a43b520aa6cd3621ef7a64"
+    },
+    {
+      "path": "checks/canonical.log",
+      "bytes": 315,
+      "sha256": "b7afcc964eebe44a9ab051df1d818afbd63158be5311839ab98670c4e6e1abc3"
+    },
+    {
+      "path": "checks/culture.json",
+      "bytes": 309,
+      "sha256": "41bfa15db4cd9a1d226e8359b8f10be70fd5b4d94be542f5063f8d68beef3bdd"
+    },
+    {
+      "path": "checks/culture.log",
+      "bytes": 66,
+      "sha256": "d13e6648ada0cb647c683647bd41ef0388cfbc9a2f2f0d4be0fb99ef2a2b01ad"
+    },
+    {
+      "path": "checks/determinism.json",
+      "bytes": 323,
+      "sha256": "cfb059ed5104e683ee289610e9b160c603a1f4b3a6affdecf51910a205892c92"
+    },
+    {
+      "path": "checks/determinism.log",
+      "bytes": 71,
+      "sha256": "cc6c4f533caa6f47273b03ca1408dde89febedc558936bf77e5d714ebd977e7d"
+    },
+    {
+      "path": "checks/envelopes.json",
+      "bytes": 1108,
+      "sha256": "daf245ee3b8a7adaea2b2e763d99591f8a50a5d5f3114792711da2ce9d1fdc91"
+    },
+    {
+      "path": "checks/envelopes.log",
+      "bytes": 432,
+      "sha256": "408a83de56624967115af25f8c2edc00ed8f47b3d41a6349305eedcc77a44d54"
+    },
+    {
+      "path": "checks/functional-run.json",
+      "bytes": 4718,
+      "sha256": "3c1d7e45022c3004333657aef51439f9a81a28108c6155f411ee6fae003d310f"
+    },
+    {
+      "path": "checks/host-recovery.json",
+      "bytes": 255,
+      "sha256": "51b2880eb53471e0f43b00f217062842e47be45cfd40238093c8e84d3802a9bc"
+    },
+    {
+      "path": "checks/host-recovery.log",
+      "bytes": 119,
+      "sha256": "d2d238b01dcf9a722755e9eaa180d2f5ed3ca948af90324283e830b44a10650c"
+    },
+    {
+      "path": "checks/plan.json",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "checks/plan.log",
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    {
+      "path": "checks/product-boundary.json",
+      "bytes": 3544,
+      "sha256": "85491b43c106070deebb31af161330cbfce730f668bc2a158f5c0df2ed1736d6"
+    },
+    {
+      "path": "checks/release-build.log",
+      "bytes": 1077,
+      "sha256": "a7699b8d809557ac7869a508333c7349cab10f072bc4f41c3945501c4df2f152"
+    },
+    {
+      "path": "checks/release-guard.json",
+      "bytes": 195,
+      "sha256": "fcbb790be7db5548dc2e17837502fefe98f6ab3960923f7a592ca3d5bfe173ac"
+    },
+    {
+      "path": "diagnostic/harness.original.cs",
+      "bytes": 11584,
+      "sha256": "57db82d1e2acd764547aca4a1f6e3ae4e223f99b34ce9590fb81a19ff03b5cf9"
+    },
+    {
+      "path": "diagnostic/harness.original.csproj",
+      "bytes": 818,
+      "sha256": "c7ac1b9a8e0073977caa887ef92db94ebe1ba638d1dbf264349d2192f07cb484"
+    },
+    {
+      "path": "diagnostic/index.json",
+      "bytes": 2381,
+      "sha256": "8b91ed20a6776f6e14174f8a96d768c83286f0e7f79d37b818f872f17923b3a7"
+    },
+    {
+      "path": "diagnostic/result.original.json",
+      "bytes": 20595,
+      "sha256": "f98380608d7159cc234d9a9c22b181db8cc469465c6850cb7fc521963eff35ee"
+    },
+    {
+      "path": "diagnostic/scratch-manifest.original.json",
+      "bytes": 1520,
+      "sha256": "26dfe831fe06dc68cee7aa0c62d96d5ae29d57722f7a93e089b89d506975d0e7"
+    },
+    {
+      "path": "diagnostic/summary.original.json",
+      "bytes": 18434,
+      "sha256": "5244faf3e1434c66eb72d35e3995b339f3c5f981bac0a1bbdc41b6145fd77cbe"
+    },
+    {
+      "path": "diagnostic/summary.original.txt",
+      "bytes": 2590,
+      "sha256": "58e11cbcafa2a7e8f15e057e452e81f35401c9fea6a8cb303058ab6280562217"
+    },
+    {
+      "path": "diagnostic/supervisor.original.json",
+      "bytes": 566,
+      "sha256": "ede1deeb8c6928bb11af9355c21b09ffaca42f54a6c9beb3975ef01b9a10f65f"
+    },
+    {
+      "path": "scope-comparison.json",
+      "bytes": 836,
+      "sha256": "8de86f9f923ee268aad2d4f2935e060ffbfb881e219ac6b3036647925c978b7e"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 3036,
+      "sha256": "4e7c931d5d74ce2fc0a6fe6c0dc706ddb1f07ed8bcbe5136db95755b93675878"
+    }
+  ]
+}

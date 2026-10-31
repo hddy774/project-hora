@@ -1,0 +1,514 @@
+{
+  "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+  "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+  "status": "completed diagnostic; not final performance acceptance",
+  "preparation_started_utc": "2026-10-31T01:36:02Z",
+  "fixed_total_deadline_utc": "2026-10-31T01:46:02Z",
+  "actual_supervisor": {
+    "command": [
+      "taskset",
+      "-c",
+      "3",
+      "dotnet",
+      "/workspace/scratch/codec-diagnostic-df72405/bin/Release/net10.0/CodecDiagnostic.dll",
+      "/workspace/scratch/codec-diagnostic-df72405/run1"
+    ],
+    "pid": 153743,
+    "started_utc": "2026-10-31T01:42:12.772156+00:00",
+    "ended_utc": "2026-10-31T01:42:31.938883+00:00",
+    "fixed_deadline_utc": "2026-10-31T01:46:02+00:00",
+    "status": "completed",
+    "exit_code": 0,
+    "source": "df7240556a260202a248e57b1f9868e372b9d995",
+    "scope": "one bounded CPU3 diagnostic; not final performance acceptance"
+  },
+  "sdk": "10.0.403",
+  "runtime": ".NET 10.0.14",
+  "cpu_affinity": "3",
+  "runtime_tiered_pgo": "false",
+  "four_actual_assemblies_match_root_frozen_provenance": true,
+  "actual_assemblies": [
+    {
+      "name": "Chronicles.Core",
+      "informational": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "path": "/workspace/scratch/codec-diagnostic-df72405/bin/Release/net10.0/Chronicles.Core.dll",
+      "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04"
+    },
+    {
+      "name": "Chronicles.Game",
+      "informational": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "path": "/workspace/scratch/codec-diagnostic-df72405/bin/Release/net10.0/Chronicles.Game.dll",
+      "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "informational": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "path": "/workspace/scratch/codec-diagnostic-df72405/bin/Release/net10.0/Chronicles.Hosting.dll",
+      "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "informational": "0.2.1+df7240556a260202a248e57b1f9868e372b9d995",
+      "configuration": "Release",
+      "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+      "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7"
+    }
+  ],
+  "fixtures": [
+    {
+      "population": 100,
+      "month": 0,
+      "description": {
+        "kind": "explicit synthetic initial population; not founder history, growth evidence or a device measurement",
+        "seed": 42,
+        "population": 100,
+        "founders": 2,
+        "syntheticEntrants": 98,
+        "placement": "the original two founders remain at place 0; entrant ordinal n starts at n % 100",
+        "entrants": "adult human bodies at the current maturity boundary; alternating gestator/donor; all six foundations and five roots 5000; fourteen personality inputs 50",
+        "lifespanMonths": 1200000,
+        "assets": "entrants receive zero items, equipment, currency, treasury or property; the original two founders retain their actual genesis assets",
+        "cultivation": "entrants start at Qi layer 1 on path.1.0 using explicit current-structure metadata; zero work, acquired-root growth, mastery or claimed past breakthrough events",
+        "knowledge": "explicit initial chapter 1 memory: entry comprehension 100 and path.1.0 comprehension 30, transmission licensed; zero practical mastery, books or recipe knowledge",
+        "authority": "no synthetic ancestry, household, sect, political office, partner, guardian or past-life traces",
+        "scheduling": "all entrants are alive and initially unscheduled; ordinary observation, AI choices, labor, finite sources and cultivation seats remain active",
+        "timing": "fixture construction, restore and validation excluded from monthly measurements; the 12-month run uses a separate fresh warmup build with an identical opening hash",
+        "lawOverrides": {
+          "birth.enabled": 0,
+          "ecology.foodUse": 0,
+          "ecology.disasterChance": 0,
+          "ecology.sourceCapacity": 1000000,
+          "ecology.regrowth": 10000,
+          "life.qi": 120000,
+          "life.foundation": 120000,
+          "life.core": 120000,
+          "hazard.structureDamage": 0,
+          "hazard.bondDamage": 0,
+          "hazard.sealChance": 0,
+          "hazard.portalChance": 0,
+          "hazard.trialDamage": 0,
+          "cultivation.breakthroughRisk": 0
+        }
+      },
+      "openingHash": "cd381300e01e8c00d6ae9ac8bc53fea08c55eaa74eca013ab7feca6bc9dea8f2",
+      "randomState": 255951309216425373,
+      "canonicalBytes": 2544545,
+      "quotedPayloadTokenBytes": 3987573,
+      "escapeAddedBytes": 1443026,
+      "defaultEnvelopeBytes": 3987705,
+      "defaultEnvelopeToPayloadRatio": 1.5671583721254685,
+      "forcedBinaryEnvelopeBytes": 2544609,
+      "rawQuotes": 279064,
+      "rawBackslashes": 47706,
+      "nonAsciiBytes": 0,
+      "defaultEnvelopeKind": "JSON schema2",
+      "forcedBinaryUsesExistingInternalLimitSeam": true,
+      "oracleStreamBytesExactlyEqual": true
+    },
+    {
+      "population": 1000,
+      "month": 0,
+      "description": {
+        "kind": "explicit synthetic initial population; not founder history, growth evidence or a device measurement",
+        "seed": 42,
+        "population": 1000,
+        "founders": 2,
+        "syntheticEntrants": 998,
+        "placement": "the original two founders remain at place 0; entrant ordinal n starts at n % 100",
+        "entrants": "adult human bodies at the current maturity boundary; alternating gestator/donor; all six foundations and five roots 5000; fourteen personality inputs 50",
+        "lifespanMonths": 1200000,
+        "assets": "entrants receive zero items, equipment, currency, treasury or property; the original two founders retain their actual genesis assets",
+        "cultivation": "entrants start at Qi layer 1 on path.1.0 using explicit current-structure metadata; zero work, acquired-root growth, mastery or claimed past breakthrough events",
+        "knowledge": "explicit initial chapter 1 memory: entry comprehension 100 and path.1.0 comprehension 30, transmission licensed; zero practical mastery, books or recipe knowledge",
+        "authority": "no synthetic ancestry, household, sect, political office, partner, guardian or past-life traces",
+        "scheduling": "all entrants are alive and initially unscheduled; ordinary observation, AI choices, labor, finite sources and cultivation seats remain active",
+        "timing": "fixture construction, restore and validation excluded from monthly measurements; the 12-month run uses a separate fresh warmup build with an identical opening hash",
+        "lawOverrides": {
+          "birth.enabled": 0,
+          "ecology.foodUse": 0,
+          "ecology.disasterChance": 0,
+          "ecology.sourceCapacity": 1000000,
+          "ecology.regrowth": 10000,
+          "life.qi": 120000,
+          "life.foundation": 120000,
+          "life.core": 120000,
+          "hazard.structureDamage": 0,
+          "hazard.bondDamage": 0,
+          "hazard.sealChance": 0,
+          "hazard.portalChance": 0,
+          "hazard.trialDamage": 0,
+          "cultivation.breakthroughRisk": 0
+        }
+      },
+      "openingHash": "c74d9c585e3c06779f68b3914fe2abab76dc78c5dcbce70c67b5425e70a70c75",
+      "randomState": 255951309216425373,
+      "canonicalBytes": 14868179,
+      "quotedPayloadTokenBytes": 23035107,
+      "escapeAddedBytes": 8166926,
+      "defaultEnvelopeBytes": 23035239,
+      "defaultEnvelopeToPayloadRatio": 1.5492979335263586,
+      "forcedBinaryEnvelopeBytes": 14868243,
+      "rawQuotes": 1596664,
+      "rawBackslashes": 183606,
+      "nonAsciiBytes": 0,
+      "defaultEnvelopeKind": "JSON schema2",
+      "forcedBinaryUsesExistingInternalLimitSeam": true,
+      "oracleStreamBytesExactlyEqual": true
+    }
+  ],
+  "operations": [
+    {
+      "population": 100,
+      "operation": "SerializeCanonicalUtf8",
+      "samples": 3,
+      "elapsed_ms": [
+        12.7755,
+        12.2847,
+        12.1491
+      ],
+      "median_elapsed_ms": 12.2847,
+      "median_allocated_thread_bytes": 2604920
+    },
+    {
+      "population": 100,
+      "operation": "GameCodec.Hash",
+      "samples": 3,
+      "elapsed_ms": [
+        14.0579,
+        13.3635,
+        13.3696
+      ],
+      "median_elapsed_ms": 13.3696,
+      "median_allocated_thread_bytes": 2605128
+    },
+    {
+      "population": 100,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "samples": 3,
+      "elapsed_ms": [
+        1.6477,
+        1.4556,
+        1.4122
+      ],
+      "median_elapsed_ms": 1.4556,
+      "median_allocated_thread_bytes": 208
+    },
+    {
+      "population": 100,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "samples": 3,
+      "elapsed_ms": [
+        13.5454,
+        13.2141,
+        12.8236
+      ],
+      "median_elapsed_ms": 13.2141,
+      "median_allocated_thread_bytes": 60840
+    },
+    {
+      "population": 100,
+      "operation": "GameCodec.Clone",
+      "samples": 3,
+      "elapsed_ms": [
+        43.1106,
+        41.4079,
+        47.0669
+      ],
+      "median_elapsed_ms": 43.1106,
+      "median_allocated_thread_bytes": 8525928
+    },
+    {
+      "population": 100,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "samples": 3,
+      "elapsed_ms": [
+        28.0737,
+        27.9078,
+        34.6121
+      ],
+      "median_elapsed_ms": 28.0737,
+      "median_allocated_thread_bytes": 5828520
+    },
+    {
+      "population": 100,
+      "operation": "Invariants.Validate",
+      "samples": 2,
+      "elapsed_ms": [
+        28.3115,
+        29.4881
+      ],
+      "median_elapsed_ms": 28.8998,
+      "median_allocated_thread_bytes": 9321508.0
+    },
+    {
+      "population": 100,
+      "operation": "GameCodec.Encode_default",
+      "samples": 2,
+      "elapsed_ms": [
+        101.9404,
+        117.6798
+      ],
+      "median_elapsed_ms": 109.8101,
+      "median_allocated_thread_bytes": 29542116.0
+    },
+    {
+      "population": 100,
+      "operation": "GameCodec.Encode_forced_binary_existing_seam",
+      "samples": 2,
+      "elapsed_ms": [
+        88.1887,
+        85.6803
+      ],
+      "median_elapsed_ms": 86.9345,
+      "median_allocated_thread_bytes": 23010080.0
+    },
+    {
+      "population": 100,
+      "operation": "GameCodec.Decode_default",
+      "samples": 2,
+      "elapsed_ms": [
+        118.1374,
+        125.057
+      ],
+      "median_elapsed_ms": 121.5972,
+      "median_allocated_thread_bytes": 31358896.0
+    },
+    {
+      "population": 100,
+      "operation": "GameSaveStore.SaveAtomic_new",
+      "samples": 1,
+      "elapsed_ms": [
+        227.7206
+      ],
+      "median_elapsed_ms": 227.7206,
+      "median_allocated_thread_bytes": 64896312
+    },
+    {
+      "population": 100,
+      "operation": "GameSaveStore.SaveAtomic_overwrite",
+      "samples": 1,
+      "elapsed_ms": [
+        468.6595
+      ],
+      "median_elapsed_ms": 468.6595,
+      "median_allocated_thread_bytes": 135585240
+    },
+    {
+      "population": 100,
+      "operation": "GameSaveStore.Load_primary_and_backup",
+      "samples": 1,
+      "elapsed_ms": [
+        258.3634
+      ],
+      "median_elapsed_ms": 258.3634,
+      "median_allocated_thread_bytes": 70704640
+    },
+    {
+      "population": 100,
+      "operation": "WriteThroughFlush_existing_encoded_bytes_attribution_only",
+      "samples": 1,
+      "elapsed_ms": [
+        2.4576
+      ],
+      "median_elapsed_ms": 2.4576,
+      "median_allocated_thread_bytes": 232
+    },
+    {
+      "population": 1000,
+      "operation": "SerializeCanonicalUtf8",
+      "samples": 3,
+      "elapsed_ms": [
+        36.2434,
+        35.1592,
+        36.8549
+      ],
+      "median_elapsed_ms": 36.2434,
+      "median_allocated_thread_bytes": 15447000
+    },
+    {
+      "population": 1000,
+      "operation": "GameCodec.Hash",
+      "samples": 3,
+      "elapsed_ms": [
+        43.9589,
+        45.6181,
+        53.4676
+      ],
+      "median_elapsed_ms": 45.6181,
+      "median_allocated_thread_bytes": 15447208
+    },
+    {
+      "population": 1000,
+      "operation": "HashExistingCanonicalBuffer_attribution_only",
+      "samples": 3,
+      "elapsed_ms": [
+        8.6203,
+        8.9297,
+        8.4659
+      ],
+      "median_elapsed_ms": 8.6203,
+      "median_allocated_thread_bytes": 208
+    },
+    {
+      "population": 1000,
+      "operation": "ScratchStreamCanonicalHash_candidate",
+      "samples": 3,
+      "elapsed_ms": [
+        44.2874,
+        40.7436,
+        42.6253
+      ],
+      "median_elapsed_ms": 42.6253,
+      "median_allocated_thread_bytes": 580464
+    },
+    {
+      "population": 1000,
+      "operation": "GameCodec.Clone",
+      "samples": 3,
+      "elapsed_ms": [
+        177.4813,
+        227.3569,
+        197.8579
+      ],
+      "median_elapsed_ms": 197.8579,
+      "median_allocated_thread_bytes": 53855560
+    },
+    {
+      "population": 1000,
+      "operation": "DeserializeExistingBuffer_attribution_only",
+      "samples": 3,
+      "elapsed_ms": [
+        124.8967,
+        163.5513,
+        119.6749
+      ],
+      "median_elapsed_ms": 124.8967,
+      "median_allocated_thread_bytes": 37704072
+    },
+    {
+      "population": 1000,
+      "operation": "Invariants.Validate",
+      "samples": 2,
+      "elapsed_ms": [
+        240.2443,
+        201.377
+      ],
+      "median_elapsed_ms": 220.81065,
+      "median_allocated_thread_bytes": 73791148.0
+    },
+    {
+      "population": 1000,
+      "operation": "GameCodec.Encode_default",
+      "samples": 2,
+      "elapsed_ms": [
+        456.0004,
+        609.3074
+      ],
+      "median_elapsed_ms": 532.6539,
+      "median_allocated_thread_bytes": 195977772.0
+    },
+    {
+      "population": 1000,
+      "operation": "GameCodec.Encode_forced_binary_existing_seam",
+      "samples": 2,
+      "elapsed_ms": [
+        463.3918,
+        433.1396
+      ],
+      "median_elapsed_ms": 448.2657,
+      "median_allocated_thread_bytes": 158074168.0
+    },
+    {
+      "population": 1000,
+      "operation": "GameCodec.Decode_default",
+      "samples": 2,
+      "elapsed_ms": [
+        564.3778,
+        699.3302
+      ],
+      "median_elapsed_ms": 631.854,
+      "median_allocated_thread_bytes": 210191824.0
+    },
+    {
+      "population": 1000,
+      "operation": "GameSaveStore.SaveAtomic_new",
+      "samples": 1,
+      "elapsed_ms": [
+        1118.4068
+      ],
+      "median_elapsed_ms": 1118.4068,
+      "median_allocated_thread_bytes": 429200488
+    },
+    {
+      "population": 1000,
+      "operation": "GameSaveStore.SaveAtomic_overwrite",
+      "samples": 1,
+      "elapsed_ms": [
+        2309.7967
+      ],
+      "median_elapsed_ms": 2309.7967,
+      "median_allocated_thread_bytes": 894923496
+    },
+    {
+      "population": 1000,
+      "operation": "GameSaveStore.Load_primary_and_backup",
+      "samples": 1,
+      "elapsed_ms": [
+        1031.4169
+      ],
+      "median_elapsed_ms": 1031.4169,
+      "median_allocated_thread_bytes": 465970912
+    },
+    {
+      "population": 1000,
+      "operation": "WriteThroughFlush_existing_encoded_bytes_attribution_only",
+      "samples": 1,
+      "elapsed_ms": [
+        5.3658
+      ],
+      "median_elapsed_ms": 5.3658,
+      "median_allocated_thread_bytes": 232
+    }
+  ],
+  "checks": {
+    "canonical_stream_bytes_equal": true,
+    "stream_hash_equal": true,
+    "default_json_and_existing_binary_roundtrip_hash_equal": true,
+    "original_canonical_hash_and_rng_unchanged": true,
+    "clone_and_decode_rng_equal": true,
+    "save_load_hash_and_rng_equal": true,
+    "no_product_edits": true,
+    "no_advance_or_growth": true
+  },
+  "limitations": [
+    "Existing synthetic Month0 fixture; neither evolved save nor growth evidence.",
+    "One ordered run with 3 hash/clone, 2 codec/validate, 1 file-operation samples; pre-measure roundtrips warm serialization; cold and warm costs mixed.",
+    "Shared host with other CPU1/2 diagnostics; CPU3 pinned. Elapsed is diagnostic, not isolated final acceptance.",
+    "GC allocation counters describe bytes allocated, not retained objects, heap roots, RSS, or ArrayPool ownership.",
+    "Existing-buffer hash/deserialization and raw write probes are attribution only, not equivalent standalone replacements.",
+    "Forced binary uses the existing internal limit=0 functional seam. No process-wide setting or actual format policy changed."
+  ],
+  "candidates_for_root_review_only": [
+    {
+      "priority": 1,
+      "source": "src/Chronicles.Game/GameCodec.cs:43",
+      "change": "Hash canonical serialization through a bounded write-only IncrementalHash sink using the identical serializer/options; preserve full logical canonical hash. No persistent cache.",
+      "observed_evidence": "N1000 median allocated bytes 15,447,208 -> 580,464; 3/3 exact hash equality plus independent stream byte oracle. Median 45.6181 -> 42.6253 ms in this ordered shared-host diagnostic, not a final timing claim."
+    },
+    {
+      "priority": 2,
+      "source": "src/Chronicles.Game/GameCodec.cs:59-60",
+      "change": "Review whether the existing binary3 choice should account for escaped output/transient UTF16 size, instead of raw payload length alone. No new threshold chosen by this diagnostic.",
+      "observed_evidence": "N1000 raw 14,868,179 B, JSON envelope23,035,239 B, existing binary14,868,243 B. Forced binary median allocation158,074,168 vs default195,977,772 (about37.90MB per Encode). Logical hash/RNG roundtrip preserved."
+    },
+    {
+      "priority": 3,
+      "source": "src/Chronicles.Hosting/GameSaveStore.cs:18-31",
+      "change": "Potentially reuse the same-call verified existing slot result when safe, while retaining pending exact-byte decode, backup/recovery checks, and external-change semantics. Scope/race contract needs review before patch.",
+      "observed_evidence": "This new save decodes pending once; first overwrite decodes existing primary in sequence scan and again before backup, plus pending. N1000 new1118ms/429MB, overwrite2310ms/895MB, existing-byte WriteThrough+Flush5.37ms/232B. Repeated codec/restore/validate is a candidate; no exact time subtraction claim."
+    }
+  ]
+}

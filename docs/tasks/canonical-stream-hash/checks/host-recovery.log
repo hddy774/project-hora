@@ -1,0 +1,2 @@
+PASS INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals
+RESULT 1/1

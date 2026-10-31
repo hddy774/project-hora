@@ -1,60 +1,43 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5`
+매핑 소스: `df7240556a260202a248e57b1f9868e372b9d995`
 
 테스트 소스 지문: `9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117`
 <!-- actual-map-metadata:end -->
 
-현재 실제 등록 검사는 **314개**(feature276 + Program38), **24개 불변식·증인152개 연결**이다.
-새 검사0개이며 [기계 맵](invariant-execution-map.json)의 기존 이름·본문/보조 앵커·경계·INV 연결은 그대로다.
-맵의 실행 상태는 계속 `not_asserted`이고 제안 `test_status=not_implemented`·원장·진행도·readiness·Notion은 이 갱신에서 바꾸지 않는다.
+현재 등록314개(feature276+Program38),24INV·152개 증인의 Name/경계/claim/anchors는 이전94와 같다.
+맵은 계속 `not_asserted`이며 정본 제안test_status·원장·readiness를 변경하지 않는다.
 
-## 새 런타임 설정의 실제 전체314 원문
+## df72405의 실제 전체 기능
 
-소스 `94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5`, 제품 지문 `528e62a918ef892ad7cf28c42f7048b7be4a656fddcb0e260f3c586b9c6e891e`의
-루트 **전체314/314·실패0·exit0/end-clean**을 [원문 JSON](invariant-final-94ccb5d/functional.json),
-[로그](invariant-final-94ccb5d/functional.log), [감독 실행 기록](invariant-final-94ccb5d/root-run.original.json)에 바이트 그대로 보존했다.
-보고서 SHA256은 `afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616`이다.
-실제 worktree `/workspace/seonro-stable-runtime`, CPU0, 2026-10-30 19:46:40.755681~19:55:44.080518 UTC다.
-외부 성장/행동과4CPU 할당을 공유한 기능 실행이며 기능 소요 시간은 성능 표본이 아니다.
-[기존 검증기 대조](invariant-final-94ccb5d/execution-verification.json)는 실제314이름/24INV/152명명연결을 확인한다.
+소스 `df7240556a260202a248e57b1f9868e372b9d995`, 제품 지문 `0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e`의 root frozen 전체314/314·exit0을
+[원문](invariant-final-df72405/functional.json)·[로그](invariant-final-df72405/functional.log)·
+[실행 기록](invariant-final-df72405/root-run.original.json)과 [출처](invariant-final-df72405/provenance.json)에 연결했다.
+실제 실행은 CPU0,SDK10.0.403/.NET10.0.14,2026-10-31 01:25:30~01:34:20 UTC다.
+이 시간은 기능 검사 비용이며 성능 표본이 아니다.
 
-[소스 검토](invariant-execution-source-review-94ccb5d.json)는 af91 이후 변경이 `Directory.Build.props`의 설명주석과
-`TieredPGO=false` 두 줄뿐임을 기록한다. src/tests/scripts·게임 규칙·명령/RNG/저장·검사 본문은 변경되지 않았다.
-실제 [Tests runtimeconfig](invariant-final-94ccb5d/runtimeconfig.original.json)의 `System.Runtime.TieredPGO=false`와
-root가 기록한 `DOTNET_TieredPGO`/`COMPlus_TieredPGO` 두 override의 null을 확인했다.
-이것은 실제 Tests 프로세스의 동적 PGO 설정이며 TieredCompilation/GC/SIMD를 끄거나 기존 모든 APK에서 같은 설정을 실행했다는 뜻이 아니다.
-[출처 기록](invariant-final-94ccb5d/provenance.json)에 네 DLL의 실제 실행 폴더 사본/SHA·생성 정보버전·PE/CLI 메타데이터를 묶었다.
+[SourceReview](invariant-execution-source-review-df72405.json)는94→df의21제품경로를 검토한다.
+수행/인물 partial의 원래 토큰/본문·필드/초기화 보존은 원저자 기록과 실제14파일SHA를 연결하고,
+SDK403·Android 준비/fixture·진행 자동화는 각자 목적/경계를 적었다.
+기존 helper의15개 C#/SDK 범위와 추가6개 제품입력의 수동 검토를 구분했다.
+[보존 대조](invariant-final-df72405/preservation-checks.json)는314/24/152와 Name/claim/anchors 불변을 확인한다.
 
-## 이전314와 출처를 구분하는 경계
+## 과거 자료와 검사기의 범위
 
-[af91의 원문/감사](invariant-final-af91fb0/README.md)·[JSON 맵 사본](invariant-final-af91fb0/map.snapshot.json)·
-[Markdown 사본](invariant-final-af91fb0/map.snapshot.md)·[당시 SourceReview](invariant-execution-source-review-af91fb0.json)는 보존한다.
-사본은 당시 provenance의 map SHA와 바이트 동일하며 원래 상대 링크는 [당시 경로](https://github.com/hddy774/project-hora/blob/6fe2eb1a9157f206ff48601194155d8bfd443481/docs/evidence/0.2.1/invariant-execution-map.md)를 따른다.
-이전 manifest의 전역 map 경로는 당시 commit의 자료이며 현재 설정의 맵으로 다시 이름 붙이지 않는다.
+[94의 실제 원문](invariant-final-94ccb5d/README.md)과 [당시 SourceReview](invariant-execution-source-review-94ccb5d.json)는 그대로다.
+옛 active map의 byte/SHA는 [고정JSON](https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.json)·
+[고정Markdown](https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.md)에 보존했다.
+현재 테스트본문이 같아 옛94 보고서도 구조검사에는 통과한다. 이 사실을 새FP0cb2 실행으로 쓰지 않는다.
+실제 새원문SHA·run/source·4DLL·runtimeconfig와 같은 제품입력을 함께 대조한다.
+`--executed-source`는 호출자의 선언과 Git 테스트 대조이며 독립적인 과거 process-load 인증이 아니다.
 
-이번에는 검사 이름과 검사 본문 지문이 같아 **기존 구조 검증기만으로 이전 af91의314 보고서가 거절되지는 않는다**.
-[별도 출처 대조](invariant-final-94ccb5d/source-attribution-checks.json)는 이전 보고서의 구조 일치와 실제 실행 source/제품 지문 불일치를 구분한다.
-현재94 원문 SHA·실제 root-run·FP528·DLL 정보버전·명시 PGO=false runtimeconfig를 함께 확인하며 이전314를 현재 실행으로 재라벨하지 않는다.
-검증기의 `--executed-source`는 호출자 선언이고 독립적인 과거 프로세스 실행 인증이 아니다.
+이 새314 기능 결과를 새4규모/120장기·성장/민감도·native·유지서명/업그레이드·111개/릴리스 완료로 확대하지 않는다.
+이전528/4e 장기실패·인구32·자연9·native는 각 실제source 그대로 보존한다.
 
-이전 af91 고정 성능 불합격/quiet 진단·c6 기준선·f3/b491의 네이티브 결과·926 저장 실패는 각 source 그대로 보존한다.
-이 새 전체314 기능 결과를 새 네 규모 성능/장기·성장/AI·native·공식 서명/업그레이드·전체111개/릴리스 완료로 확대하지 않는다.
-해당 후속 실측과 플랫폼 판정은 새 소스의 별도 실제 자료가 필요하다.
-
-## 읽기 전용 검증과 다음 갱신
-
-```sh
-python3 scripts/validate-v021-invariant-execution.py \
-  --report docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json \
-  --executed-source 94ccb5d16f0c0d7bba0fd14aa8b0451dfe15bdd5 \
-  --output /workspace/scratch/invariant-runtime-recheck.json
+```text
+python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.1/invariant-final-df72405/functional.json --executed-source df7240556a260202a248e57b1f9868e372b9d995 --output /workspace/scratch/invariant-df72405-recheck.json
 ```
-
-이 문서 갱신은 root가 새 전체 성공 종료를 확인한 뒤 원문/메타데이터를 보존하고 기존 helper·검증기로 대조했다.
-새 빌드/기능 runner/성능·성장/collector 실행과 반복 full product 지문 계산은0이다. 제품·검사·스크립트·원장·진행도·readiness는 수정하지 않았다.
-다음 소스/런타임 설정이 바뀌면 해당 실제 변경을 검토하고 같은 출처의 새 원문/메타데이터로 다시 대조한다.
 
 ## 실제 검사 증인
 

@@ -1,0 +1,184 @@
+{
+  "kind": "protected-fields-projection-not-complete-api-copy",
+  "stage": "before",
+  "sourceFile": "/workspace/scratch/supplemental-archive-protected-before.json",
+  "sourceFileBytes": 22916,
+  "sourceFileSha256": "3edf586cb524ff37d586f908c80cbbb30d0c56e24fba014db86aebd7416d72c7",
+  "releaseFields": [
+    "id",
+    "tag_name",
+    "target_commitish",
+    "name",
+    "html_url",
+    "draft",
+    "prerelease",
+    "created_at",
+    "updated_at",
+    "published_at"
+  ],
+  "assetFields": [
+    "id",
+    "name",
+    "size",
+    "digest",
+    "state",
+    "content_type",
+    "label",
+    "created_at",
+    "updated_at",
+    "browser_download_url"
+  ],
+  "bodyFieldRepresentation": "exact decoded body UTF8 SHA256; body text not duplicated",
+  "excludedVolatileFields": [
+    "asset.download_count",
+    "author/uploader profile metadata",
+    "API boilerplate URLs outside protected fields"
+  ],
+  "endpoints": {
+    "releases/latest": {
+      "rawResponseUtf8Bytes": 6523,
+      "rawResponseUtf8Sha256": "753e51fde3355e24e20ab027e5d8936decb300354dece868a399a3b31ccc3041",
+      "fields": {
+        "id": 428209007,
+        "tag_name": "xianxia-observer/v0.2.0",
+        "target_commitish": "09e8c693e3ebb52d2495bffb1a48364eb9396dce",
+        "name": "선로만상록 프로젝트 v0.2.0",
+        "html_url": "https://github.com/hddy774/project-hora/releases/tag/xianxia-observer/v0.2.0",
+        "draft": false,
+        "prerelease": false,
+        "created_at": "2026-10-29T17:37:12Z",
+        "updated_at": "2026-10-29T17:51:38Z",
+        "published_at": "2026-10-29T17:51:38Z",
+        "bodyUtf8Sha256": "791abc93b72a7ab09d5a1589ca9c9c64133444f1b4ea8b98f0513349d5736891",
+        "assets": [
+          {
+            "id": 689402166,
+            "name": "XianxiaObserver-v0.2.0.apk",
+            "size": 43505222,
+            "digest": "sha256:b381a400514ea311117bb2b28d15c68baffc00d4ea71a689c9140a69867bf2df",
+            "state": "uploaded",
+            "content_type": "application/vnd.android.package-archive",
+            "label": "",
+            "created_at": "2026-10-29T17:51:30Z",
+            "updated_at": "2026-10-29T17:51:33Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/xianxia-observer/v0.2.0/XianxiaObserver-v0.2.0.apk"
+          }
+        ]
+      }
+    },
+    "releases/429687967": {
+      "rawResponseUtf8Bytes": 14547,
+      "rawResponseUtf8Sha256": "4156ba4ec7c745010577fb42082e9a3080d0fdeacccf432eb58958be4c1a156f",
+      "fields": {
+        "id": 429687967,
+        "tag_name": "evidence/v0.2.1-20261031",
+        "target_commitish": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+        "name": "0.2.1 민감도 실행 원형 보관 (2026-10-31)",
+        "html_url": "https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-20261031",
+        "draft": false,
+        "prerelease": true,
+        "created_at": "2026-10-30T18:52:50Z",
+        "updated_at": "2026-10-31T03:10:38Z",
+        "published_at": "2026-10-31T03:10:33Z",
+        "bodyUtf8Sha256": "d767c605654379774946e4a43ebf5ac88e9f15c9f990a9c6e3781162bbf1be09",
+        "assets": [
+          {
+            "id": 694201587,
+            "name": "v021-sensitivity-collection-41131479924-1.zip",
+            "size": 4870195,
+            "digest": "sha256:b4d92d45670c34a12d26fd834a7bd125408d9fc1fe1056e5a0c6e11b719f8ea0",
+            "state": "uploaded",
+            "content_type": "application/zip",
+            "label": "",
+            "created_at": "2026-10-31T03:10:19Z",
+            "updated_at": "2026-10-31T03:10:19Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-collection-41131479924-1.zip"
+          },
+          {
+            "id": 694201637,
+            "name": "v021-sensitivity-41131479924-1-seed-2026.zip",
+            "size": 1629500,
+            "digest": "sha256:fe760fca1291c12011cf16534e99dd15fd38ed3dbf40efbfb40e91ca3bb5c719",
+            "state": "uploaded",
+            "content_type": "application/zip",
+            "label": "",
+            "created_at": "2026-10-31T03:10:21Z",
+            "updated_at": "2026-10-31T03:10:22Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-41131479924-1-seed-2026.zip"
+          },
+          {
+            "id": 694201731,
+            "name": "v021-sensitivity-41131479924-1-seed-42.zip",
+            "size": 1606840,
+            "digest": "sha256:e06c71ba7b60812afc4211c31114c65d680dd57008f1ab41d2575b57c3220848",
+            "state": "uploaded",
+            "content_type": "application/zip",
+            "label": "",
+            "created_at": "2026-10-31T03:10:24Z",
+            "updated_at": "2026-10-31T03:10:24Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-41131479924-1-seed-42.zip"
+          },
+          {
+            "id": 694201829,
+            "name": "v021-sensitivity-41131479924-1-seed-98.zip",
+            "size": 1625169,
+            "digest": "sha256:5cfcf65768d31d1d6815689e601795c0f7495fcf811251508454913510ce4587",
+            "state": "uploaded",
+            "content_type": "application/zip",
+            "label": "",
+            "created_at": "2026-10-31T03:10:26Z",
+            "updated_at": "2026-10-31T03:10:27Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-41131479924-1-seed-98.zip"
+          },
+          {
+            "id": 694201906,
+            "name": "v021-sensitivity-inputs-41131479924-1.zip",
+            "size": 204982,
+            "digest": "sha256:3a9d3651fdf41e4169c4af69c65cb64b6e5b55550046c38a2b4fb053a6d1f556",
+            "state": "uploaded",
+            "content_type": "application/zip",
+            "label": "",
+            "created_at": "2026-10-31T03:10:29Z",
+            "updated_at": "2026-10-31T03:10:29Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-inputs-41131479924-1.zip"
+          },
+          {
+            "id": 694201962,
+            "name": "v021-sensitivity-prepare-41131479924-1.zip",
+            "size": 877,
+            "digest": "sha256:0a0c569896c6f649bc9597a8e9ccd59abefc55735c4d90593d88e7aa7a788e31",
+            "state": "uploaded",
+            "content_type": "application/zip",
+            "label": "",
+            "created_at": "2026-10-31T03:10:31Z",
+            "updated_at": "2026-10-31T03:10:31Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/v021-sensitivity-prepare-41131479924-1.zip"
+          },
+          {
+            "id": 694202127,
+            "name": "sensitivity-artifact-index-20261031.json",
+            "size": 22726,
+            "digest": "sha256:0a16fedf7185e2223befe8f69626380cfc16cfc32068a44c4cdd94d229fcccea",
+            "state": "uploaded",
+            "content_type": "application/json",
+            "label": "",
+            "created_at": "2026-10-31T03:10:36Z",
+            "updated_at": "2026-10-31T03:10:36Z",
+            "browser_download_url": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-20261031/sensitivity-artifact-index-20261031.json"
+          }
+        ]
+      }
+    },
+    "git/ref/tags/xianxia-observer/v0.2.0": {
+      "rawResponseUtf8Bytes": 401,
+      "rawResponseUtf8Sha256": "d298b97809939f1dfaca0f0a43134a058ab2ffe469845e91008b8a60ed105ded",
+      "fields": {
+        "ref": "refs/tags/xianxia-observer/v0.2.0",
+        "object": {
+          "type": "commit",
+          "sha": "09e8c693e3ebb52d2495bffb1a48364eb9396dce"
+        }
+      }
+    }
+  }
+}

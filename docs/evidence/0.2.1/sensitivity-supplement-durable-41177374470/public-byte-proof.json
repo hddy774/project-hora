@@ -1,0 +1,253 @@
+{
+  "complete": true,
+  "scope": "실제 공개7개 whole bytes의 무인증 대조; API metadata만의 확인이 아님",
+  "archiveRun": 41177374470,
+  "attempt": 1,
+  "source": "46c484e3ffb4bdac69725ff789c959ef3721c475",
+  "releaseId": 429767706,
+  "tag": "evidence/v0.2.1-sensitivity-41159864831",
+  "manifestSha256": "6d4dba436640d3251794e1c1c401646cbbcbb6fdb3af4ba4eee0c85d177b1135",
+  "zipCountExpected": 6,
+  "zipBytesExpected": 9952241,
+  "assets": [
+    {
+      "assetId": 694601640,
+      "name": "sensitivity-artifact-index-41159864831.json",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/sensitivity-artifact-index-41159864831.json",
+      "bytes": 24058,
+      "sha256": "20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "public server digest; status comparison is separate",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:40:50.484912+00:00"
+    },
+    {
+      "assetId": 694601297,
+      "name": "v021-sensitivity-41159864831-1-seed-2026.zip",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-2026.zip",
+      "bytes": 1625931,
+      "sha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "fixed manifest and public server digest",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:40:53.389682+00:00"
+    },
+    {
+      "assetId": 694601192,
+      "name": "v021-sensitivity-41159864831-1-seed-42.zip",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-42.zip",
+      "bytes": 1617563,
+      "sha256": "9c2467c8b7e14b94fd5d1420f3fd2342f20bb4ded72b2abacd32f87a994b57c1",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "fixed manifest and public server digest",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:40:54.875046+00:00"
+    },
+    {
+      "assetId": 694601250,
+      "name": "v021-sensitivity-41159864831-1-seed-98.zip",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-98.zip",
+      "bytes": 1625359,
+      "sha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "fixed manifest and public server digest",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:40:57.089473+00:00"
+    },
+    {
+      "assetId": 694601490,
+      "name": "v021-sensitivity-collection-41159864831-1.zip",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-collection-41159864831-1.zip",
+      "bytes": 4877539,
+      "sha256": "a6ad994669f00135837aa995175b4d5e65e471aa41e805bd65fd9d9be58e2454",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "fixed manifest and public server digest",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:40:59.077679+00:00"
+    },
+    {
+      "assetId": 694601347,
+      "name": "v021-sensitivity-inputs-41159864831-1.zip",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-inputs-41159864831-1.zip",
+      "bytes": 204978,
+      "sha256": "503f499ff67f73639c132a4551476f1435502bff4f16300ef6965c9e3558c8fd",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "fixed manifest and public server digest",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:41:00.686292+00:00"
+    },
+    {
+      "assetId": 694601399,
+      "name": "v021-sensitivity-prepare-41159864831-1.zip",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-prepare-41159864831-1.zip",
+      "bytes": 871,
+      "sha256": "3e92f4e8a0b19f4fe1d7d4add61cafea07860f39e44aaaabf262c52c0aef60cf",
+      "httpStatus": 200,
+      "finalHost": "release-assets.githubusercontent.com",
+      "comparedWith": "fixed manifest and public server digest",
+      "authorizationSent": false,
+      "cookieSent": false,
+      "requests": [
+        {
+          "host": "github.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": false
+        },
+        {
+          "host": "release-assets.githubusercontent.com",
+          "scheme": "https",
+          "authorizationPresent": false,
+          "cookiePresent": false,
+          "accept": "application/octet-stream",
+          "temporaryRedirectQueryOmitted": true
+        }
+      ],
+      "checkedAtUtc": "2026-10-31T06:41:01.975593+00:00"
+    }
+  ],
+  "remoteWrites": 0,
+  "newGameMeasurementsWorkflowLabelsOrPr": 0,
+  "originalBatchResultUnchanged": {
+    "classification": "workflowFAILED;4complete+2CLI-timeout-partial",
+    "completed_horizons": 4,
+    "cli_timeout_partial": 2,
+    "reports_complete_fields_remain_false": true,
+    "requested_flag_by_seed": {
+      "42": false,
+      "98": true,
+      "2026": false
+    },
+    "completed_1500_seed42_and_2026": true,
+    "partial_900_seed42_and_2026": true,
+    "different_plan_condition_index_is_not_batch_acceptance": true,
+    "acceptance_relabeling": false
+  },
+  "otherReleaseProtection": "root independently compares before/after fields; this downloader performs only GETs of the new seven public assets",
+  "publicRequestsCheckedNoAuthorizationOrCookie": 14,
+  "zipBytesVerified": 9952241,
+  "indexBytesVerified": 24058,
+  "allSevenWholeBytesVerified": true
+}

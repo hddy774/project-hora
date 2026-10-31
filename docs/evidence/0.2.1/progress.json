@@ -24,7 +24,7 @@
     }
   ],
   "schema_version": 1,
-  "source_commit": "692d4c9d7ba218d20e422b9a00008dbd39cec524",
-  "phase": "성장 보고 수용·선행 마감 완료, 최종 120개월 안정성 측정",
+  "source_commit": "ae8353401d694cb36e76b1f76677d09add82b39d",
+  "phase": "보충 성장 원문 보관 완료, 최종 120개월 안정성 측정",
   "calculation": "수용 근거와 모든 선행 작업이 확인된 완료 작업 수 / 정본111개"
 }

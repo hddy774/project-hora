@@ -1,0 +1,24 @@
+{
+  "command": [
+    "dotnet",
+    "/home/runner/work/_temp/v021-sensitivity-41131479924-1-2026/build/bin/Chronicles.Game.Tests/release/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--sensitivity",
+    "/home/runner/work/_temp/v021-sensitivity-41131479924-1-2026/out/sensitivity.json",
+    "--sensitivity-plan",
+    "/home/runner/work/_temp/v021-sensitivity-41131479924-1-2026/inputs/plan.json",
+    "--sensitivity-seed",
+    "2026"
+  ],
+  "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "metadata_source_commit": "42ebf359de90c3b3f00292bf6703e359b378f630",
+  "seed": 2026,
+  "plan_sha256": "2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+  "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "started_at_utc": "2026-10-30T21:30:48.160306+00:00",
+  "monotonic_started": 126.080343542,
+  "wall_cap_minutes": 240,
+  "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+  "timeout_meaning": "부분/중단은 실패로 보존하며 관찰창·시드·법칙이나 완료 플래그를 바꾸지 않음"
+}

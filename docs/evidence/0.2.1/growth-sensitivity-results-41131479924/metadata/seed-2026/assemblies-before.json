@@ -1,0 +1,22 @@
+[
+  {
+    "assembly": "Chronicles.Core",
+    "bytes": 5120,
+    "sha256": "baa4f44ffa3c63e9710cc06af528a24d58d6cfa9ac76c3d8866b9db08979f9d4"
+  },
+  {
+    "assembly": "Chronicles.Game",
+    "bytes": 2258432,
+    "sha256": "b9dc4cfc7c52c0f385572fc853e31995503cb8d8f1fc213b0c5c5b15a0f25328"
+  },
+  {
+    "assembly": "Chronicles.Hosting",
+    "bytes": 23552,
+    "sha256": "fb90d62e1593eb5199c999b4d2269e8f189bce29b60aecbe8bedb93c23d3861e"
+  },
+  {
+    "assembly": "Chronicles.Game.Tests",
+    "bytes": 1500672,
+    "sha256": "ea438e1c7859add0062bf6d357fe1e44a17e8c88549d253d8d671c022afb2e7b"
+  }
+]

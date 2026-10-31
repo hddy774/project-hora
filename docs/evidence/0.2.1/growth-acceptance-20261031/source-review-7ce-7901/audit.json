@@ -1,0 +1,595 @@
+{
+  "kind": "readonly-z04-source-boundary-audit",
+  "createdUtc": "2026-10-31T03:46:39.942743+00:00",
+  "growthExecutedSource": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "finalFunctionalAndShortMeasurementSource": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "growthTree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+  "finalTree": "c2c9628a342d5369bf2c692d9d37a7ac3fd6d391",
+  "scope": [
+    "src/Chronicles.Game",
+    "src/Chronicles.Core"
+  ],
+  "changedPaths": 18,
+  "unchangedExistingPaths": 94,
+  "groups": {
+    "cultivation_partial": [
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "src/Chronicles.Game/Cultivation/CultivationEngine.cs"
+    ],
+    "social_partial": [
+      "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+      "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "src/Chronicles.Game/World.PeopleSocialEcology.cs"
+    ],
+    "canonical_hash": [
+      "src/Chronicles.Game/CanonicalHashSink.cs"
+    ],
+    "codec": [
+      "src/Chronicles.Game/GameCodec.cs"
+    ],
+    "knowledge_owned": [
+      "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "src/Chronicles.Game/World.KnowledgeBridge.cs"
+    ]
+  },
+  "coverage": [
+    {
+      "path": "src/Chronicles.Game/CanonicalHashSink.cs",
+      "status": "A",
+      "classification": "canonical_hash",
+      "prs": [
+        237
+      ],
+      "beforeSha256": null,
+      "afterSha256": "65a0b7dc45b79164e8a7a196cebc62ac0dd9732fcae9940537e9d74fb7fcefed",
+      "coverageVerified": true,
+      "basis": "actual diff hunks read; final bytes equal integrated leaf implementation 35279c6",
+      "proofs": [
+        {
+          "path": "docs/tasks/canonical-stream-hash/verification.json",
+          "sha256": "4e7c931d5d74ce2fc0a6fe6c0dc706ddb1f07ed8bcbe5136db95755b93675878"
+        },
+        {
+          "path": "docs/tasks/canonical-stream-hash/checks/canonical.json",
+          "sha256": "e66bfc25efe1eeb893a3714c8011f6a5c684ced110a43b520aa6cd3621ef7a64"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+      "status": "A",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": null,
+      "afterSha256": "9f7ca93cc2bbd9f7e21ab23f9de1e6340ac2a3d8608c422def8464f47de148c1",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+      "status": "A",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": null,
+      "afterSha256": "418f335adbe3e9c5506e1a593cd92073a629fb5eeeb32af6f2476d3eccd826da",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+      "status": "A",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": null,
+      "afterSha256": "0c850b77731558785885b5b0e718bc2f2550597ab216cf45c03457b51e9b5b3c",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+      "status": "A",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": null,
+      "afterSha256": "25d05f7b4205abfc391ad3b8ca5ac98ede9a704204787a005da942f982c95926",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+      "status": "A",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": null,
+      "afterSha256": "efd1a0cc5c5df67447d4aee7dcb278c6812920488c1a679285c8e490086da2e0",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+      "status": "A",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": null,
+      "afterSha256": "bc922db1478bf2e90da5726f41bf00a82ec648bff6d1b150e54b265c8ad76385",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "status": "M",
+      "classification": "cultivation_partial",
+      "prs": [
+        229
+      ],
+      "beforeSha256": "b1e36a663b66000da97cb5d0f0a613a35a5638f80f54e74815cd7f12fb5ff632",
+      "afterSha256": "23e263379bcdd04176fb2e7de53199bdad2f44500a8ae523b1db8a7b4e784a25",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+          "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/GameCodec.cs",
+      "status": "M",
+      "classification": "codec",
+      "prs": [
+        236,
+        237,
+        244
+      ],
+      "beforeSha256": "ddb307671a42f0174e4ceabf47831b9385d5d54b109e3e88128c1f59ff5a26b1",
+      "afterSha256": "9add702bfbc52beb1487bb70285b2811bbb11be4574a591226d7a872e4e30302",
+      "coverageVerified": true,
+      "basis": "actual diff hunks read; final bytes equal integrated leaf implementation c4e4c42",
+      "proofs": [
+        {
+          "path": "docs/tasks/233-compact-save-envelope.md",
+          "sha256": "aeacb7240a4a00fe13fe2cbdc3730a31e8f88ed6020c9e1381a1523442d3364c"
+        },
+        {
+          "path": "docs/evidence/0.2.1/compact-save-envelope/validation.json",
+          "sha256": "7c9d0b65721f2016e13707c3a8b97ad1ff0049fa9628f14726ee1073af4e0537"
+        },
+        {
+          "path": "docs/tasks/schema2-utf8-segments/verification.json",
+          "sha256": "83a240c61f1f16db696bc8ada0c4f466efac0f57588a2851aeff33308699fbfb"
+        },
+        {
+          "path": "docs/tasks/schema2-utf8-segments/original-comparison/result.json",
+          "sha256": "2a5278071c63e06660e823c647809ca903258bc31fb2a47e08ee88a9e451a356"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/Knowledge/KnowledgeAuthority.cs",
+      "status": "M",
+      "classification": "knowledge_owned",
+      "prs": [
+        240
+      ],
+      "beforeSha256": "a44198789d7f49fe7003a5978b9d7f835aeec620ce1959477c5e94b110cb2818",
+      "afterSha256": "67e6a8d1791b18393d0a6a57094634cb61ce9efdde02185d92643eec6c44fbb6",
+      "coverageVerified": true,
+      "basis": "actual diff hunks read; final bytes equal integrated leaf implementation b7b96eb",
+      "proofs": [
+        {
+          "path": "docs/tasks/knowledge-owned-checkpoint/verification.json",
+          "sha256": "51a9a56c5fda958bb7b6c75bfc42e22695a49b65cfc54e1655771d29de7a819f"
+        },
+        {
+          "path": "docs/tasks/knowledge-owned-checkpoint/checks/ab-comparison.json",
+          "sha256": "53aca35f26459e6d4ab121137ce1760b9c1d633c180088e51a76f563e55e1c7b"
+        },
+        {
+          "path": "docs/tasks/knowledge-owned-checkpoint/checks/independent-source-review.json",
+          "sha256": "44e6f8f1449ff5397b0cf450194774cdd204dcf311c26e6f086344354b5d2dcc"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.KnowledgeBridge.cs",
+      "status": "M",
+      "classification": "knowledge_owned",
+      "prs": [
+        240
+      ],
+      "beforeSha256": "12bee37a99145cc0953e3303e6669908d4115a8c18416a31a5a7e8bf5dcaa4fe",
+      "afterSha256": "a65770d733474205d9ce6d4e28d4ea3ee4979ae0d08c89fb5df6006fe88c5520",
+      "coverageVerified": true,
+      "basis": "actual diff hunks read; final bytes equal integrated leaf implementation b7b96eb",
+      "proofs": [
+        {
+          "path": "docs/tasks/knowledge-owned-checkpoint/verification.json",
+          "sha256": "51a9a56c5fda958bb7b6c75bfc42e22695a49b65cfc54e1655771d29de7a819f"
+        },
+        {
+          "path": "docs/tasks/knowledge-owned-checkpoint/checks/ab-comparison.json",
+          "sha256": "53aca35f26459e6d4ab121137ce1760b9c1d633c180088e51a76f563e55e1c7b"
+        },
+        {
+          "path": "docs/tasks/knowledge-owned-checkpoint/checks/independent-source-review.json",
+          "sha256": "44e6f8f1449ff5397b0cf450194774cdd204dcf311c26e6f086344354b5d2dcc"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "status": "M",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": "b3f7855d524f3a9fed32a3b184357659a5f0d4b1499b8c89968e260db1deb8ca",
+      "afterSha256": "6b0779a0a0061ef19a598beea23f4c5ab6a80d5a1bb56387b7abd90ec6fd5809",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEcology.cs",
+      "status": "A",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": null,
+      "afterSha256": "b188c64def2c2eae27dec7963944bf450e77ba7495f0cd99af1103aed68c53b5",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+      "status": "A",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": null,
+      "afterSha256": "5fbbdf95bf2c071eccca373dbfc8b3ec43b8cc7f64e878bfb7f2ae47500fd3fc",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+      "status": "A",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": null,
+      "afterSha256": "1b506e983980c90f65838064fe3ad46ae65536be89ed751e82eeccda5e072d0c",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+      "status": "A",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": null,
+      "afterSha256": "38895bf1c86893f9225b7a0df53ca0d4b97d5028cc409b2db1cb3856f64e3f20",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+      "status": "A",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": null,
+      "afterSha256": "0c965e44ed6c3454a181709efb1f3b49d3a094b88bf8da10ee067653fbbf7adf",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+      "status": "A",
+      "classification": "social_partial",
+      "prs": [
+        228
+      ],
+      "beforeSha256": null,
+      "afterSha256": "c3d84b4b2afc9f7372137baf9b77a6c12512948f9ec94773d2d5813ed2f9c12f",
+      "coverageVerified": true,
+      "basis": "recorded Roslyn token/member proof, with growth-original/final-file SHA chain verified now",
+      "proofs": [
+        {
+          "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+          "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd"
+        }
+      ]
+    }
+  ],
+  "splitProofBridges": {
+    "cultivation_partial": {
+      "path": "docs/tasks/2026-10-31-cultivation-engine-split/member-comparison.json",
+      "sha256": "55a4590851cf446b38137674f38f58a798765d3d805d09b27028452156b9f8c5",
+      "recordedProofBaseline": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+      "growthOriginalPath": "src/Chronicles.Game/Cultivation/CultivationEngine.cs",
+      "growthOriginalSha256": "b1e36a663b66000da97cb5d0f0a613a35a5638f80f54e74815cd7f12fb5ff632",
+      "growthOriginalMatchesRecordedBaseline": true,
+      "allFinalFileSha256MatchRecordedResults": true,
+      "recordedMemberTokenProof": {
+        "members": 43,
+        "methodCount": 43,
+        "added": 0,
+        "removed": 0,
+        "tokensEqual": true,
+        "bodyTokensEqual": true,
+        "commentsOrTriviaEqual": true
+      },
+      "files": [
+        "src/Chronicles.Game/Cultivation/CultivationEngine.Formation.cs",
+        "src/Chronicles.Game/Cultivation/CultivationEngine.Martial.cs",
+        "src/Chronicles.Game/Cultivation/CultivationEngine.Practice.cs",
+        "src/Chronicles.Game/Cultivation/CultivationEngine.Preparation.cs",
+        "src/Chronicles.Game/Cultivation/CultivationEngine.Progression.cs",
+        "src/Chronicles.Game/Cultivation/CultivationEngine.Recovery.cs",
+        "src/Chronicles.Game/Cultivation/CultivationEngine.cs"
+      ],
+      "currentAuditReranRoslyn": false
+    },
+    "social_partial": {
+      "path": "docs/tasks/people-social-bridge-split/member-comparison.json",
+      "sha256": "795053900a635baca502ef2f8e5b9281d78abeb318c72237daa0b353e36f99dd",
+      "recordedProofBaseline": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+      "growthOriginalPath": "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+      "growthOriginalSha256": "b3f7855d524f3a9fed32a3b184357659a5f0d4b1499b8c89968e260db1deb8ca",
+      "growthOriginalMatchesRecordedBaseline": true,
+      "allFinalFileSha256MatchRecordedResults": true,
+      "recordedMemberTokenProof": {
+        "members": 43,
+        "methodCount": 40,
+        "added": 0,
+        "removed": 0,
+        "tokensEqual": true,
+        "bodyTokensEqual": true,
+        "commentsOrTriviaEqual": true
+      },
+      "files": [
+        "src/Chronicles.Game/World.PeopleSocialBridge.cs",
+        "src/Chronicles.Game/World.PeopleSocialRequests.cs",
+        "src/Chronicles.Game/World.PeopleSocialEvents.cs",
+        "src/Chronicles.Game/World.PeopleSocialReputation.cs",
+        "src/Chronicles.Game/World.PeopleSocialTraits.cs",
+        "src/Chronicles.Game/World.PeopleSocialOaths.cs",
+        "src/Chronicles.Game/World.PeopleSocialEcology.cs"
+      ],
+      "currentAuditReranRoslyn": false
+    }
+  },
+  "unclassifiedChangedPaths": [],
+  "coreChanges": [],
+  "criticalUnchangedFiles": [
+    {
+      "path": "src/Chronicles.Core/DeterministicRandom.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "86feccc6598fc802487cc39884efc1ecaab2076ef0e3fcc061858a6f4a3a2bf9"
+    },
+    {
+      "path": "src/Chronicles.Game/Laws.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "d7aa91b8949733af520211699ca61e49d22221ef4461aa4f74825a715ce6adf6"
+    },
+    {
+      "path": "src/Chronicles.Game/State.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "60fb035cebacd05c0ffad9938cbed66c97a4b397546d2206f6d2a4bc168cf0ae"
+    },
+    {
+      "path": "src/Chronicles.Game/World.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "67613d3a441ecf9fa41eaa60333c77b06b8f2b23c85ee1a85ecb3af88aa1af2e"
+    },
+    {
+      "path": "src/Chronicles.Game/World.Actions.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "9621c9fda7a40aa019bbc82222600f651dd1bee98f985abfde1f9db9e068c284"
+    },
+    {
+      "path": "src/Chronicles.Game/World.Planning.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "b49c60328ac9af476df399ed5e8edfd152565e692f99925e997f405d7ada2c40"
+    },
+    {
+      "path": "src/Chronicles.Game/World.IntelligentPlanning.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "052dda0447ea7835e849e2ebf9c971db6ccace96d39ed6ab3137320e69a64b55"
+    },
+    {
+      "path": "src/Chronicles.Game/World.CultivationPlanning.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "3178ae2cc66d31f03b75def8397573af6a888210ac2df6d37505bbe0c8dba608"
+    },
+    {
+      "path": "src/Chronicles.Game/World.EcologyBridge.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "1f003b9f3ab974874c20fb020248d5f7d081a2480968fa515fd9f475783b4d8f"
+    },
+    {
+      "path": "src/Chronicles.Game/World.EcologyRecovery.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "7ea3fc1e53245c1c0f2258f6959f9e42d5824f80caac1dfd84359d885825d504"
+    },
+    {
+      "path": "src/Chronicles.Game/World.PeopleBridge.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "ca80019b5850000c210291654334e96373e30e6d710e7cd751c45292a5516f84"
+    },
+    {
+      "path": "src/Chronicles.Game/World.CultivationBridge.cs",
+      "beforeEqualsAfter": true,
+      "sha256": "3ae92e75fd1555ec1a70c434f4e3816d39de79c60858af32ba5afb55a0cf626c"
+    }
+  ],
+  "knowledgeFiniteComparison": {
+    "status": "passed",
+    "baselineSource": "df7240556a260202a248e57b1f9868e372b9d995",
+    "candidateSource": "db0feae",
+    "driverSha256": "a7ab6f1f45794f49c948d10a827127063c9f5b385b28aaac84b37e93a22543fe",
+    "cpu": 1,
+    "seeds": [
+      42,
+      73
+    ],
+    "scenarios": [
+      "transitions-42",
+      "transitions-73",
+      "physical-failure-42"
+    ],
+    "allRowsEqual": true,
+    "rows": 49,
+    "monthlyAndOpeningSnapshots": 20,
+    "actualSavedBytesEqual": true,
+    "baselineRowsSha256": "c6e24bcf3f9d080b1d680dcf8f34c835e4043bfede8c22e9dbc7ad4bafadf596",
+    "candidateRowsSha256": "c6e24bcf3f9d080b1d680dcf8f34c835e4043bfede8c22e9dbc7ad4bafadf596",
+    "at": "2026-10-31T02:13:29.822794+00:00",
+    "scope": "finite public-command monthly hash/RNG/NextId/knowledge/save-byte/codec-resume equivalence; not whole or performance acceptance"
+  },
+  "codecHunkClassification": [
+    {
+      "scope": "GameCodec.Hash + new CanonicalHashSink",
+      "pr": 237,
+      "contract": "same canonical UTF8 SHA-256; caller-owned hash sink; no world/time/RNG writes"
+    },
+    {
+      "scope": "JsonPayloadLimit128MiB to16MiB",
+      "pr": 236,
+      "contract": "existing binary3 selected above16MiB; canonical state/checksum/sequence and reads preserved; physical save bytes may differ by format"
+    },
+    {
+      "scope": "System.Buffers using + Encode JSON arm + EncodeJsonEnvelope helper",
+      "pr": 244,
+      "contract": "schema2 UTF8 segment writing with same property order/encoder/MaxDepth/escaping; final whole byte output still exists"
+    }
+  ],
+  "functionalEvidence": {
+    "source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "reportedByRoot": true,
+    "total": 323,
+    "failed": 0,
+    "exit": 0,
+    "reportSha256": "1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba",
+    "newRunByThisAudit": false
+  },
+  "shortPopulationEvidence": "population-crosscheck.json",
+  "sourceConclusion": "all18Game/Core paths classified; no additional transition-policy, law, clock, RNG or AI-selection source change found in this exact delta",
+  "limits": [
+    "This is source inspection and reuse of existing exact file/token proofs; Roslyn/build/function/growth/performance were not rerun by this audit.",
+    "No new6000-month natural-growth execution at7901; historical7ce outcomes keep their actual source.",
+    "Knowledge comparison uses declared finite fixtures, seeds42/73, 49command/boundary rows and20save files; it does not cover every natural-growth branch.",
+    "The final four-population comparison covers12months; matching initial/final hashes, laws/fixture/workload/cognition bytes does not prove a6000-month trajectory.",
+    "PR236 intentionally changes the save envelope above16MiB; same logical state does not promise same old/new physical save bytes at that size.",
+    "SDK/runtime/host/build/test harness/platform inputs are outside the18Game/Core path scope; final performance/native/long-stability acceptance remains separate."
+  ],
+  "newExecutions": {
+    "build": 0,
+    "functional": 0,
+    "growth": 0,
+    "performance": 0
+  },
+  "productLedgerReadinessWrites": 0,
+  "newPullRequests": 0,
+  "acceptanceDecisionOwner": "root"
+}

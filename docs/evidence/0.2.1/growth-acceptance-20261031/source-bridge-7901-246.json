@@ -1,0 +1,17 @@
+{
+  "kind": "existing-source-read-only-bridge",
+  "checkedUtc": "2026-10-31T05:17:59.903768+00:00",
+  "from": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "to": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "gameCoreChangedPaths": [],
+  "actualNewFunctionalReport": "docs/evidence/0.2.1/invariant-final-2464337/functional.json",
+  "functionalSha256": "053535d3f2f4269a4404dbc21b44297dbf71664972a41fe9f2297733fe0793e2",
+  "productFingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "selectedPythonChanges": [
+    "scripts/android_readiness.py",
+    "scripts/test-android-readiness.py",
+    "scripts/fixtures/android-launch-timeout-api24-41165712717.txt"
+  ],
+  "pythonReview": "docs/tasks/android-launch-pending/parser-correction.json",
+  "limit": "C# 동일 경로와 기존 검증을 연결한다. 최신 소스의 새 6000개월 성장 실행을 뜻하지 않는다."
+}

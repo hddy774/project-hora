@@ -3,8 +3,8 @@
   "issue": 223,
   "unit": {
     "command": "taskset -c 3 python3 scripts/test-android-readiness.py",
-    "tests": 13,
-    "passed": 13,
+    "tests": 15,
+    "passed": 15,
     "exitCode": 0,
     "nativeAndroidExecution": false,
     "stalePrelaunchFixture": "유효한 APP_LOG 사전 표식을 저장하고 clear 뒤의 빈 로그로는 합격하지 않음"
@@ -44,8 +44,8 @@
       "sha256": "fcbb790be7db5548dc2e17837502fefe98f6ab3960923f7a592ca3d5bfe173ac"
     },
     "unit.log": {
-      "bytes": 112,
-      "sha256": "848660d8816e8047e1a43a22a5cda413812c750a4daaf9739cd54a723b9fef31"
+      "bytes": 114,
+      "sha256": "bc12bc8894193f1b90c46460d32623dd83d65eff3fa61a7136bee5fe5776782c"
     },
     "kvm-flow.log": {
       "bytes": 3702,
@@ -58,6 +58,10 @@
     "captured-ui-replay.log": {
       "bytes": 171,
       "sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4"
+    },
+    "capture-order-before.log": {
+      "bytes": 1456,
+      "sha256": "9e1599216e1902f09124d43a3a9ef62a6cae40938f230245465344fe2b481e5c"
     }
   },
   "kvmShellFlow": {
@@ -72,6 +76,14 @@
     "newAndroidOrAdbExecutions": 0
   },
   "expectedFailingRegression": {
-    "window-scope-before.log": "수정 전 windows-only query로 실제flow가 실패함을 보인 의도된 exit1"
+    "window-scope-before.log": "수정 전 windows-only query로 실제flow가 실패함을 보인 의도된 exit1",
+    "capture-order-before.log": "수정 전 늦은dialog/stale좌표 회귀의 의도된 exit1"
+  },
+  "captureOrderRegression": {
+    "beforeExit": 1,
+    "afterPassed": 15,
+    "lateDialogMustBeHandledBeforeSuccess": true,
+    "staleDialogCoordinatesNeverTapped": true,
+    "newAndroidOrAdbExecutionsLocally": 0
   }
 }

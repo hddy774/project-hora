@@ -104,6 +104,27 @@ class AndroidReadinessTests(unittest.TestCase):
         self.assertNotIn("mCurrentFocus", WINDOWS_ONLY)
         self.assertFalse(native.foreground_app(FOREGROUND, WINDOWS_ONLY))
 
+    def test_stale_launcher_xml_never_taps_the_current_app(self):
+        self.assertIsNone(native.inspect_dialog(QUICKSTEP, WINDOW, APP_LOG))
+
+    def test_dialog_appearing_at_screenshot_is_handled_before_acceptance(self):
+        device = Device(Clock())
+        device.after_wait = (APP_UI, APP_LOG, WINDOW)
+        original = device.run
+        popped = False
+        def popup_during_screen(args, **kwargs):
+            nonlocal popped
+            result = original(args, **kwargs)
+            if args[1:3] == ["exec-out", "screencap"] and not popped:
+                popped = True
+                device.xml = QUICKSTEP
+                device.window = "mCurrentFocus=Window{ Application Not Responding: com.android.launcher3 }"
+            return result
+        device.run = popup_during_screen
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertTrue(self.execute(device, Path(directory), timeout=5)["passed"])
+            self.assertEqual(len(device.taps), 1)
+
     def test_launch_status_and_requested_activity_are_both_required(self):
         good = "Status: ok\nActivity: " + native.PACKAGE + "/" + ACTIVITY + "\n"
         native.check_launch(0, good, ACTIVITY)
@@ -120,7 +141,7 @@ class AndroidReadinessTests(unittest.TestCase):
         for changed in [QUICKSTEP.replace('android:id/aerr_wait', 'android:id/aerr_close'),
                         QUICKSTEP.replace('clickable="true"', 'clickable="false"')]:
             with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
-                native.inspect_dialog(changed, "", APP_LOG)
+                native.inspect_dialog(changed, "mCurrentFocus=Window{ Application Not Responding: com.android.launcher3 }", APP_LOG)
 
     def test_launch_error_on_stderr_keeps_failure_diagnostics(self):
         device = Device(Clock())
@@ -192,7 +213,7 @@ class AndroidReadinessTests(unittest.TestCase):
 
     def test_deadline_is_not_reset_by_repeated_launcher_wait(self):
         clock = Clock()
-        device = Device(clock, QUICKSTEP)
+        device = Device(clock, QUICKSTEP, window="mCurrentFocus=Window{ Application Not Responding: com.android.launcher3 }")
         # Actual tap consumes this fixture's remaining budget; no fresh 90-second reader is created.
         original = device.run
         def timed(args, **kwargs):

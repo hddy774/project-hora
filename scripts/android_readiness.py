@@ -62,6 +62,8 @@ def inspect_dialog(xml, windows, logs):
     require(len(matches) == 1, "Application or unknown Android dialog; no automatic dismissal allowed")
     label, package = matches[0]
     require(all(n.attrib.get("package") == "android" for n in nodes), "Unknown dialog package; no automatic dismissal allowed")
+    if not owners:
+        return None  # The dialog disappeared after the UI dump; never tap coordinates in a newly focused app.
     # A named ANR window, when present, must agree with the exact launcher label.
     require(not owners or all(owner == package for owner in owners), "ANR window does not belong to the observed launcher")
     waits = [n for n in nodes if n.attrib.get("resource-id") == "android:id/aerr_wait"]
@@ -122,7 +124,6 @@ class Reader:
         path = self.out / name
         log = self.command(path, "render-log.txt", ["adb", "logcat", "-d", "-v", "tag"])
         activities = self.command(path, "foreground.txt", ["adb", "shell", "dumpsys", "activity", "activities"])
-        windows = self.command(path, "window.txt", ["adb", "shell", "dumpsys", "window"])
         pid = self.command(path, "pid.txt", ["adb", "shell", "pidof", PACKAGE])
         remote = "/sdcard/v021-readiness-ui.xml"
         removed = self.command(path, "remove-stale-ui.txt", ["adb", "shell", "rm", "-f", remote])
@@ -131,6 +132,8 @@ class Reader:
         if not (path / "ui.xml").exists():
             (path / "ui.xml").write_bytes(b"")
         screen = self.command(path, "screen.png", ["adb", "exec-out", "screencap", "-p"])
+        # Verify focus after UI/screenshot capture so a newly appeared dialog cannot use an older app focus.
+        windows = self.command(path, "window.txt", ["adb", "shell", "dumpsys", "window"])
         try:
             tree = ET.fromstring(ui[1])
             valid_ui = tree.tag == "hierarchy"
@@ -170,9 +173,11 @@ def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=
         require(reader.command(reader.out, "clear-logcat.txt", ["adb", "logcat", "-c"])[0] == 0, "Could not clear stale Android render log")
         code, launched, _ = reader.command(reader.out, "launch.txt", ["adb", "shell", "am", "start", "-W", "-n", PACKAGE + "/" + activity], 45)
         check_launch(code, launched + (reader.out / "launch.txt.stderr.txt").read_text(encoding="utf-8", errors="replace"), activity)
+        pending = None
         while reader.remaining() > 0:
             attempts += 1
-            observed = reader.snapshot("attempt-" + str(attempts).zfill(3))
+            observed = pending or reader.snapshot("attempt-" + str(attempts).zfill(3))
+            pending = None
             wait = inspect_dialog(observed["xml"], observed["windows"], observed["logs"])
             if wait:
                 event = {**wait, "number": len(reader.waits) + 1,
@@ -191,7 +196,11 @@ def await_ready(activity, version, out, *, install_apk=None, timeout=90, runner=
                 event["elapsed_after_ms"] = round((clock() - reader.started) * 1000, 3)
                 event["after_capture_complete"] = after["complete"]
                 require(code == 0, "External launcher Wait action failed")
-                sleep(max(0, min(1, reader.remaining())))
+                if (after["complete"] and after["webview"] and foreground_app(after["activities"], after["windows"]) and
+                        inspect_dialog(after["xml"], after["windows"], after["logs"]) is None):
+                    pending = after  # Reuse only a ready, dialog-free observation; never reuse it for another tap.
+                else:
+                    sleep(max(0, min(1, reader.remaining())))
                 continue
             if observed["complete"] and observed["webview"] and observed["pid"] and foreground_app(observed["activities"], observed["windows"]):
                 code, checked, _ = reader.command(observed["path"], "dom-checker.txt",

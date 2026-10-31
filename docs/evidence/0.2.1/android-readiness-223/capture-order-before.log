@@ -1,0 +1,21 @@
+...F.........F.
+======================================================================
+FAIL: test_dialog_appearing_at_screenshot_is_handled_before_acceptance (__main__.AndroidReadinessTests.test_dialog_appearing_at_screenshot_is_handled_before_acceptance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-readiness/scripts/test-android-readiness.py", line 126, in test_dialog_appearing_at_screenshot_is_handled_before_acceptance
+    self.assertEqual(len(device.taps), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_stale_launcher_xml_never_taps_the_current_app (__main__.AndroidReadinessTests.test_stale_launcher_xml_never_taps_the_current_app)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-readiness/scripts/test-android-readiness.py", line 108, in test_stale_launcher_xml_never_taps_the_current_app
+    self.assertIsNone(native.inspect_dialog(QUICKSTEP, WINDOW, APP_LOG))
+AssertionError: {'label': 'Quickstep', 'package': 'com.android.launcher3', 'title': "Quickstep isn't responding", 'resource_id': 'android:id/aerr_wait', 'bounds': [70, 1269, 1010, 1395], 'tap': [540, 1332]} is not None
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.155s
+
+FAILED (failures=2)

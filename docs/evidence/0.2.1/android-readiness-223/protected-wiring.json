@@ -63,5 +63,14 @@
     "foregroundPredicateChanged": false,
     "singleDeadlineChanged": false,
     "originalVerifierChanged": false
+  },
+  "captureOrderCorrection": {
+    "previousHead": "a0e8a4c36fce51b391330b4131126d50b40cd38f",
+    "focusCollectedAfterUiAndScreen": true,
+    "waitRequiresCurrentMatchingLauncherFocus": true,
+    "onlyDialogFreeReadyAfterWaitObservationReused": true,
+    "singleDeadlineChanged": false,
+    "originalVerifierChanged": false,
+    "originalSourceSignatureUpgradeGuardsChanged": false
   }
 }

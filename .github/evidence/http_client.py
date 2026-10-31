@@ -1,6 +1,7 @@
 """근거 보관 전용 HTTPS 입출력. 자격 증명은 로그나 교차 호스트 redirect로 전달하지 않는다."""
 import json
 from pathlib import Path
+import re
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -71,6 +72,9 @@ class GitHubClient:
 
     def api(self, path, method="GET", value=None, missing=False):
         ensure(not path.startswith("/") and ":" not in path and ".." not in path, "API 경로가 잘못됐습니다")
+        ensure(method == "GET" or method == "POST" and path == "releases" or
+               method == "PATCH" and re.fullmatch(r"releases/[1-9][0-9]*", path),
+               "허용하지 않은 변경 경로입니다. 삭제·asset 교체 API는 제공하지 않습니다")
         payload = json.dumps(value, ensure_ascii=False).encode() if value is not None else None
         try:
             with self._open(API_ROOT + path, method, payload) as response:

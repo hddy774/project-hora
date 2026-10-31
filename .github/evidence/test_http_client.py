@@ -13,6 +13,15 @@ from http_client import ArchiveError, GitHubClient, NoCrossHostAuthorization, ht
 
 
 class HttpClientTests(unittest.TestCase):
+    def test_delete_and_asset_replacement_are_rejected_before_transport(self):
+        class NoTransport:
+            def open(self, *_args, **_kwargs):
+                raise AssertionError("외부 요청이 발생하면 안 됩니다")
+        for method, path in [("DELETE", "releases/77"), ("DELETE", "releases/assets/100"),
+                             ("PATCH", "releases/assets/100"), ("POST", "git/refs")]:
+            with self.subTest(method=method, path=path), self.assertRaises(ArchiveError):
+                GitHubClient("unit-secret", NoTransport()).api(path, method, {})
+
     def test_bad_address_never_echoes_a_secret_port(self):
         with self.assertRaises(ArchiveError) as failure:
             https_url("https://api.github.com:unit-secret/path")

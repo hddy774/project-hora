@@ -1,0 +1,18 @@
+{
+  "noInlining": true,
+  "fields": [
+    {
+      "Name": "\u003CReport\u003Ek__BackingField",
+      "type": "System.Object"
+    },
+    {
+      "Name": "\u003CPassed\u003Ek__BackingField",
+      "type": "System.Boolean"
+    },
+    {
+      "Name": "\u003CCompletionLog\u003Ek__BackingField",
+      "type": "System.String"
+    }
+  ],
+  "invokedWorldOrStability": false
+}

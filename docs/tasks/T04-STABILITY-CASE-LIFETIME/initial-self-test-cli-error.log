@@ -1,0 +1,4 @@
+usage: verify-v021-release.py [-h]
+                              {source,fingerprint,gate,apk,windows,self-test}
+                              ...
+verify-v021-release.py: error: the following arguments are required: command

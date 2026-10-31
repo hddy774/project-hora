@@ -1,0 +1,23 @@
+{
+  "baseline": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "beforeSha256": "dbcfefd6bc2a53f7e153399f375aa511f3ede0ba84d001c2fd38bc0199dcb1ee",
+  "afterSha256": "de9a7e4b9ab7761a437ddef1f953b9014a383a9cfaa6dc0361be0f6997727cef",
+  "passed": true,
+  "caseStatements": 12,
+  "caseTokensSha256": "5d17898cf3a23602bb1d554d10a92c5fe281cb243267e7fcd5fe9ceccc134d55",
+  "reportTokensSha256": "dfa4f03c7f819ea99d141d2b6d0d1f6587e69670d42e65604a75245a8f598fcb",
+  "completionTokensSha256": "8517aa0f425c7a81620ef44462e81e0398504d9c032c2828c3c698256b15a811",
+  "caseStatementsTokensAndCommentsEqual": true,
+  "reportFieldsAndOrderEqual": true,
+  "stopwatchAndCheckpointOrderEqual": true,
+  "outerFailureReportingEqual": true,
+  "progressBeforeCompletionConsole": true,
+  "helperNoInlining": true,
+  "returnedFields": [
+    "object Report (existing small projection)",
+    "bool Passed",
+    "string CompletionLog"
+  ],
+  "unrelatedMethodsRawTextEqual": true,
+  "performanceOrLongRunExecuted": false
+}

@@ -1,0 +1,32 @@
+{
+  "selection": "T04 sensitivity contract",
+  "total": 5,
+  "failed": 0,
+  "results": [
+    {
+      "name": "T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims",
+      "passed": true,
+      "ms": 140
+    },
+    {
+      "name": "T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth",
+      "passed": true,
+      "ms": 545
+    },
+    {
+      "name": "T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected",
+      "passed": true,
+      "ms": 18
+    },
+    {
+      "name": "T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement",
+      "passed": true,
+      "ms": 48
+    },
+    {
+      "name": "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes",
+      "passed": true,
+      "ms": 101
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+PASS T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims
+PASS T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth
+PASS T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected
+PASS T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement
+PASS T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes
+RESULT 5/5

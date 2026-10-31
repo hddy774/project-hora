@@ -15,7 +15,7 @@
 | 예정 | 0 |
 | 차단 | 0 |
 
-**현재 단계:** 새전체323·단기성능32통과·최종120개월실측
+**현재 단계:** 새 전체 기능 323개·단기 성능 32개 통과, 최종 120개월 측정
 
 - 클로드 PR84 피드백을 반영한 Android 검사·작업 체계 복원·SDK 고정·기능별 코드 분리·리뷰 안내를 통합했습니다. 기존 합격 기준과 원문은 보존했습니다.
 - 새 통합 소스 2464337ec577b2894eb87468c2c72916b1d6b8bf·제품 지문 0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2에서 전체 기능 323/323개·실패 0·종료 0을 확인했습니다. Release 빌드 경고·오류 0, 실제 runtime 10.0.14, 네 DLL의 소스와 깨끗한 작업 트리를 대조했습니다. 보고서 SHA256은 053535d3f2f4269a4404dbc21b44297dbf71664972a41fe9f2297733fe0793e2입니다.
@@ -33,5 +33,5 @@
 
 성능·성장·장기 안정성 검사는 전체 기능 개발 이후에 진행합니다.
 
-기준 소스: [2db5a6dd](https://github.com/hddy774/project-hora/commit/2db5a6dd57c4323ad967afdbd65aafdbecfaa5bc) · [작업 원장](https://github.com/hddy774/project-hora/blob/2db5a6dd57c4323ad967afdbd65aafdbecfaa5bc/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
+기준 소스: [547b44e3](https://github.com/hddy774/project-hora/commit/547b44e3bd0348fb728ad8d35c4a855489688d2f) · [작업 원장](https://github.com/hddy774/project-hora/blob/547b44e3bd0348fb728ad8d35c4a855489688d2f/docs/plans/v021-tasks.json) · [현재 진행도](https://github.com/hddy774/project-hora/blob/codex/v0.2.1/docs/progress-v0.2.1.md)
 <!-- v021-progress:end -->

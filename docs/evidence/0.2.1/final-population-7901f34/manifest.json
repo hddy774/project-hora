@@ -1,0 +1,52 @@
+{
+  "schema": "seonro.evidence-manifest.v1",
+  "executed_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "scope": "manifest 자체 제외. 원문6개와 파생 요약/출처/README의 SHA 색인.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3863,
+      "sha256": "b61bce977e0a8a1fdbb7564966d62caff2f86edfb73e388a6e6b5d950d01311d"
+    },
+    {
+      "path": "assessment.json",
+      "bytes": 6615,
+      "sha256": "c3341dfa3c76cbae34ddf1c941f56033a65a4bdd5c230216742c81ffbd386ca9"
+    },
+    {
+      "path": "population.json",
+      "bytes": 39805,
+      "sha256": "7fb6131cb7154566517bd4f81d0646b1cf5c5c3c8af5232bcd76bd49e8e612b7"
+    },
+    {
+      "path": "population.log",
+      "bytes": 5769,
+      "sha256": "66648883b5829de9b2ad52e08071eaee6d9b7335f9402d159b89769e9079959f"
+    },
+    {
+      "path": "preceding-functional.json",
+      "bytes": 252,
+      "sha256": "901eb762ad1e0aa92d1d29d3dc65e78880b53a87c106bf1d31c4d143cc1fb017"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 3552,
+      "sha256": "aa8ee9438fca9429d7bc6ab1dc54ad77df7ddf860df893be98c152b2861c63c1"
+    },
+    {
+      "path": "run-v021-final-population.original.py",
+      "bytes": 7367,
+      "sha256": "5f9a42ec733cecda3bcc6fa5e195ca37509b9325ee549ed6d8c589c56ff5fc60"
+    },
+    {
+      "path": "run.json",
+      "bytes": 5031,
+      "sha256": "fe17792d40f39c36a06302f8a1d8c7943ae0e5c954fe275db970567df2f7ea12"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 3724,
+      "sha256": "0f28f545580b1fde45d2b3451134df46eb0cb7d3a43e9f0c118e226b3cfeae9d"
+    }
+  ]
+}

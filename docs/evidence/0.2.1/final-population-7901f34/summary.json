@@ -1,0 +1,130 @@
+{
+  "schema": "seonro.population-evidence-summary.v1",
+  "executed_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "complete": true,
+  "exit_code": 0,
+  "populations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "measured_months_each": 12,
+  "warmup_months_each": 2,
+  "repetitions_each": 1,
+  "passed_checks": 32,
+  "total_checks": 32,
+  "short_population_budget_passed": true,
+  "source_baseline_comparisons": [
+    {
+      "population": 2,
+      "initialHash_equal": true,
+      "finalHash_equal": true,
+      "fixture_equal": true,
+      "usedLaws_equal": true,
+      "workload_equal": true,
+      "serializedCognitionBytes_equal": true
+    },
+    {
+      "population": 100,
+      "initialHash_equal": true,
+      "finalHash_equal": true,
+      "fixture_equal": true,
+      "usedLaws_equal": true,
+      "workload_equal": true,
+      "serializedCognitionBytes_equal": true
+    },
+    {
+      "population": 1000,
+      "initialHash_equal": true,
+      "finalHash_equal": true,
+      "fixture_equal": true,
+      "usedLaws_equal": true,
+      "workload_equal": true,
+      "serializedCognitionBytes_equal": true
+    },
+    {
+      "population": 10000,
+      "initialHash_equal": true,
+      "finalHash_equal": true,
+      "fixture_equal": true,
+      "usedLaws_equal": true,
+      "workload_equal": true,
+      "serializedCognitionBytes_equal": true
+    }
+  ],
+  "metrics": [
+    {
+      "population": 2,
+      "advance12MonthsMs": 1946.877,
+      "monthlyP95Ms": 263.5452,
+      "queryMs": 34.5216,
+      "saveMs": 175.7712,
+      "loadMs": 170.4656,
+      "allocatedBytes": 144316360,
+      "saveBytes": 2916145,
+      "retainedManagedBytes": 15711008,
+      "serializedCognitionBytes": 177605,
+      "openingRetainedManagedBytes": 15095960,
+      "inventoryProjectionSnapshots": {
+        "warmup": 2,
+        "measured": 13
+      }
+    },
+    {
+      "population": 100,
+      "advance12MonthsMs": 5515.3736,
+      "monthlyP95Ms": 710.6924,
+      "queryMs": 32.2905,
+      "saveMs": 427.8972,
+      "loadMs": 485.2332,
+      "allocatedBytes": 1015014272,
+      "saveBytes": 15219437,
+      "retainedManagedBytes": 35693208,
+      "serializedCognitionBytes": 3477894,
+      "openingRetainedManagedBytes": 29958472,
+      "inventoryProjectionSnapshots": {
+        "warmup": 2,
+        "measured": 13
+      }
+    },
+    {
+      "population": 1000,
+      "advance12MonthsMs": 24676.0537,
+      "monthlyP95Ms": 3066.5347,
+      "queryMs": 160.621,
+      "saveMs": 1760.4507,
+      "loadMs": 2071.4965,
+      "allocatedBytes": 9984902352,
+      "saveBytes": 53378857,
+      "retainedManagedBytes": 122850768,
+      "serializedCognitionBytes": 23483031,
+      "openingRetainedManagedBytes": 96806376,
+      "inventoryProjectionSnapshots": {
+        "warmup": 2,
+        "measured": 20
+      }
+    },
+    {
+      "population": 10000,
+      "advance12MonthsMs": 621900.7501000001,
+      "monthlyP95Ms": 62203.5982,
+      "queryMs": 1193.5379,
+      "saveMs": 18155.4476,
+      "loadMs": 21110.103,
+      "allocatedBytes": 323110070200,
+      "saveBytes": 398228447,
+      "retainedManagedBytes": 432219688,
+      "serializedCognitionBytes": 224192812,
+      "openingRetainedManagedBytes": 730800408,
+      "inventoryProjectionSnapshots": {
+        "warmup": 2,
+        "measured": 19
+      }
+    }
+  ],
+  "long_120_months_accepted_here": false,
+  "readiness_ledger_written": false,
+  "scope": "실제 네 규모12개월 단기32지표 판정만 요약한다. 장기/민감도/native/릴리스 합격은 별도다. 저장 원문 byte array/hash는 보고서에 없으므로 상태hash와 저장크기만 관측한다."
+}

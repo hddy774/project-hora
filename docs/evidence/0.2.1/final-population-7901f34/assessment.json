@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "report_sha256": "7fb6131cb7154566517bd4f81d0646b1cf5c5c3c8af5232bcd76bd49e8e612b7",
+  "baseline_sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "passed": true,
+  "checks": [
+    {
+      "population": 2,
+      "metric": "monthlyP95Ms",
+      "actual": 263.5452,
+      "absolute_limit": 326,
+      "regression_limit": 325.630375,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "queryMs",
+      "actual": 34.5216,
+      "absolute_limit": 45,
+      "regression_limit": 44.936875,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "saveMs",
+      "actual": 175.7712,
+      "absolute_limit": 222,
+      "regression_limit": 221.88150000000002,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "loadMs",
+      "actual": 170.4656,
+      "absolute_limit": 238,
+      "regression_limit": 237.34675,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "allocatedBytes",
+      "actual": 144316360,
+      "absolute_limit": 187444930,
+      "regression_limit": 187444930.0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "saveBytes",
+      "actual": 2916145,
+      "absolute_limit": 3645182,
+      "regression_limit": 3645181.25,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "retainedManagedBytes",
+      "actual": 15711008,
+      "absolute_limit": 19885430,
+      "regression_limit": 19885430.0,
+      "passed": true
+    },
+    {
+      "population": 2,
+      "metric": "serializedCognitionBytes",
+      "actual": 177605,
+      "absolute_limit": 222007,
+      "regression_limit": 222006.25,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "monthlyP95Ms",
+      "actual": 710.6924,
+      "absolute_limit": 1294,
+      "regression_limit": 1293.866375,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "queryMs",
+      "actual": 32.2905,
+      "absolute_limit": 84,
+      "regression_limit": 83.87174999999999,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "saveMs",
+      "actual": 427.8972,
+      "absolute_limit": 805,
+      "regression_limit": 804.8446250000001,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "loadMs",
+      "actual": 485.2332,
+      "absolute_limit": 1087,
+      "regression_limit": 1086.825875,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "allocatedBytes",
+      "actual": 1015014272,
+      "absolute_limit": 3827593130,
+      "regression_limit": 3827593130.0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "saveBytes",
+      "actual": 15219437,
+      "absolute_limit": 19024297,
+      "regression_limit": 19024296.25,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "retainedManagedBytes",
+      "actual": 35693208,
+      "absolute_limit": 109341350,
+      "regression_limit": 109341350.0,
+      "passed": true
+    },
+    {
+      "population": 100,
+      "metric": "serializedCognitionBytes",
+      "actual": 3477894,
+      "absolute_limit": 4347368,
+      "regression_limit": 4347367.5,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "monthlyP95Ms",
+      "actual": 3066.5347,
+      "absolute_limit": 13276,
+      "regression_limit": 13275.872625,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "queryMs",
+      "actual": 160.621,
+      "absolute_limit": 211,
+      "regression_limit": 210.10025,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "saveMs",
+      "actual": 1760.4507,
+      "absolute_limit": 4316,
+      "regression_limit": 4315.2595,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "loadMs",
+      "actual": 2071.4965,
+      "absolute_limit": 2658,
+      "regression_limit": 2657.6875,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "allocatedBytes",
+      "actual": 9984902352,
+      "absolute_limit": 50829892480,
+      "regression_limit": 50829892480.0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "saveBytes",
+      "actual": 53378857,
+      "absolute_limit": 100666018,
+      "regression_limit": 100666017.5,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "retainedManagedBytes",
+      "actual": 122850768,
+      "absolute_limit": 160817870,
+      "regression_limit": 160817870.0,
+      "passed": true
+    },
+    {
+      "population": 1000,
+      "metric": "serializedCognitionBytes",
+      "actual": 23483031,
+      "absolute_limit": 29353789,
+      "regression_limit": 29353788.75,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "monthlyP95Ms",
+      "actual": 62203.5982,
+      "absolute_limit": 92389,
+      "regression_limit": 92388.480125,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "queryMs",
+      "actual": 1193.5379,
+      "absolute_limit": 1660,
+      "regression_limit": 1659.136375,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "saveMs",
+      "actual": 18155.4476,
+      "absolute_limit": 20001,
+      "regression_limit": 20000.826875,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "loadMs",
+      "actual": 21110.103,
+      "absolute_limit": 22570,
+      "regression_limit": 22569.499624999997,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "allocatedBytes",
+      "actual": 323110070200,
+      "absolute_limit": 498637372810,
+      "regression_limit": 498637372810.0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "saveBytes",
+      "actual": 398228447,
+      "absolute_limit": 497785559,
+      "regression_limit": 497785558.75,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "retainedManagedBytes",
+      "actual": 432219688,
+      "absolute_limit": 553688550,
+      "regression_limit": 553688550.0,
+      "passed": true
+    },
+    {
+      "population": 10000,
+      "metric": "serializedCognitionBytes",
+      "actual": 224192812,
+      "absolute_limit": 280241015,
+      "regression_limit": 280241015.0,
+      "passed": true
+    }
+  ],
+  "scope": "실제 네 인구·32개 단기 지표의 기존 절대/회귀 상한 비교. 장기 안정성이나 Android 수용을 대신하지 않음."
+}

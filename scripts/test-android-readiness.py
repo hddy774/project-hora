@@ -14,6 +14,7 @@ spec.loader.exec_module(native)
 ACTIVITY = "crc649632d1cee893af2a.MainActivity"
 VERSION = (native.ROOT / "VERSION").read_text().strip()
 QUICKSTEP = Path(__file__).with_name("fixtures").joinpath("android-quickstep.xml").read_text()
+WINDOWS_ONLY = Path(__file__).with_name("fixtures").joinpath("android-window-windows-only.txt").read_text()
 APP_UI = '<hierarchy><node package="org.hora.xianxiaobserver" class="android.webkit.WebView" text="만상의 흐름" /></hierarchy>'
 APP_LOG = 'I/SeonroRender: ' + json.dumps({"rendered": True, "heading": "만상의 흐름", "title": "선로만상록",
     "version": VERSION, "error": None, "connection": "연결됨"}, ensure_ascii=False) + '\n'
@@ -59,7 +60,9 @@ class Device:
             output = ("Status: ok\nActivity: " + native.PACKAGE + "/" + ACTIVITY + "\nComplete\n").encode()
         elif command[:3] == ["shell", "dumpsys", "activity"]:
             output = FOREGROUND.encode()
-        elif command[:3] == ["shell", "dumpsys", "window"]:
+        elif command == ["shell", "dumpsys", "window", "windows"]:
+            output = WINDOWS_ONLY.encode()
+        elif command == ["shell", "dumpsys", "window"]:
             output = self.window.encode()
         elif command[:2] == ["shell", "pidof"]:
             output = b"2274\n"
@@ -95,6 +98,11 @@ class AndroidReadinessTests(unittest.TestCase):
     def execute(self, device, out, timeout=3, **kwargs):
         return native.await_ready(ACTIVITY, VERSION, out, timeout=timeout,
             runner=device.run, clock=device.clock.now, sleep=device.clock.sleep, **kwargs)
+
+    def test_real_windows_only_dump_cannot_supply_current_focus(self):
+        self.assertTrue(WINDOWS_ONLY.startswith("WINDOW MANAGER WINDOWS (dumpsys window windows)"))
+        self.assertNotIn("mCurrentFocus", WINDOWS_ONLY)
+        self.assertFalse(native.foreground_app(FOREGROUND, WINDOWS_ONLY))
 
     def test_launch_status_and_requested_activity_are_both_required(self):
         good = "Status: ok\nActivity: " + native.PACKAGE + "/" + ACTIVITY + "\n"

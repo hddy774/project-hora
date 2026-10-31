@@ -122,7 +122,7 @@ class Reader:
         path = self.out / name
         log = self.command(path, "render-log.txt", ["adb", "logcat", "-d", "-v", "tag"])
         activities = self.command(path, "foreground.txt", ["adb", "shell", "dumpsys", "activity", "activities"])
-        windows = self.command(path, "window.txt", ["adb", "shell", "dumpsys", "window", "windows"])
+        windows = self.command(path, "window.txt", ["adb", "shell", "dumpsys", "window"])
         pid = self.command(path, "pid.txt", ["adb", "shell", "pidof", PACKAGE])
         remote = "/sdcard/v021-readiness-ui.xml"
         removed = self.command(path, "remove-stale-ui.txt", ["adb", "shell", "rm", "-f", remote])

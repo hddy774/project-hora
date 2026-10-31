@@ -19,3 +19,5 @@
 수행/전투/Game/법칙·계수·성능/성장/장기 실행 변경은 없다. 공식 릴리스는 루트의 최종 통합 검증 뒤 실행한다.
 
 KVM 후속 승인: API24의 기존 host/문자장치/r+w 조건은 그대로 두고 reload→trigger→10초 상한 settle 순서를 확인하며 단계별 exit/id/stat을 남긴다. 실패 code는 그대로 전파하고 chmod 우회는 없다. 이전451 KVM 실패의 정확한 원인은 미확정으로 보존한다.
+
+실제 query 경계: API35의 `dumpsys window windows` 원문은 mCurrentFocus를 포함하지 않았다. 전경 조건은 유지하고 전체 `dumpsys window`로 조회해 current focus를 수집한다. 이전451의 실패/원문과 기존 verifier 오프라인 재입력 성공은 별개로 보존하며 새 source 자동 플랫폼 합격으로 재라벨하지 않는다.

@@ -3,8 +3,8 @@
   "issue": 223,
   "unit": {
     "command": "taskset -c 3 python3 scripts/test-android-readiness.py",
-    "tests": 12,
-    "passed": 12,
+    "tests": 13,
+    "passed": 13,
     "exitCode": 0,
     "nativeAndroidExecution": false,
     "stalePrelaunchFixture": "유효한 APP_LOG 사전 표식을 저장하고 clear 뒤의 빈 로그로는 합격하지 않음"
@@ -44,17 +44,34 @@
       "sha256": "fcbb790be7db5548dc2e17837502fefe98f6ab3960923f7a592ca3d5bfe173ac"
     },
     "unit.log": {
-      "bytes": 111,
-      "sha256": "4e06db7a365e0c8fd016f5c9ab631e0c80208b77ccf1c470d73854a31ef0aa22"
+      "bytes": 112,
+      "sha256": "848660d8816e8047e1a43a22a5cda413812c750a4daaf9739cd54a723b9fef31"
     },
     "kvm-flow.log": {
       "bytes": 3702,
       "sha256": "e368423142c1556c179c0f848913e1fa40b4d610aa92e892e12041745e2283fd"
+    },
+    "window-scope-before.log": {
+      "bytes": 2715,
+      "sha256": "ad330ea8c5f5b3b6bf7e35ea76584d3e68e4d395af5f8a735c13e5b54c528101"
+    },
+    "captured-ui-replay.log": {
+      "bytes": 171,
+      "sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4"
     }
   },
   "kvmShellFlow": {
     "passed": 8,
     "realUdevOrKvmOperations": 0,
-    "actualReaderUnchanged": true
+    "readerUnchangedInKvmCommit": true
+  },
+  "windowQueryRegression": {
+    "beforeExit": 1,
+    "afterPassed": 13,
+    "captured451OriginalVerifierReplayExit": 0,
+    "newAndroidOrAdbExecutions": 0
+  },
+  "expectedFailingRegression": {
+    "window-scope-before.log": "수정 전 windows-only query로 실제flow가 실패함을 보인 의도된 exit1"
   }
 }

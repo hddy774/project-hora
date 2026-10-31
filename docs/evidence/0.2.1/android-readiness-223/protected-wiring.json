@@ -53,5 +53,15 @@
     "shellFixtureCases": 8,
     "realKvmOperations": 0,
     "actualPriorFailureCause": "미확정; 비동기 udev 경계 가능성을 원인 확정으로 기록하지 않음"
+  },
+  "windowQueryCorrection": {
+    "previousHead": "930ed373582cea3984a333a5aef4f41556f37a6b",
+    "onlyReaderExecutableChange": "dumpsys window windows → dumpsys window",
+    "allOtherReaderBytesIdentical": true,
+    "oldReaderGitBlob": "eae4de7d51c3ce5f2c25f9f8a568f4d252487e46",
+    "newReaderGitBlob": "8a6e952eb6618da668f31bc94a374acef9afebac",
+    "foregroundPredicateChanged": false,
+    "singleDeadlineChanged": false,
+    "originalVerifierChanged": false
   }
 }

@@ -1,0 +1,40 @@
+{
+  "failingSource": "451151a644cbaaa1f88c05be2921bbdd68d601a4",
+  "run": 41152038037,
+  "job": 124390637517,
+  "artifact": 13022814487,
+  "artifactSha256": "04873b35589372df72a726ddd9c9fe90bf59ac5f527a5ba24d5906cb5b856afd",
+  "readerObservedDeadlineSeconds": 90,
+  "readerObservedLauncherWaits": 9,
+  "readerObservedCheckerCalls": 0,
+  "capturedAttempt": "attempt-002",
+  "capturedUiOriginalVerifierReplay": {
+    "exitCode": 0,
+    "output": {
+      "android_actual_install_launch_and_render": true,
+      "core_to_native_bridge": true,
+      "world_view": "만상의 흐름",
+      "version": "0.2.1",
+      "accessibility_text_export": true
+    },
+    "scope": "이전451 원형 UI/log를 변경 없는 검사기에 오프라인 재입력. 새 Android 실행이나 새 source 플랫폼 합격이 아님."
+  },
+  "rawInputs": {
+    "window.txt": {
+      "bytes": 41382,
+      "sha256": "7a9adbbb16dba4af11bf249e69da5f5d3ca8abeb3a223542aec87a708b74f718"
+    },
+    "ui.xml": {
+      "bytes": 26990,
+      "sha256": "5cef67ab05fca6f09f94398b9c4d77bde003cfd81961e0a9dcd02c485e166301"
+    },
+    "render-log.txt": {
+      "bytes": 135651,
+      "sha256": "eaa70bc9f4d9a7926890fae2eff1e89310da0620dfb5e199a6e37211220e2ae4"
+    }
+  },
+  "correction": "mCurrentFocus 조건을 유지하고 windows-only 하위 dump에서 전체 dumpsys window로 조회 범위만 수정",
+  "beforeRegressionExit": 1,
+  "afterTests": 13,
+  "newAndroidOrAdbExecutions": 0
+}

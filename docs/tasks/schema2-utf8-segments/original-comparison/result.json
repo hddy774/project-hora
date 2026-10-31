@@ -1,0 +1,144 @@
+{
+  "beforeSource": "5f789c817eb9519b696acd72410643169ff11ef2",
+  "afterSource": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "original": [
+    {
+      "name": "Chronicles.Core",
+      "informational": "0.2.1\u002B5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "2a42c4a3ef020a4444226d81c7dc53b2d0ed879970ea1f0b9b6caf9456d9312f"
+    },
+    {
+      "name": "Chronicles.Game",
+      "informational": "0.2.1\u002B5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "5e4ee185e1d3415ea0fa4a51d4d09302b20650f4bdd58342eab77c55bf364986"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "informational": "0.2.1\u002B5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "04e77c90fd738f30718a892e6e2ac4442b1b633dc9433f46cc8cb3d49ae93f20"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "informational": "0.2.1\u002B5f789c817eb9519b696acd72410643169ff11ef2",
+      "configuration": "Release",
+      "sha256": "100dab96d742b5800c4f59e6802e8f588f3cb3fa0714a56ba6d46472f59f8860"
+    }
+  ],
+  "candidate": [
+    {
+      "name": "Chronicles.Core",
+      "informational": "0.2.1\u002B13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "84845cfed2d9d0f4dbdc97a13075366615b3c8b2367480c174035707735e3b63"
+    },
+    {
+      "name": "Chronicles.Game",
+      "informational": "0.2.1\u002B13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "fe42671f0eb463291e8562af23477d45459f230998d7f3a5689eb71b69b3396e"
+    },
+    {
+      "name": "Chronicles.Hosting",
+      "informational": "0.2.1\u002B13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "83bc763e05f32ba634426a78a0806ea187dc5b187c9a0085041898a7077388e3"
+    },
+    {
+      "name": "Chronicles.Game.Tests",
+      "informational": "0.2.1\u002B13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+      "configuration": "Release",
+      "sha256": "72f2cab07140a36a751f918ca0c90574ca706f195753b52d77593c30e0d06954"
+    }
+  ],
+  "actualOldDllByteComparisons": [
+    {
+      "culture": "en-US",
+      "text": "original",
+      "sequence": 0,
+      "length": 1887246,
+      "sha256": "efbb54d69fb462bc8b553c43989adf9c02f20e6831170bdeba6dc46ad9658f7a"
+    },
+    {
+      "culture": "en-US",
+      "text": "original",
+      "sequence": 7,
+      "length": 1887246,
+      "sha256": "e4bd98ffc8c1e8c81c4db47c99282cb22afc32dadd6e55642acc73b65796f891"
+    },
+    {
+      "culture": "en-US",
+      "text": "original",
+      "sequence": 9223372036854775807,
+      "length": 1887264,
+      "sha256": "ba7ce5ff18e0a250a2d05390a8990793d270bead581298f4faadf17be82a00f9"
+    },
+    {
+      "culture": "en-US",
+      "text": "boundary Unicode",
+      "sequence": 0,
+      "length": 1903529,
+      "sha256": "7ff769ddfb10be55a627f04928c075eb6b905f4753696fb50ba6fab976bb2181"
+    },
+    {
+      "culture": "en-US",
+      "text": "boundary Unicode",
+      "sequence": 7,
+      "length": 1903529,
+      "sha256": "57233da8df9f82ed502a9ddabc94c1ef45b96941d824a9077cc214622360e85b"
+    },
+    {
+      "culture": "en-US",
+      "text": "boundary Unicode",
+      "sequence": 9223372036854775807,
+      "length": 1903547,
+      "sha256": "350da19ecc24eb4c86241a16a287798ad642ddfbf4e98b6e702913df65345603"
+    },
+    {
+      "culture": "tr-TR",
+      "text": "original",
+      "sequence": 0,
+      "length": 1887246,
+      "sha256": "efbb54d69fb462bc8b553c43989adf9c02f20e6831170bdeba6dc46ad9658f7a"
+    },
+    {
+      "culture": "tr-TR",
+      "text": "original",
+      "sequence": 7,
+      "length": 1887246,
+      "sha256": "e4bd98ffc8c1e8c81c4db47c99282cb22afc32dadd6e55642acc73b65796f891"
+    },
+    {
+      "culture": "tr-TR",
+      "text": "original",
+      "sequence": 9223372036854775807,
+      "length": 1887264,
+      "sha256": "ba7ce5ff18e0a250a2d05390a8990793d270bead581298f4faadf17be82a00f9"
+    },
+    {
+      "culture": "tr-TR",
+      "text": "boundary Unicode",
+      "sequence": 0,
+      "length": 1903529,
+      "sha256": "7ff769ddfb10be55a627f04928c075eb6b905f4753696fb50ba6fab976bb2181"
+    },
+    {
+      "culture": "tr-TR",
+      "text": "boundary Unicode",
+      "sequence": 7,
+      "length": 1903529,
+      "sha256": "57233da8df9f82ed502a9ddabc94c1ef45b96941d824a9077cc214622360e85b"
+    },
+    {
+      "culture": "tr-TR",
+      "text": "boundary Unicode",
+      "sequence": 9223372036854775807,
+      "length": 1903547,
+      "sha256": "350da19ecc24eb4c86241a16a287798ad642ddfbf4e98b6e702913df65345603"
+    }
+  ],
+  "allOldDllAndLegacyOracleBytesEqual": true,
+  "scope": "Independent functional byte compatibility only; no advancement or performance measurement"
+}

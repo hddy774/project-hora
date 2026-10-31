@@ -1,0 +1,5 @@
+PASS INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존
+PASS INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부
+PASS INV-004 대용량 저장: UTF8 양형식·경계·순번·명령 재전송·RNG 저장 속행
+PASS INV-004 대용량 저장: 기존 schema2 바이트·고정 원본·구버전 정책 보존
+RESULT 4/4

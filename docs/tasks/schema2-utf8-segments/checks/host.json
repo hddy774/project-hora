@@ -1,0 +1,12 @@
+{
+  "selection": "host recovery:",
+  "total": 1,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals",
+      "passed": true,
+      "ms": 3180
+    }
+  ]
+}

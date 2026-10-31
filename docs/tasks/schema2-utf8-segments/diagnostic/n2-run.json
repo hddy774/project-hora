@@ -1,0 +1,37 @@
+{
+  "source_commit": "13b6d1bfd0fea1048158a62755b589aaba47fcb5",
+  "source_tree": "b9cd876f8f78098230444ef5c72af3d5b1fc948c",
+  "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "started_utc": "2026-10-31T02:47:29.747670+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "3",
+    "/workspace/.dotnet/dotnet",
+    "/workspace/seonro-schema2-segments-5f789c8/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--stability",
+    "/workspace/scratch/schema2-segments-5f789c8/n2-diagnostic.json",
+    "--stability-plan",
+    "/workspace/seonro-integration-5f789c8/docs/evidence/0.2.1/final-performance/stability-plan.json"
+  ],
+  "external_diagnostic_cap_seconds": 200,
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "scope": "Original full plan/harness; stop externally after the first N2 case report, preserve partial whole raw. One authorized diagnostic only.",
+  "final_gate_claim": false,
+  "poll_seconds": 0.1,
+  "pid": 163481,
+  "stop_reason": "N2 case report written; deliberately stop before later cases complete",
+  "process_exit_code": -15,
+  "elapsed_seconds": 40.51783504600462,
+  "ended_utc": "2026-10-31T02:48:10.265522+00:00",
+  "source_clean_after": true,
+  "raw_sha256": "f28065b9a16969d4aa4b036f0707e376ae3ab85e8b197043262ee0ac7d64fe4c",
+  "raw_complete": false,
+  "raw_status": "running",
+  "finished_cases": [
+    2
+  ],
+  "later_case_report_written": false
+}

@@ -1,0 +1,10 @@
+{
+  "sdk": "10.0.403",
+  "refpack": "10.0.14",
+  "member": "M:System.Text.Json.Utf8JsonWriter.WriteStringValueSegment(System.ReadOnlySpan{System.Byte},System.Boolean)",
+  "refpack_xml_line": 6478,
+  "public_runtime_source": "https://github.com/dotnet/runtime/blob/v10.0.14/src/libraries/System.Text.Json/src/System/Text/Json/Writer/Utf8JsonWriter.WriteValues.StringSegment.cs",
+  "public_runtime_source_sha256": "673edfbb7bf960c97a040488fa64e901b41607249da521e63a62fbef42866d71",
+  "contract": "Consecutive byte segments escape one JSON string; final=true closes it; mixed overloads/invalid token sequence rejected. Runtime carries partial UTF8 code points in at most four bytes.",
+  "application_target_API24_CI_performed_here": false
+}

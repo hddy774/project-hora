@@ -1,0 +1,49 @@
+{
+  "status": "running",
+  "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "started_utc": "2026-10-31T03:49:39.673736+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "0",
+    "/workspace/.dotnet/dotnet",
+    "exec",
+    "--fx-version",
+    "10.0.14",
+    "/workspace/seonro-integration-7901f34/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+    "--filter",
+    "INV-001/002/011",
+    "--report",
+    "/workspace/scratch/v021-three-case-diagnostic-7901f34/preceding-functional.json",
+    "--stability",
+    "/workspace/scratch/v021-three-case-diagnostic-7901f34/result.json",
+    "--stability-plan",
+    "/workspace/seonro-integration-7901f34/docs/evidence/0.2.1/final-performance/stability-plan.json"
+  ],
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "budget_sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "tiered_environment": {
+    "DOTNET_TieredPGO": null,
+    "COMPlus_TieredPGO": null,
+    "DOTNET_TieredCompilation": null,
+    "COMPlus_TieredCompilation": null
+  },
+  "external_diagnostic_cap_seconds": 2300,
+  "reason": "이전 N1000은59개월193378160B였고120개월/241598442B 경계는 아직 미확인. 원격 전체 최종 실행을 변경하지 않고 저장 증가 경계를 먼저 확인한다.",
+  "scope": "CPU0 private 부분 진단. 원래4사례 계획·120개월·30/6 간격·두 번의 GC·실제 파일IO·상한을 그대로 실행하되 첫3사례 보고 뒤 private 자식만 종료한다. raw complete/status를 수정하지 않으며 T04 합격이 아니다.",
+  "pid": 170032
+}

@@ -1,0 +1,37 @@
+{
+  "scope": "scratch 준비·정적 검토만. C# 컴파일·Game 실행·원본 큰 slot 재hash0. 원본/원격/제품 수정0.",
+  "source_assembly_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "prepared_files": [
+    {
+      "path": "Program.cs",
+      "bytes": 9461,
+      "sha256": "45e53d2fb368d58886c155fc5af58484eee9c251eb7b2f891919b3a135cd0928"
+    },
+    {
+      "path": "ResumeProbe.csproj",
+      "bytes": 1277,
+      "sha256": "21f6d35a812be549f002173fbc08deeadc7adb4d9068397cb03b01535f0f5619"
+    },
+    {
+      "path": "supervise.py",
+      "bytes": 5226,
+      "sha256": "14335a105eb064888abc0c121ad49ac464c412cc9e280d33f66609d683702031"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2887,
+      "sha256": "0b1490aa80e4146b58add38ca9018a72d3f8cb55963b7dd23bab9147587ff11b"
+    }
+  ],
+  "checks": {
+    "python_ast": true,
+    "project_xml": true,
+    "direct_existing_dll_references": 3,
+    "project_references": 0,
+    "nuget_references": 0,
+    "new_game_runs": 0,
+    "csharp_builds": 0,
+    "supervisor_attempts": 0
+  },
+  "review_status": "root 검토 대기. 컴파일 통과를 주장하지 않는다."
+}

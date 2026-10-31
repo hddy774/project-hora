@@ -1,0 +1,38 @@
+{
+  "schema": "seonro.local-slot-digest-observation.v1",
+  "files": [
+    {
+      "role": "original_primary",
+      "local_path": "/workspace/scratch/v021-three-case-diagnostic-7901f34/result-saves/population-1000.seonro",
+      "bytes": 94252646,
+      "sha256": "13963d180c546c934e32e22b46fc11a7578416c60752e709a9a898c41d0a63f4",
+      "binary_version": 3,
+      "sequence": 2
+    },
+    {
+      "role": "original_backup",
+      "local_path": "/workspace/scratch/v021-three-case-diagnostic-7901f34/result-saves/population-1000.seonro.backup",
+      "bytes": 23035565,
+      "sha256": "ff49e518e279b5febaaa24595650ed827c4738df08d9c621f54c0336869995c8"
+    },
+    {
+      "role": "resumed_primary",
+      "local_path": "/workspace/scratch/v021-n1000-resume-7901f34-once1/resume-world/population-1000.seonro",
+      "bytes": 199347513,
+      "sha256": "4cfcd688a1955e30e03582d570d23eaffd696ac44455e4b1f9b8573011697445",
+      "binary_version": 3,
+      "sequence": 5
+    },
+    {
+      "role": "resumed_backup",
+      "local_path": "/workspace/scratch/v021-n1000-resume-7901f34-once1/resume-world/population-1000.seonro.backup",
+      "bytes": 163392036,
+      "sha256": "31755ce1fd82cda7da29ba08e410ac67bfa6342974e5f593d25a57bffde0efd2",
+      "binary_version": 3,
+      "sequence": 4
+    }
+  ],
+  "scope": "프로세스 종료 뒤 inventory 리뷰어가 네 파일을 streaming SHA256으로 한 번 독립 대조한 관측. 이 기록 작성 시 큰 파일을 재해시하지 않았다. 큰 slot 본문은 Git에 미첨부이며 로컬 사본/별도 자산 없이는 SHA만으로 복원할 수 없다.",
+  "originals_match_recovery_observation": true,
+  "new_game_runs_for_observation": 0
+}

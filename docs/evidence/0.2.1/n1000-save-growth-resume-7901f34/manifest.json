@@ -1,0 +1,92 @@
+{
+  "schema": "seonro.evidence-manifest.v1",
+  "source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "scope": "manifest 자체 제외. 원문 사본14개와 파생 문서3개의 실제 byte/SHA 색인. 큰slot/DLL/ZIP 미첨부.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4972,
+      "sha256": "a37cf3e9f9d93d657d4d4b7d78a44693d6ddc94ad5aa794d0f10689174981620"
+    },
+    {
+      "path": "helper/Program.cs",
+      "bytes": 9461,
+      "sha256": "45e53d2fb368d58886c155fc5af58484eee9c251eb7b2f891919b3a135cd0928"
+    },
+    {
+      "path": "helper/README.original.md",
+      "bytes": 2887,
+      "sha256": "0b1490aa80e4146b58add38ca9018a72d3f8cb55963b7dd23bab9147587ff11b"
+    },
+    {
+      "path": "helper/ResumeProbe.csproj",
+      "bytes": 1277,
+      "sha256": "21f6d35a812be549f002173fbc08deeadc7adb4d9068397cb03b01535f0f5619"
+    },
+    {
+      "path": "helper/prepared-manifest.json",
+      "bytes": 1149,
+      "sha256": "55ea0b004b39d963ce5dab43d476aa909f52db54abd8b47e0330eceebd3e4957"
+    },
+    {
+      "path": "helper/runtimeconfig.original.json",
+      "bytes": 371,
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+    },
+    {
+      "path": "helper/supervise.py",
+      "bytes": 5226,
+      "sha256": "14335a105eb064888abc0c121ad49ac464c412cc9e280d33f66609d683702031"
+    },
+    {
+      "path": "original-interrupted/diagnostic.json",
+      "bytes": 2050,
+      "sha256": "6af780564d1597620f2734f55123ffc1cb511cbd45c3cec62d7ec0439fc4e86d"
+    },
+    {
+      "path": "original-interrupted/measurement.log",
+      "bytes": 994,
+      "sha256": "b531610d0ebf5b2d29a7a7eb41c4b73200fc5800d74d0ebe34e9e7d711c41d62"
+    },
+    {
+      "path": "original-interrupted/preceding-functional.json",
+      "bytes": 252,
+      "sha256": "fabbee5cc283b27a46cc2a367ee3f01797ba2efc81d24110e7e3f919ea31a18b"
+    },
+    {
+      "path": "original-interrupted/recovery-observation.json",
+      "bytes": 2601,
+      "sha256": "cfc46fc8adc9bd76ca7ab55847902b6116a74cc765ff05f7cab77f89240fe81b"
+    },
+    {
+      "path": "original-interrupted/result.json",
+      "bytes": 24527,
+      "sha256": "667fb465be7aaacbcb5873b7763fbe8d1932e1250b418a4e8b1c209d7260e34b"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 8897,
+      "sha256": "916d242b5de690e7d420f10287c0c3918f83a57d3c705642cfccaf2d70ed116e"
+    },
+    {
+      "path": "resumed/resume-result.json",
+      "bytes": 3304,
+      "sha256": "569980941a02313426680f6ec7955efef9bf2e0d0cc46fe09ad627e6e6f1e11d"
+    },
+    {
+      "path": "resumed/resume.log",
+      "bytes": 1594,
+      "sha256": "de344a7c86ec7e0a715fbd7a0eef5d13d25b13cf508d159308872a88afc2d4fb"
+    },
+    {
+      "path": "resumed/supervisor.json",
+      "bytes": 2781,
+      "sha256": "99dfbd257e6ce4b2c6086c376e504861ee64add2853aa67f078dda0fb7a05a19"
+    },
+    {
+      "path": "slot-digests.json",
+      "bytes": 1692,
+      "sha256": "ce4d2b184cff7e14e18b0c2e43409d8f74c97dc403e20059a2ff8e44b09259ba"
+    }
+  ]
+}

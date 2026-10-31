@@ -1,0 +1,37 @@
+[
+  {
+    "path": "boundary.original.json",
+    "bytes": 362,
+    "sha256": "54d0154917a48e0498762cb1b3c3084a55d3c80b137c64e896f37121b42e9c00"
+  },
+  {
+    "path": "boundary.original.log",
+    "bytes": 118,
+    "sha256": "9e5b2b20d9e4d32c310362c74e668e428418be02c2c306a719c5370a2b85fa55"
+  },
+  {
+    "path": "diagnostic-reference.json",
+    "bytes": 652,
+    "sha256": "a5a6231cd21dcc5278e222308e9063a0e16db0dad5507c78d247a299eaf82e79"
+  },
+  {
+    "path": "legacy.original.json",
+    "bytes": 1108,
+    "sha256": "fbb891702bc7cb806d49a5a869554f185ee23d7a33ddbd13acbc291b4f3bf5f8"
+  },
+  {
+    "path": "legacy.original.log",
+    "bytes": 432,
+    "sha256": "408a83de56624967115af25f8c2edc00ed8f47b3d41a6349305eedcc77a44d54"
+  },
+  {
+    "path": "release-build.original.log",
+    "bytes": 1057,
+    "sha256": "221d9cdd99fe364c3ffcfe849cf7bf2a5e36256c7076187d9520d2d7c6dbb16c"
+  },
+  {
+    "path": "validation.json",
+    "bytes": 2631,
+    "sha256": "7c9d0b65721f2016e13707c3a8b97ad1ff0049fa9628f14726ee1073af4e0537"
+  }
+]

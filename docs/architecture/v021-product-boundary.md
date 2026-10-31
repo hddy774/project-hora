@@ -72,8 +72,12 @@ public 계약은 바뀌지 않는다. `Clone`과 명령 hash도 Game 안에 남�
 
 | 본문 크기 | 저장 봉투 | 보존/검증 계약 |
 | --- | --- | --- |
-| 128MiB 이하 | `SEONRO-021` JSON envelope schema2 | 기존 작은 저장의 실제 바이트와 이전 schema2 읽기 유지 |
-| 128MiB 초과 | `SEONRO-021B`와 마지막 NUL, binary envelope version3 | 64바이트 헤더 뒤에 canonical UTF8 원문을 저장하고 중간 UTF16 본문 문자열 없이 읽기 |
+| 16MiB 이하 | `SEONRO-021` JSON envelope schema2 | 기존 작은 저장의 실제 바이트와 이전 schema2 읽기 유지 |
+| 16MiB 초과 | `SEONRO-021B`와 마지막 NUL, binary envelope version3 | 64바이트 헤더 뒤에 canonical UTF8 원문을 저장하고 중간 UTF16 본문 문자열 없이 읽기 |
+
+기본 선택 경계는 [중간 규모 저장 비용 검토](../tasks/233-compact-save-envelope.md)에서
+128MiB에서16MiB로 낮췄다. 이전128MiB 경계로 만든 큰 JSON 저장도 계속 읽는다.
+내부 기능 검사에서 명시한 경계 인자는 그 인자의 엄밀한 본문 길이 조건을 따른다.
 
 버전3 헤더는 12바이트 magic, little-endian int32 버전, int64 sequence, int64 본문 길이,
 32바이트 SHA-256 순서다. 두 형식 모두 **0 이상 sequence**와 문화권 독립 십진 sequence +

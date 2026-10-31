@@ -1,0 +1,73 @@
+{
+  "base_commit": "b15992b6150afb8e4f3348501c51051a7f7733d0",
+  "tested_git_tree": "9c635c59939e4a7373520068ce463c5d2b70f8e3",
+  "published_equal_tree_commit": "f62fd9affc54041d1615d4c933c3da5c8e09e121",
+  "validation_scope": "게시 전 수정 workingtree의 Release build·선택 검사. 같은 source tree를 게시했으나 DLL은 아래의 기반 commit을 표시한다. 최종 동결 뒤 새 전체 실행·성능 근거를 별도로 만든다.",
+  "release_build": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "selection_results": [
+    {
+      "filter": "저장 봉투 기본 경계",
+      "total": 1,
+      "failed": 0
+    },
+    {
+      "filter": "대용량 저장:",
+      "total": 4,
+      "failed": 0
+    }
+  ],
+  "static_boundary_passed": true,
+  "static_checked_worktree_dirty": true,
+  "new_full_functional_or_performance_runs": 0,
+  "runtimeconfig": {
+    "runtimeOptions": {
+      "tfm": "net10.0",
+      "framework": {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.0"
+      },
+      "configProperties": {
+        "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+        "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+        "System.Runtime.TieredPGO": false
+      }
+    }
+  },
+  "assemblies": [
+    {
+      "assembly": "Chronicles.Core",
+      "sha256": "053a7a0c72e473805784731232ac89dfb649b4b6000cf9450151ed8e42302436",
+      "source_version_literals": [
+        "0.2.1+b15992b6150afb8e4f3348501c51051a7f7733d0"
+      ],
+      "literal_scope": "PE raw string 대조이며 attribute constructor 독립 연결은 아님"
+    },
+    {
+      "assembly": "Chronicles.Game",
+      "sha256": "7e0ecc20eb9f98e33eef1fa761f193b4ae8cccc8ba11c15bf305d57e89d61721",
+      "source_version_literals": [
+        "0.2.1+b15992b6150afb8e4f3348501c51051a7f7733d0"
+      ],
+      "literal_scope": "PE raw string 대조이며 attribute constructor 독립 연결은 아님"
+    },
+    {
+      "assembly": "Chronicles.Hosting",
+      "sha256": "3cb3cc85bd0b83f8c39ab97055b8e2cd59ced2c7b35953181b076579fa9bf2dd",
+      "source_version_literals": [
+        "0.2.1+b15992b6150afb8e4f3348501c51051a7f7733d0"
+      ],
+      "literal_scope": "PE raw string 대조이며 attribute constructor 독립 연결은 아님"
+    },
+    {
+      "assembly": "Chronicles.Game.Tests",
+      "sha256": "4793c4dfc1bd8aa5d454ac5a2a2f91b1ccd90b70dc4eb87b6ab8013c780f23cb",
+      "source_version_literals": [
+        "0.2.1+b15992b6150afb8e4f3348501c51051a7f7733d0"
+      ],
+      "literal_scope": "PE raw string 대조이며 attribute constructor 독립 연결은 아님"
+    }
+  ]
+}

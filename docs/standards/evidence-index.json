@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "kind": "기존 증거 크기·해시·게이트 경로 요약 색인",
+  "indexed_source_commit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "tracked_evidence_files": 990,
+  "tracked_evidence_total_bytes": 31812455,
+  "largest_files": [
+    {
+      "path": "docs/evidence/0.2.1/agent-metrics-9263756/restart1.raw.json.gz",
+      "bytes": 4443591,
+      "git_blob": "1004b74a3352920e347f5c64ded283f3f86ce6af",
+      "sha256": "282cfb96d44cc3b17956003aa03bce948ce1adee40d6a84d4a337473c96ead82"
+    },
+    {
+      "path": "docs/evidence/0.2.1/agent-metrics-9263756/interrupted.raw.json.gz",
+      "bytes": 3209491,
+      "git_blob": "4a2d3fec826f17d5f7d03c5f586f9bd647c8641d",
+      "sha256": "f35ce55e16cda0c5b75022a6c59175a8e4af82385eef5c75dabef041c91c6f6e"
+    },
+    {
+      "path": "docs/evidence/0.2.1/copy-profile-56bbfb2/profile-56bbfb2-json1000.speedscope.json.gz",
+      "bytes": 1067909,
+      "git_blob": "50492cf6584948fdaaebbeb8b8d6e4fff853dced",
+      "sha256": "0b0b00da940fb6ae62e8ce435873400d492b45bab82656e42246e4584227757a"
+    },
+    {
+      "path": "docs/evidence/0.2.1/growth-primary-7ce6694/official-aggregate/out/growth-aggregate.json",
+      "bytes": 1024323,
+      "git_blob": "24951f19749f25514d19c8bf4d0febef4650abd8",
+      "sha256": "bd592d544766dfff2ba39ece2a531513610ccca3b0c24b86061e9d9b0626e0ab"
+    },
+    {
+      "path": "docs/evidence/0.2.1/growth-sensitivity/inputs/baseline.json",
+      "bytes": 1023423,
+      "git_blob": "12a08e8eb6d8fcf784c807d163c0d8247858db57",
+      "sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175"
+    },
+    {
+      "path": "docs/evidence/0.2.1/agent-metrics-9263756/case-metrics.json",
+      "bytes": 855071,
+      "git_blob": "51ca916e24201e88136ce88bd8ecb0f2d840b525",
+      "sha256": "00f15ed52bf5a6185a0f533c9815b23460d1c594e4abd4e23e3661918dd2b2c8"
+    },
+    {
+      "path": "docs/evidence/0.2.1/progress-acceptance.json",
+      "bytes": 600725,
+      "git_blob": "43f8de4de27eeb351b80d405c1a02e922c471750",
+      "sha256": "161df5edef782b37ffd97476c85e8baa5bb2ceb2df54f8b25af28ec20b5aee45"
+    },
+    {
+      "path": "docs/evidence/0.2.1/growth-supplementary-9263756/raw/growth-9263756-seed98-restart1.json",
+      "bytes": 557968,
+      "git_blob": "5fa65d7eb3ee0b83b59b7c57b1de2322cd2a9606",
+      "sha256": "7ee75da7a89ea1f5cfa87a1a5b9d390918fbd7a0bde83807b8ef67a931629ef8"
+    }
+  ],
+  "canonical_gate_inputs": [
+    {
+      "path": "docs/evidence/0.2.1/release-readiness.json",
+      "exists_at_base": true,
+      "bytes": 909,
+      "sha256": "5cb62781bca7329df6a5556a70b859e433fbc5d8e3d534a6e10623ade1bf2af9"
+    },
+    {
+      "path": "docs/evidence/0.2.1/invariant-execution-map.json",
+      "exists_at_base": true,
+      "bytes": 275110,
+      "sha256": "afe9f900203bfffae3312616e07eb89a5c5e49c1782bd0e2b885f8e08bb82147"
+    },
+    {
+      "path": "docs/evidence/0.2.1/invariant-final-94ccb5d/functional.json",
+      "exists_at_base": true,
+      "bytes": 62864,
+      "sha256": "afaa049a3841e786ae3cf16aabf79d59eb4ff0784c3d912b990e57839b66d616"
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance.json",
+      "exists_at_base": false
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance/baseline.json",
+      "exists_at_base": true,
+      "bytes": 39836,
+      "sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484"
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance/population.json",
+      "exists_at_base": true,
+      "bytes": 39821,
+      "sha256": "3fac5fa84d5bd240352f85f97d9c279c0159aaf6d4b63160b4b5a43f89ba17de"
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance/budget.json",
+      "exists_at_base": true,
+      "bytes": 3298,
+      "sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272"
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance/stability-plan.json",
+      "exists_at_base": true,
+      "bytes": 1903,
+      "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+    },
+    {
+      "path": "docs/evidence/0.2.1/final-performance/stability.json",
+      "exists_at_base": false
+    },
+    {
+      "path": "docs/evidence/0.2.1/soak.json",
+      "exists_at_base": true,
+      "bytes": 466,
+      "sha256": "7560f882822979077b51f1ec97a6596f143c1870836515aceb9ad8a252749da8"
+    }
+  ],
+  "scope": "기존 원문/압축본 바이트·Git 이력·경로는 유지한다. 큰 원문 여덟개와 작은 필수경로의 현재값을 색인하며 내용/판정을 다시 생성하지 않는다. 향후 근거는 source별 별도색인으로 추가한다.",
+  "all_raw_files_unchanged": true,
+  "new_large_raw_assets_created": false
+}

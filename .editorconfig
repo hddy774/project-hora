@@ -1,0 +1,52 @@
+# 선로만상록 공통 서식. 기존 raw/생성물/legacy의 일괄 정규화에는 사용하지 않는다.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,md}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+max_line_length = 120
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+csharp_using_directive_placement = outside_namespace:suggestion
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_prefer_braces = true:suggestion
+csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_blocks = false
+csharp_space_around_binary_operators = before_and_after
+csharp_space_after_comma = true
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_cast = false
+csharp_style_namespace_declarations = file_scoped:suggestion
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+dotnet_style_readonly_field = true:suggestion
+
+# 분석기 severity를 낮추지 않는다. 빌드의 경고=오류 설정은 Directory.Build.props를 따른다.
+dotnet_naming_rule.interfaces.symbols = interface_symbols
+dotnet_naming_rule.interfaces.style = interface_style
+dotnet_naming_rule.interfaces.severity = suggestion
+dotnet_naming_symbols.interface_symbols.applicable_kinds = interface
+dotnet_naming_style.interface_style.required_prefix = I
+dotnet_naming_style.interface_style.capitalization = pascal_case
+dotnet_naming_rule.types.symbols = type_symbols
+dotnet_naming_rule.types.style = pascal_style
+dotnet_naming_rule.types.severity = suggestion
+dotnet_naming_symbols.type_symbols.applicable_kinds = class, struct, enum, delegate
+dotnet_naming_style.pascal_style.capitalization = pascal_case

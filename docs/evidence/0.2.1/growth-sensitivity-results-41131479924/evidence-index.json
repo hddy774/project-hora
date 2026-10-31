@@ -1,0 +1,266 @@
+{
+  "kind": "v021-sensitivity-evidence-index",
+  "measurementSourceCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "measurementSourceTree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+  "productSourceFingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "metadataCommit": "42ebf359de90c3b3f00292bf6703e359b378f630",
+  "workflowSourceCommit": "4938381715964009d5b689f56de30aa226ad9395",
+  "runId": 41131479924,
+  "runAttempt": 1,
+  "runEvent": "pull_request",
+  "runOutcome": "failure",
+  "sourceSdk": "10.0.403",
+  "sourceRuntime": ".NET 10.0.14",
+  "planSha256": "2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+  "baselineSha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "wallFileSha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+  "artifacts": [
+    {
+      "id": 13024674339,
+      "name": "v021-sensitivity-collection-41131479924-1",
+      "bytes": 4870195,
+      "sha256": "b4d92d45670c34a12d26fd834a7bd125408d9fc1fe1056e5a0c6e11b719f8ea0",
+      "created_at": "2026-10-31T01:31:03Z",
+      "expires_at": "2026-11-14T01:31:01Z",
+      "run_id": 41131479924,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-collection-41131479924-1.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13024674339/zip"
+    },
+    {
+      "id": 13024223579,
+      "name": "v021-sensitivity-41131479924-1-seed-2026",
+      "bytes": 1629500,
+      "sha256": "fe760fca1291c12011cf16534e99dd15fd38ed3dbf40efbfb40e91ca3bb5c719",
+      "created_at": "2026-10-31T01:30:49Z",
+      "expires_at": "2026-11-14T01:30:48Z",
+      "run_id": 41131479924,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-41131479924-1-seed-2026.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13024223579/zip"
+    },
+    {
+      "id": 13023894081,
+      "name": "v021-sensitivity-41131479924-1-seed-42",
+      "bytes": 1606840,
+      "sha256": "e06c71ba7b60812afc4211c31114c65d680dd57008f1ab41d2575b57c3220848",
+      "created_at": "2026-10-31T01:30:51Z",
+      "expires_at": "2026-11-14T01:30:49Z",
+      "run_id": 41131479924,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-41131479924-1-seed-42.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13023894081/zip"
+    },
+    {
+      "id": 13020234556,
+      "name": "v021-sensitivity-41131479924-1-seed-98",
+      "bytes": 1625169,
+      "sha256": "5cfcf65768d31d1d6815689e601795c0f7495fcf811251508454913510ce4587",
+      "created_at": "2026-10-30T23:31:08Z",
+      "expires_at": "2026-11-13T23:31:07Z",
+      "run_id": 41131479924,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-41131479924-1-seed-98.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13020234556/zip"
+    },
+    {
+      "id": 13013860275,
+      "name": "v021-sensitivity-inputs-41131479924-1",
+      "bytes": 204982,
+      "sha256": "3a9d3651fdf41e4169c4af69c65cb64b6e5b55550046c38a2b4fb053a6d1f556",
+      "created_at": "2026-10-30T21:30:05Z",
+      "expires_at": "2026-11-13T21:30:04Z",
+      "run_id": 41131479924,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-inputs-41131479924-1.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13013860275/zip"
+    },
+    {
+      "id": 13012967859,
+      "name": "v021-sensitivity-prepare-41131479924-1",
+      "bytes": 877,
+      "sha256": "0a0c569896c6f649bc9597a8e9ccd59abefc55735c4d90593d88e7aa7a788e31",
+      "created_at": "2026-10-30T21:30:06Z",
+      "expires_at": "2026-11-13T21:30:06Z",
+      "run_id": 41131479924,
+      "attempt": 1,
+      "planned_asset_name": "v021-sensitivity-prepare-41131479924-1.zip",
+      "original_download_api": "https://api.github.com/repos/hddy774/project-hora/actions/artifacts/13012967859/zip"
+    }
+  ],
+  "rawReports": [
+    {
+      "seed": 42,
+      "sha256": "1471951a80f1121226d168514c9667fb96e37e41e9e41231e02ea084d607ec50",
+      "rawPathWithinZip": "out/sensitivity.json"
+    },
+    {
+      "seed": 98,
+      "sha256": "8e4763832aa14bd23d4ab528699329d14474598fdd0190b1eee234585f2fdd40",
+      "rawPathWithinZip": "out/sensitivity.json"
+    },
+    {
+      "seed": 2026,
+      "sha256": "4ec0114779f149ed2868d2b06fe1023da9bfc2e94cfc76f44af683896dc54c67",
+      "rawPathWithinZip": "out/sensitivity.json"
+    }
+  ],
+  "retainedOriginalMetadata": [
+    {
+      "path": "metadata/api-artifacts.json",
+      "bytes": 4470,
+      "sha256": "09cf8659a966befb1cc608b337d91a4b90cc04b89e3ed789db8b7211231f1577"
+    },
+    {
+      "path": "metadata/api-jobs.json",
+      "bytes": 16141,
+      "sha256": "c58ea98ac2737954260a559b0dd5323e7b76456da618a9937678fdad7c329a63"
+    },
+    {
+      "path": "metadata/api-run.json",
+      "bytes": 12210,
+      "sha256": "ce80ef765b9b37b76be2c7114cd3a23798665792f480693a0c769604d90f338a"
+    },
+    {
+      "path": "metadata/collection-request.json",
+      "bytes": 417,
+      "sha256": "7dcc4ae2adbfc4152c87309754e8607903182ea999e64bdd592873c4cfd9139e"
+    },
+    {
+      "path": "metadata/prepare/request.json",
+      "bytes": 477,
+      "sha256": "c0613a0f69523f775087f16218f0e5d90f0d19c5d208694a62c7db137b0bde94"
+    },
+    {
+      "path": "metadata/prepare/staged.json",
+      "bytes": 442,
+      "sha256": "4e06f3d205706ff69987da12e74881124e221cbca273e55f2c08634b079778a0"
+    },
+    {
+      "path": "metadata/seed-2026/assemblies-before.json",
+      "bytes": 595,
+      "sha256": "a7e8c748effb6ece7d7114c3c87646e75621e0f8774cd3187a341f1e9b31af40"
+    },
+    {
+      "path": "metadata/seed-2026/environment.json",
+      "bytes": 5375,
+      "sha256": "6cc6c11b8a71d0e25c254fb51d54046304d987a1e8af19ff92d6bc5666fde816"
+    },
+    {
+      "path": "metadata/seed-2026/process-exit.json",
+      "bytes": 231,
+      "sha256": "c6a92ca45fa71bf0cce875c46570e6010e56aea25f43706441681cadb283d2d1"
+    },
+    {
+      "path": "metadata/seed-2026/process-start.json",
+      "bytes": 1142,
+      "sha256": "61c2d7b9ad1ce73df58a599124096a998a635c1968e8e999f92334ca4b3e7669"
+    },
+    {
+      "path": "metadata/seed-2026/runtimeconfig.json",
+      "bytes": 330,
+      "sha256": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f"
+    },
+    {
+      "path": "metadata/seed-2026/source.json",
+      "bytes": 1492,
+      "sha256": "1862cf320bd8b058d2db8108d60ed8d567ef4e5e494ddd7088ab62603aee69ad"
+    },
+    {
+      "path": "metadata/seed-42/assemblies-before.json",
+      "bytes": 595,
+      "sha256": "cbd20fb7fb051d0c2b4c6de858ce23efc7f969b530a5e6246a77dd1a6c1b0c46"
+    },
+    {
+      "path": "metadata/seed-42/environment.json",
+      "bytes": 5357,
+      "sha256": "474dcbd18fde0afee856e7a521f66cc52c1a17892a8a44adb6004243e531ff70"
+    },
+    {
+      "path": "metadata/seed-42/process-exit.json",
+      "bytes": 231,
+      "sha256": "980089b2e0bdf0cbae72aed07d63ecf986ace9b0e3c6d4dd30be9512fbf16b48"
+    },
+    {
+      "path": "metadata/seed-42/process-start.json",
+      "bytes": 1132,
+      "sha256": "5c37d02e40ab275448f2e242db801d1c2251107a179c7c96da615178ceddf906"
+    },
+    {
+      "path": "metadata/seed-42/runtimeconfig.json",
+      "bytes": 330,
+      "sha256": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f"
+    },
+    {
+      "path": "metadata/seed-42/source.json",
+      "bytes": 1484,
+      "sha256": "a1b3f8ccf1fc68b681f7ce03fcfa578a1e6f6e3f5b3cdf0f703a1583c6255078"
+    },
+    {
+      "path": "metadata/seed-98/assemblies-before.json",
+      "bytes": 595,
+      "sha256": "fa700e879f448969c16e99e7e24b1ff1ce685afa0bb57afab8edfb2092cc4357"
+    },
+    {
+      "path": "metadata/seed-98/environment.json",
+      "bytes": 5357,
+      "sha256": "528bd0cf288378b8efb4063ac693739446dccf56d759a529a3df295338ef4d8f"
+    },
+    {
+      "path": "metadata/seed-98/process-exit.json",
+      "bytes": 228,
+      "sha256": "3b59f1362bd3d5b4f34f473e637a739f714f7c34db98e7655fe84d8490f6ceb1"
+    },
+    {
+      "path": "metadata/seed-98/process-start.json",
+      "bytes": 1132,
+      "sha256": "db5944a0e07ade174f9ee23861b6739ada278548554667541508c5ba4f6c17fd"
+    },
+    {
+      "path": "metadata/seed-98/runtimeconfig.json",
+      "bytes": 330,
+      "sha256": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f"
+    },
+    {
+      "path": "metadata/seed-98/source.json",
+      "bytes": 1484,
+      "sha256": "f55ebfb8d363aef018cb1795918cb760b8d43f792dc144b5628c51a78b56a514"
+    },
+    {
+      "path": "verification/seed-2026-partial-audit.json",
+      "bytes": 4044,
+      "sha256": "571117a28c96c78b13769727b92b3655d14841e947db94da660ed49cf7306423"
+    },
+    {
+      "path": "verification/seed-42-partial-audit.json",
+      "bytes": 4020,
+      "sha256": "f56d39e679740f07d66b953ef64546eca3a5085ce039e7c32d0b042b34cd02c5"
+    },
+    {
+      "path": "verification/seed-98-verification.json",
+      "bytes": 2664,
+      "sha256": "f9d63310aab5e1a58603767283b40740719c5cd32b31973298cda3d7664f616d"
+    }
+  ],
+  "summarySha256": "ff6003c39e676d9613f0abceea5ab867326c4ad1a2c581d40547cf73e2f64da4",
+  "durableArchive": {
+    "owner": "root/people evidence utility",
+    "manifestPath": ".github/evidence/sensitivity-20261031/manifest.json",
+    "plannedTag": "evidence/v0.2.1-20261031",
+    "indexAssetName": "sensitivity-artifact-index-20261031.json",
+    "publicationStatus": "pending",
+    "releaseUrl": null,
+    "indexUrl": null,
+    "scope": "Actual publication status belongs to owner utility index; official product latest release untouched."
+  },
+  "localRecoveryPackage": {
+    "fileName": "v021-growth-sensitivity-41131479924-source7ce6694.tar.gz",
+    "bytes": 9608260,
+    "sha256": "ab17e5d926ddddca288f2e99c9110511b09bd4097c308ebe3f7df673474cbf9c",
+    "published": false,
+    "scope": "Local recovery copy only; not an extra requested release asset."
+  },
+  "rawReportsRewritten": false,
+  "newMeasurementsExecuted": 0,
+  "ledgerOrDefaultChanged": false
+}

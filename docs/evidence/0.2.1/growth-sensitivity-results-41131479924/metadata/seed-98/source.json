@@ -1,0 +1,28 @@
+{
+  "source_commit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "source_tree": "5ae1b72e2471122e61f27a4cb9c294e7b40b5793",
+  "product_source_fingerprint": "4e228e7ba34e538fd1a69abf05934d8162b2a65559ed4ffd50a73b00a8ba2304",
+  "version": "0.2.1",
+  "source_worktree_clean": true,
+  "workflow_source_commit": "4938381715964009d5b689f56de30aa226ad9395",
+  "sdk": "10.0.403",
+  "scenario": "a",
+  "seed": 98,
+  "horizon_months": 6000,
+  "observation_interval_months": 120,
+  "metadata_source_commit": "42ebf359de90c3b3f00292bf6703e359b378f630",
+  "plan_sha256": "2533de34465aeddefd697062dbb3f806b197f280e44d5e96cd147a5692bee882",
+  "baseline_sha256": "02ab5dc68175bc614fa987b22a8559f9155d4d3055627663cef2db2b36aed175",
+  "wall_minutes": 240,
+  "wall_minutes_file_sha256": "acbf3426054eb2943640b7d941b8181fe3cc9c00a2f396a4ebaa7647d493e420",
+  "runtime_environment": {
+    "DOTNET_ROOT": "/home/runner/work/_temp/v021-sensitivity-41131479924-1-98/dotnet",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "true",
+    "DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "1",
+    "DOTNET_INSTALL_DIR": "/home/runner/work/_temp/v021-sensitivity-41131479924-1-98/dotnet",
+    "DOTNET_CLI_HOME": "/home/runner/work/_temp/v021-sensitivity-41131479924-1-98/dotnet-home",
+    "DOTNET_MULTILEVEL_LOOKUP": "0",
+    "DOTNET_NOLOGO": "true"
+  },
+  "input_contract": "기존 --sensitivity/--sensitivity-plan/--sensitivity-seed. 기본a·한 잠정법칙·값2개·세 실제seed; 새로운 프로그램/보고서 schema 없음"
+}

@@ -18,9 +18,13 @@ public sealed partial class KnowledgeAuthority
 
     public KnowledgeAuthority() : this(new KnowledgeState()) { }
 
-    private KnowledgeAuthority(KnowledgeState snapshot)
+    private KnowledgeAuthority(KnowledgeState snapshot) : this(snapshot, takeWorldOwnership: false)
     {
-        state = Clone(snapshot);
+    }
+
+    private KnowledgeAuthority(KnowledgeState snapshot, bool takeWorldOwnership)
+    {
+        state = takeWorldOwnership ? snapshot : Clone(snapshot);
         foreach (var work in state.Works) works.Add(work.Id, work);
         foreach (var edition in state.Editions) editions.Add(edition.Id, edition);
         foreach (var medium in state.Media) media.Add(medium.ItemId, medium);
@@ -45,6 +49,18 @@ public sealed partial class KnowledgeAuthority
         ArgumentNullException.ThrowIfNull(snapshot);
         Validate(snapshot);
         return new(snapshot);
+    }
+
+    /// <summary>
+    /// 세계가 독점 소유한 저장 상태에만 런타임 인덱스를 연결한다. 외부 입력에는 Restore를 사용한다.
+    /// 연결 중에는 이 권위를 통해서만 내용을 변경하고, 상태 객체를 교체하면 캐시를 다시 연결해야 한다.
+    /// 공개 Checkpoint와 조회 DTO의 분리 계약은 그대로 유지한다.
+    /// </summary>
+    internal static KnowledgeAuthority AttachWorldOwned(KnowledgeState ownedState)
+    {
+        ArgumentNullException.ThrowIfNull(ownedState);
+        Validate(ownedState);
+        return new KnowledgeAuthority(ownedState, takeWorldOwnership: true);
     }
 
     public KnowledgeResult DefineWork(KnowledgeWork work)

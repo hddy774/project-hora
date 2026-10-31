@@ -1,0 +1,37 @@
+PASS INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth
+PASS INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching
+PASS INV-004/023/024 adopted knowledge revision·actual support reservation·no book mastery
+PASS INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding
+PASS INV-009/024 knowledge: 허가한 실제 매체를 전체수·정렬·페이지 전에 필터하여 바깥 도서를 인지하지 않는다
+PASS INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs
+PASS INV-024 knowledge: experiments refute adopted claims and corrections never rewrite history
+PASS INV-015/024 knowledge: physical missing pages and book loss preserve learned memory
+PASS INV-024 knowledge bridge contract: explicit genesis transmission licence and existing comprehension baseline
+PASS INV-024 knowledge: personal misinterpretation and oral transmission do not mutate editions
+PASS INV-004/024 knowledge: loss of an action's physical source prevents completion without refunding spent inputs
+PASS INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights
+PASS INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다
+PASS INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다
+PASS INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다
+PASS INV-024 knowledge: physical ownership grants neither comprehension nor mastery
+PASS INV-007/024 knowledge physical snapshot: 전체 사본의 매체·접근권과 순서·동기화 시점·중첩 배열 격리가 같다
+PASS INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay
+PASS INV-006/008/024 knowledge: scoped paged queries are pure isolated and culture independent
+PASS INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs
+PASS INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected
+PASS INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke
+PASS INV-006/012/024 knowledge: parents mentors and apprentices spend both participants' time
+PASS INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs
+PASS INV-017/018/024 knowledge public world: an actual blank book carries no text until paid transcription
+PASS INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history
+PASS INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery
+PASS INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain
+PASS INV-004/017/024 knowledge public world: real request and teaching share both participants' labor and cancel together
+PASS INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book
+PASS INV-008/009/015 people receipts public: unseen remote oath end cannot update personal agreement knowledge
+PASS INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests
+PASS INV-009/024 rich query: knowledge provenance is personal and hidden revision independent
+PASS inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity
+PASS V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty
+PASS V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching
+RESULT 36/36

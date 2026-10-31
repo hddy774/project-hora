@@ -1,0 +1,819 @@
+{
+  "kind": "bounded-knowledge-ownership-diagnostic-comparison",
+  "finalPerformanceAcceptance": false,
+  "fixedBudgetChanged": false,
+  "beforeAfter": {
+    "baseline": {
+      "source": "df7240556a260202a248e57b1f9868e372b9d995",
+      "productFingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+      "run": {
+        "diagnostic_batch": 2,
+        "prior_attempt": "/workspace/scratch/knowledge-df72405-n100-late-cpu1/",
+        "target_change_reason": "batch1 preparation consumed229s; explicit root batch2 target month30 instead of60; original performance plan unchanged",
+        "kind": "bounded-cpu-allocation-diagnostic",
+        "source_commit": "df7240556a260202a248e57b1f9868e372b9d995",
+        "preparation_start_utc": "2026-10-31T01:43:53.231235+00:00",
+        "reach_late_deadline_utc": "2026-10-31T01:46:53.231235+00:00",
+        "total_deadline_utc": "2026-10-31T01:46:53.231235+00:00",
+        "cpu_affinity": [
+          1
+        ],
+        "profile_seconds": 30,
+        "late_target": "STABILITY population=100 month=30/120",
+        "final_performance_acceptance": false,
+        "status": "captured",
+        "game_code_changes": 0,
+        "remote_reruns": 0,
+        "historical_inputs_unchanged": true,
+        "runtime_environment_whitelist": {
+          "DOTNET_TieredPGO": null,
+          "COMPlus_TieredPGO": null,
+          "DOTNET_gcServer": null,
+          "COMPlus_gcServer": null,
+          "DOTNET_GCHeapHardLimit": null
+        },
+        "prior_actual_full_functional": {
+          "path": "/workspace/scratch/v021-integration-df72405/functional.json",
+          "sha256": "6f334c51dd49f8059a0199dc86533f218d1f583017b7943368739413ee688f66",
+          "total": 314,
+          "failed": 0
+        },
+        "product_source_fingerprint": "0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e",
+        "sdk": "10.0.403",
+        "assemblies": [
+          {
+            "name": "Chronicles.Core",
+            "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+            "bytes": 5120,
+            "sha256": "5590a4755ad10d447da4c664801df72c7bf9e2ef23d91b0b9ac32d1f987b0d04",
+            "embedded_source_string_verified": true
+          },
+          {
+            "name": "Chronicles.Game",
+            "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+            "bytes": 2258432,
+            "sha256": "c4f021717c612e963a6955fced6fc13b97e6fdfb2b19568ba7f0e8749a24584b",
+            "embedded_source_string_verified": true
+          },
+          {
+            "name": "Chronicles.Hosting",
+            "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+            "bytes": 23552,
+            "sha256": "0941a57f4832c1a840110d0bb9e3f456ea59d4a071fe73108e038ff146096638",
+            "embedded_source_string_verified": true
+          },
+          {
+            "name": "Chronicles.Game.Tests",
+            "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+            "bytes": 1500672,
+            "sha256": "34ad36799b0bef8c8437a2efab6ddb49b5d8296ec6649ec9bf391b6c6ae1e0d7",
+            "embedded_source_string_verified": true
+          }
+        ],
+        "runtimeconfig": {
+          "path": "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+          "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+          "properties": {
+            "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+            "System.Runtime.TieredPGO": false
+          }
+        },
+        "inputs": {
+          "baseline.json": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+          "budget.json": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+          "stability-plan.json": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+        },
+        "game_command": [
+          "/workspace/.dotnet/dotnet",
+          "exec",
+          "--fx-version",
+          "10.0.14",
+          "/workspace/seonro-integration-df72405/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+          "--filter",
+          "INV-001/002/011",
+          "--report",
+          "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/pre.json",
+          "--stability",
+          "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/diagnostic-partial.json",
+          "--stability-plan",
+          "/workspace/seonro-integration-df72405/docs/evidence/0.2.1/final-performance/stability-plan.json"
+        ],
+        "app_started_utc": "2026-10-31T01:43:53.821566+00:00",
+        "app_pid": 154159,
+        "app_affinity": [
+          1
+        ],
+        "late_observed_utc": "2026-10-31T01:44:57.466375+00:00",
+        "pre_profile_console_lines": [
+          "STABILITY population=2 month=0/120 living=2 elapsed=0.50s",
+          "STABILITY population=2 month=30/120 living=2 elapsed=9.60s",
+          "STABILITY population=2 month=60/120 living=2 elapsed=19.86s",
+          "STABILITY population=2 month=90/120 living=2 elapsed=29.72s",
+          "STABILITY population=2 month=120/120 living=2 elapsed=40.00s",
+          "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.00s result=completed",
+          "STABILITY population=100 month=0/120 living=100 elapsed=0.46s",
+          "STABILITY population=100 month=30/120 living=100 elapsed=22.47s"
+        ],
+        "collector_command": [
+          "/workspace/.dotnet-tools/dotnet-trace",
+          "collect",
+          "--process-id",
+          "154159",
+          "--profile",
+          "dotnet-sampled-thread-time,gc-verbose",
+          "--buffersize",
+          "64",
+          "--duration",
+          "00:00:00:30",
+          "--output",
+          "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/cpu.nettrace"
+        ],
+        "collector_started_utc": "2026-10-31T01:44:57.466411+00:00",
+        "collector_pid": 154248,
+        "collector_affinity": [
+          1
+        ],
+        "collector_ended_utc": "2026-10-31T01:45:28.012844+00:00",
+        "collector_exit": 0,
+        "app_stopped_only_private_group": true,
+        "app_exit": -15,
+        "ended_utc": "2026-10-31T01:45:28.028434+00:00",
+        "total_seconds_from_preregistered_start": 94.79721760749817,
+        "within_total_cap": true,
+        "source_clean_after": true,
+        "observed_checkpoint_console_lines": [
+          "STABILITY population=2 month=0/120 living=2 elapsed=0.50s",
+          "STABILITY population=2 month=30/120 living=2 elapsed=9.60s",
+          "STABILITY population=2 month=60/120 living=2 elapsed=19.86s",
+          "STABILITY population=2 month=90/120 living=2 elapsed=29.72s",
+          "STABILITY population=2 month=120/120 living=2 elapsed=40.00s",
+          "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.00s result=completed",
+          "STABILITY population=100 month=0/120 living=100 elapsed=0.46s",
+          "STABILITY population=100 month=30/120 living=100 elapsed=22.47s"
+        ],
+        "files": [
+          {
+            "path": "cpu.nettrace",
+            "bytes": 33015438,
+            "sha256": "d1a5db8305adcd013fb00b9c9c8dee69cf6f07f9c3f768591a8d3a67d2d301ac"
+          },
+          {
+            "path": "collector.log",
+            "bytes": 548,
+            "sha256": "8c3ecf9424ad63c78def86b9a49c0e69e44e8e6910787efaf1965149a139425f"
+          },
+          {
+            "path": "game.log",
+            "bytes": 582,
+            "sha256": "10c1bb47ab3bde454b4c809c53a6186932ffcb59fd40970326369f7ecf6a8f8e"
+          },
+          {
+            "path": "pre.json",
+            "bytes": 252,
+            "sha256": "174c11f0cc3e13e459bbd9d3bbdca8c80acdfd27e6ea309a8abf200d91ff586f"
+          },
+          {
+            "path": "diagnostic-partial.json",
+            "bytes": 13013,
+            "sha256": "9d26cbce7d4375c38e25046a39bbf4507f0190819aa1826c233c816750dfe0b5"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-2.seonro",
+            "bytes": 5027868,
+            "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-2.seonro.backup",
+            "bytes": 4663494,
+            "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-100.seonro.backup",
+            "bytes": 3988028,
+            "sha256": "0d1501b698ee25477af32eaa81a1b007ae3c7a28fa1bbdc6a7a5d5c7adcb2a00"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-100.seonro",
+            "bytes": 28642572,
+            "sha256": "59b244023e8caf146ceb4e758cf7ed6e241e5aafa50cc88f53cada5000df3879"
+          }
+        ]
+      },
+      "advanceWeightedThreadMilliseconds": 28837.51953117292,
+      "advanceOverlappingGroups": {
+        "knowledge_clone": {
+          "frame": "knowledge_clone",
+          "weighted_thread_ms": 20713.8292483993,
+          "percent": 71.82944159260288
+        },
+        "knowledge_save": {
+          "frame": "knowledge_save",
+          "weighted_thread_ms": 20713.053906088404,
+          "percent": 71.82675293448145
+        },
+        "json_any": {
+          "frame": "json_any",
+          "weighted_thread_ms": 3068.108474653256,
+          "percent": 10.639293963326761
+        },
+        "knowledge_mirror": {
+          "frame": "knowledge_mirror",
+          "weighted_thread_ms": 172.60096786300772,
+          "percent": 0.5985291754251911
+        },
+        "cultivation_context": {
+          "frame": "cultivation_context",
+          "weighted_thread_ms": 169.0529497629158,
+          "percent": 0.586225696631682
+        },
+        "knowledge_history_search": {
+          "frame": "knowledge_history_search",
+          "weighted_thread_ms": 18.25227554526691,
+          "percent": 0.06329350041891252
+        },
+        "politics_context": {
+          "frame": "politics_context",
+          "weighted_thread_ms": 12.088346342762406,
+          "percent": 0.04191881458353271
+        }
+      },
+      "allAllocationTickEstimate": {
+        "count": 143554,
+        "sampledAllocationBytes": 15967430992,
+        "top": [
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeEvidence",
+            "ticks": 42363,
+            "sampledAllocationBytes": 4515424008
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeActivity",
+            "ticks": 23263,
+            "sampledAllocationBytes": 2480068656
+          },
+          {
+            "type": "System.Int32[]",
+            "ticks": 15316,
+            "sampledAllocationBytes": 1632376128
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeAdoption",
+            "ticks": 8254,
+            "sampledAllocationBytes": 879991488
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.PracticalKnowledge",
+            "ticks": 6936,
+            "sampledAllocationBytes": 739906064
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgePracticeOutcome",
+            "ticks": 6012,
+            "sampledAllocationBytes": 641015560
+          },
+          {
+            "type": "ArraySelectIterator`2[Chronicles.Game.Knowledge.KnowledgeAdoption,Chronicles.Game.Knowledge.KnowledgeAdoption]",
+            "ticks": 5517,
+            "sampledAllocationBytes": 588176800
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeRules",
+            "ticks": 5393,
+            "sampledAllocationBytes": 574963976
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeTimeUse",
+            "ticks": 5210,
+            "sampledAllocationBytes": 556532488
+          },
+          {
+            "type": "System.Byte[]",
+            "ticks": 332,
+            "sampledAllocationBytes": 533926120
+          },
+          {
+            "type": "System.String",
+            "ticks": 4346,
+            "sampledAllocationBytes": 513158136
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeAdoption[]",
+            "ticks": 3724,
+            "sampledAllocationBytes": 397004576
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeEvidence[]",
+            "ticks": 2311,
+            "sampledAllocationBytes": 327598648
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.PersonalKnowledge",
+            "ticks": 1439,
+            "sampledAllocationBytes": 153362040
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeActivity[]",
+            "ticks": 888,
+            "sampledAllocationBytes": 104798440
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.PracticalKnowledge[]",
+            "ticks": 883,
+            "sampledAllocationBytes": 104309104
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeTimeUse[]",
+            "ticks": 870,
+            "sampledAllocationBytes": 102831400
+          },
+          {
+            "type": "System.Func`2[Chronicles.Game.Inventory.NaturalStock,System.Boolean]",
+            "ticks": 939,
+            "sampledAllocationBytes": 100027184
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeChapter",
+            "ticks": 494,
+            "sampledAllocationBytes": 52650968
+          },
+          {
+            "type": "<>c__DisplayClass6_8",
+            "ticks": 489,
+            "sampledAllocationBytes": 52058032
+          },
+          {
+            "type": "System.Text.Json.ArgumentState",
+            "ticks": 447,
+            "sampledAllocationBytes": 47655368
+          },
+          {
+            "type": "System.Int64",
+            "ticks": 383,
+            "sampledAllocationBytes": 40825744
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.EditionChapter",
+            "ticks": 357,
+            "sampledAllocationBytes": 38035000
+          },
+          {
+            "type": "System.Int64[]",
+            "ticks": 352,
+            "sampledAllocationBytes": 37521816
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeEdition",
+            "ticks": 341,
+            "sampledAllocationBytes": 36343056
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeWork",
+            "ticks": 300,
+            "sampledAllocationBytes": 31982632
+          },
+          {
+            "type": "System.Text.Json.Arguments`4[System.String,System.Int64,System.String,System.Object]",
+            "ticks": 270,
+            "sampledAllocationBytes": 28789448
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeChapter[]",
+            "ticks": 216,
+            "sampledAllocationBytes": 23032720
+          },
+          {
+            "type": "Chronicles.Game.DecisionCandidate",
+            "ticks": 213,
+            "sampledAllocationBytes": 22702840
+          },
+          {
+            "type": "Entry[System.Int64][]",
+            "ticks": 200,
+            "sampledAllocationBytes": 22031768
+          }
+        ]
+      },
+      "captureScope": [
+        "STABILITY population=2 month=0/120 living=2 elapsed=0.50s",
+        "STABILITY population=2 month=30/120 living=2 elapsed=9.60s",
+        "STABILITY population=2 month=60/120 living=2 elapsed=19.86s",
+        "STABILITY population=2 month=90/120 living=2 elapsed=29.72s",
+        "STABILITY population=2 month=120/120 living=2 elapsed=40.00s",
+        "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.00s result=completed",
+        "STABILITY population=100 month=0/120 living=100 elapsed=0.46s",
+        "STABILITY population=100 month=30/120 living=100 elapsed=22.47s"
+      ],
+      "notExactCpuTime": true,
+      "notRetainedMemory": true
+    },
+    "candidate": {
+      "source": "db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+      "productFingerprint": "851a822068d5c8105064ffc84f8a8d6afd424270a5953f740095d640c6db3610",
+      "run": {
+        "diagnostic_batch": "candidate-owned-state",
+        "prior_attempt": "/workspace/scratch/knowledge-df72405-n100-month30-cpu1-diag2/",
+        "target_change_reason": "authorized minimal ownership leaf; same N2 then N100 month30 target and original inputs as completed df diagnostic2; fixed 180s, one capture only",
+        "kind": "bounded-cpu-allocation-diagnostic",
+        "source_commit": "db0feae5a5111c6ffc97b180cc37b5f9a232b3e2",
+        "preparation_start_utc": "2026-10-31T02:14:05.896311+00:00",
+        "reach_late_deadline_utc": "2026-10-31T02:17:05.896311+00:00",
+        "total_deadline_utc": "2026-10-31T02:17:05.896311+00:00",
+        "cpu_affinity": [
+          1
+        ],
+        "profile_seconds": 30,
+        "late_target": "STABILITY population=100 month=30/120",
+        "final_performance_acceptance": false,
+        "status": "captured",
+        "game_code_changes": 0,
+        "remote_reruns": 0,
+        "historical_inputs_unchanged": true,
+        "runtime_environment_whitelist": {
+          "DOTNET_TieredPGO": null,
+          "COMPlus_TieredPGO": null,
+          "DOTNET_gcServer": null,
+          "COMPlus_gcServer": null,
+          "DOTNET_GCHeapHardLimit": null
+        },
+        "prior_selected_functional": {
+          "path": "/workspace/scratch/knowledge-owned-selected-db0feae/run.json",
+          "sha256": "08b319b46fae8b509e07c2c6baef388779c579ec2654346c55fc037515343f5b",
+          "new_scenarios_report": "/workspace/scratch/knowledge-owned-new-functional-db0feae.json",
+          "scope": "49 distinct selected, not whole"
+        },
+        "product_source_fingerprint": "851a822068d5c8105064ffc84f8a8d6afd424270a5953f740095d640c6db3610",
+        "sdk": "10.0.403",
+        "assemblies": [
+          {
+            "name": "Chronicles.Core",
+            "path": "/workspace/chronicles-knowledge-owned/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Core.dll",
+            "bytes": 5120,
+            "sha256": "87aec2602e99da390b6b5cc9a3b75b44f2fe40dd9c9621b7f3e31ffa7c79f31e",
+            "embedded_source_string_verified": true
+          },
+          {
+            "name": "Chronicles.Game",
+            "path": "/workspace/chronicles-knowledge-owned/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.dll",
+            "bytes": 2257920,
+            "sha256": "3c18322005c702769e04e624ae489485605ec35235b1e4a77a4bb5d27666712e",
+            "embedded_source_string_verified": true
+          },
+          {
+            "name": "Chronicles.Hosting",
+            "path": "/workspace/chronicles-knowledge-owned/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Hosting.dll",
+            "bytes": 23552,
+            "sha256": "28966b5f106e0f558ed10aeb87b97eed7e517e06ae43444e5065aa3d45865be3",
+            "embedded_source_string_verified": true
+          },
+          {
+            "name": "Chronicles.Game.Tests",
+            "path": "/workspace/chronicles-knowledge-owned/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+            "bytes": 1506816,
+            "sha256": "2228722c2bd721fae5d714d158deefec4530f6ebf3a2eec706bd380793fc5331",
+            "embedded_source_string_verified": true
+          }
+        ],
+        "runtimeconfig": {
+          "path": "/workspace/chronicles-knowledge-owned/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.runtimeconfig.json",
+          "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7",
+          "properties": {
+            "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
+            "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false,
+            "System.Runtime.TieredPGO": false
+          }
+        },
+        "inputs": {
+          "baseline.json": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+          "budget.json": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+          "stability-plan.json": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46"
+        },
+        "game_command": [
+          "/workspace/.dotnet/dotnet",
+          "exec",
+          "--fx-version",
+          "10.0.14",
+          "/workspace/chronicles-knowledge-owned/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll",
+          "--filter",
+          "INV-001/002/011",
+          "--report",
+          "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/pre.json",
+          "--stability",
+          "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/diagnostic-partial.json",
+          "--stability-plan",
+          "/workspace/chronicles-knowledge-owned/docs/evidence/0.2.1/final-performance/stability-plan.json"
+        ],
+        "app_started_utc": "2026-10-31T02:14:06.479756+00:00",
+        "app_pid": 159147,
+        "app_affinity": [
+          1
+        ],
+        "late_observed_utc": "2026-10-31T02:15:05.143580+00:00",
+        "pre_profile_console_lines": [
+          "STABILITY population=2 month=0/120 living=2 elapsed=0.49s",
+          "STABILITY population=2 month=30/120 living=2 elapsed=9.55s",
+          "STABILITY population=2 month=60/120 living=2 elapsed=20.09s",
+          "STABILITY population=2 month=90/120 living=2 elapsed=30.34s",
+          "STABILITY population=2 month=120/120 living=2 elapsed=40.66s",
+          "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.66s result=completed",
+          "STABILITY population=100 month=0/120 living=100 elapsed=0.51s",
+          "STABILITY population=100 month=30/120 living=100 elapsed=16.88s"
+        ],
+        "collector_command": [
+          "/workspace/.dotnet-tools/dotnet-trace",
+          "collect",
+          "--process-id",
+          "159147",
+          "--profile",
+          "dotnet-sampled-thread-time,gc-verbose",
+          "--buffersize",
+          "64",
+          "--duration",
+          "00:00:00:30",
+          "--output",
+          "/workspace/scratch/knowledge-owned-db0feae-n100-month30-cpu1/cpu.nettrace"
+        ],
+        "collector_started_utc": "2026-10-31T02:15:05.143628+00:00",
+        "collector_pid": 159186,
+        "collector_affinity": [
+          1
+        ],
+        "collector_ended_utc": "2026-10-31T02:15:35.718864+00:00",
+        "collector_exit": 0,
+        "app_stopped_only_private_group": true,
+        "app_exit": -15,
+        "ended_utc": "2026-10-31T02:15:35.750550+00:00",
+        "total_seconds_from_preregistered_start": 89.85426211357117,
+        "within_total_cap": true,
+        "source_clean_after": true,
+        "observed_checkpoint_console_lines": [
+          "STABILITY population=2 month=0/120 living=2 elapsed=0.49s",
+          "STABILITY population=2 month=30/120 living=2 elapsed=9.55s",
+          "STABILITY population=2 month=60/120 living=2 elapsed=20.09s",
+          "STABILITY population=2 month=90/120 living=2 elapsed=30.34s",
+          "STABILITY population=2 month=120/120 living=2 elapsed=40.66s",
+          "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.66s result=completed",
+          "STABILITY population=100 month=0/120 living=100 elapsed=0.51s",
+          "STABILITY population=100 month=30/120 living=100 elapsed=16.88s",
+          "STABILITY population=100 month=60/120 living=100 elapsed=45.16s"
+        ],
+        "files": [
+          {
+            "path": "cpu.nettrace",
+            "bytes": 17922830,
+            "sha256": "4e8d0e1e50ba91684576d1e177b158a3ff11fbe0036c3324056730e38db75bd3"
+          },
+          {
+            "path": "collector.log",
+            "bytes": 548,
+            "sha256": "d9f2fae43d962fcfe3116caf980de4516a282b7920d66c1fb25761807eb34ad7"
+          },
+          {
+            "path": "game.log",
+            "bytes": 646,
+            "sha256": "7f538405f2bc1bb7b4319cd7a3f8328fba50df980479ebf0c455c572249b0578"
+          },
+          {
+            "path": "pre.json",
+            "bytes": 252,
+            "sha256": "002bd6ab01d13b9fb3c07074b390279b0b88e722e80fe76c13c0b24b756b5605"
+          },
+          {
+            "path": "diagnostic-partial.json",
+            "bytes": 13012,
+            "sha256": "fbb62793d15cdf48e1fa81c58228eb7a529ea553c87d99e2b9aa2d65133fc18e"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-2.seonro",
+            "bytes": 5027868,
+            "sha256": "374447ce41ce70a9bd0cbc17c57ece65023167931a715ef4f8aa484f960b03f6"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-2.seonro.backup",
+            "bytes": 4663494,
+            "sha256": "0e5903c307695ba4154b30123b9a178d8b9560f63931bda9808c803410f00f13"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-100.seonro.backup",
+            "bytes": 28642572,
+            "sha256": "59b244023e8caf146ceb4e758cf7ed6e241e5aafa50cc88f53cada5000df3879"
+          },
+          {
+            "path": "diagnostic-partial-saves/population-100.seonro",
+            "bytes": 41529266,
+            "sha256": "9e9bb1d21d9274d295735b1519cb07aef29c54d787cd7ed1e3d204130d3c7353"
+          }
+        ]
+      },
+      "advanceWeightedThreadMilliseconds": 17837.960069209486,
+      "advanceOverlappingGroups": {
+        "json_any": {
+          "frame": "json_any",
+          "weighted_thread_ms": 6747.845446159906,
+          "percent": 37.828571316332955
+        },
+        "cultivation_context": {
+          "frame": "cultivation_context",
+          "weighted_thread_ms": 306.1510629202502,
+          "percent": 1.716289652698038
+        },
+        "knowledge_mirror": {
+          "frame": "knowledge_mirror",
+          "weighted_thread_ms": 201.27719176084582,
+          "percent": 1.128364403664492
+        },
+        "knowledge_history_search": {
+          "frame": "knowledge_history_search",
+          "weighted_thread_ms": 68.64983411814408,
+          "percent": 0.38485249351265305
+        },
+        "politics_context": {
+          "frame": "politics_context",
+          "weighted_thread_ms": 9.364892510512192,
+          "percent": 0.05249979523542688
+        },
+        "knowledge_clone": {
+          "frame": "knowledge_clone",
+          "weighted_thread_ms": 6.257960911215378,
+          "percent": 0.035082267742135985
+        }
+      },
+      "allAllocationTickEstimate": {
+        "count": 39656,
+        "sampledAllocationBytes": 7169915616,
+        "top": [
+          {
+            "type": "System.Byte[]",
+            "ticks": 969,
+            "sampledAllocationBytes": 2081568464
+          },
+          {
+            "type": "System.String",
+            "ticks": 12152,
+            "sampledAllocationBytes": 1689643856
+          },
+          {
+            "type": "System.Char[]",
+            "ticks": 1,
+            "sampledAllocationBytes": 536870936
+          },
+          {
+            "type": "System.Func`2[Chronicles.Game.Inventory.NaturalStock,System.Boolean]",
+            "ticks": 2344,
+            "sampledAllocationBytes": 249804392
+          },
+          {
+            "type": "System.Text.Json.ArgumentState",
+            "ticks": 2028,
+            "sampledAllocationBytes": 216046744
+          },
+          {
+            "type": "System.Int64",
+            "ticks": 1900,
+            "sampledAllocationBytes": 202463008
+          },
+          {
+            "type": "<>c__DisplayClass6_8",
+            "ticks": 1167,
+            "sampledAllocationBytes": 124367552
+          },
+          {
+            "type": "System.Int64[]",
+            "ticks": 1079,
+            "sampledAllocationBytes": 115026480
+          },
+          {
+            "type": "System.Int32[]",
+            "ticks": 1026,
+            "sampledAllocationBytes": 110047304
+          },
+          {
+            "type": "System.Text.Json.Arguments`4[System.String,System.Int64,System.String,System.Object]",
+            "ticks": 814,
+            "sampledAllocationBytes": 86701760
+          },
+          {
+            "type": "Chronicles.Game.DecisionCandidate",
+            "ticks": 750,
+            "sampledAllocationBytes": 79881776
+          },
+          {
+            "type": "System.Int32",
+            "ticks": 644,
+            "sampledAllocationBytes": 68628232
+          },
+          {
+            "type": "Entry[System.Int64][]",
+            "ticks": 473,
+            "sampledAllocationBytes": 53379496
+          },
+          {
+            "type": "Chronicles.Game.DecisionCandidate[]",
+            "ticks": 447,
+            "sampledAllocationBytes": 47602320
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeEvidence",
+            "ticks": 320,
+            "sampledAllocationBytes": 34105192
+          },
+          {
+            "type": "System.SZGenericArrayEnumerator`1[Chronicles.Game.People.AptitudeWeight]",
+            "ticks": 308,
+            "sampledAllocationBytes": 32828688
+          },
+          {
+            "type": "<>c__DisplayClass288_1",
+            "ticks": 305,
+            "sampledAllocationBytes": 32501096
+          },
+          {
+            "type": "Entry[System.String][]",
+            "ticks": 273,
+            "sampledAllocationBytes": 32035216
+          },
+          {
+            "type": "System.Func`2[Chronicles.Game.Inventory.ItemMetadata,System.Boolean]",
+            "ticks": 300,
+            "sampledAllocationBytes": 31971120
+          },
+          {
+            "type": "Chronicles.Game.Ecology.RegionalEconomySample",
+            "ticks": 292,
+            "sampledAllocationBytes": 31119568
+          },
+          {
+            "type": "System.Func`2[Chronicles.Game.People.AptitudeWeight,System.Int64]",
+            "ticks": 286,
+            "sampledAllocationBytes": 30476280
+          },
+          {
+            "type": "Chronicles.Game.People.PeopleHabitSnapshot[]",
+            "ticks": 267,
+            "sampledAllocationBytes": 28453488
+          },
+          {
+            "type": "DistinctIterator`1[System.Int32]",
+            "ticks": 266,
+            "sampledAllocationBytes": 28341680
+          },
+          {
+            "type": "System.Collections.Generic.HashSet`1[System.Int32]",
+            "ticks": 248,
+            "sampledAllocationBytes": 26414920
+          },
+          {
+            "type": "Entry[System.Int32][]",
+            "ticks": 243,
+            "sampledAllocationBytes": 25860952
+          },
+          {
+            "type": "System.String[]",
+            "ticks": 240,
+            "sampledAllocationBytes": 25583424
+          },
+          {
+            "type": "Chronicles.Game.Knowledge.KnowledgeActivity",
+            "ticks": 205,
+            "sampledAllocationBytes": 21849832
+          },
+          {
+            "type": "Entry[System.String,Chronicles.Game.Knowledge.KnowledgeEvidence][]",
+            "ticks": 58,
+            "sampledAllocationBytes": 21318328
+          },
+          {
+            "type": "Chronicles.Game.People.InnateProfile",
+            "ticks": 190,
+            "sampledAllocationBytes": 20258936
+          },
+          {
+            "type": "<>c__DisplayClass4_0",
+            "ticks": 179,
+            "sampledAllocationBytes": 19086984
+          }
+        ]
+      },
+      "captureScope": [
+        "STABILITY population=2 month=0/120 living=2 elapsed=0.49s",
+        "STABILITY population=2 month=30/120 living=2 elapsed=9.55s",
+        "STABILITY population=2 month=60/120 living=2 elapsed=20.09s",
+        "STABILITY population=2 month=90/120 living=2 elapsed=30.34s",
+        "STABILITY population=2 month=120/120 living=2 elapsed=40.66s",
+        "STABILITY CASE population=2 month=120/120 living=2 elapsed=40.66s result=completed",
+        "STABILITY population=100 month=0/120 living=100 elapsed=0.51s",
+        "STABILITY population=100 month=30/120 living=100 elapsed=16.88s",
+        "STABILITY population=100 month=60/120 living=100 elapsed=45.16s"
+      ],
+      "notExactCpuTime": true,
+      "notRetainedMemory": true
+    }
+  },
+  "limitations": [
+    "N100 month30 start target identical, but candidate also reaches month60 checkpoint IO; baseline does not reach month60 in capture.",
+    "Stack group percentages overlap and cannot be summed; weighted thread-time is not actual CPU cycles or wall time.",
+    "AllocationTick byte values are sampled estimates across each full capture, not exact allocations or retained heap.",
+    "No matched-window causal speedup or total allocation improvement is claimed.",
+    "No explicit lost-event count was recorded."
+  ]
+}

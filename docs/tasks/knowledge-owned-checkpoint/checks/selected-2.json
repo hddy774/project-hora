@@ -1,0 +1,32 @@
+{
+  "selection": "\uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD",
+  "total": 5,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-004/006/023 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: 1% \uC2E4\uC2B5\u00B7\uC804\uD658\u00B7\uC0C1\uC704 \uACBD\uC9C0 \uACC4\uC57D\uACFC \uB3D9\uACB0 \uCD9C\uCC98 \uC720\uC9C0",
+      "passed": true,
+      "ms": 107
+    },
+    {
+      "name": "INV-004/006/021 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: entry \uCD94\uAC00\uB294 \uC720\uD6A8 Qi \uC790\uACA9\u00B7\uC815\uC218 \uD488\uC9C8\uC744 \uB0AE\uCD94\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 33
+    },
+    {
+      "name": "INV-004/006/008 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: \uC2E4\uC81C \uC804\uC218 Qi \uC6B0\uC120\u00B7\uC870\uD68C \uBB34\uBCC0\uD654\u00B7\uB3D9\uACB0 \uC800\uC7A5\u00B7\uB2E8\uC77C \uD574\uC18C \uB09C\uC218",
+      "passed": true,
+      "ms": 17230
+    },
+    {
+      "name": "INV-004/006/018 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: entry \uC5C6\uB294 \uC2E4\uC81C Qi \uD559\uC2B5\u00B7\uD1A0\uB0A9 \uB4A4 \uB450 AI caller\uB97C \uC9C0\uB098 \uC900\uBE44\uD55C\uB2E4",
+      "passed": true,
+      "ms": 2968
+    },
+    {
+      "name": "INV-004/006/018 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: \uC2E4\uC81C Qi \uC624\uB3C5 \uAC70\uBD80\u00B7\uC7AC\uD559\uC2B5 \uB300\uC0C1\uB3C4 \uAC19\uC740 \uAC1C\uC778 \uD310\uBCF8\uC774\uB2E4",
+      "passed": true,
+      "ms": 10695
+    }
+  ]
+}

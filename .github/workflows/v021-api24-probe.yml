@@ -77,7 +77,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 안드로이드 도구 설정(Android SDK)
         uses: android-actions/setup-android@v3
         with:
@@ -168,7 +168,7 @@ jobs:
               install = native.adb('install', '--no-streaming', apk)
               (out / 'install.txt').write_text(install)
               assert 'Success' in install, '새 APK 설치가 성공하지 않았습니다'
-              # Reuse the unchanged official renderer/foreground/DOM checker; do not enter its signing/upgrade CLI.
+              # Share the bounded actual-launch/foreground/DOM reader; do not enter the signing/upgrade CLI.
               fresh = native.actual_render(apk, proof, out / 'fresh')
               service = capture('webview-service-after.txt', 'shell', 'dumpsys', 'webviewupdate')
               after = capture('webview-package-after.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')

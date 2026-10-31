@@ -19,6 +19,10 @@ verify = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(verify)
 PACKAGE = verify.PACKAGE
 
+readiness_spec = importlib.util.spec_from_file_location("android_readiness", Path(__file__).with_name("android_readiness.py"))
+readiness = importlib.util.module_from_spec(readiness_spec)
+readiness_spec.loader.exec_module(readiness)
+
 
 def adb(*args, binary=False, optional=False, timeout=45):
     result = subprocess.run(["adb", *map(str, args)], capture_output=True, timeout=timeout)
@@ -50,43 +54,7 @@ def launch(activity, transcript=None):
 def actual_render(apk, proof, out):
     out.mkdir(parents=True, exist_ok=True)
     verify.require(verify.sha(apk) == proof["sha256"], "APK bytes changed before installation")
-    launch(proof["launchable_activity"], out / "launch.txt")
-    deadline = time.monotonic() + 90
-    logs = ""
-    while time.monotonic() < deadline:
-        logs = adb("logcat", "-d", "-v", "tag")
-        (out / "render-log.txt").write_text(logs, encoding="utf-8")
-        verify.require("FATAL EXCEPTION" not in logs and "Fatal signal" not in logs, "Actual Android process crashed")
-        matches = []
-        for line in logs.splitlines():
-            if "SeonroRender:" in line:
-                try:
-                    matches.append(json.loads(line.split("SeonroRender:", 1)[1].strip()))
-                except json.JSONDecodeError:
-                    pass
-        if any(r.get("rendered") is True and r.get("version") == proof["version"] and
-               r.get("error") is None and r.get("connection") == "연결됨" for r in matches):
-            break
-        time.sleep(1)
-    (out / "render-log.txt").write_text(logs, encoding="utf-8")
-    verify.require(adb("shell", "pidof", PACKAGE).strip(), "Launched Android process is not alive")
-    foreground = adb("shell", "dumpsys", "activity", "activities")
-    verify.require(any(PACKAGE in line and ("mResumedActivity" in line or "mFocusedActivity" in line) for line in foreground.splitlines()),
-                   "APK is not the actual foreground activity")
-    (out / "foreground.txt").write_text(foreground, encoding="utf-8")
-    adb("shell", "uiautomator", "dump", "/sdcard/v021-release-ui.xml")
-    adb("pull", "/sdcard/v021-release-ui.xml", out / "ui.xml")
-    (out / "screen.png").write_bytes(adb("exec-out", "screencap", "-p", binary=True))
-    checked = subprocess.run([sys.executable, "scripts/verify-android-ui.py", str(out / "ui.xml"), str(out / "render-log.txt")],
-                             cwd=verify.ROOT, capture_output=True, text=True)
-    (out / "dom-checker.txt").write_text(checked.stdout + checked.stderr, encoding="utf-8")
-    verify.require(checked.returncode == 0, "Actual visible DOM/native GameSession validation failed")
-    (out / "dom-proof.json").write_text(checked.stdout, encoding="utf-8")
-    dom = json.loads(checked.stdout)
-    verify.require(dom.get("android_actual_install_launch_and_render") is True and dom.get("core_to_native_bridge") is True,
-                   "Native DOM checker did not prove the bridge")
-    return {"passed": True, "render_log_sha256": verify.sha(out / "render-log.txt"), "ui_sha256": verify.sha(out / "ui.xml"),
-            "screenshot_sha256": verify.sha(out / "screen.png"), "dom_proof_sha256": verify.sha(out / "dom-proof.json")}
+    return readiness.await_ready(proof["launchable_activity"], proof["version"], out)
 
 
 def old_world_proof(activity):

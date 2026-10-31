@@ -1,0 +1,50 @@
+{
+  "baseCommit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "issue": 223,
+  "unit": {
+    "command": "taskset -c 3 python3 scripts/test-android-readiness.py",
+    "tests": 12,
+    "passed": 12,
+    "exitCode": 0,
+    "nativeAndroidExecution": false
+  },
+  "actionlint": {
+    "version": "1.7.12",
+    "exitCode": 0,
+    "files": [
+      ".github/workflows/v021-product.yml",
+      ".github/workflows/v021-api24-probe.yml"
+    ]
+  },
+  "releaseGuardSelfTest": "passed",
+  "planSelfTest": "passed",
+  "productBoundarySelfTest": "passed",
+  "syntaxAndProtectedSourceCheck": "passed",
+  "officialOwnerSourceSignPublishUpgradeChanged": false,
+  "actualPlatformProofOnNewSource": "pending automatic CI; no local Android/ADB execution",
+  "performanceGrowthLongRuns": 0,
+  "officialReleaseExecutions": 0,
+  "priorFp528Relabeled": false,
+  "rawLogs": {
+    "actionlint.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "boundary-static.log": {
+      "bytes": 3542,
+      "sha256": "b911c8c2ff2a4bc621cd74428443128622f8fb07acac4180885cc3e892ce9f9b"
+    },
+    "plan-static.log": {
+      "bytes": 346,
+      "sha256": "91613d53dddf1aa05588e7054372c659cc4219c20ba95e2fc820833cb8559790"
+    },
+    "release-selftest.log": {
+      "bytes": 195,
+      "sha256": "fcbb790be7db5548dc2e17837502fefe98f6ab3960923f7a592ca3d5bfe173ac"
+    },
+    "unit.log": {
+      "bytes": 111,
+      "sha256": "8a49e99c758bd4bff913d7fffe18ff4236f3855a9259b8b0485980620cbedcd8"
+    }
+  }
+}

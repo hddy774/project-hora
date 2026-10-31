@@ -24,7 +24,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 검증 산출물 폴더 준비
         run: mkdir -p artifacts
       - name: 자바스크립트 실행 환경 설정(Node.js)
@@ -39,6 +39,8 @@ jobs:
         run: python3 scripts/validate-v021-plan.py --self-test
       - name: 현재 제품 경계 정적 검증
         run: python3 scripts/validate-v021-product-boundary.py --self-test --report artifacts/product-boundary.json
+      - name: Android 준비 확인 parser·flow 검사
+        run: python3 scripts/test-android-readiness.py
       - name: 이식형 제품 기능 시나리오 검증
         run: dotnet run --project tests/Chronicles.Game.Tests -c Release -- --report artifacts/product-tests.json
       - name: 공용 화면 호스트 빌드(Shell)
@@ -63,7 +65,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 윈도우 데스크톱 앱 빌드
         run: dotnet build src/Chronicles.Desktop -c Release
       - name: 이전 회귀·성능 검사 — 모든 기능 완료 후 최종 검증 전용
@@ -92,7 +94,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 안드로이드 도구 설정(Android SDK)
         uses: android-actions/setup-android@v3
         with:
@@ -118,17 +120,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: |
-            adb install -r src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk
-            adb shell am start -n org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity
-            sleep 20
-            adb logcat -d -s SeonroRender:I SeonroWeb:W AndroidRuntime:E > artifacts/android-render-log.txt
-            cat artifacts/android-render-log.txt
-            adb shell uiautomator dump /sdcard/seonro-ui.xml
-            adb pull /sdcard/seonro-ui.xml artifacts/android-ui.xml
-            cat artifacts/android-ui.xml
-            adb exec-out screencap -p > artifacts/android-screen.png
-            python3 scripts/verify-android-ui.py artifacts/android-ui.xml artifacts/android-render-log.txt
+          script: python3 scripts/android_readiness.py --apk src/Chronicles.Android/bin/Release/net10.0-android/org.hora.xianxiaobserver-Signed.apk --activity crc649632d1cee893af2a.MainActivity --output artifacts/android-runtime
       - name: 설치 검증용 앱 패키지(APK) 업로드
         uses: actions/upload-artifact@v4
         continue-on-error: true

@@ -1,0 +1,41 @@
+{
+  "baseCommit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "protectedOfficialFunctionsByteIdentical": {
+    "adb": true,
+    "package_state": true,
+    "launch": true,
+    "old_world_proof": true,
+    "retained_upgrade": true,
+    "main": true
+  },
+  "actualRenderApkHashGuardByteIdentical": true,
+  "protectedFilesByteIdentical": {
+    "scripts/verify-v021-release.py": true,
+    "scripts/publish-v021-release.py": true,
+    "scripts/verify-android-ui.py": true,
+    ".github/workflows/v021-release.yml": true
+  },
+  "api24SourceApkKvmRunBlocksByteIdentical": {
+    "소스·제품 지문과 검사 범위 기록": true,
+    "릴리스 구성의 디버그 서명 검사 APK 빌드": true,
+    "GitHub 러너의 실제 하드웨어 가속 확인(KVM)": true
+  },
+  "api24EmbeddedProbeAstIdentical": true,
+  "sdk": {
+    "product": [
+      "10.0.403",
+      "10.0.403",
+      "10.0.403"
+    ],
+    "api24": [
+      "10.0.403"
+    ]
+  },
+  "singleDeadlineAssignments": 1,
+  "syntax": "passed",
+  "originalQuickstepXmlSha256": "938794d94501058d31674442756489773bf46d15b289f7a7d0fa2b62c2a9d36d",
+  "unitTestsArePlatformExecution": false,
+  "performanceGrowthLongRuns": 0,
+  "officialReleaseExecutions": 0,
+  "existingFp528ReusedAsCurrentAcceptance": false
+}

@@ -1,43 +1,34 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `df7240556a260202a248e57b1f9868e372b9d995`
+매핑 소스: `5f789c817eb9519b696acd72410643169ff11ef2`
 
-테스트 소스 지문: `9fc6ac9beff3d3c598a6449ad86d9fd4f306f1bc1bf288391390f734aa32c117`
+테스트 소스 지문: `75e7cb849f6d113bff4c2cc4acd8cc408a0ec7907ab1b7cd8c0f0d02b3d1b21a`
 <!-- actual-map-metadata:end -->
 
-현재 등록314개(feature276+Program38),24INV·152개 증인의 Name/경계/claim/anchors는 이전94와 같다.
-맵은 계속 `not_asserted`이며 정본 제안test_status·원장·readiness를 변경하지 않는다.
+현재 등록 **321개(feature283 + Program38)**, **24INV·167개 증인**의 실제 이름·범위를 연결한다.
+기존 df314개 행과152증인의 주장/경계/앵커는 보존하고 새7개·15연결을 수동 추가했다.
+맵의 실행 상태는 계속 `not_asserted`다. 정본 제안 검사 상태·원장·readiness·예산을 변경하지 않는다.
 
-## df72405의 실제 전체 기능
+## 5f789c8 소스 검토
 
-소스 `df7240556a260202a248e57b1f9868e372b9d995`, 제품 지문 `0cb2f90fe60e571032450eff0b172b1ee7bc44b51724bcff01fdc94dc2bbfb8e`의 root frozen 전체314/314·exit0을
-[원문](invariant-final-df72405/functional.json)·[로그](invariant-final-df72405/functional.log)·
-[실행 기록](invariant-final-df72405/root-run.original.json)과 [출처](invariant-final-df72405/provenance.json)에 연결했다.
-실제 실행은 CPU0,SDK10.0.403/.NET10.0.14,2026-10-31 01:25:30~01:34:20 UTC다.
-이 시간은 기능 검사 비용이며 성능 표본이 아니다.
+제품 지문은 통합 담당자가 동결한 `a8634094870fd1219dacba2494392e2f8efb5709fbc41c13c24c69202fdbac12`다.
+[SourceReview](invariant-execution-source-review-5f789c8.json)는 df→5f 실제8제품경로의
+canonical Hash stream·기본16MiB 저장 선택·세계 소유 지식·NoInlining 장기 하네스와 새7개 검사를 구분한다.
+기존 helper의 scripts/WF 생략 한계는 실제 제품입력 분류와 따로 대조했고 이번 추가 경로는0개다.
+[새 연결](invariant-final-5f789c8/map-additions.json)과
+[보존 대조](invariant-final-5f789c8/preservation-checks.json)에 수동 검토를 남겼다.
 
-[SourceReview](invariant-execution-source-review-df72405.json)는94→df의21제품경로를 검토한다.
-수행/인물 partial의 원래 토큰/본문·필드/초기화 보존은 원저자 기록과 실제14파일SHA를 연결하고,
-SDK403·Android 준비/fixture·진행 자동화는 각자 목적/경계를 적었다.
-기존 helper의15개 C#/SDK 범위와 추가6개 제품입력의 수동 검토를 구분했다.
-[보존 대조](invariant-final-df72405/preservation-checks.json)는314/24/152와 Name/claim/anchors 불변을 확인한다.
+실제 동결 소스의 전체 **321/321·실패0·종료0**을 [원문](invariant-final-5f789c8/functional.json)·[실행 기록](invariant-final-5f789c8/root-run.original.json)·[출처](invariant-final-5f789c8/provenance.json)에 연결했다.
+원문 SHA256은 `f2c354e118a8a403a47d4989967abf001e6d177ddf947238eba665797841be92`다. 기존 검사기의 결과는 [정적 대조](invariant-final-5f789c8/execution-verification.json)에 둔다.
+Hash3은 모듈 oracle이며 실제 저장재개로 부르지 않고, 기본 경계1은 실제 임시파일 host,
+소유 지식3은 모듈 격리1/실제 명령·codec·후보 실패2로 구분한다.
+KnowledgeAtomicity 이름의 INV-007 표기만으로 관찰/View 검사를 추정하지 않는다.
 
-## 과거 자료와 검사기의 범위
-
-[94의 실제 원문](invariant-final-94ccb5d/README.md)과 [당시 SourceReview](invariant-execution-source-review-94ccb5d.json)는 그대로다.
-옛 active map의 byte/SHA는 [고정JSON](https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.json)·
-[고정Markdown](https://github.com/hddy774/project-hora/blob/df7240556a260202a248e57b1f9868e372b9d995/docs/evidence/0.2.1/invariant-execution-map.md)에 보존했다.
-현재 테스트본문이 같아 옛94 보고서도 구조검사에는 통과한다. 이 사실을 새FP0cb2 실행으로 쓰지 않는다.
-실제 새원문SHA·run/source·4DLL·runtimeconfig와 같은 제품입력을 함께 대조한다.
-`--executed-source`는 호출자의 선언과 Git 테스트 대조이며 독립적인 과거 process-load 인증이 아니다.
-
-이 새314 기능 결과를 새4규모/120장기·성장/민감도·native·유지서명/업그레이드·111개/릴리스 완료로 확대하지 않는다.
-이전528/4e 장기실패·인구32·자연9·native는 각 실제source 그대로 보존한다.
-
-```text
-python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.1/invariant-final-df72405/functional.json --executed-source df7240556a260202a248e57b1f9868e372b9d995 --output /workspace/scratch/invariant-df72405-recheck.json
-```
+[이전 df314 원문](invariant-final-df72405/README.md)과
+[SourceReview](invariant-execution-source-review-df72405.json)는 원래 source/지문으로 보존한다.
+이전 표의 [고정JSON](https://github.com/hddy774/project-hora/blob/6859eb0cf0ed21d0c7315aced247ffe244162724/docs/evidence/0.2.1/invariant-execution-map.json)·[고정Markdown](https://github.com/hddy774/project-hora/blob/6859eb0cf0ed21d0c7315aced247ffe244162724/docs/evidence/0.2.1/invariant-execution-map.md)도 유지한다.
+과거 기능·성능·장기 실패/부분·native·성장/민감도 자료를 새 소스의 통과로 재라벨하지 않는다.
 
 ## 실제 검사 증인
 
@@ -96,6 +87,13 @@ python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.
 | [INV-004 대용량 저장: prefix·버전·길이·순번·체크섬·잘림·후행 자료 엄밀 거부](../../../tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs#L72) | `module` / 거절/부정 | 작은 실제 세계에서 만든 봉투의 byte/codec 부정 검사다. prefix·버전·길이·순번·체크섬·본문·잘림·후행 자료와 올바른 체크섬의 잘못된 JSON을 거절한다. 세계의 실제 명령/시간 진행이나 대규모 저장은 실행하지 않는다. |
 | [INV-004 대용량 저장: 실제 원자파일 혼합형식·pending 우선순번·backup·손상 원문 보존](../../../tests/Chronicles.Game.Tests/Features/LargeSaveEnvelopeScenarios.cs#L101) | `host` / 정상 결과, 거절/부정, 저장/재개 | 실제 임시파일 host에서 내부 임계값으로 schema2→이진3→schema2·순번·완전 pending 우선·작은 backup 복구·손상 원문 보존을 검사한다. 다음 순번 overflow 실패가 유효 primary/pending/backup bytes를 덮지 않으며 OS 강제종료/전원상실·실제10,000명 재실측은 아니다. |
 | [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 공개 운송 중 열린 계약과 봉쇄 복귀 계약을 JSON2/public SaveAtomic 및 작은 임계값 binary3의 실제 파일로 각각 저장/Load한다. owner·운반자 원위치·예약·due·순번/RNG/ID/fullhash와 저장후 배송/실패를 비교한다. selfcarrier/fee0 작은fixture이며 실제대량/제삼자수수료/전원상실 실험은 아니다. |
+| [INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L9) | `module` / 정상 결과, 조회 순수성, 재현성 | 모듈 GameState에서 독립 기존 buffered UTF8/SHA oracle와 Unicode·lone surrogate·null·세 문화권을 대조하고 직렬화 본문/RNG/NextId 불변을 확인한다. 실제 파일·월 진행·저장 재개 검사는 아니다. |
+| [INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L55) | `module` / 정상 결과, 조회 순수성, 재현성 | 합성 N100 정적 입력의 수정 전 df 고정 Hash와2,544,545B를 독립 oracle로 대조한다. 큰 escaped 문자열·반복3회 Hash와 상태/RNG/ID 불변도 검사한다. 100명 월 진행이나 성능 실측은 아니다. |
+| [INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L84) | `module` / 정상 결과, 거절/부정, 조회 순수성, 재현성 | Hash(null)의 고정 JSON null SHA와 빈 상태 oracle를 대조한다. 고의 열거 실패의 예외 type/message와 RNG를 유지하고 실패 뒤 새 Hash에 부분 출력이 남지 않음을 확인한다. 공통 codec 저장/재개나 OS 중단 검사는 아니다. |
+| [INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환](../../../tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs#L7) | `host` / 정상 결과, 저장/재개, 재현성 | 사건 텍스트만 늘린 작은 실제 세계 fixture의 canonical 본문16MiB/16MiB+1에서 기본 JSON2/이진3 선택을 확인한다. 기존 JSON bytes·새 경계보다 큰 이전 JSON 읽기·순번/Hash/RNG·실제 기본 SaveAtomic/Load와 임시파일 정리를 검사한다. 대규모/120개월 예산 통과 근거는 아니다. |
+| [INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L6) | `module` / 정상 결과, 거절/부정 | 모듈 AttachWorldOwned에서 실제 학습 시작/완료가 독점 소유 상태에 즉시 반영되고 busy를 거절한다. 공개 Checkpoint/Restore 입력의 작품·판본·행동·증거 배열/기억과 조회 배열을 분리하고 잘못된 schema를 입력 불변으로 거절한다. 실제 GameWorld/파일 저장 검사는 아니다. |
+| [INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L63) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 possess/study와1개월 완료 뒤 공통 GameCodec 왕복·Checkpoint/Restore 입력을 분리한다. 외부 배열/기억 변조가 전파되지 않고 후보 교체·복원 뒤 두 번째 실제 학습/2개월 완료의 전체 Hash와 두 완료 기록이 같다. 장기 캐시 안정성 전체를 증명하지 않는다. |
+| [INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L98) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 study의 같은 ID 재전송·busy/충돌 거부가 전체 상태를 바꾸지 않는다. 타 영혼 결속 paper의 실제 물리 예약 거절 뒤 복원본과 다음 학습/진행을 대조하고, Revision 상한의 커밋 불변식 예외에서도 원래 지식/ID/RNG를 유지한다. Name의 INV-007 표기와 별개로 View/관찰 유무는 실행하지 않아 INV-007 증인으로 추가하지 않는다. |
 
 범위: 열거한 도메인/호스트 저장·손상·중단 복구를 검사한다. 실제 OS 강제 종료·Android 재실행 증거는 별도 플랫폼 검증이다.
 
@@ -119,6 +117,7 @@ python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.
 | [inventory typed copy reference: 실제 후보 JSON 형태·ordinal·검증·원본 격리 일치](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedSnapshotScenarios.cs#L193) | `module` / 정상 결과, 거절/부정 | 부분 typed 후보가 JSON 형태/지문/ordinal과 같고 원본 참조를 노출하지 않는다. 수량0/allocator stale/음수 돈의 기존 검증 오류도 같으며 인계 전 원본은 불변이다. |
 | [inventory typed integration: opaque 전이·영수증·재인계·실패와 동일15필드 stale 계약](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs#L40) | `module` / 정상 결과, 거절/부정 | 부분 JSON/typed 후보의 동일15 stale/opaque 전이·영수증·예약/생산/소비/한번인계를 비교한다. 두번째 처리 실패는 allocator/실물/원장을 유출하지 않는다. Clone을 공통 저장으로 세지 않는다. |
 | [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 원본/복원본 모두 같은 실제 운송 명령을 운송중과종결후 재전송해 hash불변과같은응답을 확인한다. 배송/봉쇄실패 정산event가한번이고 escrow0·예약해제가 같다. 모든동시명령/위탁당사자조합을 전수탐색한것은 아니다. |
+| [INV-004/005/007 knowledge world-owned state: 거부·재전송·커밋 전 실제 예외가 원래 세계를 바꾸지 않는다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L98) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 study의 같은 ID 재전송·busy/충돌 거부가 전체 상태를 바꾸지 않는다. 타 영혼 결속 paper의 실제 물리 예약 거절 뒤 복원본과 다음 학습/진행을 대조하고, Revision 상한의 커밋 불변식 예외에서도 원래 지식/ID/RNG를 유지한다. Name의 INV-007 표기와 별개로 View/관찰 유무는 실행하지 않아 INV-007 증인으로 추가하지 않는다. |
 
 범위: 등록한 명령/원인 키·취소·동시 선점의 실제 순서다. 가능한 모든 같은 tick 조합을 전수 탐색했다는 의미는 아니다.
 
@@ -138,6 +137,11 @@ python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.
 | [inventory typed integration: 실제 typed factory를 통과한 두 공개 전체 transcript·저장 속행 일치](../../../tests/Chronicles.Game.Tests/Features/InventoryTypedIntegrationScenarios.cs#L5) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 명시 opt-in typed15로 두 독립 실제 세계 전사를 실행해 같은 소스 strict 고정 기준과 명령·실물·저장 결과를 검사한다. 일반 앱의 typed 채택/성능 통과를 뜻하지 않는다. |
 | [inventory copy oracle: 현행 규칙의 strict·JSON15·typed15 독립 전체 전사·실제 저장 bytes 동등](../../../tests/Chronicles.Game.Tests/Features/InventoryCopyPolicyEquivalenceScenario.cs#L3) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 두 실제 세계를 strict/JSON15/typed15로 각각 독립 생성해 선보존 같은 소스 고정값·실제 다른 factory counter·전체 Rows·실제 저장 bytes를 대조한다. 옛751 해시 보존/typed 기본 채택은 주장하지 않는다. |
 | [INV-004/017 운송 저장: 실제 JSON2·이진3 파일 왕복·명령 재전송·배송 완료·봉쇄 실패](../../../tests/Chronicles.Game.Tests/Features/InventoryTransportSaveScenarios.cs#L7) | `host` + `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 같은 공개 입력의 원본/복원본을 같은 운송 due까지 진행해 전체hash/RNG를 비교하고 JSON2/이진3 독립실행 최종hash도 대조한다. 실제 장치/대량 성능이 아닌 작은세계 정수월 경계다. |
+| [INV-004/006 canonical streaming hash: 기존 UTF8 oracle·Unicode·문화권·상태/RNG 보존](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L9) | `module` / 정상 결과, 조회 순수성, 재현성 | 모듈 GameState에서 독립 기존 buffered UTF8/SHA oracle와 Unicode·lone surrogate·null·세 문화권을 대조하고 직렬화 본문/RNG/NextId 불변을 확인한다. 실제 파일·월 진행·저장 재개 검사는 아니다. |
+| [INV-004/006 canonical streaming hash: 실제 N100 고정 원본·큰 payload·반복 조회](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L55) | `module` / 정상 결과, 조회 순수성, 재현성 | 합성 N100 정적 입력의 수정 전 df 고정 Hash와2,544,545B를 독립 oracle로 대조한다. 큰 escaped 문자열·반복3회 Hash와 상태/RNG/ID 불변도 검사한다. 100명 월 진행이나 성능 실측은 아니다. |
+| [INV-004/006 canonical streaming hash: null·직렬화 실패·실패 후 새 호출의 기존 계약](../../../tests/Chronicles.Game.Tests/Features/CanonicalHashScenarios.cs#L84) | `module` / 정상 결과, 거절/부정, 조회 순수성, 재현성 | Hash(null)의 고정 JSON null SHA와 빈 상태 oracle를 대조한다. 고의 열거 실패의 예외 type/message와 RNG를 유지하고 실패 뒤 새 Hash에 부분 출력이 남지 않음을 확인한다. 공통 codec 저장/재개나 OS 중단 검사는 아니다. |
+| [INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환](../../../tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs#L7) | `host` / 정상 결과, 저장/재개, 재현성 | 사건 텍스트만 늘린 작은 실제 세계 fixture의 canonical 본문16MiB/16MiB+1에서 기본 JSON2/이진3 선택을 확인한다. 기존 JSON bytes·새 경계보다 큰 이전 JSON 읽기·순번/Hash/RNG·실제 기본 SaveAtomic/Load와 임시파일 정리를 검사한다. 대규모/120개월 예산 통과 근거는 아니다. |
+| [INV-004/006 knowledge world-owned state: 실제 명령 채택·월 완료·저장재개에서 캐시와 외부 상태가 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L63) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 possess/study와1개월 완료 뒤 공통 GameCodec 왕복·Checkpoint/Restore 입력을 분리한다. 외부 배열/기억 변조가 전파되지 않고 후보 교체·복원 뒤 두 번째 실제 학습/2개월 완료의 전체 Hash와 두 완료 기록이 같다. 장기 캐시 안정성 전체를 증명하지 않는다. |
 
 범위: 현재 C# 원본/실제 hot columns·기한 큐·scalar/Vector 경계의 작은 명령·월별·저장·문화권 재현이다. 실제 등록의 기능 비교와 최종 규모별 시간/할당 실측을 구분하며 병렬 worker·Unity·네이티브 실행으로 확대하지 않는다.
 
@@ -335,6 +339,7 @@ python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.
 | [T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims](../../../tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs#L185) | `module` / 정상 결과, 메타 계약 | PeopleState.Empty의 명시 저장 정책값 우선과 관측 없는 종족/수태모델을 used로 표시하지 않음을 검사한다. 선언 catalog 존재를 실제 전종족 실행으로 세지 않는다. |
 | [T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected](../../../tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs#L140) | `host` / 정상 결과, 거절/부정, 메타 계약 | 합성 완료 계약에서 선택2개는 전체 미완료/6개만 complete다. 실제 임시 report 고유 경로·lock/pending·덮어쓰기 거절과 CLI 구문을 검사하며 GameWorld/성장 collector는 호출하지 않는다. |
 | [T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes](../../../tests/Chronicles.Game.Tests/Features/GrowthSensitivityContractScenarios.cs#L203) | `host` / 거절/부정, 메타 계약 | 실제 별도 CLI 두 회에서 sensitivity+report plan/base alias를 쓰기 전에 거절하고 원문 bytes·output/pending/lock0·collector0을 검사한다. 민감도/성장 실행은 아니다. |
+| [INV-004/006/022 저장 봉투 기본 경계: 16MiB 양쪽의 기존 JSON·이진·원자파일 호환](../../../tests/Chronicles.Game.Tests/Features/DefaultSaveEnvelopeThresholdScenarios.cs#L7) | `host` / 정상 결과, 저장/재개, 재현성 | 사건 텍스트만 늘린 작은 실제 세계 fixture의 canonical 본문16MiB/16MiB+1에서 기본 JSON2/이진3 선택을 확인한다. 기존 JSON bytes·새 경계보다 큰 이전 JSON 읽기·순번/Hash/RNG·실제 기본 SaveAtomic/Load와 임시파일 정리를 검사한다. 대규모/120개월 예산 통과 근거는 아니다. |
 
 범위: 제안/실제 이름·작은 기능·실측·플랫폼/릴리스는 서로 다른 근거다. H04/H09·EX03/05/06·민감도 계약은 실제 기능 본문의 범위만 연결하며 sampler 실행/기본 채택/측정 완료로 세지 않는다. 전체 결과는 별도 원본·실행 출처로 대조하며 과거 다른 소스의 보고서를 승격하지 않는다.
 
@@ -362,5 +367,6 @@ python3 scripts/validate-v021-invariant-execution.py --report docs/evidence/0.2.
 | [INV-004/006/018/024 AI 수행 연결: 명시 Qi 대원만 경계에서 실제 오독·준비 거절 뒤 재독해하고 과거 해석을 보존한다](../../../tests/Chronicles.Game.Tests/Features/AgentCultivationIntegrationScenarios.cs#L150) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 명시 Qi 대원만/교본 인계 경계에서 실제 오독·거절 뒤11회 이상 독해와 저장 재개 후 새 개인 revision으로 준비하고 옛 해석을 보존한다. fixture 경지를 획득 성장으로 표시하지 않는다. |
 | [INV-004/006/021 감응 출처 선택: entry 추가는 유효 Qi 자격·정수 품질을 낮추지 않는다](../../../tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs#L9) | `module` / 정상 결과, 거절/부정, 재현성, 조회 순수성 | 순수 수행 fixture의 entry/Qi 자격·정확한 정수 형성 품질을 비교하여 동률은 Qi를 보존한다. 샘플/입력은 불변이고 제공된-context 조회와 준비 출처/거절이 같다. 이 본문은 공통 GameCodec 저장을 실행하지 않는다. |
 | [INV-004/006/018 감응 출처 선택: 실제 Qi 오독 거부·재학습 대상도 같은 개인 판본이다](../../../tests/Chronicles.Game.Tests/Features/CultivationPreparationEvidenceScenarios.cs#L197) | `public_world` / 정상 결과, 거절/부정, 저장/재개, 공개 명령, 재현성 | 실제 Qi 오독의 거절·재학습이 같은 개인 work/edition/revision을 가리킨다. 실제 추가 독서·저장 후 새 Qi revision으로 준비하며 옛 오독을 보존하고 entry를 제조하지 않는다. |
+| [INV-004/024 knowledge world-owned state: 내부 전이는 즉시 보이고 공개 사본·입력·조회 배열은 분리된다](../../../tests/Chronicles.Game.Tests/Features/KnowledgeOwnedStateScenarios.cs#L6) | `module` / 정상 결과, 거절/부정 | 모듈 AttachWorldOwned에서 실제 학습 시작/완료가 독점 소유 상태에 즉시 반영되고 busy를 거절한다. 공개 Checkpoint/Restore 입력의 작품·판본·행동·증거 배열/기억과 조회 배열을 분리하고 잘못된 schema를 입력 불변으로 거절한다. 실제 GameWorld/파일 저장 검사는 아니다. |
 
 범위: 공개 지식/실물/시간·오독/정정과 모듈 권한·판본·숙련을 구분한다. 소유/전승 접근만으로 미독 장절이나 실전 숙련을 지급하지 않는다.

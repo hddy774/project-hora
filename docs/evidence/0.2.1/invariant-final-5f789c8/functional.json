@@ -1,0 +1,1612 @@
+{
+  "selection": "all",
+  "total": 321,
+  "failed": 0,
+  "results": [
+    {
+      "name": "INV-001/002/011 \uC815\uD655\uD55C \uCC3D\uC138\u00B7\uC548\uC815 \uC2E0\uC6D0\u00B7100\uC9C0\uC810",
+      "passed": true,
+      "ms": 819
+    },
+    {
+      "name": "INV-003 \uC0AC\uC6A9\uC790 \uC138 \uC815\uCC45\uACFC 0 \uBE44\uD65C\uC131",
+      "passed": true,
+      "ms": 165
+    },
+    {
+      "name": "INV-004/005/011/012 \uC2E4\uC81C \uCD9C\uC0DD\u00B7\uC720\uC804\u00B7\uB2E8\uC77C \uC601\uD63C\u00B7\uC7AC\uC804\uC1A1",
+      "passed": true,
+      "ms": 8826
+    },
+    {
+      "name": "INV-003 \uAE30\uC874 \uC784\uC2E0 \uBC95\uCE59 revision \uBCF4\uC874",
+      "passed": true,
+      "ms": 1153
+    },
+    {
+      "name": "INV-011 \uC591\uCE5C \uAE08\uB2E8 \uBC14\uB85C \uC544\uB798\u00B7\uAC19\uC74C",
+      "passed": true,
+      "ms": 165
+    },
+    {
+      "name": "INV-012 \uD608\uC5F0 \uD5C8\uC6A9\u00B7\uC81C\uD55C \uD504\uB9AC\uC14B",
+      "passed": true,
+      "ms": 1446
+    },
+    {
+      "name": "INV-006/007/004 \uC2DC\uAC04 \uBD84\uD560\u00B7\uC870\uD68C/\uC800\uC7A5 \uBB34\uC601\uD5A5",
+      "passed": true,
+      "ms": 138063
+    },
+    {
+      "name": "INV-004 \uC190\uC0C1 \uC800\uC7A5\u00B7\uC911\uB2E8 \uD30C\uC77C\u00B7\uBC31\uC5C5 \uBCF5\uC6D0",
+      "passed": true,
+      "ms": 280
+    },
+    {
+      "name": "INV-004/012 \uBD88\uBC95 \uBD80\uBAA8\u00B7\uC2E0\uC6D0 \uC911\uBCF5 \uC800\uC7A5 \uAC70\uBD80",
+      "passed": true,
+      "ms": 59
+    },
+    {
+      "name": "INV-016/017/018 \uC2E4\uBB3C \uCD9C\uD488\u00B7\uAC70\uB798\u00B7\uC601\uC11D \uBCF4\uC874",
+      "passed": true,
+      "ms": 2290
+    },
+    {
+      "name": "INV-017 \uACBD\uB9E4 \uC608\uCE58\u00B7\uB099\uCC30 \uB2E8\uC77C \uC815\uC0B0",
+      "passed": true,
+      "ms": 1253
+    },
+    {
+      "name": "INV-017 \uC81C\uC791 \uC608\uC57D\u00B7\uCDE8\uC18C\u00B7\uC18C\uBE44\u00B7\uC800\uC7A5",
+      "passed": true,
+      "ms": 1123
+    },
+    {
+      "name": "INV-020 \uC870\uC9C1 \uAE08\uACE0\u00B7\uC815\uCC45 \uC608\uC57D\u00B7\uD574\uC0B0 \uC5ED\uC0AC",
+      "passed": true,
+      "ms": 315
+    },
+    {
+      "name": "INV-013/014 \uD654\uC2E0 \uB300\uC6D0\uB9CC \uACBD\uACC4\u00B7\uC2E4\uC81C \uC0AC\uB9DD\u00B7\uB300\uAE30\u00B7\uCD9C\uC0DD",
+      "passed": true,
+      "ms": 4976
+    },
+    {
+      "name": "INV-023 \uC6D0\uC601 \uD30C\uB2E8 \uD6C4 \uCDE8\uC18C \uC0AC\uB9DD\u00B7\uC571 \uBCF5\uC6D0\uC740 \uD3EC\uAE30 \uC544\uB2D8",
+      "passed": true,
+      "ms": 155
+    },
+    {
+      "name": "INV-010/021 \uBE59\uC758\u00B7AI \uC778\uACC4\uC5D0\uC11C \uAE30\uC874 \uD589\uB3D9 \uBCF4\uC874",
+      "passed": true,
+      "ms": 103
+    },
+    {
+      "name": "30\uACBD\uB85C\u00B724\uC7AC\uB2A5\u00B740\uD2B9\uC131\u00B712\uC7A5\uBE44\u00B7\uC815\uC758 \uC870\uD68C \uC21C\uC218\uC131",
+      "passed": true,
+      "ms": 34
+    },
+    {
+      "name": "INV-008/009/010 \uAD00\uCC30\u2192\uD50C\uB808\uC774\u00B7\uC228\uC740 \uC0C1\uD0DC \uBE44\uAC04\uC12D\u00B7ID \uC6B0\uD68C",
+      "passed": true,
+      "ms": 141
+    },
+    {
+      "name": "RC-01 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 154
+    },
+    {
+      "name": "RC-02 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 125
+    },
+    {
+      "name": "RC-03 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 159
+    },
+    {
+      "name": "RC-04 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 234
+    },
+    {
+      "name": "RC-05 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 177
+    },
+    {
+      "name": "RC-06 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 183
+    },
+    {
+      "name": "RC-07 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 150
+    },
+    {
+      "name": "RC-08 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 154
+    },
+    {
+      "name": "RC-09 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 164
+    },
+    {
+      "name": "RC-10 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 168
+    },
+    {
+      "name": "RC-11 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 188
+    },
+    {
+      "name": "RC-12 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 151
+    },
+    {
+      "name": "RC-13 \uC2E4\uC81C \uC6D0\uC778 \uC0DD\uC0B0\uC790\u00B7\uC790\uB3D9 Gate\u00B7\uC5EC\uC815 \uC655\uBCF5",
+      "passed": true,
+      "ms": 144
+    },
+    {
+      "name": "INV-008 \uC778\uC9C0 \uC608\uC0B0 \uBCC0\uACBD\u00B7\uBA85\uC81C/\uC778\uBB3C/\uC9C0\uC810 \uD569\uACC4",
+      "passed": true,
+      "ms": 10176
+    },
+    {
+      "name": "INV-013 \uD63C\uBA78\u00B7\uC5ED\uC0AC \uCD5C\uACE0 \uACBD\uC9C0\uB85C \uC790\uACA9 \uC6B0\uD68C \uC5C6\uC74C",
+      "passed": true,
+      "ms": 174
+    },
+    {
+      "name": "INV-018 \uBB3C\uD488 \uC6D0\uC7A5 \uC5C6\uB294 \uC218\uB7C9 \uBCF5\uC81C \uAC70\uBD80",
+      "passed": true,
+      "ms": 45
+    },
+    {
+      "name": "INV-006 \uC800\uC7A5 \uC655\uBCF5\u00B7\uD638\uC2A4\uD2B8 \uBB38\uD654\uAD8C \uB3C5\uB9BD",
+      "passed": true,
+      "ms": 131
+    },
+    {
+      "name": "INV-001 \uC2AC\uB86F \uC7AC\uC0AC\uC6A9\u00B7\uB0A1\uC740 \uC138\uB300/\uC0AC\uB9DD \uC2E0\uC6D0 \uAC70\uBD80",
+      "passed": true,
+      "ms": 2501
+    },
+    {
+      "name": "INV-015/024 \uD3D0\uD488 \uC810\uC218\uC640 \uAE30\uB2A5 \uACB0\uC190 \uBD84\uB9AC",
+      "passed": true,
+      "ms": 214
+    },
+    {
+      "name": "INV-008 \uC7A5\uC18C ID\uC640 \uC778\uBB3C ID \uCDA9\uB3CC\uC5D0\uC11C \uC0AC\uAC74 \uB204\uCD9C \uC5C6\uC74C",
+      "passed": true,
+      "ms": 57
+    },
+    {
+      "name": "INV-007/008/009/010/016/024 EX06 \uC900\uBE44 \uAE30\uB2A5: \uAD8C\uD55C \uC120\uD544\uD130 scan/index/cache\u00B7\uC228\uC740 \uBCC0\uD654 \uBE44\uAC04\uC12D\u00B7\uC2E4\uC81C \uC7A5\uBE44 \uBB34\uD6A8\uD654",
+      "passed": true,
+      "ms": 454
+    },
+    {
+      "name": "INV-004/006 canonical streaming hash: null\u00B7\uC9C1\uB82C\uD654 \uC2E4\uD328\u00B7\uC2E4\uD328 \uD6C4 \uC0C8 \uD638\uCD9C\uC758 \uAE30\uC874 \uACC4\uC57D",
+      "passed": true,
+      "ms": 36
+    },
+    {
+      "name": "INV-004/006 canonical streaming hash: \uC2E4\uC81C N100 \uACE0\uC815 \uC6D0\uBCF8\u00B7\uD070 payload\u00B7\uBC18\uBCF5 \uC870\uD68C",
+      "passed": true,
+      "ms": 101
+    },
+    {
+      "name": "INV-004/006 canonical streaming hash: \uAE30\uC874 UTF8 oracle\u00B7Unicode\u00B7\uBB38\uD654\uAD8C\u00B7\uC0C1\uD0DC/RNG \uBCF4\uC874",
+      "passed": true,
+      "ms": 100
+    },
+    {
+      "name": "combat mechanics: each canonical axis changes practical hit damage escape coordination or finite exertion",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "combat public: actual attacked witness and reaction obey a one-fact shared cognition budget",
+      "passed": true,
+      "ms": 140
+    },
+    {
+      "name": "combat public: actual canonical routes pay health gear and shared time and preserve busy defender work",
+      "passed": true,
+      "ms": 453
+    },
+    {
+      "name": "combat public: settled receipt history is bounded without losing current paid occupancy or chronology",
+      "passed": true,
+      "ms": 1531
+    },
+    {
+      "name": "combat public: hidden opponent formation is absent from actor queries and receipt inputs never enter public logs",
+      "passed": true,
+      "ms": 122
+    },
+    {
+      "name": "combat public: defender independently counters once or spends a real known route on retreat",
+      "passed": true,
+      "ms": 355
+    },
+    {
+      "name": "combat public: command replay paid cooldown and saved continuation preserve actual receipts and query purity",
+      "passed": true,
+      "ms": 273
+    },
+    {
+      "name": "combat public: explicit local guard intent contributes once with real supporter health time and no fabricated allies",
+      "passed": true,
+      "ms": 413
+    },
+    {
+      "name": "INV-004/006/022 \uC800\uC7A5 \uBD09\uD22C \uAE30\uBCF8 \uACBD\uACC4: 16MiB \uC591\uCABD\uC758 \uAE30\uC874 JSON\u00B7\uC774\uC9C4\u00B7\uC6D0\uC790\uD30C\uC77C \uD638\uD658",
+      "passed": true,
+      "ms": 2426
+    },
+    {
+      "name": "V021-W02/O04 public ecology: an actual juvenile pine remains dependent after human maturity and changes funded household procurement",
+      "passed": true,
+      "ms": 306
+    },
+    {
+      "name": "V021-E02 ecology kernel: actual offers and funded trades produce local price evidence without extra money or goods",
+      "passed": true,
+      "ms": 346
+    },
+    {
+      "name": "V021-O01/O05 ecology kernel: bounded source history and pure culture-independent isolated queries preserve world authority",
+      "passed": true,
+      "ms": 305
+    },
+    {
+      "name": "V021-E02/O04 ecology kernel: a real known production plan buys advertised inputs using own money and physical carrying units",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "V021-E02/O04 public ecology: a hungry actual NPC buys a real local offer with its own funded wealth",
+      "passed": true,
+      "ms": 549
+    },
+    {
+      "name": "V021-O02 public ecology: automatic life and deleted-stack consumption record once and resume through GameCodec",
+      "passed": true,
+      "ms": 389
+    },
+    {
+      "name": "V021-O02 public ecology: actual remote spoilage stays unknown even after the owner later arrives",
+      "passed": true,
+      "ms": 1312
+    },
+    {
+      "name": "V021-O01/O05 public ecology: actual seasonal renewal, disaster depletion, route loss and recovery retain physical causes",
+      "passed": true,
+      "ms": 2007
+    },
+    {
+      "name": "V021-O01 ecology kernel: actual extraction, finite depletion and renewable recovery reconcile to physical source receipts",
+      "passed": true,
+      "ms": 331
+    },
+    {
+      "name": "V021-M02/O04 ecology kernel: time and population alone do not unlock markets, workshops, settlements or capacity",
+      "passed": true,
+      "ms": 470
+    },
+    {
+      "name": "V021-E02/O03 ecology kernel: actor history and plans exclude private NPC wealth, stock, quality and source truth",
+      "passed": true,
+      "ms": 87
+    },
+    {
+      "name": "V021-M02 ecology kernel: actual households, market, workshop and privately explored source coexist on one real map node",
+      "passed": true,
+      "ms": 481
+    },
+    {
+      "name": "V021-O02 ecology kernel: unseen remote own stock loss remains unknown until an actual owner witness exists",
+      "passed": true,
+      "ms": 70
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: AI \uC815\uBCF4 \uBAA9\uD45C\uB294 \uC790\uAE30 \uC785\uAD6C \uAD00\uCE21\u00B7\uC9C0\uC2DD\uC774 \uC788\uC744 \uB54C\uB9CC \uAC19\uC740 \uC720\uB8CC \uC785\uC7A5\uACFC \uC800\uC7A5\uB41C \uC9C4\uCC99\uC744 \uC120\uD0DD\uD55C\uB2E4",
+      "passed": true,
+      "ms": 907
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uC2E4\uC81C \uC785\uC7A5 \uC790\uB9AC\uB97C \uACBD\uC7C1\uD558\uACE0 \uC911\uB3C4 \uADC0\uD658\uB3C4 \uD55C \uB2EC\u00B7\uB3C4\uAD6C\u00B7\uC774\uBBF8 \uC4F4 \uC2DD\uB7C9\uC744 \uBCF4\uC874\uD55C\uB2E4",
+      "passed": true,
+      "ms": 967
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uC2E4\uC81C \uC0AC\uB9DD\uC740 \uC785\uC7A5\u00B7\uB3C4\uAD6C\uB97C \uD55C \uBC88 \uD574\uC81C\uD558\uBA70 \uC0C8 \uCD9C\uC0DD\uC758 \uBAB8\uC5D0\uB294 \uC9C4\uCC99\u00B7\uAD00\uCE21\uC744 \uBCF5\uC81C\uD558\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 601
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uC2E4\uC81C \uD604\uC9C0 \uD0D0\uC0C9\uB9CC \uC785\uAD6C\uB97C \uBC1C\uACAC\uD558\uACE0 \uC77C\uBC18 \uC790\uC5F0 cache\u00B7100\uC9C0\uC810\uACFC \uAD8C\uC704\uAC00 \uBD84\uB9AC\uB41C\uB2E4",
+      "passed": true,
+      "ms": 243
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uB3D9\uC2DC \uC2E4\uC81C \uC785\uC7A5\uACFC \uAC19\uC740 \uC2DC\uC810 \uC644\uB8CC\uB294 \uC720\uD55C \uC6D0\uCC9C\uC744 \uD55C \uBC88\uB9CC \uC120\uC810\uD558\uACE0 \uB2E4\uC2DC \uC785\uC7A5\uD574\uB3C4 \uBCF5\uC81C\uD558\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 1529
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uB0B4\uBD80 \uC0DD\uD65C\uC740 \uC2E4\uC81C \uD734\uB300\uD55C \uC2DD\uB7C9\uB9CC \uC4F0\uACE0 \uBC14\uAE65 \uBC14\uB2E5 \uC7AC\uACE0\uB098 \uBCF4\uD638\uC790 \uC2DD\uB7C9\uC744 \uAD00\uD1B5\uD558\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 612
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uC2E4\uC81C \uB3C4\uAD6C\u00B7\uC2DD\uB7C9\uACFC \uCC44\uD0DD \uBC95\uCE59\u00B7\uD55C \uBC88\uC758 \uC704\uD5D8\uC744 \uC800\uC7A5\uD558\uACE0 \uC6D4\uBCC4 \uC9C4\uCC99\uC73C\uB85C \uC720\uD55C \uBCF4\uC0C1\uC744 \uC120\uC810\uD55C\uB2E4",
+      "passed": true,
+      "ms": 854
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uAD00\uCE21\uD55C \uAC1C\uBC29 \uC2DC\uAC01\uACFC \uC2E4\uC81C \uC900\uBE44\u00B7\uACC4\uC57D\u00B7\uC721\uC2E0 \uC790\uACA9\uC744 \uC7AC\uAC80\uC0AC\uD558\uACE0 \uAC70\uC808\uC740 \uC6D0\uC790\uC801\uC774\uB2E4",
+      "passed": true,
+      "ms": 1790
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uACFC\uAC70 \uAC1C\uC778 \uC785\uAD6C \uAE30\uB85D\uC740 \uC228\uC740 \uCC38\uC5EC\u00B7\uC794\uB7C9\uC744 \uC77D\uC9C0 \uC54A\uACE0 \uC785\uAD6C \uBC16 \uBB3C\uB9AC \uD589\uB3D9\uC744 \uCC28\uB2E8\uD55C\uB2E4",
+      "passed": true,
+      "ms": 630
+    },
+    {
+      "name": "\uBE44\uACBD \uACF5\uAC1C \uBA85\uB839: \uCC44\uD0DD\uD55C \uC2E4\uC81C \uC704\uD5D8 \uC2E4\uD328\u00B7\uBD80\uC0C1\uC740 \uC800\uC7A5\uACFC \uC774\uD6C4 \uBC95\uCE59 \uBCC0\uACBD\uC73C\uB85C \uC7AC\uCD94\uCCA8\uB418\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 467
+    },
+    {
+      "name": "INV-004/017/021 H10 action owner: a real retreat keeps route provenance after paid combat occupancy ends",
+      "passed": true,
+      "ms": 579
+    },
+    {
+      "name": "INV-004/017/021 H10 action owner: unbacked typed work and forged markers are rejected before completion",
+      "passed": true,
+      "ms": 1170
+    },
+    {
+      "name": "INV-004/017/021/024 H10 action owner: actual study and cultivation practice keep their own adopted activities",
+      "passed": true,
+      "ms": 664
+    },
+    {
+      "name": "INV-004/017/018/021 H10 action owner: real consumed production resumes and cancellation never recreates inputs",
+      "passed": true,
+      "ms": 1679
+    },
+    {
+      "name": "INV-008/017/024 H10 action owner: a Qi actor without a current method requests real teaching before a bounded plan",
+      "passed": true,
+      "ms": 98
+    },
+    {
+      "name": "INV-004/006/018/024 AI \uC218\uD589 \uC5F0\uACB0: \uC2E4\uC81C \uAC10\uC751 \uC2E4\uD328\u00B7\uD68C\uBCF5 \uD6C4 \uC0C8 \uC2DC\uB3C4\uB97C \uD558\uBA70 \uACFC\uAC70 \uC2E4\uD328\uC640 \uCD9C\uCC98\uB97C \uBCF4\uC874\uD55C\uB2E4",
+      "passed": true,
+      "ms": 3646
+    },
+    {
+      "name": "INV-006/008/021 AI \uC218\uD589 \uC5F0\uACB0: \uC228\uC740 \uD0C0\uC778 \uC7AC\uACE0\u00B7\uC9C0\uC2DD \uBCC0\uACBD\uC740 \uC790\uAE30 \uC785\uBB38 \uC120\uD0DD\u00B7\uC2DC\uAC04\u00B7\uB09C\uC218\uB97C \uBC14\uAFB8\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 3712
+    },
+    {
+      "name": "INV-004/006/018/024 AI \uC218\uD589 \uC5F0\uACB0: \uBA85\uC2DC Qi \uB300\uC6D0\uB9CC \uACBD\uACC4\uC5D0\uC11C \uC2E4\uC81C \uC624\uB3C5\u00B7\uC900\uBE44 \uAC70\uC808 \uB4A4 \uC7AC\uB3C5\uD574\uD558\uACE0 \uACFC\uAC70 \uD574\uC11D\uC744 \uBCF4\uC874\uD55C\uB2E4",
+      "passed": true,
+      "ms": 13007
+    },
+    {
+      "name": "INV-004/008/017/018 AI \uC218\uD589 \uC5F0\uACB0: \uC785\uBB38 \uD6C4 \uC815\uCC45 \uC774\uD574\uB3C4\uAE4C\uC9C0 \uC2E4\uC81C \uC7AC\uC804\uC218\uD558\uACE0 \uB2E4\uC74C \uACBD\uC9C0 \uD559\uC2B5\u00B7\uB3CC\uD30C\uB97C \uC774\uC5B4\uAC04\uB2E4",
+      "passed": true,
+      "ms": 29826
+    },
+    {
+      "name": "INV-008/017/018 agent planning: \uC2E4\uC81C \uC815\uCC45 \uBE44\uCD95\uC744 \uB118\uB294 \uC2DD\uB7C9\uC744 \uC77C\uBC18 \uAC70\uB798 \uBAA9\uD45C\uC5D0\uC11C \uCD9C\uD488\uD558\uACE0 \uBCF4\uC720 \uC2E4\uBB3C\uB9CC \uC778\uB3C4\uD55C\uB2E4",
+      "passed": true,
+      "ms": 294
+    },
+    {
+      "name": "INV-004/006/018 AI \uC218\uD589 \uC5F0\uACB0: \uC2E4\uC81C entry \uC804\uC218\u00B7\uD1A0\uB0A9 \uB4A4 \uAC10\uC751\uD558\uACE0 Qi \uACF5\uBC95\u00B7\uC219\uB828\uC740 \uC790\uB3D9 \uC9C0\uAE09\uD558\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 4075
+    },
+    {
+      "name": "INV-004/008/021 agent planning: actual search and source cognition budgets are bounded and a deferred goal resumes after save",
+      "passed": true,
+      "ms": 3979
+    },
+    {
+      "name": "INV-008/018 agent planning: cooperation repays an actual personal obligation without inventing another person\u0027s intent",
+      "passed": true,
+      "ms": 115
+    },
+    {
+      "name": "INV-006/008 agent planning: all fourteen axes affect scored goals and actual mood and completed habits change choice",
+      "passed": true,
+      "ms": 1574
+    },
+    {
+      "name": "INV-008/024 agent planning: an incorrect source belief is rejected by actual execution then replaced through observation",
+      "passed": true,
+      "ms": 2461
+    },
+    {
+      "name": "INV-006/008 agent planning: unchanged personal information produces the same choice despite hidden NPC inventory knowledge and wealth",
+      "passed": true,
+      "ms": 182
+    },
+    {
+      "name": "INV-004/008/017/018 agent planning: unknown source discovery then real extraction and production complete a saved goal",
+      "passed": true,
+      "ms": 3477
+    },
+    {
+      "name": "INV-008/017/024 agent planning: an advanced authoritative recipe uses learned method and discovered actual family resources",
+      "passed": true,
+      "ms": 4165
+    },
+    {
+      "name": "INV-004/006 agent planning: identical real goal commands and save/resume preserve choices receipts and world hash",
+      "passed": true,
+      "ms": 7452
+    },
+    {
+      "name": "INV-006/008/021 agent planning: cached hostility chooses a known retreat and baseline founders are never forced into fatal conflict",
+      "passed": true,
+      "ms": 195
+    },
+    {
+      "name": "INV-008/017/024 agent planning: missing recipe knowledge requests an encountered teacher and waits for actual independent teaching",
+      "passed": true,
+      "ms": 776
+    },
+    {
+      "name": "INV-008/017/018 agent planning: production surplus becomes a real public offer and another actor buys from its own need",
+      "passed": true,
+      "ms": 402
+    },
+    {
+      "name": "INV-004/006/017/018/021 AI \uAC70\uB798 \uC608\uC0B0: \uB9C8\uC9C0\uB9C9 \uBC29\uBB38 \uB4A4 \uC0DD\uACC4 \uCD9C\uD488\uC744 \uC720\uC608\uD558\uACE0 \uCDA9\uBD84\uD55C \uC608\uC0B0\uC5D0\uC11C\uB9CC \uC2E4\uC81C \uAC70\uB798\u00B7\uD658\uC804\uC744 \uC120\uD0DD\uD55C\uB2E4",
+      "passed": true,
+      "ms": 844
+    },
+    {
+      "name": "INV-007/015 policy query: public adopted drafts, funded real labor, cancellation and implementation replace legacy escrow",
+      "passed": true,
+      "ms": 442
+    },
+    {
+      "name": "INV-009/017 rich query: public offers reveal goods and closed contracts hide later buyer inventory",
+      "passed": true,
+      "ms": 247
+    },
+    {
+      "name": "INV-004/006/015/023 fortune public: actual disaster modifies adopted breakthrough risk once without quality or resource grants",
+      "passed": true,
+      "ms": 3872
+    },
+    {
+      "name": "INV-010/021 ordinary AI cultivation completion returns to the actual goal decision boundary",
+      "passed": true,
+      "ms": 85
+    },
+    {
+      "name": "INV-001/006/023 neutral 50.00 Qi whole-course functional formula",
+      "passed": true,
+      "ms": 9
+    },
+    {
+      "name": "INV-006/008/015/023 canonical eight axes\u00B7single-source effects\u00B7conditional potential",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-004/006/015/023 fortune public: real trial source changes one dated risk and preserves the existing RNG draw",
+      "passed": true,
+      "ms": 774
+    },
+    {
+      "name": "INV-004/006/013/023 prepare/start/fracture\u00B7mandatory Nascent failure death",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "INV-004/023/024 adopted knowledge revision\u00B7actual support reservation\u00B7no book mastery",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-004/011/015 independent root-free ten-stage martial growth\u00B7600-year cap",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/006/011/015 W01 public martial: ten real stages, root-free labor, saved continuation, combat and 600-year boundary",
+      "passed": true,
+      "ms": 26306
+    },
+    {
+      "name": "INV-004/006/023 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: 1% \uC2E4\uC2B5\u00B7\uC804\uD658\u00B7\uC0C1\uC704 \uACBD\uC9C0 \uACC4\uC57D\uACFC \uB3D9\uACB0 \uCD9C\uCC98 \uC720\uC9C0",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/006/021 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: entry \uCD94\uAC00\uB294 \uC720\uD6A8 Qi \uC790\uACA9\u00B7\uC815\uC218 \uD488\uC9C8\uC744 \uB0AE\uCD94\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 18
+    },
+    {
+      "name": "INV-004/006/008 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: \uC2E4\uC81C \uC804\uC218 Qi \uC6B0\uC120\u00B7\uC870\uD68C \uBB34\uBCC0\uD654\u00B7\uB3D9\uACB0 \uC800\uC7A5\u00B7\uB2E8\uC77C \uD574\uC18C \uB09C\uC218",
+      "passed": true,
+      "ms": 10021
+    },
+    {
+      "name": "INV-004/006/018 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: entry \uC5C6\uB294 \uC2E4\uC81C Qi \uD559\uC2B5\u00B7\uD1A0\uB0A9 \uB4A4 \uB450 AI caller\uB97C \uC9C0\uB098 \uC900\uBE44\uD55C\uB2E4",
+      "passed": true,
+      "ms": 1649
+    },
+    {
+      "name": "INV-004/006/018 \uAC10\uC751 \uCD9C\uCC98 \uC120\uD0DD: \uC2E4\uC81C Qi \uC624\uB3C5 \uAC70\uBD80\u00B7\uC7AC\uD559\uC2B5 \uB300\uC0C1\uB3C4 \uAC19\uC740 \uAC1C\uC778 \uD310\uBCF8\uC774\uB2E4",
+      "passed": true,
+      "ms": 5732
+    },
+    {
+      "name": "INV-004/006/022 four-process energy\u00B7actual supply\u00B7crowding\u00B7rights",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/011/023 10 realm structures\u00B730 paths\u00B7genesis provenance",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-004/015/023 regression\u00B7real recovery\u00B7costed route conversion\u00B7retreat boundaries",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/006/018/023 R06 short functional strategy comparison: actual months resources quality risk and saved continuation",
+      "passed": true,
+      "ms": 4307
+    },
+    {
+      "name": "INV-004/014/023 all 30 paths form their unique realm structure once",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-004/013/023 every minor-stage tribulation including entry/ninth/completion",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/016/017/018 public pill reservation\u00B7cancel\u00B7consume exactly once",
+      "passed": true,
+      "ms": 256
+    },
+    {
+      "name": "INV-004/008/018/021 public cultivation rights\u00B7book ownership\u00B7common activity capacity",
+      "passed": true,
+      "ms": 222
+    },
+    {
+      "name": "INV-004/006/013/023 public scheduled fracture\u00B7restore\u00B7same life death authority",
+      "passed": true,
+      "ms": 329
+    },
+    {
+      "name": "INV-003/004/006/023 legal cultivation law edits preserve adopted work completion and active attempts",
+      "passed": true,
+      "ms": 707
+    },
+    {
+      "name": "INV-003/004/023 public Nascent Soul formation follows actual upper-life law and aftercare",
+      "passed": true,
+      "ms": 451
+    },
+    {
+      "name": "INV-004/006/018 public cultivation\u00B7actual time/source debit/mastery/save/query purity",
+      "passed": true,
+      "ms": 311
+    },
+    {
+      "name": "currency planning: \uACF5\uAC1C \uCC44\uAD11\uC744 \uC778\uACC4\uD55C AI\uC758 \uD658\uC804\uACFC \uC800\uC7A5\u00B7\uC7AC\uC804\uC1A1\uC740 \uC2E4\uBB3C \uC6D0\uCC9C\uC744 \uD55C \uBC88\uB9CC \uC18C\uBE44",
+      "passed": true,
+      "ms": 760
+    },
+    {
+      "name": "currency planning: \uC790\uAE30 \uD604\uC9C0 \uAD00\uCE21\uC73C\uB85C \uC2E4\uC81C \uCC44\uAD11\uC744 \uC608\uC57D\uD558\uACE0 \uC644\uB8CC\uD55C \uC2E4\uBB3C\uB9CC \uD658\uC804",
+      "passed": true,
+      "ms": 671
+    },
+    {
+      "name": "currency planning: \uB2E4\uB978 \uC778\uBB3C\uC758 \uB3C8\u00B7\uAD00\uCE21\uACFC \uC6D0\uACA9\u00B7\uC608\uC57D\u00B7\uACB0\uC190 \uC601\uC11D\uC740 \uBAA9\uD45C\uB97C \uB9CC\uB4E4\uC9C0 \uC54A\uACE0 \uBE44\uD65C\uC131\u00B7\uCDA9\uBD84 \uC794\uC561\uB3C4 \uBCF4\uC874",
+      "passed": true,
+      "ms": 562
+    },
+    {
+      "name": "currency public: exact physical burn credits once, accepts functional zero quality, and freezes rate evidence",
+      "passed": true,
+      "ms": 255
+    },
+    {
+      "name": "currency public: other crystals defects remote custody cargo and disabled conversion never burn or mint",
+      "passed": true,
+      "ms": 495
+    },
+    {
+      "name": "currency public: auction escrow seller death and estate transfers never count as new currency origins",
+      "passed": true,
+      "ms": 249
+    },
+    {
+      "name": "currency public: exact two founder opening origins never grant money again on save or repeat initialization",
+      "passed": true,
+      "ms": 83
+    },
+    {
+      "name": "currency public: actual discovered mining source becomes spendable money only after physical token consumption",
+      "passed": true,
+      "ms": 491
+    },
+    {
+      "name": "currency public: source-free balances repeated burns and disabled origin validation are rejected on restore",
+      "passed": true,
+      "ms": 196
+    },
+    {
+      "name": "ecology failure law: \uC2E4\uC81C \uC608\uC57D \uAC70\uBD80 \uAE30\uC5B5\uC758 \uBC95\uCE59\uBCC4 \uC7AC\uD655\uC778 \uAE30\uAC04\u00B7\uAD00\uCE21 \uC218\uBA85 \uC0C1\uD55C\u00B7\uC800\uC7A5 revision",
+      "passed": true,
+      "ms": 2226
+    },
+    {
+      "name": "ecology recovery: \uC2DD\uB7C9 \uAD00\uCE21 \uC804 \uC228\uC740 \uC794\uB7C9\uC740 \uC120\uD0DD\uC5D0 \uC601\uD5A5 \uC5C6\uACE0 \uBE44\uC6A9 \uC5C6\uB294 \uC870\uC0AC\u00B7\uCD1D\uC790\uC6D0 \uCD94\uC815 \uAE08\uC9C0",
+      "passed": true,
+      "ms": 910
+    },
+    {
+      "name": "ecology recovery: \uC2E4\uC81C \uBC30\uC6B4 \uB18D\uC0AC\u00B7\uAD00\uCE21\uD55C \uBB3C\uACFC \uC885\uC790\u00B7\uC720\uB8CC \uB178\uB3D9\uC73C\uB85C \uC2DD\uB7C9 \uC0DD\uC0B0\uD558\uACE0 \uC800\uC7A5\uB41C \uBE44\uCD95\uBC95\uCE59 \uC801\uC6A9",
+      "passed": true,
+      "ms": 1632
+    },
+    {
+      "name": "ecology recovery: \uC2E4\uC81C \uC804\uB7C9 \uC608\uC57D \uC2E4\uD328 \uB4A4 \uC720\uB8CC \uC2DD\uB7C9 \uC7AC\uAD00\uCE21\u00B7\uC54C\uB824\uC9C4 \uC774\uB3D9\u00B7\uC800\uC7A5\u00B7\uC81C\uC5B4 \uACBD\uACC4",
+      "passed": true,
+      "ms": 824
+    },
+    {
+      "name": "ecology recovery: \uBBFF\uC74C \uC608\uC0B01\uC758 \uC2E4\uC81C \uCC44\uC9D1 \uC608\uC57D \uAC70\uBD80\uC640 \uC989\uC2DC \uD1F4\uCD9C\uC740 \uBB34\uC608\uC678\u00B7\uAD8C\uC704\u00B7\uC800\uC7A5 \uACB0\uC815\uB860 \uC720\uC9C0",
+      "passed": true,
+      "ms": 421
+    },
+    {
+      "name": "INV-009 \uC785\uBB38 \uC900\uBE44 \uC870\uD68C: \uBBF8\uAD00\uCE21 \uD604\uC7AC \uACF5\uAE09\u00B7\uC0AC\uC6A9\uAD8C \uBCC0\uD654\uB294 \uAC1C\uC778 \uAC10\uC751 \uC120\uD0DD\uC744 \uBC14\uAFB8\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 1441
+    },
+    {
+      "name": "INV-009/010 \uC785\uBB38 \uC900\uBE44 \uC870\uD68C: \uC2E4\uC81C entry \uC804\uC218\uB9CC \uAC10\uC751 \uC120\uD0DD\uC744 \uC5F4\uACE0 Qi \uACF5\uBC95\uC740 \uB9CC\uB4E4\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 1419
+    },
+    {
+      "name": "INV-004/006 \uC785\uBB38 \uC900\uBE44 \uC870\uD68C: \uD1A0\uB0A9\uACFC \uAC10\uC751\uC744 \uBD84\uB9AC\uD558\uACE0 \uC2E4\uC81C \uC900\uBE44\u00B7\uAC1C\uC2DC \uACF5\uAE09\uACFC \uC800\uC7A5\uC744 \uC720\uC9C0\uD55C\uB2E4",
+      "passed": true,
+      "ms": 2315
+    },
+    {
+      "name": "INV-004/006/022 EX04 functional input: actual scalar vector partial backend selection preserves full aptitude and world hash",
+      "passed": true,
+      "ms": 50
+    },
+    {
+      "name": "INV-001/004/006/022 H04 actual due queue contracts: same-month changes, cancellation, generation and stable rebuild",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "INV-001/004/006/011/022 EX02 functional input: actual frozen conception, father death, reused slot and birth without measurement",
+      "passed": true,
+      "ms": 4613
+    },
+    {
+      "name": "INV-001/004/006/021/022 H04 dynamic hot columns: original person order, slot generations and lease relocation lifetime",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/006/017/022 H04 shared work: earlier teacher clears later pupil\u0027s due token in the actual month",
+      "passed": true,
+      "ms": 1034
+    },
+    {
+      "name": "INV-001/004/006/021/022 H04 saved life boundary: real lifespan death and explicit new arrival reuse no old token",
+      "passed": true,
+      "ms": 641
+    },
+    {
+      "name": "INV-004/006/022 H09 real talent kernel: scalar/vector boundary, whole output, partial failure, stale and duplicate apply",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-001/004/006/021/022 H04 world reference: actual commands, birth, cancellation, martial and save boundaries match every month",
+      "passed": true,
+      "ms": 4401
+    },
+    {
+      "name": "INV-009/015 rich query: voluntary guard names a person while combat cooldown names a receipt",
+      "passed": true,
+      "ms": 95
+    },
+    {
+      "name": "inventory commitment reference: \uC55E \uC6D0\uCC9C \uC624\uB958\u00B7\uB4A4 \uC785\uB825 \uC624\uB958\u00B7long overflow\uC758 \uAE30\uC874 \uAC70\uBD80 \uC21C\uC11C\uB97C \uBCF4\uC874",
+      "passed": true,
+      "ms": 5
+    },
+    {
+      "name": "inventory copy oracle: \uD604\uD589 \uADDC\uCE59\uC758 strict\u00B7JSON15\u00B7typed15 \uB3C5\uB9BD \uC804\uCCB4 \uC804\uC0AC\u00B7\uC2E4\uC81C \uC800\uC7A5 bytes \uB3D9\uB4F1",
+      "passed": true,
+      "ms": 19833
+    },
+    {
+      "name": "inventory source observation: \uACF5\uAC1C food \uC120\uD0DD\uC740 \uC815\uD655\uD55C \uD604\uC9C0 \uC6D0\uCC9C\uC744 \uC2E4\uC81C \uBE44\uC6A9\u00B7\uD55C \uB2EC\u00B7\uC800\uC7A5 \uC7AC\uAC1C\uB85C \uAD00\uCE21",
+      "passed": true,
+      "ms": 331
+    },
+    {
+      "name": "inventory source observation: \uBE48 Data\uB294 \uAE30\uC874 \uCCAB \uBBF8\uAD00\uCE21 \uC120\uD0DD\uC744 \uC720\uC9C0\uD558\uACE0 \uBA85\uC2DC \uC815\uC758\uB294 fallback\uD558\uC9C0 \uC54A\uC74C",
+      "passed": true,
+      "ms": 157
+    },
+    {
+      "name": "inventory source observation: \uD604\uC9C0 \uC815\uC758 \uBD80\uC7AC\u00B7\uC2E4\uBB3C \uBE44\uC6A9 \uBD80\uC871\uC740 \uC6D0\uCC9C\u00B7\uB3C8\u00B7\uC2DC\uAC04\u00B7ID\u00B7\uAD00\uCE21 \uBB34\uBCC0\uD654 \uAC70\uBD80",
+      "passed": true,
+      "ms": 208
+    },
+    {
+      "name": "inventory owned reference: \uBA85\uC2DC \uAC70\uB798 \uC131\uD5A5\uACFC \uBE44\uCD953 \uACBD\uACC4\uC758 \uC2E4\uC81C \uBD84\uD560\u00B7\uD310\uB9E4\u00B7\uC800\uC7A5 \uACB0\uACFC \uBCF4\uC874",
+      "passed": true,
+      "ms": 432
+    },
+    {
+      "name": "inventory owned parity: \uACF5\uAC1C \uBCF5\uC0AC \uACBD\uB85C\uC640 \uC608\uC57D\u00B7\uCC98\uB9AC\u00B7\uC804\uC6A9 \uC5F0\uACB0\u00B7\uC7AC\uC804\uC1A1 \uACB0\uACFC \uBC0F \uC9C1\uB82C\uD654 \uC77C\uCE58",
+      "passed": true,
+      "ms": 10
+    },
+    {
+      "name": "inventory owned failure: \uB450 \uBC88\uC9F8 \uCC98\uB9AC\u00B7\uD310\uB9E4 \uC2E4\uD328\uC640 \uC608\uC678\uAC00 \uC804\uCCB4 \uD6C4\uBCF4\u00B7ID\u00B7\uC7AC\uB8CC\uB97C \uD3D0\uAE30",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "inventory owned lifetime: \uB2E8\uC77C \uC778\uACC4\u00B7\uBD88\uBCC0 \uACB0\uACFC\u00B7\uAE30\uC874 \uCC38\uC870 \uACA9\uB9AC\uC640 \uC18C\uBE44 \uD6C4 \uC7AC\uC0AC\uC6A9 \uAC70\uBD80",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory sync: \uACF5\uAC1C custom comparer\uC640 \uB0B4\uBD80 Ordinal \uC601\uC218\uC99D\uC758 \uB300\uC18C\uBB38\uC790 \uAD6C\uBD84\u00B7\uC7AC\uC804\uC1A1\u00B7\uCDA9\uB3CC \uBCF4\uC874",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory owned rejection: ID \uCDA9\uB3CC\u00B7\uBE48 ID\u00B7\uC624\uBC84\uD50C\uB85C\uC640 \uAE30\uC874 \uC624\uB958 \uC6B0\uC120\uC21C\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "inventory owned stale: \uC6D4\u00B7\uD560\uB2F9\uC790\u00B7\uAC1C\uC815\u00B7\uC2E4\uBB3C\u00B7\uC0AC\uB78C\u00B7\uC7AC\uB8CC \uC9C0\uBB38\uACFC \uC6D0\uB798 \uC138\uACC4 \uC778\uACC4 \uACBD\uACC4",
+      "passed": true,
+      "ms": 5
+    },
+    {
+      "name": "inventory owned reference: \uAE30\uC874 \uACF5\uAC1C \uC81C\uC791\u00B7\uBCF4\uAD00\u00B7\uAC70\uB798\u00B7\uC800\uC7A5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1 \uACB0\uACFC \uBCF4\uC874",
+      "passed": true,
+      "ms": 6237
+    },
+    {
+      "name": "inventory commitment reference: \uC18C\uBE44\uB418\uC5B4 \uC5C6\uB294 \uC785\uB825\uC758 \uC608\uC57D \uC5F0\uACB0\u00B7\uB3D9\uC2DC \uC791\uC5C5\u00B7\uC704\uC870\u00B7\uCDE8\uC18C\uB97C \uBCF4\uC874",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "inventory projection: Create\u00B7Restore\u00B7Decode \uAE30\uBCF8 \uD22C\uC601\uACFC strict reference\uC758 \uC2E4\uC81C \uC791\uC5C5\u00B7\uC800\uC7A5 \uC7AC\uAC1C \uB3D9\uB4F1\uC131",
+      "passed": true,
+      "ms": 694
+    },
+    {
+      "name": "inventory projection: 70\uAC1C schema\u00B7\uC2E4\uC81C IL reader\uC640 \uCEF4\uD30C\uC77C\uB7EC \uB78C\uB2E4\uC758 \uAE08\uC9C0 \uC77D\uAE30 \uC790\uAE30\uAC80\uCD9C",
+      "passed": true,
+      "ms": 23
+    },
+    {
+      "name": "inventory projection: \uBAA8\uB4E0 \uBBF8\uC0AC\uC6A9 \uD544\uB4DC\uC758 \uC2E4\uC81C \uBA85\uB839 \uBE44\uAC04\uC12D\uACFC \uAC1C\uC778 \uC6D0\uCC9C \uAD00\uCE21\u00B7\uBB3C\uB9AC ledger \uBCF4\uC874",
+      "passed": true,
+      "ms": 25
+    },
+    {
+      "name": "inventory projection: mutable \uCC38\uC870\u00B7\uC7AC\uC0AC\uC6A9\u00B7\uC608\uC678\u00B7\uB450 \uBC88\uC9F8 \uCC98\uB9AC \uBC0F \uC18C\uBE44 \uD6C4 \uC2E4\uD328\uC758 \uC6D0\uC790\uC131",
+      "passed": true,
+      "ms": 6
+    },
+    {
+      "name": "inventory projection: \uC2E4\uC81C \uACF5\uAC1C \uBA85\uB839\u00B7\uC0DD\uACC4 AI\uAC00 \uAE30\uBCF8 factory\uB97C \uAC70\uCCD0 \uAE30\uC874 \uB450 \uC804\uCCB4 transcript\uC640 \uC800\uC7A5 \uC18D\uD589 \uC77C\uCE58",
+      "passed": true,
+      "ms": 6744
+    },
+    {
+      "name": "inventory projection: 15\uAC1C \uC785\uB825\uBCC4 stale\uC640 \uC804\uCCB4 Person strict \uACBD\uACC4\u00B7\uBBF8\uC0AC\uC6A9 \uBCC0\uD654 \uBCF4\uC874",
+      "passed": true,
+      "ms": 74
+    },
+    {
+      "name": "inventory public: actual array installation and upkeep never create natural energy or survive destruction",
+      "passed": true,
+      "ms": 272
+    },
+    {
+      "name": "inventory public: real armor craft equipment soul binding combat damage and repair preserve one artifact through save",
+      "passed": true,
+      "ms": 617
+    },
+    {
+      "name": "inventory public: real auction escrow and advertised snapshots settle once through the world scheduler",
+      "passed": true,
+      "ms": 1161
+    },
+    {
+      "name": "inventory public: INV-017 continuation keeps every physical reservation backed by one ledger",
+      "passed": true,
+      "ms": 59891
+    },
+    {
+      "name": "inventory public: canonical recipe practice consumes real inputs and cancellation never refunds the process",
+      "passed": true,
+      "ms": 341
+    },
+    {
+      "name": "inventory public: successful real seed water farming and agreed treatment heal an actual other patient",
+      "passed": true,
+      "ms": 439
+    },
+    {
+      "name": "inventory public: finite gathering uses scheduled time and survives exact GameCodec continuation",
+      "passed": true,
+      "ms": 404
+    },
+    {
+      "name": "inventory public: paid growth dose improves a bottlenecked canonical pulse with real Qi debit and exact save continuation",
+      "passed": true,
+      "ms": 414
+    },
+    {
+      "name": "inventory public: medicine appraisal and source exploration produce real effects and personal evidence",
+      "passed": true,
+      "ms": 346
+    },
+    {
+      "name": "inventory public: actual source loss cancels extraction and capacity growth grants no stock",
+      "passed": true,
+      "ms": 265
+    },
+    {
+      "name": "inventory public: crafted sold talisman pays actual parties and protects one real hit with no use replay",
+      "passed": true,
+      "ms": 441
+    },
+    {
+      "name": "INV-004/017 \uC6B4\uC1A1 \uC800\uC7A5: \uC2E4\uC81C JSON2\u00B7\uC774\uC9C43 \uD30C\uC77C \uC655\uBCF5\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1\u00B7\uBC30\uC1A1 \uC644\uB8CC\u00B7\uBD09\uC1C4 \uC2E4\uD328",
+      "passed": true,
+      "ms": 2272
+    },
+    {
+      "name": "inventory public: completed route delivers physical cargo and blocked routes keep it at actual origin",
+      "passed": true,
+      "ms": 357
+    },
+    {
+      "name": "inventory validation boundary: \uBE48 ID\u00B7\uC591\uC218\u00B7\uAD50\uCC28 \uC911\uBCF5\u00B7\uC6D0\uB798 \uC218\uC9D1 \uC21C\uC11C\u00B7\uCD5C\uB300 allocator \uACBD\uACC4\uB97C \uBCF4\uC874",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory validation boundary: \uB2E8\uC77C \uB178\uB3D9\u00B7\uC778\uC811\u00B7\uACB9\uCE68\u00B7\uC2DC\uC124 \uC6A9\uB7C9\uACFC \uC120\uD589 invalid \uC624\uB958\uB97C \uBCF4\uC874",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "inventory commitment reference: \uAC19\uC740 \uC6D0\uCC9C\uC758 \uB3D9\uC2DC \uC608\uC57D\u00B7\uC9C4\uD589\u00B7\uCDE8\uC18C \uC18C\uBE44\uC640 \uD638\uCD9C \uC0AC\uC774 \uBCC0\uACBD\uC744 \uBCF4\uC874",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory sync: \uC911\uBCF5 ID\u00B7\uAD50\uCC28 namespace\u00B7\uC798\uBABB\uB41C \uD504\uB85C\uD544\u00B7\uBA54\uD0C0\uB370\uC774\uD130\uC758 \uAE30\uC874 \uCD08\uAE30 \uAC70\uBD80 \uC6B0\uC120\uC21C\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory sync: \uC2E4\uC81C \uC81C\uC791\u00B7\uAC10\uC815\u00B7\uC6B4\uC1A1\uACFC \uB9C8\uC9C0\uB9C9 \uB178\uB3D9 \uD589\u00B7\uC0AC\uB78C \uC21C\uC11C\u00B7\uBC18\uBCF5 \uBC0F \uCDE8\uC18C \uD6C4 \uC0C8 \uBC94\uC704 \uBCF4\uC874",
+      "passed": true,
+      "ms": 5
+    },
+    {
+      "name": "inventory typed copy fields: \uC804 \uC6D0\uC7A5 sentinel\u00B7\uD604\uC7AC JSON Person defaults\u00B7\uBAA8\uB4E0 \uC911\uCCA9 \uCC38\uC870 \uACA9\uB9AC",
+      "passed": true,
+      "ms": 36
+    },
+    {
+      "name": "inventory typed copy transcript: \uD604\uC7AC JSON \uD6C4\uBCF4\uC640 \uC2E4\uC81C \uC608\uC57D\u00B7\uC0DD\uC0B0\u00B7\uC18C\uBE44\u00B7\uC7A5\uBE44\u00B7\uAC70\uBD80\u00B7\uC7AC\uC804\uC1A1 \uC5F0\uACB0",
+      "passed": true,
+      "ms": 6414
+    },
+    {
+      "name": "inventory typed integration: opaque \uC804\uC774\u00B7\uC601\uC218\uC99D\u00B7\uC7AC\uC778\uACC4\u00B7\uC2E4\uD328\uC640 \uB3D9\uC77C15\uD544\uB4DC stale \uACC4\uC57D",
+      "passed": true,
+      "ms": 66
+    },
+    {
+      "name": "inventory typed integration: \uC2E4\uC81C typed factory\uB97C \uD1B5\uACFC\uD55C \uB450 \uACF5\uAC1C \uC804\uCCB4 transcript\u00B7\uC800\uC7A5 \uC18D\uD589 \uC77C\uCE58",
+      "passed": true,
+      "ms": 6479
+    },
+    {
+      "name": "inventory typed copy schema: \uB3C4\uB2EC\uD55C \uBAA8\uB4E0 \uD544\uB4DC\uC640 \uBA85\uC2DC Person15 footprint \uB204\uB77D \uAC70\uBD80",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory typed copy reference: \uC2E4\uC81C \uD6C4\uBCF4 JSON \uD615\uD0DC\u00B7ordinal\u00B7\uAC80\uC99D\u00B7\uC6D0\uBCF8 \uACA9\uB9AC \uC77C\uCE58",
+      "passed": true,
+      "ms": 6
+    },
+    {
+      "name": "inventory typed integration: instance \uC120\uD0DD\u00B7Execute \uC804\uD30C\u00B7\uC2E4\uC81C counter\uC640 Restore \uAE30\uBCF8 JSON \uBCF4\uC874",
+      "passed": true,
+      "ms": 531
+    },
+    {
+      "name": "inventory validation scope: \uC774\uC804 \uC2E4\uC81C \uBA85\uB839\u00B7\uD574\uC2DC\u00B7\uAC70\uBD80 \uACB0\uACFC\uC640 \uD638\uCD9C \uC0AC\uC774 \uBCC0\uACBD\uC744 \uBCF4\uC874",
+      "passed": true,
+      "ms": 42
+    },
+    {
+      "name": "INV-004/024 knowledge: read copy and transmission permissions expire independently and teachers cannot exceed their understanding",
+      "passed": true,
+      "ms": 10
+    },
+    {
+      "name": "INV-009/024 knowledge: \uD5C8\uAC00\uD55C \uC2E4\uC81C \uB9E4\uCCB4\uB97C \uC804\uCCB4\uC218\u00B7\uC815\uB82C\u00B7\uD398\uC774\uC9C0 \uC804\uC5D0 \uD544\uD130\uD558\uC5EC \uBC14\uAE65 \uB3C4\uC11C\uB97C \uC778\uC9C0\uD558\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-004/024 knowledge: an interrupted blank medium can be reused only with new paid inputs",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-024 knowledge: experiments refute adopted claims and corrections never rewrite history",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-015/024 knowledge: physical missing pages and book loss preserve learned memory",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-024 knowledge bridge contract: explicit genesis transmission licence and existing comprehension baseline",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-024 knowledge: personal misinterpretation and oral transmission do not mutate editions",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/024 knowledge: loss of an action\u0027s physical source prevents completion without refunding spent inputs",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-004/024 knowledge: mixed-edition oral teaching preserves each source and surviving transmission rights",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-004/024 knowledge world-owned state: \uB0B4\uBD80 \uC804\uC774\uB294 \uC989\uC2DC \uBCF4\uC774\uACE0 \uACF5\uAC1C \uC0AC\uBCF8\u00B7\uC785\uB825\u00B7\uC870\uD68C \uBC30\uC5F4\uC740 \uBD84\uB9AC\uB41C\uB2E4",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004/005/007 knowledge world-owned state: \uAC70\uBD80\u00B7\uC7AC\uC804\uC1A1\u00B7\uCEE4\uBC0B \uC804 \uC2E4\uC81C \uC608\uC678\uAC00 \uC6D0\uB798 \uC138\uACC4\uB97C \uBC14\uAFB8\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 453
+    },
+    {
+      "name": "INV-004/006 knowledge world-owned state: \uC2E4\uC81C \uBA85\uB839 \uCC44\uD0DD\u00B7\uC6D4 \uC644\uB8CC\u00B7\uC800\uC7A5\uC7AC\uAC1C\uC5D0\uC11C \uCE90\uC2DC\uC640 \uC678\uBD80 \uC0C1\uD0DC\uAC00 \uBD84\uB9AC\uB41C\uB2E4",
+      "passed": true,
+      "ms": 401
+    },
+    {
+      "name": "INV-024 knowledge: physical ownership grants neither comprehension nor mastery",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-007/024 knowledge physical snapshot: \uC804\uCCB4 \uC0AC\uBCF8\uC758 \uB9E4\uCCB4\u00B7\uC811\uADFC\uAD8C\uACFC \uC21C\uC11C\u00B7\uB3D9\uAE30\uD654 \uC2DC\uC810\u00B7\uC911\uCCA9 \uBC30\uC5F4 \uACA9\uB9AC\uAC00 \uAC19\uB2E4",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "INV-004/024 knowledge: only timed successful real practice earns mastery and process receipts cannot replay",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-006/008/024 knowledge: scoped paged queries are pure isolated and culture independent",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-004/024 knowledge: changed writing laws affect future actions and preserve adopted costs",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-004/024 knowledge: corrupt lineage mastery adoption time and provenance saves are rejected",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "INV-004/024 knowledge bridge contract: a real reserved paper substrate may be the paid blank and reading rights revoke",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "INV-006/012/024 knowledge: parents mentors and apprentices spend both participants\u0027 time",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-004/024 knowledge: transcription reserves a physical target time and exact one-use inputs",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-017/018/024 knowledge public world: an actual blank book carries no text until paid transcription",
+      "passed": true,
+      "ms": 234
+    },
+    {
+      "name": "INV-004/018/024 knowledge public world: actual misreading paid experiment and rereading preserve adopted history",
+      "passed": true,
+      "ms": 541
+    },
+    {
+      "name": "INV-004/024 knowledge public world: real genesis books and explicit personal sources with zero mastery",
+      "passed": true,
+      "ms": 110
+    },
+    {
+      "name": "INV-004/005/024 knowledge public world: study resumes against its actual body book and clock without skill gain",
+      "passed": true,
+      "ms": 168
+    },
+    {
+      "name": "INV-004/017/024 knowledge public world: real request and teaching share both participants\u0027 labor and cancel together",
+      "passed": true,
+      "ms": 379
+    },
+    {
+      "name": "INV-004/005/017/018/024 knowledge public world: a paid reserved paper item becomes exactly one copied book",
+      "passed": true,
+      "ms": 214
+    },
+    {
+      "name": "INV-006/015 people: six foundations, 24 talents, canonical ten cognition mappings and single cause effects",
+      "passed": true,
+      "ms": 17
+    },
+    {
+      "name": "INV-015/023 people: canonical eight combat axes, standard comparison, one-time realm conversion and conditional known potential",
+      "passed": true,
+      "ms": 14
+    },
+    {
+      "name": "INV-011/015 people: independent species/body/title, both-parent Golden Core reproduction and root-free martial aptitude",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "INV-006/022 people: invariant absolute aptitude and scoped genius/candidate vacancies, ties and dated reevaluation",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-004/011/012/014 people: frozen allele inheritance, prenatal body evidence and birth-time soul assignment",
+      "passed": true,
+      "ms": 8
+    },
+    {
+      "name": "INV-008/015/022 people social public: bilateral timed assessment, unseen fame and consented claim relay",
+      "passed": true,
+      "ms": 1268
+    },
+    {
+      "name": "INV-004/009 people queries public: mutating nested observer aptitude, traits, soul, evaluations and claim arrays cannot alter authority",
+      "passed": true,
+      "ms": 367
+    },
+    {
+      "name": "INV-001/004/006/012/017/022 people family public: paid care, real teaching, consented adoption, adult separation and estate versus office succession",
+      "passed": true,
+      "ms": 3171
+    },
+    {
+      "name": "INV-008/015 people social public: completed martial routine, dated acquisition and inactivity release",
+      "passed": true,
+      "ms": 770
+    },
+    {
+      "name": "INV-004/011/012 people public genetics: configured zero mutation and frozen model/stream after law changes",
+      "passed": true,
+      "ms": 840
+    },
+    {
+      "name": "INV-004/011/014/015 people public species: actual body maturity, native gestation, frozen offspring and independent birth soul",
+      "passed": true,
+      "ms": 2110
+    },
+    {
+      "name": "INV-008/015 people social public: source-active oath preference, formal breach and actual AI score change",
+      "passed": true,
+      "ms": 661
+    },
+    {
+      "name": "INV-008/009/015 people receipts public: unseen remote oath end cannot update personal agreement knowledge",
+      "passed": true,
+      "ms": 1496
+    },
+    {
+      "name": "INV-008/009/015 people receipts public: remote rejection and hidden authority cannot change an undelivered request belief",
+      "passed": true,
+      "ms": 908
+    },
+    {
+      "name": "INV-006/011/015 people public species: explicit body capabilities, maturity/lifespan, habitat evidence and strict projections",
+      "passed": true,
+      "ms": 444
+    },
+    {
+      "name": "INV-004/008/024 people teaching public: AI missing-method requests use the same actual knowledge adapter and source as player requests",
+      "passed": true,
+      "ms": 304
+    },
+    {
+      "name": "INV-004/014/015 people social public: actual historical founders, lost authority and no title restoration through soul",
+      "passed": true,
+      "ms": 1068
+    },
+    {
+      "name": "INV-008/022 people: observed reputation provenance, hidden genius noninterference and bounded deterministic claims",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "INV-004/014/024 people: six trace domains, awakening, integration, crossing loss and conserved split branches",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-004/006/015 people: serializable aggregate, truthful founder adapters and source-backed learning without genome rewrite",
+      "passed": true,
+      "ms": 26
+    },
+    {
+      "name": "INV-008/015 people: forty traits, lifecycle, conflicts, expiry, history and observed potential boundaries",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "INV-004/006/011/014 people public: frozen conception, actual birth soul and production-save continuation",
+      "passed": true,
+      "ms": 1719
+    },
+    {
+      "name": "INV-008/015 people public: one real study credit and hidden-person source noninterference",
+      "passed": true,
+      "ms": 206
+    },
+    {
+      "name": "INV-006/015 people public: actual environmental damage, timed recovery and derived-marker release",
+      "passed": true,
+      "ms": 255
+    },
+    {
+      "name": "INV-004/014/024 people public: eligible natural death, waiting-soul birth, real awakening and taught integration",
+      "passed": true,
+      "ms": 1803
+    },
+    {
+      "name": "INV-011/012 people public: both-parent Golden Core boundary and explicit martial-law override",
+      "passed": true,
+      "ms": 212
+    },
+    {
+      "name": "INV-014/024 people public: coherent ready ascension, source capture and costed independent split",
+      "passed": true,
+      "ms": 143
+    },
+    {
+      "name": "INV-009/024 rich query: knowledge provenance is personal and hidden revision independent",
+      "passed": true,
+      "ms": 99
+    },
+    {
+      "name": "INV-009/015 rich query: own combat social and AI context ignores unseen environment and reverse relations",
+      "passed": true,
+      "ms": 95
+    },
+    {
+      "name": "INV-009/015 rich query: delivered social requests, consented assessment and observed oath receipts",
+      "passed": true,
+      "ms": 354
+    },
+    {
+      "name": "INV-009/N03 rich query: real private NPC split preserves actor perception token and valid command context",
+      "passed": true,
+      "ms": 124
+    },
+    {
+      "name": "INV-009/016 rich query: actual recipes and stale personal resource/appraisal snapshots",
+      "passed": true,
+      "ms": 108
+    },
+    {
+      "name": "INV-007/010 rich query: action equipment policy history mapping and detached snapshots",
+      "passed": true,
+      "ms": 151
+    },
+    {
+      "name": "INV-009/010 rich query: cached people and places precede hidden truth projection",
+      "passed": true,
+      "ms": 88
+    },
+    {
+      "name": "INV-009/M05 \uBE44\uACBD \uC870\uD68C: \uB0B4\uBD80\uB294 \uC2E4\uC81C \uD734\uB300\uD488\uACFC \uAC1C\uC778 \uAE30\uB85D\uB9CC \uBCF4\uACE0 \uBC14\uAE65 \uC2E0\uADDC \uCD9C\uD488\u00B7\uBC14\uB2E5 \uC2E4\uBB3C\uC744 \uD604\uC7AC \uC815\uBCF4\uB85C \uBC1B\uC9C0 \uC54A\uB294\uB2E4",
+      "passed": true,
+      "ms": 821
+    },
+    {
+      "name": "T04 sensitivity contract: saved People policy values take precedence and unobserved species/models are not used claims",
+      "passed": true,
+      "ms": 44
+    },
+    {
+      "name": "T04 sensitivity contract: completed nine-cohort baseline, physical conditions, hashes and aggregate originals; no growth",
+      "passed": true,
+      "ms": 377
+    },
+    {
+      "name": "T04 sensitivity contract: two-case partitions remain partial, only six complete, duplicate/CLI/output overwrite rejected",
+      "passed": true,
+      "ms": 14
+    },
+    {
+      "name": "T04 sensitivity contract: fixed policies, law bounds, source/build identity and strict plan JSON; no measurement",
+      "passed": true,
+      "ms": 35
+    },
+    {
+      "name": "T04 sensitivity contract: actual CLI rejects report alias before functional writes and preserves plan/baseline bytes",
+      "passed": true,
+      "ms": 97
+    },
+    {
+      "name": "INV-004/005 host recovery: committed pending saves, authenticated sequence and immutable old originals",
+      "passed": true,
+      "ms": 1135
+    },
+    {
+      "name": "inventory: V021-K06 array rights, actual upkeep, effect expiry, and stale world candidate rejection",
+      "passed": true,
+      "ms": 24
+    },
+    {
+      "name": "inventory: INV-017/018 auctions fund deposits, reject reuse, refund death and settle equal deadlines once",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "inventory: INV-017/018 competing bids and carrier/seller deaths preserve estates, escrow and cargo",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: consumed final stack retains typed actual quantity location quality and origin evidence",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-016 recursive container capacity, cycle rejection and broken-container overflow preserve stock",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-017 real production inputs, stage cancellation, failure, use and save settlement",
+      "passed": true,
+      "ms": 3
+    },
+    {
+      "name": "inventory: INV-016 ownership, custody, use, equipment and remote access remain independent",
+      "passed": true,
+      "ms": 7
+    },
+    {
+      "name": "inventory: V021-I03 all 12 equipment categories occupy slots and multi-slot contributions apply once",
+      "passed": true,
+      "ms": 4
+    },
+    {
+      "name": "inventory: INV-005/015/016 equipment replacement is atomic across occupied slots and return capacity",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: paid growth dose retains its consumed physical source and never grants legacy structure work",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory: known source and local offer projections never infer mutable private truth",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory: INV-017 care, teaching, production and defense share person and facility labor",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-004/006 inventory candidate copying preserves ordinal knowledge and receipt identity",
+      "passed": true,
+      "ms": 0
+    },
+    {
+      "name": "inventory: INV-016/018 backpack removal preserves overflow, sources stay finite, known bundles reveal no truth",
+      "passed": true,
+      "ms": 6
+    },
+    {
+      "name": "inventory: V021-K07 real medicine, appraisal and exploration consume labor and produce personal evidence",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: V021-I01/K03-K08 all 64 resources have executable producers and consumers",
+      "passed": true,
+      "ms": 58
+    },
+    {
+      "name": "inventory: shared recipe registry plans the exact authoritative physical input and output",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: INV-016/017 shared physical reservations preserve split provenance and exclude parallel use",
+      "passed": true,
+      "ms": 21
+    },
+    {
+      "name": "inventory: INV-016 inventory split/merge preserves hidden state, binding and provenance",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "inventory: INV-017 production cannot bank idle time and broken arrays immediately stop contributing",
+      "passed": true,
+      "ms": 2
+    },
+    {
+      "name": "inventory: V021-E03 real cargo preserves in-transit title, labor, fees, arrival and failure recovery location",
+      "passed": true,
+      "ms": 1
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: \uC2E4\uC81C \uC6D0\uC790\uD30C\uC77C \uD63C\uD569\uD615\uC2DD\u00B7pending \uC6B0\uC120\uC21C\uBC88\u00B7backup\u00B7\uC190\uC0C1 \uC6D0\uBB38 \uBCF4\uC874",
+      "passed": true,
+      "ms": 1079
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: prefix\u00B7\uBC84\uC804\u00B7\uAE38\uC774\u00B7\uC21C\uBC88\u00B7\uCCB4\uD06C\uC12C\u00B7\uC798\uB9BC\u00B7\uD6C4\uD589 \uC790\uB8CC \uC5C4\uBC00 \uAC70\uBD80",
+      "passed": true,
+      "ms": 31
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: UTF8 \uC591\uD615\uC2DD\u00B7\uACBD\uACC4\u00B7\uC21C\uBC88\u00B7\uBA85\uB839 \uC7AC\uC804\uC1A1\u00B7RNG \uC800\uC7A5 \uC18D\uD589",
+      "passed": true,
+      "ms": 513
+    },
+    {
+      "name": "INV-003/005 \uBC95\uCE59 \uC77C\uAD04 \uC801\uC6A9\u00B7\uAC80\uC99D \uC2E4\uD328 \uC6D0\uC790\uC131\u00B7\uC911\uBCF5 \uC7AC\uC804\uC1A1\u00B7\uD50C\uB808\uC774 \uAD8C\uD55C",
+      "passed": true,
+      "ms": 153
+    },
+    {
+      "name": "INV-004 \uB300\uC6A9\uB7C9 \uC800\uC7A5: \uAE30\uC874 schema2 \uBC14\uC774\uD2B8\u00B7\uACE0\uC815 \uC6D0\uBCF8\u00B7\uAD6C\uBC84\uC804 \uC815\uCC45 \uBCF4\uC874",
+      "passed": true,
+      "ms": 238
+    },
+    {
+      "name": "INV-005/008/009/017/018 EX03 \uC900\uBE44 \uAE30\uB2A5: \uC2E4\uC81C \uACF5\uAC1C \uAD11\uACE0\u00B7\uC0AC\uC6A9\uAD8C\uC758 scan/index \uC120\uD0DD\u00B7\uB204\uB77D\u00B7\uCCA0\uD68C\u00B7\uC815\uC0B0 \uC815\uD569",
+      "passed": true,
+      "ms": 634
+    },
+    {
+      "name": "V021-W02/G01 public politics: actual fox and pine body maturity govern consent and family leadership independently of human law",
+      "passed": true,
+      "ms": 574
+    },
+    {
+      "name": "V021-G03 AI politics: direct rejected founding and second-phase preparation consume no IDs or resources",
+      "passed": true,
+      "ms": 131
+    },
+    {
+      "name": "INV-020 politics: revoked or expired local charters cancel prepared sect policy and refund escrow",
+      "passed": true,
+      "ms": 46
+    },
+    {
+      "name": "INV-018/019/020 politics: succession and independence preserve one creditor, debtor and enforcement owner",
+      "passed": true,
+      "ms": 31
+    },
+    {
+      "name": "INV-019 politics: real province founding, territorial loss, restoration and territoryless persistence",
+      "passed": true,
+      "ms": 30
+    },
+    {
+      "name": "INV-018/019/020 politics: actual enforcement jurisdiction, debtor assumption and personal estate transfer preserve principal IDs",
+      "passed": true,
+      "ms": 27
+    },
+    {
+      "name": "INV-019 politics: adult household leadership is independent from Golden Core fertility and respects its own optional realm law",
+      "passed": true,
+      "ms": 20
+    },
+    {
+      "name": "INV-018/020 politics: insufficient real payroll records one receivable per member and period",
+      "passed": true,
+      "ms": 24
+    },
+    {
+      "name": "INV-018/020 politics: all ten detailed policy categories use actual input and effect semantics",
+      "passed": true,
+      "ms": 259
+    },
+    {
+      "name": "INV-020 politics: adopted, insufficient, prepared, implemented and cancelled policy states reserve real resources",
+      "passed": true,
+      "ms": 35
+    },
+    {
+      "name": "INV-019/020 politics: implementation rechecks current leader, charter, jurisdiction and application revision",
+      "passed": true,
+      "ms": 53
+    },
+    {
+      "name": "V021-G02 public politics: actual loan, independence, death succession and territorial loss keep public accounts distinct",
+      "passed": true,
+      "ms": 455
+    },
+    {
+      "name": "V021-M03/G02 public politics: actual death inheritance transfers personal land and preserves another operator\u0027s rights",
+      "passed": true,
+      "ms": 250
+    },
+    {
+      "name": "V021-G03 public politics: real dispatch, preparation escrow, busy action rejection, save and one-time monthly implementation",
+      "passed": true,
+      "ms": 743
+    },
+    {
+      "name": "V021-M03 public politics: real operation/property transfers respect personal knowledge without granting sovereignty",
+      "passed": true,
+      "ms": 362
+    },
+    {
+      "name": "V021-S02/S03 public politics: paid education and service cause succession, current charter revocation applies, rebirth restores no office",
+      "passed": true,
+      "ms": 2483
+    },
+    {
+      "name": "V021-S02 public politics: funded education queues one real request and gains knowledge only through timed teaching",
+      "passed": true,
+      "ms": 781
+    },
+    {
+      "name": "V021-G01/G02 public politics: one province, persistent territoryless dynasty, annual zero revenue and restoration",
+      "passed": true,
+      "ms": 1395
+    },
+    {
+      "name": "V021-G03 public politics: withdrawing real reserved work refunds unfinished policy without implementation",
+      "passed": true,
+      "ms": 303
+    },
+    {
+      "name": "INV-019 politics: ownership, administration, passage and claims remain separate from sovereignty",
+      "passed": true,
+      "ms": 35
+    },
+    {
+      "name": "INV-004/020 politics: domain save roundtrip, resumed preparation and deterministic pure queries",
+      "passed": true,
+      "ms": 27
+    },
+    {
+      "name": "INV-020 politics: actual sect founding, concurrent limit, local charter, offices, payroll and dissolution",
+      "passed": true,
+      "ms": 52
+    },
+    {
+      "name": "INV-018/020 politics: organizations share actual labor, preparation rules snapshot and public account projections",
+      "passed": true,
+      "ms": 26
+    },
+    {
+      "name": "INV-019 politics: atomic territorial transfer preserves property and revokes former public grants",
+      "passed": true,
+      "ms": 29
+    },
+    {
+      "name": "INV-018/019 politics: vassal DAG, one resident tax and one direct-tax tribute per layer",
+      "passed": true,
+      "ms": 24
+    },
+    {
+      "name": "INV-018/020 politics: atomic adopt/prepare failure and actual worker withdrawal cannot leave usable cancelled effects",
+      "passed": true,
+      "ms": 29
+    },
+    {
+      "name": "INV-004/005/006/013 \uC724\uD68C \uACF5\uAC1C \uB3D9\uC2DC \uC6D0\uC778: \uC2E4\uC81C 12\u00B77\uC758 \uB2E8\uC77C \uC6B0\uC120 \uC120\uD0DD\uACFC \uD65C\uC131\u00B7\uC644\uC131 \uACBD\uACC4\u00B7\uB300\uCCB4 \uC124\uBA85\u00B7\uC548\uC815 \uD0A4\uB97C \uC800\uC7A5\uD558\uACE0 \uC7AC\uCC98\uB9AC\uD55C\uB2E4",
+      "passed": true,
+      "ms": 1376
+    },
+    {
+      "name": "INV-004/005/006/022 EX05 \uC900\uBE44 \uAE30\uB2A5: \uB3D9\uC77C GameCodec \uBC14\uC774\uD2B8\u00B7\uC120\uD0DD \uC555\uCD95 \uC6D0\uC790\uD30C\uC77C\u00B7\uC911\uB2E8 \uBCF5\uAD6C\u00B7\uC6D0\uBCF8 \uBCF4\uC874",
+      "passed": true,
+      "ms": 1336
+    },
+    {
+      "name": "INV-004/012/017 \uC2E4\uC81C \uC591\uC721 \uC2DC\uAC04\u00B7\uC2DD\uB7C9\u00B7\uC0AC\uD68C \uAD00\uACC4\u00B7\uAC10\uC815\u00B7\uD310\uB2E8 \uC774\uB825",
+      "passed": true,
+      "ms": 1034
+    }
+  ]
+}

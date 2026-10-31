@@ -1,0 +1,120 @@
+{
+  "passed": 8,
+  "cases": [
+    {
+      "case": "success",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "observedCommands": [
+        "character-device",
+        "rule",
+        "reload",
+        "trigger",
+        "settle",
+        "access",
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=0\nKVM stage=character-device exit=0\nKVM stage=rule exit=0\nKVM stage=reload exit=0\nKVM stage=trigger exit=0\nKVM stage=settle exit=0\nKVM stage=access exit=0\nKVM final exit=0\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "github-actions",
+      "expectedExit": 1,
+      "actualExit": 1,
+      "observedCommands": [
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=1\nKVM final exit=1\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "hosted",
+      "expectedExit": 1,
+      "actualExit": 1,
+      "observedCommands": [
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=1\nKVM final exit=1\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "character-device",
+      "expectedExit": 1,
+      "actualExit": 1,
+      "observedCommands": [
+        "character-device",
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=0\nKVM stage=character-device exit=1\nKVM final exit=1\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "reload",
+      "expectedExit": 7,
+      "actualExit": 7,
+      "observedCommands": [
+        "character-device",
+        "rule",
+        "reload",
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=0\nKVM stage=character-device exit=0\nKVM stage=rule exit=0\nKVM stage=reload exit=7\nKVM final exit=7\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "trigger",
+      "expectedExit": 8,
+      "actualExit": 8,
+      "observedCommands": [
+        "character-device",
+        "rule",
+        "reload",
+        "trigger",
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=0\nKVM stage=character-device exit=0\nKVM stage=rule exit=0\nKVM stage=reload exit=0\nKVM stage=trigger exit=8\nKVM final exit=8\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "settle",
+      "expectedExit": 9,
+      "actualExit": 9,
+      "observedCommands": [
+        "character-device",
+        "rule",
+        "reload",
+        "trigger",
+        "settle",
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=0\nKVM stage=character-device exit=0\nKVM stage=rule exit=0\nKVM stage=reload exit=0\nKVM stage=trigger exit=0\nKVM stage=settle exit=9\nKVM final exit=9\nfixture id\nfixture stat\n",
+      "stderr": ""
+    },
+    {
+      "case": "access",
+      "expectedExit": 1,
+      "actualExit": 1,
+      "observedCommands": [
+        "character-device",
+        "rule",
+        "reload",
+        "trigger",
+        "settle",
+        "access",
+        "id",
+        "stat"
+      ],
+      "stdout": "KVM stage=github-actions exit=0\nKVM stage=hosted exit=0\nKVM stage=character-device exit=0\nKVM stage=rule exit=0\nKVM stage=reload exit=0\nKVM stage=trigger exit=0\nKVM stage=settle exit=0\nKVM stage=access exit=1\nKVM final exit=1\nfixture id\nfixture stat\n",
+      "stderr": ""
+    }
+  ],
+  "realUdevOrKvmOperations": 0,
+  "scope": "선언한 가짜 host/device 명령으로 실제 workflow shell의 가드·실패 전파·순서만 검증"
+}

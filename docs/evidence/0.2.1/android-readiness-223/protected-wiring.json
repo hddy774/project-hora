@@ -1,0 +1,76 @@
+{
+  "baseCommit": "404767ad4dc576ea3669cddd42529a50741cbf6f",
+  "protectedOfficialFunctionsByteIdentical": {
+    "adb": true,
+    "package_state": true,
+    "launch": true,
+    "old_world_proof": true,
+    "retained_upgrade": true,
+    "main": true
+  },
+  "actualRenderApkHashGuardByteIdentical": true,
+  "protectedFilesByteIdentical": {
+    "scripts/verify-v021-release.py": true,
+    "scripts/publish-v021-release.py": true,
+    "scripts/verify-android-ui.py": true,
+    ".github/workflows/v021-release.yml": true
+  },
+  "api24SourceApkKvmRunBlocksByteIdentical": {
+    "소스·제품 지문과 검사 범위 기록": true,
+    "릴리스 구성의 디버그 서명 검사 APK 빌드": true,
+    "GitHub 러너의 실제 하드웨어 가속 확인(KVM)": false
+  },
+  "api24EmbeddedProbeAstIdentical": true,
+  "sdk": {
+    "product": [
+      "10.0.403",
+      "10.0.403",
+      "10.0.403"
+    ],
+    "api24": [
+      "10.0.403"
+    ]
+  },
+  "singleDeadlineAssignments": 1,
+  "syntax": "passed",
+  "originalQuickstepXmlSha256": "938794d94501058d31674442756489773bf46d15b289f7a7d0fa2b62c2a9d36d",
+  "unitTestsArePlatformExecution": false,
+  "performanceGrowthLongRuns": 0,
+  "officialReleaseExecutions": 0,
+  "existingFp528ReusedAsCurrentAcceptance": false,
+  "approvedKvmFollowup": {
+    "previousHead": "451151a644cbaaa1f88c05be2921bbdd68d601a4",
+    "readerGitBlobUnchanged": "eae4de7d51c3ce5f2c25f9f8a568f4d252487e46",
+    "settleTimeoutSeconds": 10,
+    "existingGhaHostedCharacterDeviceReadWriteGuardsPreserved": true,
+    "reloadTriggerSettleFailuresPropagated": true,
+    "chmodFallback": false,
+    "publicDiagnostics": [
+      "per-stage exit",
+      "id",
+      "stat"
+    ],
+    "shellFixtureCases": 8,
+    "realKvmOperations": 0,
+    "actualPriorFailureCause": "미확정; 비동기 udev 경계 가능성을 원인 확정으로 기록하지 않음"
+  },
+  "windowQueryCorrection": {
+    "previousHead": "930ed373582cea3984a333a5aef4f41556f37a6b",
+    "onlyReaderExecutableChange": "dumpsys window windows → dumpsys window",
+    "allOtherReaderBytesIdentical": true,
+    "oldReaderGitBlob": "eae4de7d51c3ce5f2c25f9f8a568f4d252487e46",
+    "newReaderGitBlob": "8a6e952eb6618da668f31bc94a374acef9afebac",
+    "foregroundPredicateChanged": false,
+    "singleDeadlineChanged": false,
+    "originalVerifierChanged": false
+  },
+  "captureOrderCorrection": {
+    "previousHead": "a0e8a4c36fce51b391330b4131126d50b40cd38f",
+    "focusCollectedAfterUiAndScreen": true,
+    "waitRequiresCurrentMatchingLauncherFocus": true,
+    "onlyDialogFreeReadyAfterWaitObservationReused": true,
+    "singleDeadlineChanged": false,
+    "originalVerifierChanged": false,
+    "originalSourceSignatureUpgradeGuardsChanged": false
+  }
+}

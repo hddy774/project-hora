@@ -77,7 +77,7 @@ jobs:
       - name: 개발 도구 설정(.NET)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0.403'
       - name: 안드로이드 도구 설정(Android SDK)
         uses: android-actions/setup-android@v3
         with:
@@ -130,13 +130,39 @@ jobs:
           PY
       - name: GitHub 러너의 실제 하드웨어 가속 확인(KVM)
         run: |
-          test "$GITHUB_ACTIONS" = true
-          test "$RUNNER_ENVIRONMENT" = github-hosted
-          test -c /dev/kvm
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-          test -r /dev/kvm -a -w /dev/kvm
+          set -e -o pipefail
+          kvm_diagnostics() {
+            result=$?
+            trap - EXIT
+            set +e
+            printf 'KVM final exit=%s\n' "$result"
+            id
+            stat -c 'KVM type=%F mode=%a owner=%U group=%G major=%t minor=%T' /dev/kvm
+            exit "$result"
+          }
+          trap kvm_diagnostics EXIT
+          kvm_step() {
+            label=$1
+            shift
+            if "$@"; then
+              printf 'KVM stage=%s exit=0\n' "$label"
+            else
+              result=$?
+              printf 'KVM stage=%s exit=%s\n' "$label" "$result"
+              return "$result"
+            fi
+          }
+          write_kvm_rule() {
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          }
+          kvm_step github-actions test "$GITHUB_ACTIONS" = true
+          kvm_step hosted test "$RUNNER_ENVIRONMENT" = github-hosted
+          kvm_step character-device test -c /dev/kvm
+          kvm_step rule write_kvm_rule
+          kvm_step reload sudo udevadm control --reload-rules
+          kvm_step trigger sudo udevadm trigger --name-match=kvm
+          kvm_step settle sudo udevadm settle --timeout=10
+          kvm_step access test -r /dev/kvm -a -w /dev/kvm
       - name: 실제 검사 스크립트 준비
         run: |
           cat > "$RUNNER_TEMP/v021-api24-probe.py" <<'PY'
@@ -168,7 +194,7 @@ jobs:
               install = native.adb('install', '--no-streaming', apk)
               (out / 'install.txt').write_text(install)
               assert 'Success' in install, '새 APK 설치가 성공하지 않았습니다'
-              # Reuse the unchanged official renderer/foreground/DOM checker; do not enter its signing/upgrade CLI.
+              # Share the bounded actual-launch/foreground/DOM reader; do not enter the signing/upgrade CLI.
               fresh = native.actual_render(apk, proof, out / 'fresh')
               service = capture('webview-service-after.txt', 'shell', 'dumpsys', 'webviewupdate')
               after = capture('webview-package-after.txt', 'shell', 'dumpsys', 'package', 'com.android.webview')

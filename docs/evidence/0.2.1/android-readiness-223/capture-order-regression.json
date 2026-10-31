@@ -1,0 +1,22 @@
+{
+  "source": "a0e8a4c36fce51b391330b4131126d50b40cd38f",
+  "api24Run": 41153331710,
+  "api24Job": 124394569763,
+  "api24JobConclusion": "success",
+  "api24Artifact": 13023901343,
+  "api24ZipSha256": "100fcfedd3b7c58ff2e0245931f608d35344d5dd107d06842c660d3f74578f57",
+  "api35Run": 41153331708,
+  "api35Job": 124394690203,
+  "api35JobConclusion": "success",
+  "api35Artifact": 13024011258,
+  "api35ZipSha256": "286a3d4aefc1761133a12ef4104176dcc5f5e11af90eacda8cd1ad3e75d26073",
+  "api35SuccessfulProofScreenshotSha256": "7d156e57778e27d57601e3aa00e556729dc073e9d672fbac81dedbf7b29f002c",
+  "api35ScreenInspectedWithViewImage": true,
+  "api35ScreenObservation": "Quickstep 대화상자가 다시 보임. mCurrentFocus/UI가 screenshot보다 먼저 수집되어 늦은 overlay를 놓친 시각 경계.",
+  "api35CleanFinalFrameAcceptance": false,
+  "originalRunOrProofModified": false,
+  "correction": "focus 수집을 screenshot 뒤로 이동. 현재 focus가 일치하는 launcher ANR만 Wait. Wait후 dialog없는ready관측만 즉시검증.",
+  "afterUnitTests": 15,
+  "newSourcePlatformAcceptance": "새 자동CI/원문 확인 대기",
+  "officialRetainedSignatureOrUpgradeProof": false
+}

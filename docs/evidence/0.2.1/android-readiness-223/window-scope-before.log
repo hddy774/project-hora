@@ -1,0 +1,49 @@
+...E......FF..
+======================================================================
+ERROR: test_external_wait_then_real_verifier_success_preserves_before_and_after (__main__.AndroidReadinessTests.test_external_wait_then_real_verifier_success_preserves_before_and_after)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-readiness/scripts/test-android-readiness.py", line 157, in test_external_wait_then_real_verifier_success_preserves_before_and_after
+    result = self.execute(device, out, install_apk="fixture.apk")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/seonro-android-readiness/scripts/test-android-readiness.py", line 99, in execute
+    return native.await_ready(ACTIVITY, VERSION, out, timeout=timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/seonro-android-readiness/scripts/android_readiness.py", line 211, in await_ready
+    raise ReadinessError("Actual app WebView/foreground/DOM readiness deadline exceeded")
+readiness.ReadinessError: Actual app WebView/foreground/DOM readiness deadline exceeded
+
+======================================================================
+FAIL: test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker (__main__.AndroidReadinessTests.test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker) (stale=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-readiness/scripts/test-android-readiness.py", line 223, in test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker
+    self.assertEqual(device.checker_results, [1, 1])
+AssertionError: Lists differ: [] != [1, 1]
+
+Second list contains 2 additional elements.
+First extra element 0:
+1
+
+- []
++ [1, 1]
+
+======================================================================
+FAIL: test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker (__main__.AndroidReadinessTests.test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker) (stale=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/seonro-android-readiness/scripts/test-android-readiness.py", line 223, in test_real_verifier_rejects_wrong_dom_and_stale_prelaunch_marker
+    self.assertEqual(device.checker_results, [1, 1])
+AssertionError: Lists differ: [] != [1, 1]
+
+Second list contains 2 additional elements.
+First extra element 0:
+1
+
+- []
++ [1, 1]
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.030s
+
+FAILED (failures=2, errors=1)

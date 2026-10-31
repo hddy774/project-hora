@@ -1,0 +1,71 @@
+{
+  "run": 41159864831,
+  "job": 124465144337,
+  "outcome": "failure",
+  "matrixResult": "failure",
+  "actualInputPattern": "v021-sensitivity-41159864831-1-seed-*",
+  "actualGlob": "inputs/*/out/sensitivity.json",
+  "selectedReportPathsInLexicalOrder": [
+    {
+      "path": "inputs/v021-sensitivity-41159864831-1-seed-2026/out/sensitivity.json",
+      "sourceArtifactId": 13032846688,
+      "rawSha256": "1bbfe1c7a186837780482e32151c31aeb24f90c34337d2e759cd55eed29509f4",
+      "matchesSeedZIPByteForByte": true,
+      "requested_complete": false,
+      "complete": false,
+      "status": "partial",
+      "completedCases": 1,
+      "processExit": 124
+    },
+    {
+      "path": "inputs/v021-sensitivity-41159864831-1-seed-42/out/sensitivity.json",
+      "sourceArtifactId": 13033147298,
+      "rawSha256": "c528a465112ef02ea996b0956444432bda4203c18d85c020cd603f567202e0fa",
+      "matchesSeedZIPByteForByte": true,
+      "requested_complete": false,
+      "complete": false,
+      "status": "partial",
+      "completedCases": 1,
+      "processExit": 124
+    },
+    {
+      "path": "inputs/v021-sensitivity-41159864831-1-seed-98/out/sensitivity.json",
+      "sourceArtifactId": 13030660873,
+      "rawSha256": "f117037b167e8827369fc261fd21ee1b8a7309bd9942f1e2c2e024697af20ffd",
+      "matchesSeedZIPByteForByte": true,
+      "requested_complete": true,
+      "complete": false,
+      "status": "requested-completed",
+      "completedCases": 2,
+      "processExit": 0
+    }
+  ],
+  "failureLog": "/workspace/scratch/sensitivity-41159864831-7ce/collector-job-124465144337.log",
+  "failureLogSha256": "9ba99714464b944104e2fd86bcb594a33b95813d0e71fa33d020d3c37f5cb7a8",
+  "actualFailure": "Python stdin line12 AssertionError;first lexicographic report seed2026 has requested_complete=false/status running,so existing requested-completed guard rejects",
+  "guardChanged": false,
+  "verifiedSixFileExists": false,
+  "duplicateSeedMembers": 89,
+  "uniqueCollectionMember": "provenance/request.json",
+  "collectionMembers": 90,
+  "allCollectionSeedFilesByteEqualDirectSeedZIPs": true,
+  "extraOutputFilesPreservedNotSelected": [
+    {
+      "seed": 2026,
+      "path": "out/sensitivity.json.lock",
+      "canonicalSelected": false
+    },
+    {
+      "seed": 42,
+      "path": "out/sensitivity.json.lock",
+      "canonicalSelected": false
+    }
+  ],
+  "notSelectedForNewUniqueCoverage": [
+    "all new900cases,includingcomplete98andpartial42/2026",
+    "new1500seed98 duplicatesoldcomplete98",
+    "old1500partial42/2026 retainedprefixes,notextracompletecases",
+    "collection copies donotcreatecases"
+  ],
+  "newWholePlanPassSynthesized": false
+}

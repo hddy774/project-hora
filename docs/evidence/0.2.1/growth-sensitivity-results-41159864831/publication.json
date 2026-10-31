@@ -1,0 +1,122 @@
+{
+  "publicationStatus": "verified-complete",
+  "publicAssetBytesVerified": true,
+  "releaseId": 429767706,
+  "releaseTag": "evidence/v0.2.1-sensitivity-41159864831",
+  "releaseUrl": "https://github.com/hddy774/project-hora/releases/tag/evidence/v0.2.1-sensitivity-41159864831",
+  "prerelease": true,
+  "makeLatest": false,
+  "targetCommit": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "archiveRun": 41177374470,
+  "archiveAttempt": 1,
+  "archiveSourcePr": 263,
+  "archiveSourceCommit": "46c484e3ffb4bdac69725ff789c959ef3721c475",
+  "actualMeasuredRun": 41159864831,
+  "actualMeasuredSource": "7ce66943b539420c9dc1e3fa8a611daae58020ff",
+  "actualMeasuredMetadataHead": "19c1faa3a1e6b8a921fd3cbe1642ac3824c955b6",
+  "indexAssetId": 694601640,
+  "indexAssetName": "sensitivity-artifact-index-41159864831.json",
+  "indexBytes": 24058,
+  "actualIndexSha256": "20168d0596fa0f9d17f933d37a732e0af3725513c3aeb897ec769efc29c7d9cd",
+  "indexPublicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/sensitivity-artifact-index-41159864831.json",
+  "indexWholeBytesVerified": true,
+  "zipAssetCount": 6,
+  "publicAssetCount": 7,
+  "zipBytesTotal": 9952241,
+  "zipAssets": [
+    {
+      "sourceArtifactId": 13033147298,
+      "assetId": 694601192,
+      "name": "v021-sensitivity-41159864831-1-seed-42.zip",
+      "bytes": 1617563,
+      "sha256": "9c2467c8b7e14b94fd5d1420f3fd2342f20bb4ded72b2abacd32f87a994b57c1",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-42.zip",
+      "wholeBytesVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "sourceArtifactId": 13032956600,
+      "assetId": 694601490,
+      "name": "v021-sensitivity-collection-41159864831-1.zip",
+      "bytes": 4877539,
+      "sha256": "a6ad994669f00135837aa995175b4d5e65e471aa41e805bd65fd9d9be58e2454",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-collection-41159864831-1.zip",
+      "wholeBytesVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "sourceArtifactId": 13032846688,
+      "assetId": 694601297,
+      "name": "v021-sensitivity-41159864831-1-seed-2026.zip",
+      "bytes": 1625931,
+      "sha256": "7815561651967db607cbd7cdc98b9c8e0654786707445af4d043a4a1d510e1dd",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-2026.zip",
+      "wholeBytesVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "sourceArtifactId": 13030660873,
+      "assetId": 694601250,
+      "name": "v021-sensitivity-41159864831-1-seed-98.zip",
+      "bytes": 1625359,
+      "sha256": "30c6692e7fef1e5c3eac8b3eea4c2b35083221f3187116d838acf0998b7ddc6e",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-41159864831-1-seed-98.zip",
+      "wholeBytesVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "sourceArtifactId": 13026322503,
+      "assetId": 694601399,
+      "name": "v021-sensitivity-prepare-41159864831-1.zip",
+      "bytes": 871,
+      "sha256": "3e92f4e8a0b19f4fe1d7d4add61cafea07860f39e44aaaabf262c52c0aef60cf",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-prepare-41159864831-1.zip",
+      "wholeBytesVerified": true,
+      "httpStatus": 200
+    },
+    {
+      "sourceArtifactId": 13025494772,
+      "assetId": 694601347,
+      "name": "v021-sensitivity-inputs-41159864831-1.zip",
+      "bytes": 204978,
+      "sha256": "503f499ff67f73639c132a4551476f1435502bff4f16300ef6965c9e3558c8fd",
+      "publicUrl": "https://github.com/hddy774/project-hora/releases/download/evidence/v0.2.1-sensitivity-41159864831/v021-sensitivity-inputs-41159864831-1.zip",
+      "wholeBytesVerified": true,
+      "httpStatus": 200
+    }
+  ],
+  "publicReadVerification": {
+    "verifier": "People agent; existing full-byte proof consumed by Codex without new downloads",
+    "firstCheckedAtUtc": "2026-10-31T06:40:50.484912+00:00",
+    "lastCheckedAtUtc": "2026-10-31T06:41:01.975593+00:00",
+    "httpStatusAll": 200,
+    "wholeBytesAll": true,
+    "requestCount": 14,
+    "authorizationSent": false,
+    "cookieSent": false,
+    "proofOriginalPath": "/workspace/scratch/supplemental-public-41177374470/public-byte-proof.json",
+    "proofSha256": "46ba73f7be59d57045bff89c2df78ae0c9622b031ae2cc34de92b499838e42fe",
+    "proofGitFolderOwner": "root; separate evidence PR; complete proof folder is not duplicated here"
+  },
+  "archiveManifestSha256": "6d4dba436640d3251794e1c1c401646cbbcbb6fdb3af4ba4eee0c85d177b1135",
+  "protectedReleaseComparison": {
+    "results": {
+      "releases/latest": true,
+      "releases/429687967": true,
+      "old_product_tag": true
+    },
+    "sourcePath": "/workspace/scratch/supplemental-archive-protected-comparison.json",
+    "sha256": "bf5e832ebe0303e520d83b6334e245bf5d20cb3ebcc9651522e23f80fee0ab7a",
+    "verifier": "root"
+  },
+  "collectorFailureLog": {
+    "storage": "Git byte-identical original; not the unique member of collection ZIP",
+    "relativePath": "collector/job-124465144337.log",
+    "bytes": 18953,
+    "sha256": "9ba99714464b944104e2fd86bcb594a33b95813d0e71fa33d020d3c37f5cb7a8",
+    "collectionUniqueMember": "provenance/request.json"
+  },
+  "originalBatchFailureAndRawFlagsUnchanged": true,
+  "differentPlanUniqueConditionsAreNotAggregatePass": true,
+  "oldBatchUnchanged": true
+}

@@ -1,0 +1,4 @@
+2026-10-31T04:31:03.2734230Z HEAD is now at 0c8a64c Merge 9e8df4b2813522343c01c523826597fcf7fee948 into f3627aa4db4282a8aebb572bffe2048261e0756a
+2026-10-31T04:31:03.3302666Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-31T04:31:03.3659578Z 0c8a64cc577009667e9ba5beedaa4e38ec0001c3
+2026-10-31T04:32:07.9920392Z {"passed":true,"version":"0.2.1","host":"WPF WebView2","actualRenderAndBridge":true,"diagnostic":"\u0022{\\\u0022hasView\\\u0022:true,\\\u0022error\\\u0022:null,\\\u0022connection\\\u0022:\\\u0022\uC5F0\uACB0\uB428\\\u0022,\\\u0022heading\\\u0022:\\\u0022\uB9CC\uC0C1\uC758 \uD750\uB984\\\u0022,\\\u0022source\\\u0022:\\\u0022https://seonro.local/index.html\\\u0022}\u0022"}

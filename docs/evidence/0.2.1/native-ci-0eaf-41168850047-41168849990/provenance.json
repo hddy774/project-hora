@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-31T04:56:56.774792+00:00",
+  "repository": "hddy774/project-hora",
+  "source_equivalence": "source-equivalence.json",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "API24": {
+    "run_id": 41168850047,
+    "run_attempt": 1,
+    "job_id": 124442258491,
+    "conclusion": "success",
+    "actual_checkout": "9e8df4b2813522343c01c523826597fcf7fee948",
+    "readiness": {
+      "passed": true,
+      "reason": "",
+      "launch": {
+        "adb_returncode": 0,
+        "subprocess_timed_out": false,
+        "raw_status_lines": [
+          "Status: ok"
+        ],
+        "state": "wait_complete",
+        "android_status": "ok"
+      },
+      "deadline_seconds": 90,
+      "attempts": 8,
+      "launcher_wait_count": 0,
+      "elapsed_ms": 32345.077,
+      "last_snapshot": "attempt-008",
+      "final_diagnostics_share_launch_deadline": true
+    },
+    "original_checker_returncodes": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "pid": "2679",
+    "final_app_resumed_and_focus": true,
+    "native_DOM_bridge_original_checker": true,
+    "stock_API": 24,
+    "stock_WebView": "52.0.2743.100",
+    "stock_WebView_unchanged": true,
+    "final_png_manually_viewed_no_external_dialog": true,
+    "APK_sha256_from_producer": "45fbcef0468dcff3517b5ac95d4b40993028fd42c5f02cf2ea4b54e3f9c530ae",
+    "install_is_before_existing_actual_render_readiness_clock": true
+  },
+  "API35_first_attempt": {
+    "run_id": 41168849990,
+    "run_attempt": 1,
+    "job_id": 124442288537,
+    "conclusion": "failure",
+    "actual_checkout": "0c8a64cc577009667e9ba5beedaa4e38ec0001c3",
+    "failed_step": 11,
+    "readiness": {
+      "passed": false,
+      "reason": "Actual APK installation failed",
+      "launch": null,
+      "deadline_seconds": 90,
+      "attempts": 0,
+      "launcher_wait_count": 0,
+      "elapsed_ms": 10116.484,
+      "last_snapshot": "final",
+      "final_diagnostics_share_launch_deadline": true
+    },
+    "install_returncode": 1,
+    "install_stderr": "adb: device offline\n",
+    "subprocess_timeout": false,
+    "am_start_calls": 0,
+    "immediate_classification": "adb transport offline at installation; before launch/readiness polling",
+    "offline_internal_root_cause": "undetermined",
+    "original_failure_preserved": true,
+    "failed_wallpaper_png_not_in_git": {
+      "bytes": 1392991,
+      "sha256": "a81914bddc079c3e83595f4d9dc6f03d1f89b65c5e0b5e180758189c756c3c5d"
+    }
+  },
+  "API35_owner_single_retry": {
+    "run_id": 41168849990,
+    "run_attempt": 2,
+    "job_id": 124444644193,
+    "conclusion": "success",
+    "actual_checkout": "0c8a64cc577009667e9ba5beedaa4e38ec0001c3",
+    "requester": "root reported one accepted manual retry after whole first run completed; earlier running-run rejection caused no execution",
+    "readiness": {
+      "passed": true,
+      "reason": "",
+      "launch": {
+        "adb_returncode": 0,
+        "subprocess_timed_out": false,
+        "raw_status_lines": [
+          "Status: ok"
+        ],
+        "state": "wait_complete",
+        "android_status": "ok"
+      },
+      "deadline_seconds": 90,
+      "attempts": 2,
+      "launcher_wait_count": 0,
+      "elapsed_ms": 21212.081,
+      "last_snapshot": "attempt-002",
+      "final_diagnostics_share_launch_deadline": true
+    },
+    "install_returncode": 0,
+    "install_result": "Success",
+    "launches": 1,
+    "original_checker_returncodes": [
+      1,
+      0
+    ],
+    "pid": "1833",
+    "final_app_topResumed_and_focus": true,
+    "native_DOM_bridge_original_checker": true,
+    "all_install_launch_observations_within_same_90_seconds": true,
+    "final_png_manually_viewed_no_external_dialog": true,
+    "existing_issue251_statusbar_subtitle_overlap_observed": true,
+    "main_controls_visible": true,
+    "APK_sha256_from_job_stdout": "bee3a0853e6705d860e079bc5a7cea9c4f04680114969b39fdb9336227970fd1"
+  },
+  "portable": {
+    "run_id": 41168849990,
+    "original_job_id": 124442288556,
+    "actual_checkout": "0c8a64cc577009667e9ba5beedaa4e38ec0001c3",
+    "original_report_created_in_attempt": 1,
+    "selection": "all",
+    "total": 323,
+    "failed": 0,
+    "report": "portable/product-tests.original.json",
+    "source_and_RESULT_log": "portable/source-and-result.excerpt.txt",
+    "Python_parser_flow_log_count": 24,
+    "new_execution_in_attempt2_claimed": false
+  },
+  "Windows": {
+    "run_id": 41168849990,
+    "original_job_id": 124442288464,
+    "original_attempt": 1,
+    "actual_checkout": "0c8a64cc577009667e9ba5beedaa4e38ec0001c3",
+    "conclusion": "success",
+    "host": "WPF WebView2",
+    "actualRenderAndBridge": true,
+    "proof_source": "windows/source-and-native.excerpt.txt",
+    "new_execution_in_attempt2_claimed": false
+  },
+  "latest_workflow_status_after_retry": {
+    "API24": "completed/success",
+    "product": "completed/success",
+    "first_attempt_product_failure_not_relabelled": true,
+    "latest_job_ids_returned": {
+      "API35": 124444644193,
+      "portable": 124444644908,
+      "Windows": 124444645465
+    },
+    "other_jobs_evidence_uses_original_attempt1_logs_not_an_extra_execution_claim": true
+  },
+  "artifacts": [
+    {
+      "id": 13029798937,
+      "name": "v021-api24-native-evidence-41168850047-1",
+      "scope": "API24 original native evidence",
+      "zip_bytes": 702156,
+      "zip_sha256": "926488cba3350979fa8184210a4fece79295059a5d3a8dc5e254d703a527b357",
+      "downloaded_once_and_server_digest_verified": true,
+      "expires_at": "2026-11-14T04:33:48Z",
+      "full_zip_in_git": false
+    },
+    {
+      "id": 13030561402,
+      "name": "android-runtime-evidence",
+      "scope": "API35 first failure",
+      "zip_bytes": 3339211,
+      "zip_sha256": "11404c0e62daaeac4378dace5ab0ea5d90d15ba9d8b92f0f96a8741ee9da9d20",
+      "downloaded_once_and_server_digest_verified": true,
+      "expires_at": "2026-11-03T04:33:54Z",
+      "full_zip_in_git": false
+    },
+    {
+      "id": 13030542297,
+      "name": "android-runtime-evidence",
+      "scope": "API35 attempt2",
+      "zip_bytes": 1015143,
+      "zip_sha256": "afb4f4e0266a12363a8a09849458c8f6e44293f84dd48b3dea7a25bf2ec550d7",
+      "downloaded_once_and_server_digest_verified": true,
+      "expires_at": "2026-11-03T04:45:35Z",
+      "full_zip_in_git": false
+    },
+    {
+      "id": 13030880243,
+      "name": "product-evidence",
+      "scope": "portable original323 report",
+      "zip_bytes": 16039,
+      "zip_sha256": "b3d02315bfe2b67dd7abdee3bf5d4e5cbaa2cf1d88eb700b20246412e8f88620",
+      "downloaded_once_and_server_digest_verified": true,
+      "expires_at": "2026-11-03T04:41:21Z",
+      "full_zip_in_git": false
+    }
+  ],
+  "limits": {
+    "both_actual_native_launch_statuses": "ok; Android Status:timeout continuation was not exercised in these two native successes",
+    "Python24_flow_cases_do_not_replace_actual_OS_timeout_recovery_observation": true,
+    "API24_and_API35_are_separate_CI_debug_APK_builds": true,
+    "APK_bytes_or_certificate_keys_downloaded": false,
+    "producer_APK_hashes_not_independently_recomputed_by_reader": true,
+    "official_same_retained_certificate_APK_API24_API35_upgrade_publication": "not verified by these CI runs; still separate official gate",
+    "new_Game_native_functional_performance_growth_longterm_or_manual_CI_executions_by_collector": 0,
+    "new_code_ledger_release_readiness_or_progress_changes": false,
+    "collection_is_not_full_111_acceptance_or_device_performance_proof": true,
+    "entire_ZIP_or_all_snapshots_durably_retained_in_Git": false,
+    "large_raw_scratch_root": "/workspace/scratch/native-0eaf-41168850047-41168849990"
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-10-31T04:53:15.036216+00:00",
+  "files": [
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/source.original.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/source.json",
+      "source_bytes": 733,
+      "source_sha256": "aa65bedbbf8f145e525e6df05ec6057330716b3a5d84a49c7c5771fc52a40994",
+      "retained_bytes": 733,
+      "retained_sha256": "aa65bedbbf8f145e525e6df05ec6057330716b3a5d84a49c7c5771fc52a40994",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/apk-producer.original.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/apk/apk.json",
+      "source_bytes": 777,
+      "source_sha256": "6a35099a04af0b4dc782a3fb97d6ce70a7356c245d3750149dc9b4b7c730a798",
+      "retained_bytes": 777,
+      "retained_sha256": "6a35099a04af0b4dc782a3fb97d6ce70a7356c245d3750149dc9b4b7c730a798",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/device.original.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/device.json",
+      "source_bytes": 166,
+      "source_sha256": "1b7e2d0fe372cc20eeedf8ed2c0745b9782b49c5f7cf4579ace93ba18f3c2139",
+      "retained_bytes": 166,
+      "retained_sha256": "1b7e2d0fe372cc20eeedf8ed2c0745b9782b49c5f7cf4579ace93ba18f3c2139",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/native-proof.original.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/api24-proof.json",
+      "source_bytes": 1117,
+      "source_sha256": "18bbac03ff6ffaf847c98b694ec87cc26fafd88aca46e6845718c8314c029eec",
+      "retained_bytes": 1117,
+      "retained_sha256": "18bbac03ff6ffaf847c98b694ec87cc26fafd88aca46e6845718c8314c029eec",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/install.original.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/install.txt",
+      "source_bytes": 32,
+      "source_sha256": "8cfe21ca9831863004ad6eb25b313f8944786f7a01b291da8fbbe61cc0c847e5",
+      "retained_bytes": 32,
+      "retained_sha256": "8cfe21ca9831863004ad6eb25b313f8944786f7a01b291da8fbbe61cc0c847e5",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/launch.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/launch.txt",
+      "source_bytes": 221,
+      "source_sha256": "ec512c6da616bc341d91e8250791fef3929ee8a98d322511f20df8a800bcbdf6",
+      "retained_bytes": 221,
+      "retained_sha256": "ec512c6da616bc341d91e8250791fef3929ee8a98d322511f20df8a800bcbdf6",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/readiness.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/readiness.json",
+      "source_bytes": 408,
+      "source_sha256": "d9d258ec90ea4dace84c89556e9bdade5de1e584fd9f481fc44bd32e9bcef5b4",
+      "retained_bytes": 408,
+      "retained_sha256": "d9d258ec90ea4dace84c89556e9bdade5de1e584fd9f481fc44bd32e9bcef5b4",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/commands.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/commands.json",
+      "source_bytes": 20735,
+      "source_sha256": "7245f8de0fd05b0bf0bf85b48f10f51b3074577701f492a52fd3253ddbb332c8",
+      "retained_bytes": 20735,
+      "retained_sha256": "7245f8de0fd05b0bf0bf85b48f10f51b3074577701f492a52fd3253ddbb332c8",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/dom-proof.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/dom-proof.json",
+      "source_bytes": 171,
+      "source_sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4",
+      "retained_bytes": 171,
+      "retained_sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/pid.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/pid.txt",
+      "source_bytes": 5,
+      "source_sha256": "afd832464de099109b1a30266dde6dc738e79a297c09c1c278702cb4dc456383",
+      "retained_bytes": 5,
+      "retained_sha256": "afd832464de099109b1a30266dde6dc738e79a297c09c1c278702cb4dc456383",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/ui.xml",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/ui.xml",
+      "source_bytes": 26795,
+      "source_sha256": "07ccc5781d3aacdfdb7607f37b928f3e5695f3c9b5b40108b8c903310594578d",
+      "retained_bytes": 26795,
+      "retained_sha256": "07ccc5781d3aacdfdb7607f37b928f3e5695f3c9b5b40108b8c903310594578d",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/foreground.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/foreground.txt",
+      "source_bytes": 7267,
+      "source_sha256": "5f3fdfab85d66d583ae98c0955bf67df92a5e4d958a2b0b3b835ab2f7f4da7d3",
+      "retained_bytes": 222,
+      "retained_sha256": "555e3719f957879377017425fda499d39dc234b75a9fa39e49e88f5d63142d55",
+      "retention": "exact selected lines; full original retained in scratch/artifact"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/window-focus.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/window.txt",
+      "source_bytes": 16600,
+      "source_sha256": "f324a49d61ad9ad1822a692f5263f696631d0af0f25bcf1ab5bd5be1903152e5",
+      "retained_bytes": 95,
+      "retained_sha256": "984acbb26d9e3a4c01fdf0e1318321a2a0c0ed41cb79b20d004e2ac408d86568",
+      "retention": "exact selected lines; full original retained in scratch/artifact"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api24/render-marker.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/render-log.txt",
+      "source_bytes": 48718,
+      "source_sha256": "5ff1865431c3579fd25a01cd361a0a31067b1d1803e4d4357d0543649535a59e",
+      "retained_bytes": 145,
+      "retained_sha256": "b6abc6a1766834e329cb29a3261a212e9be879be676b03f9872a8468fce75731",
+      "retention": "exact selected lines; full original retained in scratch/artifact"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/foreground.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/foreground.txt",
+      "source_bytes": 29767,
+      "source_sha256": "7d89af200a54825cc6229e7b1ae11fadd0f5e9af9c3695e6d91587bc987923c4",
+      "retained_bytes": 112,
+      "retained_sha256": "87adba50dff9e6cbe635569b692923243ca7190c4a46e3aa13a992d229f09eae",
+      "retention": "exact selected lines; full original retained in scratch/artifact"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/window-focus.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/window.txt",
+      "source_bytes": 51713,
+      "source_sha256": "c4edcc0c250f2320c407ad2191debe499d2ec6f7f9933cba3313db7998f1a8c8",
+      "retained_bytes": 95,
+      "retained_sha256": "7bced1f0ad96bd709f4cf9d55db45209b733c586ccb766e1e5b909e090c4934a",
+      "retention": "exact selected lines; full original retained in scratch/artifact"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/render-marker.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/render-log.txt",
+      "source_bytes": 549554,
+      "source_sha256": "1313b4004b418efd5c9cc55c644d7461818c4445f24276fc460eb9e5177ff441",
+      "retained_bytes": 145,
+      "retained_sha256": "b6abc6a1766834e329cb29a3261a212e9be879be676b03f9872a8468fce75731",
+      "retention": "exact selected lines; full original retained in scratch/artifact"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt1/install.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-failure-41168849990/android-runtime/install.txt",
+      "source_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_bytes": 0,
+      "retained_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt1/install.txt.stderr.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-failure-41168849990/android-runtime/install.txt.stderr.txt",
+      "source_bytes": 20,
+      "source_sha256": "a7d0391f2b9ecc7dc302d6ca042251f413b26e1f1ee29d396e7db3df0701640f",
+      "retained_bytes": 20,
+      "retained_sha256": "a7d0391f2b9ecc7dc302d6ca042251f413b26e1f1ee29d396e7db3df0701640f",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt1/commands.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-failure-41168849990/android-runtime/commands.json",
+      "source_bytes": 2572,
+      "source_sha256": "f4f6c417532020100ef0e1909c7c9408d16533e1e3c859cf79a1502d1030277c",
+      "retained_bytes": 2572,
+      "retained_sha256": "f4f6c417532020100ef0e1909c7c9408d16533e1e3c859cf79a1502d1030277c",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt1/readiness.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-failure-41168849990/android-runtime/readiness.json",
+      "source_bytes": 263,
+      "source_sha256": "6814e4ac44336efa336eecda9ab2373495b996fb4ce32aadd5d43a844289399a",
+      "retained_bytes": 263,
+      "retained_sha256": "6814e4ac44336efa336eecda9ab2373495b996fb4ce32aadd5d43a844289399a",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/install.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/install.txt",
+      "source_bytes": 86,
+      "source_sha256": "233537971ed6f3c1ca9c428b9f94f8469fe512661dd6a875261726de0e37fac8",
+      "retained_bytes": 86,
+      "retained_sha256": "233537971ed6f3c1ca9c428b9f94f8469fe512661dd6a875261726de0e37fac8",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/launch.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/launch.txt",
+      "source_bytes": 224,
+      "source_sha256": "e1e93dbaf145b30ecc20454e7608aa76a8ed6601cfcddef1981cbf1874f0941d",
+      "retained_bytes": 224,
+      "retained_sha256": "e1e93dbaf145b30ecc20454e7608aa76a8ed6601cfcddef1981cbf1874f0941d",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/readiness.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/readiness.json",
+      "source_bytes": 408,
+      "source_sha256": "8a5485bf4f06d07c380bef8f9de98f97bfd6fd277bcb481e3bfc020abb88e699",
+      "retained_bytes": 408,
+      "retained_sha256": "8a5485bf4f06d07c380bef8f9de98f97bfd6fd277bcb481e3bfc020abb88e699",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/commands.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/commands.json",
+      "source_bytes": 6055,
+      "source_sha256": "ee44a18d179197826655f8a966475ba1da0219973f669da4562e6abe04e4e404",
+      "retained_bytes": 6055,
+      "retained_sha256": "ee44a18d179197826655f8a966475ba1da0219973f669da4562e6abe04e4e404",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/dom-proof.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/dom-proof.json",
+      "source_bytes": 171,
+      "source_sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4",
+      "retained_bytes": 171,
+      "retained_sha256": "52c85cf3ebd4ef0f024079998c2d774041f8e6eb8795e977f044cfb2d19e20b4",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/pid.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/pid.txt",
+      "source_bytes": 5,
+      "source_sha256": "75623a11684303d5637862bf064c2564ac2b21b06158e774d416eb869d2ad33e",
+      "retained_bytes": 5,
+      "retained_sha256": "75623a11684303d5637862bf064c2564ac2b21b06158e774d416eb869d2ad33e",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/ui.xml",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/ui.xml",
+      "source_bytes": 26990,
+      "source_sha256": "5cef67ab05fca6f09f94398b9c4d77bde003cfd81961e0a9dcd02c485e166301",
+      "retained_bytes": 26990,
+      "retained_sha256": "5cef67ab05fca6f09f94398b9c4d77bde003cfd81961e0a9dcd02c485e166301",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt1/source-and-failure.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-failure-and-source.excerpt.txt",
+      "source_bytes": 2129,
+      "source_sha256": "58dcb02fbee1fcf9c9b8a2938210715016b5c8ff2309b3881c57c4f45ac5285f",
+      "retained_bytes": 2129,
+      "retained_sha256": "58dcb02fbee1fcf9c9b8a2938210715016b5c8ff2309b3881c57c4f45ac5285f",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/api35-attempt2/source-and-proof.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-attempt2-source-and-proof.excerpt.txt",
+      "source_bytes": 1166,
+      "source_sha256": "5e2fd42c8f6649b172d7e342213eae7062adaed897a987c82f2950af8fbabd06",
+      "retained_bytes": 1166,
+      "retained_sha256": "5e2fd42c8f6649b172d7e342213eae7062adaed897a987c82f2950af8fbabd06",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/portable/product-tests.original.json",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/portable-41168849990/product-tests.json",
+      "source_bytes": 65027,
+      "source_sha256": "6952ed57d2509baebeb185cea9a4bad4a4587ae8a19588347d3932dd0c67b85b",
+      "retained_bytes": 65027,
+      "retained_sha256": "6952ed57d2509baebeb185cea9a4bad4a4587ae8a19588347d3932dd0c67b85b",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/portable/source-and-result.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/portable-source-and-result.excerpt.txt",
+      "source_bytes": 236,
+      "source_sha256": "6a8e142e1420bb15740544f31b39f6f22ec0539e2c4aaec96f9b92c228aa9947",
+      "retained_bytes": 236,
+      "retained_sha256": "6a8e142e1420bb15740544f31b39f6f22ec0539e2c4aaec96f9b92c228aa9947",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/screenshots/api24-final.png",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api24-native-41168850047/runtime/fresh/screen.png",
+      "source_bytes": 150046,
+      "source_sha256": "84d5b6520599168c91b1c5481ac87efa2b05b19c24bdab9a4081326a80bf4afe",
+      "retained_bytes": 150046,
+      "retained_sha256": "84d5b6520599168c91b1c5481ac87efa2b05b19c24bdab9a4081326a80bf4afe",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/screenshots/api35-attempt2-final.png",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/api35-native-attempt2-41168849990/android-runtime/screen.png",
+      "source_bytes": 157832,
+      "source_sha256": "9e5faf8c676971e5d2da12fcb4f57aa8ebbc7102d3c962b4ec2333b5ffd6346e",
+      "retained_bytes": 157832,
+      "retained_sha256": "9e5faf8c676971e5d2da12fcb4f57aa8ebbc7102d3c962b4ec2333b5ffd6346e",
+      "retention": "byte-identical complete file"
+    },
+    {
+      "repository_path": "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/windows/source-and-native.excerpt.txt",
+      "source_local_path": "/workspace/scratch/native-0eaf-41168850047-41168849990/windows-source-and-native.excerpt.txt",
+      "source_workflow_job": 124442288464,
+      "source_kind": "exact selected lines from MCP decoded original job log; not the complete job log",
+      "source_bytes": 715,
+      "source_sha256": "12dba4b905ba6694b6472bdfcce9b0ec876c57916257b28392c24e4b009c470d",
+      "retained_bytes": 715,
+      "retained_sha256": "12dba4b905ba6694b6472bdfcce9b0ec876c57916257b28392c24e4b009c470d",
+      "retention": "byte-identical excerpt file; only source/actual native proof lines"
+    }
+  ],
+  "PNG_total_bytes": 307878,
+  "only_two_original_final_PNGs": true,
+  "failed_wallpaper_duplicate_snapshots_APK_ZIP_DLL_excluded": true
+}

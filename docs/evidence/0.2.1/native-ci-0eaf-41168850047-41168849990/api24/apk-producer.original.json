@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "kind": "debug-probe-not-release-apk",
+  "sha256": "45fbcef0468dcff3517b5ac95d4b40993028fd42c5f02cf2ea4b54e3f9c530ae",
+  "bytes": 43165858,
+  "package": "org.hora.xianxiaobserver",
+  "launchable_activity": "crc649632d1cee893af2a.MainActivity",
+  "version": "0.2.1",
+  "minimum_sdk": 24,
+  "target_sdk": 36,
+  "debug_signing_only": true,
+  "compat_asset_sha256": "fe84882c47b5bf65851ee9ab908779a5226fd14b3c0d0c984d40708bbfcfbf7d",
+  "assembly_versions": {
+    "Game": "0.2.1+9e8df4b2813522343c01c523826597fcf7fee948",
+    "Hosting": "0.2.1+9e8df4b2813522343c01c523826597fcf7fee948"
+  },
+  "source_commit": "9e8df4b2813522343c01c523826597fcf7fee948",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2"
+}

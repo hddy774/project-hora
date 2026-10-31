@@ -1,0 +1,2 @@
+    mResumedActivity: ActivityRecord{9c514da u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}
+  mFocusedActivity: ActivityRecord{9c514da u0 org.hora.xianxiaobserver/crc649632d1cee893af2a.MainActivity t3}

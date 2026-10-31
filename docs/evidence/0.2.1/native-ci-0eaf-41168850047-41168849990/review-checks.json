@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-31T04:58:17.357428+00:00",
+  "author_and_collector": "Codex UI 담당",
+  "source_base": "96ff2a858a50fb2b753943527a144c80080cd32c",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "retention_rows_verified": 35,
+  "exact_original_final_PNGs": 2,
+  "PNG_total_bytes": 307878,
+  "PNG_under5MiB": true,
+  "relative_readme_links_verified": 15,
+  "credential_pattern_scan": "no matches",
+  "original_files_or_selected_lines_byte_verified": true,
+  "new_executions_builds_tests_performance_manual_CI_runs": 0,
+  "new_product_ledger_readiness_progress_changes": 0,
+  "original_API35_failure_preserved": true,
+  "one_owner_retry_is_separate_attempt": true,
+  "both_actual_launch_statuses_ok_timeout_branch_not_exercised": true,
+  "official_same_retained_APK_upgrade_gate_not_closed": true,
+  "raw_CRLF_is_preserved_and_excluded_from_authored_whitespace_check": true,
+  "staged_every_file_byte_equals_retained_file": true,
+  "authored_diff_check_exit0": true,
+  "raw_whitespace_original_CRLF_findings": [
+    "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/windows/source-and-native.excerpt.txt:1: trailing whitespace.",
+    "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/windows/source-and-native.excerpt.txt:2: trailing whitespace.",
+    "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/windows/source-and-native.excerpt.txt:3: trailing whitespace.",
+    "docs/evidence/0.2.1/native-ci-0eaf-41168850047-41168849990/windows/source-and-native.excerpt.txt:4: trailing whitespace."
+  ],
+  "all_changes_new_files_only_in_requested_evidence_folder": true
+}

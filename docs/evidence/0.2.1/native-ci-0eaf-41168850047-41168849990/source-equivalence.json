@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-31T04:53:15.528593+00:00",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "CI_head": {
+    "commit": "9e8df4b2813522343c01c523826597fcf7fee948",
+    "tree": "eb3ecccfa61825a3875aa7811071b7c1d20ae776"
+  },
+  "API24_actual_checkout": "9e8df4b2813522343c01c523826597fcf7fee948",
+  "product_actual_checkout": {
+    "commit": "0c8a64cc577009667e9ba5beedaa4e38ec0001c3",
+    "tree": "eb3ecccfa61825a3875aa7811071b7c1d20ae776",
+    "parents": [
+      "f3627aa4db4282a8aebb572bffe2048261e0756a",
+      "9e8df4b2813522343c01c523826597fcf7fee948"
+    ],
+    "metadata_basis": "public GitHub Git commit API, exact SHA; job checkout excerpts"
+  },
+  "CI_head_and_actual_product_tree_equal": true,
+  "current_documentation_base": {
+    "commit": "96ff2a858a50fb2b753943527a144c80080cd32c",
+    "tree": "f2b7784129c2a5d2175283359186876a17b83d50",
+    "CI_head_is_ancestor": true,
+    "changed_paths_since_CI_head": [
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/README.md",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/helper/Program.cs",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/helper/README.original.md",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/helper/ResumeProbe.csproj",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/helper/prepared-manifest.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/helper/runtimeconfig.original.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/helper/supervise.py",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/manifest.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/original-interrupted/diagnostic.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/original-interrupted/measurement.log",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/original-interrupted/preceding-functional.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/original-interrupted/recovery-observation.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/original-interrupted/result.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/provenance.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/resumed/resume-result.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/resumed/resume.log",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/resumed/supervisor.json",
+      "docs/evidence/0.2.1/n1000-save-growth-resume-7901f34/slot-digests.json",
+      "docs/reviews/v0.2.1-review-guide.md"
+    ],
+    "changed_product_paths": [],
+    "fingerprint_recomputed_with_existing_function": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+    "whole_tree_identity_to_CI_head_claimed": false
+  },
+  "implementation_source_for_Python_tests": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "implementation_review_and_initial_failure": "PR254 / issue253; earlier f362 API24 run41165712717 remains failure"
+}

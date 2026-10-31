@@ -1,0 +1,16 @@
+{
+  "collection_complete": true,
+  "source_commit": "6607234b405921cc39e9527cbea42a7667a709be",
+  "product_source_fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "plan_sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+  "baseline_sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+  "functional_selection_passed": 1,
+  "full_functional_rerun": false,
+  "completed_populations": [
+    2,
+    100,
+    1000,
+    10000
+  ],
+  "scope": "원래 하네스의 계획/입출력 완료 대조다. 최종 사후 수치예산·릴리스 수용은 별도다."
+}

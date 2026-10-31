@@ -1,0 +1,58 @@
+{
+  "reused_byte_identical_repository_inputs": [
+    {
+      "source_path": "budget.source660.original.json",
+      "repository_path": "docs/evidence/0.2.1/final-performance/budget.json",
+      "bytes": 3298,
+      "sha256": "7365b80e3de602dfe331a5348f4008808f6620744577582d07bc7f33f11dc272",
+      "bytes_equal": true
+    },
+    {
+      "source_path": "population-7901f34.original.json",
+      "repository_path": "docs/evidence/0.2.1/final-population-7901f34/population.json",
+      "bytes": 39805,
+      "sha256": "7fb6131cb7154566517bd4f81d0646b1cf5c5c3c8af5232bcd76bd49e8e612b7",
+      "bytes_equal": true
+    },
+    {
+      "source_path": "raw/inputs/baseline.json",
+      "repository_path": "docs/evidence/0.2.1/final-performance/baseline.json",
+      "bytes": 39836,
+      "sha256": "1842a4dbffb66fa9c8489ad31343d94fed933f022c8d63be430b774c37998484",
+      "bytes_equal": true
+    },
+    {
+      "source_path": "raw/inputs/full-functional.original.json",
+      "repository_path": "docs/evidence/0.2.1/invariant-final-7901f34/functional.json",
+      "bytes": 65010,
+      "sha256": "1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba",
+      "bytes_equal": true
+    },
+    {
+      "source_path": "raw/inputs/full-source-review.original.json",
+      "repository_path": "docs/evidence/0.2.1/invariant-execution-source-review-7901f34.json",
+      "bytes": 8273,
+      "sha256": "e992a34688aa0bdcaa8df84da1e4a0e63d1dfadb583caa3497dfa229e8fe70f5",
+      "bytes_equal": true
+    },
+    {
+      "source_path": "raw/inputs/stability-plan.json",
+      "repository_path": "docs/evidence/0.2.1/final-performance/stability-plan.json",
+      "bytes": 1903,
+      "sha256": "ec853c715eafc4341fa47802e4de445f0caf165833470d15beb69550905b6c46",
+      "bytes_equal": true
+    }
+  ],
+  "original_verifier": {
+    "path": "scripts/verify-v021-release.py",
+    "source": "6607234b405921cc39e9527cbea42a7667a709be",
+    "sha256": "e064b2124e4fd638a47258f5ecade5e38cfd8e4fce2774af7c2beb741e3d4e9d"
+  },
+  "excluded": [
+    "artifact.original.zip",
+    "raw/assemblies/*.dll",
+    "__pycache__/*",
+    "verify-v021-release.source660.original.py"
+  ],
+  "scope": "DLL PE/SHA records retained; slot body absent in original artifact; no independent slot-body restore/hash verification"
+}

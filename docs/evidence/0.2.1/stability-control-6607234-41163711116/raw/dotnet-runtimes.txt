@@ -1,0 +1,2 @@
+Microsoft.AspNetCore.App 10.0.14 [/home/runner/work/_temp/v021-stability-dotnet/shared/Microsoft.AspNetCore.App]
+Microsoft.NETCore.App 10.0.14 [/home/runner/work/_temp/v021-stability-dotnet/shared/Microsoft.NETCore.App]

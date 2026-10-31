@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "interpretation": "정본 상한 불통과; 원형 passed:true와 GHA/CLI 성공을 수정하지 않은 별도 파생 판정",
+  "run": 41163711116,
+  "source": "6607234b405921cc39e9527cbea42a7667a709be",
+  "fingerprint": "c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1",
+  "raw_complete": true,
+  "raw_passed": true,
+  "canonical_passed": false,
+  "original_caps_total": 44,
+  "original_caps_passed": 41,
+  "retained_failures": [
+    {
+      "population": 2,
+      "month": 90,
+      "kind": "retainedManagedBytes",
+      "actual": 47817272,
+      "limit": 47725032,
+      "excess": 92240,
+      "passed": false
+    },
+    {
+      "population": 2,
+      "month": 120,
+      "kind": "retainedManagedBytes",
+      "actual": 48053472,
+      "limit": 47725032,
+      "excess": 328440,
+      "passed": false
+    },
+    {
+      "population": 10000,
+      "month": 30,
+      "kind": "retainedManagedBytes",
+      "actual": 2594900560,
+      "limit": 2192400000,
+      "excess": 402500560,
+      "passed": false
+    }
+  ],
+  "all_four_case_120_months": true,
+  "all_twenty_checkpoint_flags": true,
+  "current_0eaf_acceptance": false,
+  "new_measurements": 0,
+  "memory_root_cause": "미확정; Knowledge/People 읽기 진단 별도",
+  "latest_native": {
+    "run": 41178765537,
+    "event_head": "356c1cf6baf38b87477a63eee6f25c29f5baf2ce",
+    "actual_checkout": "c5f6220e51eb0e9ac16df5db836f153b4093fe48",
+    "whole_tree_equal": true,
+    "android35_job": 124471716168,
+    "android35_install_return_code": 1,
+    "android35_am_start_calls": 0,
+    "android35_immediate_error": "adb: device offline",
+    "Quickstep_ANR_observed": true,
+    "causal_relation_or_app_fault": "미확정",
+    "portable_job_success": 124471715966,
+    "windows_job_success": 124471716154,
+    "api24_run_success_root_report": 41178765593,
+    "ui_independently_downloaded_api24_raw": false
+  },
+  "current_0eaf_long_run": {
+    "run": 41170302565,
+    "source": "2db5a6dd57c4323ad967afdbd65aafdbecfaa5bc",
+    "status": "running according to root handoff; no outcome promoted"
+  }
+}

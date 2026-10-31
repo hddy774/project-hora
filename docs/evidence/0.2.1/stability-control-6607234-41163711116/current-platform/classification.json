@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "review_started_utc": "2026-10-31T07:21:27Z",
+  "reviewed_utc": "2026-10-31T07:26:41.080398+00:00",
+  "run_id": 41178765537,
+  "run_attempt": 1,
+  "job_id": 124471716168,
+  "step": 11,
+  "step_name": "안드로이드 앱 실제 설치·실행",
+  "conclusion": "failure",
+  "requested_head": "356c1cf6baf38b87477a63eee6f25c29f5baf2ce",
+  "actual_checkout": "c5f6220e51eb0e9ac16df5db836f153b4093fe48",
+  "source_equivalence": "source-comparison.json",
+  "classification": {
+    "immediate_failure": "adb transport offline at APK installation; before launch/readiness polling",
+    "install_stderr": "adb: device offline\n",
+    "install_returncode": 1,
+    "subprocess_timeout": false,
+    "install_result_recorded_ms_since_reader_start": 63.361,
+    "prelaunch_logcat_returncode": 255,
+    "readiness_deadline_seconds": 90,
+    "total_reader_and_final_diagnostics_elapsed_ms": 3950.008,
+    "am_start_count": 0,
+    "readiness_attempts": 0,
+    "original_DOM_checker_calls": 0,
+    "launcher_waits": 0,
+    "passed": false
+  },
+  "observations": {
+    "app_pid_observed": false,
+    "app_pid_command_returncode": 1,
+    "SeonroRender_records": 0,
+    "app_package_mentions_in_captured_final_log": 0,
+    "fatal_exception_or_signal_matches": 0,
+    "final_topResumed_package": "com.android.launcher3",
+    "final_currentFocus": "Application Not Responding: com.android.launcher3",
+    "UI_alertTitle": "Quickstep isn't responding",
+    "PNG_independently_viewed": "Quickstep ANR dialog over launcher; app screen absent",
+    "ANR_owner": "com.android.launcher3",
+    "ANR_reason": "Input dispatching timed out (Application does not have a focused window)."
+  },
+  "assessment": {
+    "confirmed": "failed install adb offline, plus independently observed external Quickstep ANR",
+    "relation_between_offline_and_Quickstep_ANR": "undetermined; co-observation is not causation proof",
+    "app_runtime_or_domain_failure": "not evidenced in captured data; harness never launched app",
+    "SDK_KVM_build_failure": "not the reported failing step; prior build/KVM steps success",
+    "same_as_previous_9e8_failure": "immediate install-offline result independently reconfirmed, but this incident additionally has explicit Quickstep ANR; sources/raws remain separate",
+    "failure_is_not_a_native_pass": true,
+    "proposed_gate_deadline_retry_or_product_changes": "none; root decision remains separate"
+  },
+  "files": [
+    {
+      "path": "api35-native/android-runtime/install.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api35-native/android-runtime/install.txt.stderr.txt",
+      "bytes": 20,
+      "sha256": "a7d0391f2b9ecc7dc302d6ca042251f413b26e1f1ee29d396e7db3df0701640f"
+    },
+    {
+      "path": "api35-native/android-runtime/readiness.json",
+      "bytes": 262,
+      "sha256": "fd89d8f2b84cef3f0a67f8b5480adf22da1575977dadb38848bd79c18237699e"
+    },
+    {
+      "path": "api35-native/android-runtime/commands.json",
+      "bytes": 2574,
+      "sha256": "b55482e639062f28c3f7308abd6234612636ee65ec588be43c86e0f4c47705ee"
+    },
+    {
+      "path": "api35-native/android-runtime/pid.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api35-native/android-runtime/ui.xml",
+      "bytes": 4146,
+      "sha256": "938794d94501058d31674442756489773bf46d15b289f7a7d0fa2b62c2a9d36d"
+    },
+    {
+      "path": "api35-native/android-runtime/window.txt",
+      "bytes": 68314,
+      "sha256": "fd8ebd6f20d497912acceb148e9ff64c6e5b9e4adafb0cfc625a35c9ffb8592d"
+    },
+    {
+      "path": "api35-native/android-runtime/foreground.txt",
+      "bytes": 24859,
+      "sha256": "eb5608a1a953431950cd324087cee585adde3958f0dddd472efcedfcabc8dee3"
+    },
+    {
+      "path": "api35-native/android-runtime/render-log.txt",
+      "bytes": 2685352,
+      "sha256": "5dbbf99a5c7b103aa1f9fe5264e3e5b7228412261f723bef268ea79de1200289"
+    },
+    {
+      "path": "api35-native/android-runtime/screen.png",
+      "bytes": 486866,
+      "sha256": "d2acf4a8d1bfe25e3c8aaa0f4f62e3a6d93bdab404c8603f8145979635d20eee"
+    },
+    {
+      "path": "api35-native.zip",
+      "bytes": 1766876,
+      "sha256": "a8ee56905470f05459e55e2d7e1baf0c584270d16480f71ee1904cdb82f6b98a"
+    },
+    {
+      "path": "download-receipt.json",
+      "bytes": 422,
+      "sha256": "cba7ffe2fbedd006ce02010c0bb6c476cc7b1d9548d3fcd8f4630d448fcfdf10"
+    },
+    {
+      "path": "source-comparison.json",
+      "bytes": 801,
+      "sha256": "7590f1f7580ef814004c213acb071dcfe873999b930f1e2d1f161a9a06f15632"
+    },
+    {
+      "path": "job-source-and-failure.excerpt.txt",
+      "bytes": 2038,
+      "sha256": "735c54bdc0ce52766920370969bf8ce426742bd5c6d2c3d080eef44d78264782"
+    },
+    {
+      "path": "launcher-ANR.excerpt.txt",
+      "bytes": 394,
+      "sha256": "80082d3f919913ad2e486082b246cc67aca18a11c70d8e042da324f4f07a5860"
+    }
+  ],
+  "scope": {
+    "new_Game_build_native_performance_or_CI_runs": 0,
+    "manual_rerun_label_remote_write_code_or_ledger_changes": 0,
+    "original_artifact_files_modified": false,
+    "criteria_and_single90_deadline_unchanged": true
+  },
+  "artifact": {
+    "id": 13034136890,
+    "name": "android-runtime-evidence",
+    "size_in_bytes": 1766876,
+    "digest": "sha256:a8ee56905470f05459e55e2d7e1baf0c584270d16480f71ee1904cdb82f6b98a",
+    "created_at": "2026-10-31T07:02:39Z",
+    "expires_at": "2026-11-03T07:02:38Z",
+    "downloaded_zip_sha256_matches_server_digest": true,
+    "metadata_path": "artifact-metadata.json"
+  },
+  "proposal_only": "preinstall-options.md; no implementation or new runtime execution"
+}

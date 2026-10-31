@@ -1,0 +1,72 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Chronicles.Game.Tests/0.2.1": {
+        "dependencies": {
+          "Chronicles.Game": "0.2.1",
+          "Chronicles.Hosting": "0.2.1"
+        },
+        "runtime": {
+          "Chronicles.Game.Tests.dll": {}
+        }
+      },
+      "Chronicles.Core/0.2.1": {
+        "runtime": {
+          "Chronicles.Core.dll": {
+            "assemblyVersion": "0.2.1.0",
+            "fileVersion": "0.2.1.0"
+          }
+        }
+      },
+      "Chronicles.Game/0.2.1": {
+        "dependencies": {
+          "Chronicles.Core": "0.2.1"
+        },
+        "runtime": {
+          "Chronicles.Game.dll": {
+            "assemblyVersion": "0.2.1.0",
+            "fileVersion": "0.2.1.0"
+          }
+        }
+      },
+      "Chronicles.Hosting/0.2.1": {
+        "dependencies": {
+          "Chronicles.Game": "0.2.1"
+        },
+        "runtime": {
+          "Chronicles.Hosting.dll": {
+            "assemblyVersion": "0.2.1.0",
+            "fileVersion": "0.2.1.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Chronicles.Game.Tests/0.2.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Chronicles.Core/0.2.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Chronicles.Game/0.2.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Chronicles.Hosting/0.2.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -28,16 +28,16 @@ def require(condition, message):
 
 
 def check_launch(returncode, output, activity):
-    statuses = re.findall(r"(?m)^Status:[ \t]*(\S+)[ \t]*\r?$", output)
-    require(returncode == 0 and len(statuses) == 1 and statuses[0] in ("ok", "timeout") and
+    statuses = re.findall(r"(?m)^Status:([^\r\n]*)\r?$", output)
+    require(returncode == 0 and len(statuses) == 1 and statuses[0].strip() in ("ok", "timeout") and
             not re.search(r"Error|Exception", output, re.IGNORECASE), "Android launch did not succeed")
-    found = re.findall(r"(?m)^Activity:[ \t]*(\S+)[ \t]*\r?$", output)
+    found = re.findall(r"(?m)^Activity:([^\r\n]*)\r?$", output)
     expected = PACKAGE + "/" + (PACKAGE + activity if activity.startswith(".") else activity)
-    actual = found[0] if len(found) == 1 else ""
+    actual = found[0].strip() if len(found) == 1 else ""
     if actual.startswith(PACKAGE + "/."):
         actual = PACKAGE + "/" + PACKAGE + actual.split("/", 1)[1]
     require(actual == expected, "Android launch did not report the requested app activity")
-    return statuses[0]
+    return statuses[0].strip()
 
 
 def inspect_dialog(xml, windows, logs):

@@ -459,7 +459,9 @@ class AndroidReadinessTests(unittest.TestCase):
     def test_launch_parser_requires_one_known_status_and_one_exact_activity(self):
         good = LAUNCH_TIMEOUT.decode()
         for changed in [good.replace("Status: timeout\n", ""), good.replace("timeout", "Timeout"),
-                        good + "Status: ok\n", good.replace("Activity: ", "Other: "),
+                        good + "Status: ok\n", good + "Status:\n", good + "Status: unknown extra\n",
+                        good.replace("Activity: ", "Other: "), good + "Activity:\n",
+                        good + "Activity: invalid activity\n",
                         good + "Activity: " + native.PACKAGE + "/" + ACTIVITY + "\n"]:
             with self.subTest(changed=changed), self.assertRaises(native.ReadinessError):
                 native.check_launch(0, changed, ACTIVITY)

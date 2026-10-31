@@ -1,32 +1,32 @@
 # 24개 불변식과 실제 실행 검사의 연결
 
 <!-- actual-map-metadata:begin -->
-매핑 소스: `7901f344462ebc1f98d7105efd79ab0aa058b8fe`
+매핑 소스: `2464337ec577b2894eb87468c2c72916b1d6b8bf`
 
 테스트 소스 지문: `a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b`
 <!-- actual-map-metadata:end -->
 
-현재 등록 **323개(feature285 + Program38)**, **24INV·171개 증인**의 실제 이름·범위를 연결한다.
-기존5f321개 행과167증인의 주장/경계/앵커를 보존하고 새2개·4연결을 수동 추가했다.
-맵 실행 상태는 계속 `not_asserted`다. 제안 검사 상태·원장·readiness·예산을 변경하지 않는다.
+현재 등록323개(feature285+Program38)·24INV·171증인은7901과같다.
+C#와전체검사본문·Name/경계/주장/앵커를보존하며Python변경을새Game증인으로세지않는다.
+맵은계속 `not_asserted`이며 원장/readiness/진행도·제안검사상태를바꾸지않는다.
 
-## 7901f34 소스 검토
+## 2464337 Python 입력 검토
 
-제품 지문은 root가 동결한 `c91c3d7b7cf0441f207825d0490d38501072b63b0364234fbd7cf973b1f620f1`다.
-[SourceReview](invariant-execution-source-review-7901f34.json)는 실제2제품경로의 schema2 UTF8 조각
-작성과 새2개 검사를 다룬다. 기존 helper의 scripts/WF 생략 한계는 별도 제품입력 분류와 대조했고 추가 경로0개다.
-[새 연결](invariant-final-7901f34/map-additions.json)과
-[보존 대조](invariant-final-7901f34/preservation-checks.json)에 실제 경계·주장·앵커를 기록했다.
+제품 지문은root가동결한 `0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2`다.
+[SourceReview](invariant-execution-source-review-2464337.json)는helper기본범위0개와
+수동추가3개(android_readiness·그host검사·launch-timeout fixture)를구분한다.
+Android Status:timeout은시작대기미완료일뿐준비성공이아니며같은90초deadline·기존DOM/전경검사를유지한다.
+[보존 대조](invariant-final-2464337/preservation-checks.json)는323/24/171과C#·테스트지문불변을기록한다.
 
-실제 동결 소스의 전체 **323/323·실패0·종료0**을 [원문](invariant-final-7901f34/functional.json)·[실행 기록](invariant-final-7901f34/root-run.original.json)·[출처](invariant-final-7901f34/provenance.json)에 연결했다.
-원문 SHA256은 `1cca9aea9ffdef4149282cf8586fbbaf653288a62c31b5beccbe9b1bcd2706ba`다. 기존 검사기의 결과는 [정적 대조](invariant-final-7901f34/execution-verification.json)에 둔다.
-실제 GameWorld/공통 codec의 이전 bytes 비교1과 private writer 모듈 비교1을 구분하며,
-두 사례를 공개 행동 명령·월 진행·실제 파일·성능 실측으로 확대하지 않는다.
+실제 동결 소스의 전체 **323/323·실패0·종료0**을 [원문](invariant-final-2464337/functional.json)·[실행 기록](invariant-final-2464337/root-run.original.json)·[출처](invariant-final-2464337/provenance.json)에 연결했다.
+원문 SHA256은 `053535d3f2f4269a4404dbc21b44297dbf71664972a41fe9f2297733fe0793e2`다. 기존 검사기의 결과는 [정적 대조](invariant-final-2464337/execution-verification.json)에 둔다.
+새323전체결과가나와도Python host검사·실제native·성능/장기·릴리스합격을대신하지않는다.
 
-[이전5f 전체321](invariant-final-5f789c8/README.md)과
-[SourceReview](invariant-execution-source-review-5f789c8.json)는 당시 source/지문으로 보존한다.
-당시 표의 [고정JSON](https://github.com/hddy774/project-hora/blob/0d60b5e24c2e764e9a633132a5a7e8d3a45ae55a/docs/evidence/0.2.1/invariant-execution-map.json)·[고정Markdown](https://github.com/hddy774/project-hora/blob/0d60b5e24c2e764e9a633132a5a7e8d3a45ae55a/docs/evidence/0.2.1/invariant-execution-map.md)과 SHA도 유지한다.
-과거 기능·성능·장기 실패/부분·native·성장/민감도 원문을 새 소스의 통과로 재라벨하지 않는다.
+[이전7901 실제323](invariant-final-7901f34/README.md)과
+[SourceReview](invariant-execution-source-review-7901f34.json)는당시source/지문으로보존한다.
+이전표의[고정JSON](https://github.com/hddy774/project-hora/blob/9c9807604419d451a9d6da03bc534a826b6a6f43/docs/evidence/0.2.1/invariant-execution-map.json)·
+[고정Markdown](https://github.com/hddy774/project-hora/blob/9c9807604419d451a9d6da03bc534a826b6a6f43/docs/evidence/0.2.1/invariant-execution-map.md)과원문SHA도유지한다.
+과거단기32/장기실패·부분/재개파일진단·성장/민감도자료를새FP의수용으로재라벨하지않는다.
 
 ## 실제 검사 증인
 

@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored /workspace/seonro-integration-2464337/tests/Chronicles.Game.Tests/Chronicles.Game.Tests.csproj (in 89 ms).
+  Restored /workspace/seonro-integration-2464337/src/Chronicles.Hosting/Chronicles.Hosting.csproj (in 2 ms).
+  Restored /workspace/seonro-integration-2464337/src/Chronicles.Game/Chronicles.Game.csproj (in 0.9 ms).
+  Restored /workspace/seonro-integration-2464337/src/Chronicles.Core/Chronicles.Core.csproj (in 0.8 ms).
+  Chronicles.Core -> /workspace/seonro-integration-2464337/src/Chronicles.Core/bin/Release/net10.0/Chronicles.Core.dll
+  Chronicles.Game -> /workspace/seonro-integration-2464337/src/Chronicles.Game/bin/Release/net10.0/Chronicles.Game.dll
+  Chronicles.Hosting -> /workspace/seonro-integration-2464337/src/Chronicles.Hosting/bin/Release/net10.0/Chronicles.Hosting.dll
+  Chronicles.Game.Tests -> /workspace/seonro-integration-2464337/tests/Chronicles.Game.Tests/bin/Release/net10.0/Chronicles.Game.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:31.06

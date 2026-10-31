@@ -1,0 +1,153 @@
+{
+  "review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+    "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+    "actual_scenarios": 323,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [
+      {
+        "path": "scripts/android_readiness.py",
+        "invariants": [
+          "INV-007",
+          "INV-008",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "단일90초 deadline·실제 foreground·명확한 외부 launcher Wait만 허용·원래 verifier와 같은 ready 관측/진단; 단일 adb return0·정확Activity의ok/timeout을 시작 대기 상태로만 분리한다. Android status timeout은 준비 성공이 아니며 같은90초deadline/PID·전경·WebView·완전한screenshot·기존DOM checker를 유지한다. subprocess timeout/비zero/오류·중복/잘못된행은 거부한다."
+        ],
+        "review_origin": "helper가 생략한 실제 product_path 입력의 수동검토. Game 증인 추가 아님."
+      },
+      {
+        "path": "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+        "invariants": [
+          "INV-007",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "실제 API24 am start -W stdout의 Status/Activity/WaitTime 회귀 fixture; 입력 자체는 준비 DOM이나 실제 native 실행 합격 근거가 아님"
+        ],
+        "review_origin": "helper가 생략한 실제 product_path 입력의 수동검토. Game 증인 추가 아님."
+      },
+      {
+        "path": "scripts/test-android-readiness.py",
+        "invariants": [
+          "INV-006",
+          "INV-007",
+          "INV-021",
+          "INV-022"
+        ],
+        "registered_scenarios": [],
+        "unclassified_product_source": false,
+        "named_witnesses": [],
+        "review_focus": [
+          "동일 frame/deadline·미상/앱 dialog 거부·시간/명령 stub 경계의 host 단위검사; 실제 launch timeout stdout fixture와 가상clock/device를 조합한 지연준비·90초한도·비zero/오류·중복Status/Activity·PID/screenshot부재 부정검사다. 실제기기재생/새Game 등록검사로 세지 않는다."
+        ],
+        "review_origin": "helper가 생략한 실제 product_path 입력의 수동검토. Game 증인 추가 아님."
+      }
+    ],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "review_acknowledgement": {
+    "source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "scripts/test-android-readiness.py"
+    ],
+    "review_note": "C#제품/323Name·본문/행위경계·171claim/kinds/anchors·24title/limits가7901과같음을 확인한다. helper 기본 경로0개 외 Python/fixture3개를 actual product_path로 수동 검토한다. Android timeout은 launch 대기 미완료일 뿐 준비 승인이 아니며 같은90초/기존 checker와실제관측 경계를 유지한다. Python host검사나fixture를새GameINV증인으로추가하지 않는다."
+  },
+  "helper_default_review_plan": {
+    "schema": "seonro.invariant-map-review-plan.v1",
+    "from_source": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+    "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
+    "actual_scenarios": 323,
+    "added_names": [],
+    "removed_names": [],
+    "changed_source_paths": [],
+    "rule": "새/삭제 이름과 의미/경계/앵커는 수동 검토한다. 이 helper는 승인된 기존 연결의 지문·행 갱신만 한다."
+  },
+  "helper_default_review_acknowledgement": {
+    "source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+    "scenario_bindings_reviewed": true,
+    "reviewed_paths": [],
+    "review_note": "C#제품/323Name·본문/행위경계·171claim/kinds/anchors·24title/limits가7901과같음을 확인한다. helper 기본 경로0개 외 Python/fixture3개를 actual product_path로 수동 검토한다. Android timeout은 launch 대기 미완료일 뿐 준비 승인이 아니며 같은90초/기존 checker와실제관측 경계를 유지한다. Python host검사나fixture를새GameINV증인으로추가하지 않는다."
+  },
+  "review_details": [
+    {
+      "path": "scripts/android_readiness.py",
+      "sha256": "023f28b90ade3d55641a3504577e5eb2c0146edb1adfcaf5b5ae5e33f45daae3",
+      "invariants": [
+        "INV-007",
+        "INV-008",
+        "INV-021",
+        "INV-022"
+      ],
+      "review_note": "check_launch가 단일Status(ok/timeout)와 단일정확Activity·adb return0/오류없음을 요구한다. timeout은wait_incomplete로보존하고 같은Reader/deadline의기존PID·전경·WebView·완전snapshot·DOM검증을통과해야한다. subprocess timeout/OSError는종료거부하고raw/stderr/launch관측을보존한다."
+    },
+    {
+      "path": "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "sha256": "61a550a7508702ab6e2dcdf4a07a82b343d77a664289199fb04b887be417cd87",
+      "invariants": [
+        "INV-007",
+        "INV-022"
+      ],
+      "review_note": "API24 실제launch stdout5행의 Status:timeout/정확Activity/WaitTime10094 입력이다. 준비DOM이나실제기기성공근거가아니며원문fixture로만쓴다."
+    },
+    {
+      "path": "scripts/test-android-readiness.py",
+      "sha256": "d2f91bd15446b8dbe87b58987c5e1ca6c59c4f19aee1d6456221978168e36d81",
+      "invariants": [
+        "INV-006",
+        "INV-007",
+        "INV-021",
+        "INV-022"
+      ],
+      "review_note": "실제launch stdout을가상clock/device와조합하는host회귀다. 지연준비성공·같은90초·설치/로그/launch공유한도·subprocess timeout/OS오류·미상/중복Status/Activity·PID/screenshot누락·원래DOM/전경/crash/ANR거부를명시한다. 실제기기재생/323Game suite 실행으로인정하지않는다."
+    }
+  ],
+  "previous_source_review": "invariant-execution-source-review-7901f34.json",
+  "product_source_fingerprint": "0eaf05f4c00e79ac1f485a50ac4d0e6eec30f82dce49a2012e1aa0cf716bfdc2",
+  "fingerprint_attribution": "root가계산·동결한새source/FP. 문서작업의추가전체지문계산없음.",
+  "manual_name_binding_changes_before_helper": {
+    "added_names": [],
+    "removed_names": [],
+    "new_game_scenarios": 0,
+    "new_named_invariant_witnesses": 0
+  },
+  "full_product_review_coverage": {
+    "paths": [
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "scripts/test-android-readiness.py"
+    ],
+    "helper_default_paths": [],
+    "manual_additional_paths": [
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "scripts/test-android-readiness.py"
+    ],
+    "scope": "helper의scripts/WF생략한계를그대로두고실제제품입력3개를빠짐없이수동검토했다. helper/검사기변경없음."
+  },
+  "functional_evidence_status": "actual_all_323_exit0_original_preserved",
+  "scope": "실제 소스/새 검사 연결과 별도 전체323/323 원문을 함께 보존한다. 원장/readiness/예산/게임 정책/기존 증인 의미 변경 없음. 새 성능/장기/native/민감도/릴리스 수용을 주장하지 않는다.",
+  "separate_functional_report": {
+    "path": "invariant-final-2464337/functional.json",
+    "sha256": "053535d3f2f4269a4404dbc21b44297dbf71664972a41fe9f2297733fe0793e2",
+    "executed_source": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+    "selection": "all",
+    "total": 323,
+    "failed": 0
+  }
+}

@@ -1,9 +1,9 @@
 {
   "schema": "seonro.actual-invariant-execution-map.v1",
-  "mapping_source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+  "mapping_source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
   "test_sources_sha256": "a212bbfb2b11daaf973fa0db1c085edeeca20743cf1d049daed8150a533c4c1b",
   "execution_status": "not_asserted",
-  "scope": "7901f34/FPc91c의 실제323등록·24INV·171증인 연결이다. 이전5f321/167을 보존하고 새 schema2 UTF8 조각2개/4연결을 수동 추가한다. not_asserted 유지·맵은 실행/성능/장기/native/111개 수용 판정이 아니다.",
+  "scope": "2464337/FP0eaf의323등록·24INV·171연결이다. C#/검사323/기존171claim·경계·앵커는7901과같고 Python readiness3경로만별도검토한다. not_asserted유지·새Game증인0·맵은기능/성능/native/111개수용판정이아니다.",
   "catalog": {
     "feature_scenarios": 285,
     "program_scenarios": 38,
@@ -8047,7 +8047,7 @@
         "INV-021",
         "INV-022"
       ],
-      "focus": "단일90초 deadline·실제 foreground·명확한 외부 launcher Wait만 허용·원래 verifier와 같은 ready 관측/진단"
+      "focus": "단일90초 deadline·실제 foreground·명확한 외부 launcher Wait만 허용·원래 verifier와 같은 ready 관측/진단; 단일 adb return0·정확Activity의ok/timeout을 시작 대기 상태로만 분리한다. Android status timeout은 준비 성공이 아니며 같은90초deadline/PID·전경·WebView·완전한screenshot·기존DOM checker를 유지한다. subprocess timeout/비zero/오류·중복/잘못된행은 거부한다."
     },
     {
       "path_prefix": "scripts/fixtures/android-",
@@ -8065,7 +8065,7 @@
         "INV-021",
         "INV-022"
       ],
-      "focus": "동일 frame/deadline·미상/앱 dialog 거부·시간/명령 stub 경계의 host 단위검사"
+      "focus": "동일 frame/deadline·미상/앱 dialog 거부·시간/명령 stub 경계의 host 단위검사; 실제 launch timeout stdout fixture와 가상clock/device를 조합한 지연준비·90초한도·비zero/오류·중복Status/Activity·PID/screenshot부재 부정검사다. 실제기기재생/새Game 등록검사로 세지 않는다."
     },
     {
       "path_prefix": "scripts/update-v021-progress.py",
@@ -8084,12 +8084,13 @@
     }
   ],
   "last_source_review": {
-    "source_commit": "7901f344462ebc1f98d7105efd79ab0aa058b8fe",
+    "source_commit": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
     "scenario_bindings_reviewed": true,
     "reviewed_paths": [
-      "src/Chronicles.Game/GameCodec.cs",
-      "tests/Chronicles.Game.Tests/Features/Schema2Utf8SegmentScenarios.cs"
+      "scripts/android_readiness.py",
+      "scripts/fixtures/android-launch-timeout-api24-41165712717.txt",
+      "scripts/test-android-readiness.py"
     ],
-    "review_note": "새 schema2 UTF8 조각2Name의 실제 GameWorld/codec 비교와 private writer 모듈 경계를 수동 연결했다. 두 검사는 INV004/006에만 연결하고 기존321개 행·167증인의 claim/kinds/anchors와24제목/한계를 보존한다. 전체 실행 결과는 root 종료0 확인 뒤 별도 실제 원문으로 연결하며 저장 byte 동등과 새 성능/장기 수용을 구분한다."
+    "review_note": "C#제품/323Name·본문/행위경계·171claim/kinds/anchors·24title/limits가7901과같음을 확인한다. helper 기본 경로0개 외 Python/fixture3개를 actual product_path로 수동 검토한다. Android timeout은 launch 대기 미완료일 뿐 준비 승인이 아니며 같은90초/기존 checker와실제관측 경계를 유지한다. Python host검사나fixture를새GameINV증인으로추가하지 않는다."
   }
 }

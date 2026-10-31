@@ -1,0 +1,67 @@
+{
+  "schema": "seonro.invariant-evidence-manifest.v1",
+  "executed_source": "2464337ec577b2894eb87468c2c72916b1d6b8bf",
+  "scope": "manifest 자체를 제외한 원문 사본/파생 문서의 SHA 색인. 새 실행이나 수용 판정이 아니다.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4762,
+      "sha256": "06624e00627c30b7ce68bce1ac24f69f14efc0123d5fff3b98b2320943a219fd"
+    },
+    {
+      "path": "execution-verification.json",
+      "bytes": 2925,
+      "sha256": "ef433e6bf25e4fc9bb58c50db44c1b7db19b509ca76d0a32fdcdcb901125f1bb"
+    },
+    {
+      "path": "functional.json",
+      "bytes": 65011,
+      "sha256": "053535d3f2f4269a4404dbc21b44297dbf71664972a41fe9f2297733fe0793e2"
+    },
+    {
+      "path": "functional.log",
+      "bytes": 39474,
+      "sha256": "9fe723c2252bd435e278cbc4f48643efed2e20b09f3be5616fbabf82111c78ef"
+    },
+    {
+      "path": "preservation-checks.json",
+      "bytes": 1404,
+      "sha256": "9cff523c4c4c4d59476cc789e414cffcbd493cc12f58ed1d72c219c089e44daf"
+    },
+    {
+      "path": "provenance.json",
+      "bytes": 8083,
+      "sha256": "5c8c27c18c43f8ce4be0517e298caf5a1bcc4350a10283e41ea00f4fb980f421"
+    },
+    {
+      "path": "release-build.log",
+      "bytes": 1055,
+      "sha256": "ae9cc7c18501217190df3cda072bf4a15ff0d959fb9c859d848f95be0536d145"
+    },
+    {
+      "path": "root-run.original.json",
+      "bytes": 4840,
+      "sha256": "b7649b449daf9b50fdf3ad79c856564e0d183f099cac929fe1fc1c433f0b4ba1"
+    },
+    {
+      "path": "runtimeconfig.original.json",
+      "bytes": 371,
+      "sha256": "58226319523e5866d06e135f3686f82b1aad07f92ad7e3d9d5d5f6aefea40fb7"
+    },
+    {
+      "path": "../invariant-execution-map.json",
+      "bytes": 300958,
+      "sha256": "69c96050ec136074ab2b77d26805062b64721de006a035d314f7985d67fad964"
+    },
+    {
+      "path": "../invariant-execution-map.md",
+      "bytes": 91140,
+      "sha256": "d904492607c80c32ba4603fa079b5f91b9cd2f3863b4b2784b417fa807926455"
+    },
+    {
+      "path": "../invariant-execution-source-review-2464337.json",
+      "bytes": 8221,
+      "sha256": "ed50fed3903716a69b290eddbb4d1003070d3fc554b81f913608ca1aba9283b1"
+    }
+  ]
+}

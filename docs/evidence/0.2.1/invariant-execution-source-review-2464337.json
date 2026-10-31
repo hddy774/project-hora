@@ -34,7 +34,7 @@
         "unclassified_product_source": false,
         "named_witnesses": [],
         "review_focus": [
-          "실제 보존 Quickstep/window 입력의 parser 회귀 fixture; 실제 native 실행 합격이 아님"
+          "실제 API24 am start -W stdout의 Status/Activity/WaitTime 회귀 fixture; 입력 자체는 준비 DOM이나 실제 native 실행 합격 근거가 아님"
         ],
         "review_origin": "helper가 생략한 실제 product_path 입력의 수동검토. Game 증인 추가 아님."
       },

@@ -18,7 +18,7 @@
   "api24SourceApkKvmRunBlocksByteIdentical": {
     "소스·제품 지문과 검사 범위 기록": true,
     "릴리스 구성의 디버그 서명 검사 APK 빌드": true,
-    "GitHub 러너의 실제 하드웨어 가속 확인(KVM)": true
+    "GitHub 러너의 실제 하드웨어 가속 확인(KVM)": false
   },
   "api24EmbeddedProbeAstIdentical": true,
   "sdk": {
@@ -37,5 +37,21 @@
   "unitTestsArePlatformExecution": false,
   "performanceGrowthLongRuns": 0,
   "officialReleaseExecutions": 0,
-  "existingFp528ReusedAsCurrentAcceptance": false
+  "existingFp528ReusedAsCurrentAcceptance": false,
+  "approvedKvmFollowup": {
+    "previousHead": "451151a644cbaaa1f88c05be2921bbdd68d601a4",
+    "readerGitBlobUnchanged": "eae4de7d51c3ce5f2c25f9f8a568f4d252487e46",
+    "settleTimeoutSeconds": 10,
+    "existingGhaHostedCharacterDeviceReadWriteGuardsPreserved": true,
+    "reloadTriggerSettleFailuresPropagated": true,
+    "chmodFallback": false,
+    "publicDiagnostics": [
+      "per-stage exit",
+      "id",
+      "stat"
+    ],
+    "shellFixtureCases": 8,
+    "realKvmOperations": 0,
+    "actualPriorFailureCause": "미확정; 비동기 udev 경계 가능성을 원인 확정으로 기록하지 않음"
+  }
 }

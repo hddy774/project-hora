@@ -1,0 +1,96 @@
+[
+  {
+    "pid": 153145,
+    "mode": "fresh",
+    "phase": "pre-snapshot-opening",
+    "population": 1000,
+    "month": 0,
+    "retainedManagedBytes": 61877768,
+    "Index": 19,
+    "HeapSizeBytes": 63031640,
+    "FragmentedBytes": 1162096,
+    "TotalCommittedBytes": 91508736,
+    "gen2": 6,
+    "serverGc": false,
+    "cpu": 1,
+    "lifetimes": null,
+    "dumpExit": 0,
+    "dumpBytes": 199540736
+  },
+  {
+    "pid": 153145,
+    "mode": "fresh",
+    "phase": "after-frame-return",
+    "population": 1000,
+    "month": 0,
+    "retainedManagedBytes": 545406464,
+    "Index": 70,
+    "HeapSizeBytes": 546560464,
+    "FragmentedBytes": 1162224,
+    "TotalCommittedBytes": 767336448,
+    "gen2": 11,
+    "serverGc": false,
+    "cpu": 1,
+    "lifetimes": {
+      "worlds": [
+        false
+      ],
+      "snapshots": [
+        false
+      ]
+    }
+  },
+  {
+    "mode": "fresh",
+    "exitCode": 0
+  },
+  {
+    "pid": 153185,
+    "mode": "sequential",
+    "phase": "pre-snapshot-opening",
+    "population": 1000,
+    "month": 0,
+    "retainedManagedBytes": 118719360,
+    "Index": 33,
+    "HeapSizeBytes": 128154552,
+    "FragmentedBytes": 9443416,
+    "TotalCommittedBytes": 180965376,
+    "gen2": 10,
+    "serverGc": false,
+    "cpu": 1,
+    "lifetimes": null,
+    "dumpExit": 0,
+    "dumpBytes": 298004480
+  },
+  {
+    "pid": 153185,
+    "mode": "sequential",
+    "phase": "after-frame-return",
+    "population": 1000,
+    "month": 0,
+    "retainedManagedBytes": 595768200,
+    "Index": 84,
+    "HeapSizeBytes": 605203440,
+    "FragmentedBytes": 9443464,
+    "TotalCommittedBytes": 832155648,
+    "gen2": 15,
+    "serverGc": false,
+    "cpu": 1,
+    "lifetimes": {
+      "worlds": [
+        false,
+        false,
+        false
+      ],
+      "snapshots": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  {
+    "mode": "sequential",
+    "exitCode": 0
+  }
+]

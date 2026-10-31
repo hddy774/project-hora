@@ -1,0 +1,9 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/t04-retained-heap-plan-5398700/probe/HeapProbe.csproj (in 102 ms).
+  HeapProbe -> /workspace/scratch/t04-retained-heap-plan-5398700/probe/bin/Release/net10.0/HeapProbe.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.63

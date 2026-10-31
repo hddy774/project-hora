@@ -1,0 +1,47 @@
+[
+  {
+    "pid": 153508,
+    "mode": "fresh",
+    "phase": "pre-snapshot-opening",
+    "population": 1000,
+    "month": 0,
+    "retainedManagedBytes": 61869592,
+    "Index": 19,
+    "HeapSizeBytes": 63031688,
+    "FragmentedBytes": 1162096,
+    "TotalCommittedBytes": 91951104,
+    "gen2": 6,
+    "serverGc": false,
+    "cpu": 1,
+    "lifetimes": null
+  },
+  {
+    "pid": 153508,
+    "mode": "fresh",
+    "phase": "after-frame-return",
+    "population": 1000,
+    "month": 0,
+    "retainedManagedBytes": 545406488,
+    "Index": 70,
+    "HeapSizeBytes": 546560576,
+    "FragmentedBytes": 1162312,
+    "TotalCommittedBytes": 767332352,
+    "gen2": 11,
+    "serverGc": false,
+    "cpu": 1,
+    "lifetimes": {
+      "worlds": [
+        false
+      ],
+      "snapshots": [
+        false
+      ]
+    },
+    "dumpExit": 0,
+    "dumpBytes": 892182528
+  },
+  {
+    "mode": "fresh",
+    "exitCode": 0
+  }
+]

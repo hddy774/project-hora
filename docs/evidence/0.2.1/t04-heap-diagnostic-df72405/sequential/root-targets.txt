@@ -1,0 +1,17 @@
+Loading core dump: /workspace/scratch/t04-retained-heap-plan-5398700/actual-sequential/opening.dmp ...
+         Address               MT           Size
+    7f413d47d010     7f504ff1d0a0            200 
+    7f4144c11998     7f504ff1d0a0            200 
+
+Statistics:
+          MT Count TotalSize Class Name
+7f504ff1d0a0     2       400 Chronicles.Game.GameWorld
+Total 2 objects, 400 bytes
+         Address               MT           Size
+    7f413e000048     7f504f9ecbb8     16,777,240 
+    7f4140c00048     7f504f9ecbb8     33,554,456 
+
+Statistics:
+          MT Count  TotalSize Class Name
+7f504f9ecbb8     2 50,331,696 System.Char[]
+Total 2 objects, 50,331,696 bytes

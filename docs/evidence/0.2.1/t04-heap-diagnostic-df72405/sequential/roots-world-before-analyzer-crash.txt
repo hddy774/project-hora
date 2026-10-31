@@ -1,0 +1,22 @@
+Loading core dump: /workspace/scratch/t04-retained-heap-plan-5398700/actual-sequential/opening.dmp ...
+Caching GC roots, this may take a while.
+Subsequent runs of this command will be faster.
+
+Thread 25661:
+    7fff2f64cf90 7f504f953043 Program.Sequence(System.String, System.String) [/workspace/scratch/t04-retained-heap-plan-5398700/probe/Program.cs @ 74]
+        rbp-f8: 00007fff2f64d098
+          -> 7f413d47d010     Chronicles.Game.GameWorld 
+
+Found 1 unique roots.
+Thread 25661:
+    7fff2f64cdf0 7f505138fad7 Program.<Sequence>g__Checkpoint|5_0(<>c__DisplayClass5_0 ByRef, <>c__DisplayClass5_1 ByRef, <>c__DisplayClass5_2 ByRef) [/workspace/scratch/t04-retained-heap-plan-5398700/probe/Program.cs @ 57]
+        rbp-18: 00007fff2f64cf68
+          -> 7f4144c11998     Chronicles.Game.GameWorld 
+
+    7fff2f64cf90 7f504f953043 Program.Sequence(System.String, System.String) [/workspace/scratch/t04-retained-heap-plan-5398700/probe/Program.cs @ 74]
+        rbp-88: 00007fff2f64d108
+          -> 7f4144c11998     Chronicles.Game.GameWorld 
+
+Found 2 unique roots.
+Name:        Chronicles.Game.GameWorld
+MethodTable: 00007f504ff1d0a0
